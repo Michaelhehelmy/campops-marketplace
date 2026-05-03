@@ -1,0 +1,56 @@
+{
+  "nav": {
+    "search": "Search",
+    "bookings": "My Bookings",
+    "login": "Sign In"
+  },
+  "search": {
+    "title": "Find your perfect stay",
+    "subtitle": "Search across all our properties",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "destination": "Destination (optional)",
+    "searchButton": "Search",
+    "adults": "adults",
+    "children": "children",
+    "noResults": "No properties available for your dates.",
+    "nightsFrom": "{nights} nights from",
+    "perNight": "/ night",
+    "viewProperty": "View property",
+    "available": "available"
+  },
+  "property": {
+    "bookNow": "Book now",
+    "checkAvailability": "Check availability",
+    "perNight": "/ night",
+    "capacity": "Up to {n} guests",
+    "roomTypes": "Room types",
+    "noRoomsAvailable": "No rooms available for selected dates"
+  },
+  "booking": {
+    "summary": "Booking Summary",
+    "guestDetails": "Guest Details",
+    "payment": "Payment",
+    "confirmation": "Confirmation",
+    "fullName": "Full name",
+    "email": "Email address",
+    "phone": "Phone (optional)",
+    "adults": "Adults",
+    "children": "Children",
+    "totalAmount": "Total",
+    "nights": "{n} nights",
+    "proceedToPayment": "Proceed to payment",
+    "confirmBooking": "Confirm booking",
+    "bookingConfirmed": "Booking confirmed!",
+    "bookingRef": "Booking reference",
+    "payLater": "Pay at property"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "close": "Close",
+    "currency": "Currency"
+  }
+}
