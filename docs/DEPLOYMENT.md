@@ -1,122 +1,113 @@
-# Deployment Guide
+# SinaiCamps: Complete Oracle Cloud Deployment Guide
 
-This guide covers the production deployment of the SinaiCamps Marketplace.
+This guide covers everything from a brand new Oracle Cloud instance to a fully running, self-healing **SinaiCamps** platform.
 
-## Prerequisites
+---
 
-- Node.js 20+
-- SQLite (or PostgreSQL for multi-node deployments)
-- Docker (optional but recommended)
+## Phase 1: Oracle Cloud Infrastructure (OCI) Setup
 
-## Production Build
+### 1. Create the Instance
+*   **Image**: Ubuntu 24.04 (Canonical).
+*   **Shape**: `VM.Standard.E4.Flex` (or similar).
+*   **Networking**: Ensure it is in a **Public Subnet**.
 
-1. **Environment Variables**:
-   Create a `.env.production` file:
+### 2. Configure Networking (The "Magic" Step)
+Your instance needs to be visible to the internet.
+1.  **Ingress Rules**: Go to your Subnet > Security List and add:
+    *   **Port 22 (SSH)**: Source `0.0.0.0/0`.
+    *   **Port 80 (HTTP)**: Source `0.0.0.0/0`.
+    *   **Port 443 (HTTPS)**: Source `0.0.0.0/0`.
+2.  **Internet Gateway**: Ensure your VCN has an **Internet Gateway** created.
+3.  **Route Table**: Ensure the **Default Route Table** has a rule:
+    *   **Destination**: `0.0.0.0/0`
+    *   **Target**: Internet Gateway.
 
-   ```env
-   BETTER_AUTH_SECRET=your-32-char-secret
-   NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.com
-   NEXT_PUBLIC_API_URL=https://api.sinaicamps.com
-   DATABASE_URL=file:./sinaicamps.db
-   ```
+---
 
-2. **Build and Start**:
-   ```bash
-   npm run build
-   npm run start
-   ```
+## Phase 2: Server Software Installation
 
-## Docker Deployment
-
-The `Dockerfile` is optimized using Next.js standalone output.
+Connect to your VM (`ssh -i your.key ubuntu@your-ip`) and run:
 
 ```bash
-docker build -t sinaicamps-marketplace .
-docker run -p 3000:3000 sinaicamps-marketplace
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Install Nginx, PostgreSQL, and Sync tools
+sudo apt install -y nginx postgresql postgresql-contrib rsync
+
+# Install PM2 (Global)
+sudo npm install -g pm2
 ```
 
-## Infrastructure Configuration
+---
 
-### Reverse Proxy (Nginx)
-
-The production environment uses the pre-configured `nginx-multi-tenant.conf` which handles wildcard subdomains, SSL termination, and HSTS.
+## Phase 3: Database Initialization
 
 ```bash
-# Verify configuration
-nginx -t -c $(pwd)/nginx-multi-tenant.conf
+# Switch to postgres user and create the SinaiCamps DB
+sudo -u postgres psql -c "CREATE USER sinaicamps WITH PASSWORD 'sinaicamps123';"
+sudo -u postgres psql -c "CREATE DATABASE sinaicamps OWNER sinaicamps;"
 
-# Symbolically link to nginx sites-enabled
-sudo ln -s $(pwd)/nginx-multi-tenant.conf /etc/nginx/sites-enabled/sinaicamps
-sudo systemctl reload nginx
+# Apply the initial schema (run this after syncing your files)
+sudo -u postgres psql -d sinaicamps -f ~/marketplace/schema.sql
 ```
 
-### Wildcard SSL (Let's Encrypt)
+---
 
-To support subdomains, use the DNS-01 challenge with Certbot.
+## Phase 4: App Deployment & Persistence
 
-1. **Obtain Certificate**:
-   ```bash
-   sudo certbot certonly --manual --preferred-challenges dns -d sinaicamps.com -d "*.sinaicamps.com"
-   ```
-2. **Auto-Renewal**:
-   A renewal script is provided at `scripts/renew-ssl.sh`. Add it to your crontab:
-   ```bash
-   0 0 * * * /path/to/sinaicamps-marketplace/scripts/renew-ssl.sh >> /var/log/sinaicamps-ssl.log 2>&1
-   ```
+### 1. Syncing your Files (From your Local Machine)
+Run this from your project folder on your computer:
+```bash
+# Create directories on VM
+ssh -i oracle.key ubuntu@your-ip "mkdir -p ~/marketplace/.next/static ~/marketplace/scripts ~/marketplace/logs"
 
-## PostgreSQL Configuration
+# Sync build and assets
+rsync -avz -e "ssh -i oracle.key" .next/standalone/ ubuntu@your-ip:~/marketplace/
+rsync -avz -e "ssh -i oracle.key" .next/static/ ubuntu@your-ip:~/marketplace/.next/static/
+rsync -avz -e "ssh -i oracle.key" public/ ubuntu@your-ip:~/marketplace/public/
+scp -i oracle.key .env.production nginx-unified.conf scripts/boot.sh ubuntu@your-ip:~/marketplace/
+```
 
-For production-grade scalability, use PostgreSQL instead of SQLite.
+### 2. Start and Automate
+On the VM:
+```bash
+cd ~/marketplace
+pm2 start server.js --name sinaicamps
+pm2 save
+pm2 startup  # Follow the instruction it prints to enable auto-start
 
-1. **Environment Variable**:
-   Set `DATABASE_URL` in `.env.production`:
+# Setup the Boot Recovery Script
+mv ~/marketplace/boot.sh ~/marketplace/scripts/boot.sh
+chmod +x ~/marketplace/scripts/boot.sh
+crontab -e
+# Add this line to the bottom:
+@reboot /home/ubuntu/marketplace/scripts/boot.sh
+```
 
-   ```env
-   DATABASE_URL=postgres://user:password@host:5432/sinaicamps
-   ```
+---
 
-2. **Run Migration**:
-   Execute the migration script to create the schema and seed the initial master admin.
+## Phase 5: Domain & SSL
 
-   ```bash
-   ./scripts/migrate-to-pg.sh
-   ```
+1.  **Nginx**:
+    ```bash
+    sudo cp ~/marketplace/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
+    sudo ln -s /etc/nginx/sites-available/sinaicamps /etc/nginx/sites-enabled/
+    sudo nginx -t && sudo systemctl reload nginx
+    ```
+2.  **SSL**:
+    ```bash
+    sudo apt install certbot python3-certbot-nginx
+    sudo certbot --nginx -d sinaicamps.com -d api.sinaicamps.com
+    ```
 
-3. **Verify**:
-   Check that all core and plugin tables are created:
-   ```bash
-   psql $DATABASE_URL -c "\dt"
-   ```
+---
 
 ## Maintenance
-
-### Backup & Restore (PostgreSQL)
-
-**Backup**:
-
-```bash
-pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
-```
-
-**Restore**:
-
-```bash
-psql $DATABASE_URL -f backup_file.sql
-```
-
-### Plugin Updates
-
-Plugins are located in `/plugins`. The system automatically discovers and initializes them on start.
-To force a plugin reload or initialize new plugin tables without restarting the server, visit `/api/health`.
-
-### Database Migrations
-
-For core schema changes, update `src/db/schema.ts` and use:
-
-```bash
-# SQLite (Development)
-npx drizzle-kit push:sqlite
-
-# PostgreSQL (Production)
-npx drizzle-kit push:pg
-```
+*   **View Logs**: `pm2 logs sinaicamps`
+*   **Restart App**: `pm2 restart sinaicamps`
+*   **Check Boot Status**: `cat ~/marketplace/logs/boot.log`
