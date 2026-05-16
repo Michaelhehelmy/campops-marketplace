@@ -1,13 +1,13 @@
 # Testing Guidelines
 
-This document describes how the CampOps Marketplace core framework is tested and how to add tests for new plugins.
+This document describes how the SinaiCamps Marketplace core framework is tested and how to add tests for new plugins.
 
 ---
 
 ## Test Architecture
 
 ```
-campops-marketplace/
+sinaicamps-marketplace/
 ├── src/
 │   ├── lib/__tests__/           Core framework unit tests (Vitest)
 │   ├── db/__tests__/            Schema / DB layer tests (Vitest)

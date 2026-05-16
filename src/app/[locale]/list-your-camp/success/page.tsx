@@ -4,7 +4,7 @@ import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Globe } from 'lucide-react';
 
-const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'campops.com';
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com';
 
 export default function SuccessPage() {
   const { locale } = useParams();
@@ -30,7 +30,7 @@ export default function SuccessPage() {
       <p className="text-gray-500 text-lg mb-8">
         {isPremium
           ? 'Your Operations Suite is ready. Head to your admin panel to set up rooms, rates, and more.'
-          : 'Your property is listed on CampOps. You can manage it from your owner dashboard.'}
+          : 'Your property is listed on SinaiCamps. You can manage it from your owner dashboard.'}
       </p>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 text-left max-w-sm mx-auto">

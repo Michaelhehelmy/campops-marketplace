@@ -9,15 +9,15 @@ cd ~/marketplace
 export $(cat .env.production | xargs)
 
 # Stop old container
-sudo docker stop campops || true
-sudo docker rm campops || true
+sudo docker stop sinaicamps || true
+sudo docker rm sinaicamps || true
 
 # Run new container
-sudo docker run -d --name campops \
+sudo docker run -d --name sinaicamps \
   --network="host" \
   --restart always \
   --env-file .env.production \
-  campops-marketplace:latest
+  sinaicamps-marketplace:latest
 
 # Reload Nginx
 sudo nginx -t && sudo systemctl reload nginx

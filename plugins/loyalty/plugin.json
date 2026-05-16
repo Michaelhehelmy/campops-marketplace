@@ -3,7 +3,7 @@
   "name": "Beats Loyalty",
   "version": "1.0.0",
   "description": "Guest loyalty program based on Beats points. Awards points for stays and payments.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",
   "slots": {

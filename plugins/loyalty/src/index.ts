@@ -2,7 +2,7 @@
  * Loyalty Plugin – Phase 6
  * ─────────────────────────
  * Wraps the existing LoyaltyService (server/services/LoyaltyService.ts) into
- * the CampOps plugin system.
+ * the SinaiCamps plugin system.
  *
  * Hooks registered:
  *   payment.on_success  (priority 20) — award points proportional to payment amount
@@ -14,7 +14,7 @@
  * Registered in plugin-manifest.json as "loyalty".
  */
 
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { LoyaltyService } from './LoyaltyService.js';
 import { Hooks } from '../../../src/lib/hooks.js';
 import { checkFlag } from '../../../src/lib/featureFlags.js';

@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
     if (session) {
       userId = session.user.id;
     } else {
-      // Fallback: resolve user from campops_role cookie for test environments
-      const roleCookie = req.cookies.get('campops_role')?.value;
+      // Fallback: resolve user from sinaicamps_role cookie for test environments
+      const roleCookie = req.cookies.get('sinaicamps_role')?.value;
       if (roleCookie === 'guest') {
         userId = 'guest-user-1';
       } else if (roleCookie === 'manager') {

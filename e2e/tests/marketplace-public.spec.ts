@@ -5,7 +5,7 @@ import { LoginPage } from '../pages/LoginPage';
 test.describe('Marketplace Public (unauthenticated)', () => {
   test('Browse homepage and view search results', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/CampOps/i);
+    await expect(page).toHaveTitle(/SinaiCamps/i);
 
     // Browse to search
     await page.getByRole('link', { name: /Search/i }).click();

@@ -40,7 +40,7 @@ Current URL after accessing another listing: http://localhost:3001/en/manage/mou
       82 |
       83 |         // Verify commission data is displayed
       84 |         await expect(page.locator('text=/Commission Breakdown/i')).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:81:73
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/manager.spec.ts:81:73
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/manager-Authenticated-mana-3fe4b-ment-data-matching-bookings-chromium/test-failed-1.png
@@ -68,7 +68,7 @@ Current URL after accessing another listing: http://localhost:3001/en/manage/mou
       133 |   });
       134 |
       135 |   authenticatedTest('staff can access settings', async ({ page, staffSession }) => {
-        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:132:24
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/manager.spec.ts:132:24
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/manager-Staff-role-restrictions-staff-can-view-bookings-chromium/test-failed-1.png
@@ -96,7 +96,7 @@ Current URL after accessing another listing: http://localhost:3001/en/manage/mou
       141 |   });
       142 | });
       143 |
-        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:140:24
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/manager.spec.ts:140:24
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/manager-Staff-role-restrictions-staff-can-access-settings-chromium/test-failed-1.png

@@ -28,7 +28,7 @@ export function Nav({ locale }: { locale: string }) {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <a href={`/${locale}`} className="flex items-center gap-2">
-          <span className="text-2xl font-black text-brand-600">CampOps</span>
+          <span className="text-2xl font-black text-brand-600">SinaiCamps</span>
         </a>
 
         <div className="flex items-center gap-6">

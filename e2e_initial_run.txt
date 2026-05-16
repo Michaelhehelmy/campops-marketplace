@@ -92,7 +92,7 @@ Running 73 tests using 6 workers
       43 |
       44 |     const activityWidget = page.getByRole('region', { name: /Recent Activity/i });
       45 |     await expect(activityWidget).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:42:16
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/booking_crm.spec.ts:42:16
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/test-failed-1.png

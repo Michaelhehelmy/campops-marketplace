@@ -1,5 +1,5 @@
 {
-  "name": "@campops/plugin-ical-import",
+  "name": "@sinaicamps/plugin-ical-import",
   "version": "1.0.0",
   "private": true,
   "type": "module",

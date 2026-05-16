@@ -1,9 +1,9 @@
 
-> @campops/marketplace@1.0.0 test
+> @sinaicamps/marketplace@1.0.0 test
 > vitest run --run src/app/api/master/plugins/__tests__/route.test.ts
 
 
- RUN  v4.1.5 /home/michael/Proj/campops-marketplace
+ RUN  v4.1.5 /home/michael/Proj/sinaicamps-marketplace
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
 [Master Plugins API] Fetching plugins...
@@ -22,7 +22,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -44,7 +44,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -66,7 +66,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -88,7 +88,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -119,7 +119,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/p
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:177:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:177:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -216,8 +216,8 @@ AssertionError: expected 500 to be 200 // Object.is equality
 
 npm error Lifecycle script `test` failed with error:
 npm error code 1
-npm error path /home/michael/Proj/campops-marketplace
-npm error workspace @campops/marketplace@1.0.0
-npm error location /home/michael/Proj/campops-marketplace
+npm error path /home/michael/Proj/sinaicamps-marketplace
+npm error workspace @sinaicamps/marketplace@1.0.0
+npm error location /home/michael/Proj/sinaicamps-marketplace
 npm error command failed
 npm error command sh -c vitest run --run src/app/api/master/plugins/__tests__/route.test.ts

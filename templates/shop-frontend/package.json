@@ -1,8 +1,8 @@
 {
-  "name": "campops-shop-template",
+  "name": "sinaicamps-shop-template",
   "private": true,
   "version": "1.0.0",
-  "description": "CampOps shop frontend template - generates branded camp websites",
+  "description": "SinaiCamps shop frontend template - generates branded camp websites",
   "type": "module",
   "scripts": {
     "dev": "vite",

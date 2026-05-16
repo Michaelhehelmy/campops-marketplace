@@ -1,5 +1,5 @@
 {
-  "name": "@campops/plugin-siteminder",
+  "name": "@sinaicamps/plugin-siteminder",
   "version": "1.0.0",
   "private": true,
   "type": "module",

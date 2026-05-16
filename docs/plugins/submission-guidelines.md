@@ -1,6 +1,6 @@
 # Submission Guidelines
 
-Thank you for contributing to the CampOps Ecosystem. This guide explains how to submit a new plugin, n8n workflow, or other extension.
+Thank you for contributing to the SinaiCamps Ecosystem. This guide explains how to submit a new plugin, n8n workflow, or other extension.
 
 ---
 
@@ -42,7 +42,7 @@ Before opening a PR, ensure your plugin meets all of the following:
 
 ### Compatibility
 
-- [ ] `campopsVersion` in `package.json` specifies the minimum compatible version
+- [ ] `sinaicampsVersion` in `package.json` specifies the minimum compatible version
 - [ ] Works with Node.js 20 and 22
 
 ### Manifest entry
@@ -73,7 +73,7 @@ Brief explanation of the plugin's purpose.
    {
      "name": "<name>",
      "version": "x.y.z",
-     "campopsVersion": ">=2.0.0",
+     "sinaicampsVersion": ">=2.0.0",
      "path": "./plugins/<name>/src/index.ts",
      "enabled": true,
      "config": {
@@ -137,7 +137,7 @@ Expect a review within **5 business days** for new plugins.
 ## Security policy
 
 - Do not commit API keys, passwords, or secrets in any form.
-- If you discover a security issue in an existing plugin, email **security@campops.com** — do not open a public issue.
+- If you discover a security issue in an existing plugin, email **security@sinaicamps.com** — do not open a public issue.
 - Plugins that make outbound HTTP requests to non-documented endpoints will be rejected.
 
 ---

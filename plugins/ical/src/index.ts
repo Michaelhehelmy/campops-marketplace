@@ -30,7 +30,7 @@ interface ReservationData {
 
 async function fetchICalFeed(url: string): Promise<string> {
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'CampOps-iCal-Sync/2.0' },
+    headers: { 'User-Agent': 'SinaiCamps-iCal-Sync/2.0' },
     redirect: 'follow',
   });
   if (!res.ok) {

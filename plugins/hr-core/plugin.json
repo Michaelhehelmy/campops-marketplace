@@ -3,7 +3,7 @@
   "name": "HR Core & Payroll",
   "version": "1.0.0",
   "description": "Employee directory, contracts, timesheets, and payroll management.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "Human Resources",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",

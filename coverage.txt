@@ -1,5 +1,5 @@
 
- RUN  v4.1.5 /home/michael/Proj/campops-marketplace
+ RUN  v4.1.5 /home/michael/Proj/sinaicamps-marketplace
       Coverage enabled with v8
 
 stdout | plugins/test-probe/src/__tests__/index.test.ts
@@ -645,9 +645,9 @@ stdout | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
 
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB] Transaction failed: Error: Test error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:38:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:255:28)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:37:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:38:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:255:28)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:37:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -2830,9 +2830,9 @@ stdout | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
 
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB] Transaction failed: Error: Transaction failed
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:158:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:255:28)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:157:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:158:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:255:28)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:157:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -5417,9 +5417,9 @@ stdout | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > query with FALLBACK_TEST triggers fallback path
 [DB] prepare failed for "FALLBACK_TEST SELECT * FROM test": SqliteError: near "FALLBACK_TEST": syntax error
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.query (/home/michael/Proj/campops-marketplace/src/lib/db.ts:230:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:303:29
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.query (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:230:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:303:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -5546,9 +5546,9 @@ stdout | plugins/resource/__tests__/routes.test.ts > GET /api/p/resource/listing
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > queryOne with FALLBACK_TEST triggers fallback path
 [DB] prepare failed for "FALLBACK_TEST SELECT * FROM test WHERE id = ?": SqliteError: near "FALLBACK_TEST": syntax error
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.queryOne (/home/michael/Proj/campops-marketplace/src/lib/db.ts:234:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:308:29
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.queryOne (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:234:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:308:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -7054,9 +7054,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > creates a PluginAPI with correct structure
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7067,9 +7067,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > creates a PluginAPI w
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7139,9 +7139,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > creates a PluginAPI w
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > logger methods log with plugin prefix
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7152,9 +7152,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > logger methods log wi
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7224,9 +7224,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > logger methods log wi
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook returns unregister function
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7237,9 +7237,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7309,9 +7309,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook registers with hookManager
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7322,9 +7322,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7340,38 +7340,38 @@ stdout | src/lib/__tests__/auth.test.ts > Auth Configuration > should use pg pro
 
 stderr | src/lib/__tests__/auth.test.ts > Auth Configuration > should use pg provider when DATABASE_URL is set and not in test
 [DB Init] Error checking database state: TypeError: Cannot read properties of null (reading 'prepare')
-    at /home/michael/Proj/campops-marketplace/src/lib/db.ts:731:8
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:731:8
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
-    at /home/michael/Proj/campops-marketplace/src/lib/auth.ts:3:1
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/auth.ts:3:1
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/auth.test.ts:26:22
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/auth.test.ts:26:22
 [DB Fallback] resetMockStore failed: TypeError: Cannot read properties of null (reading 'exec')
-    at DrizzleDatabaseWrapper.resetMockStore (/home/michael/Proj/campops-marketplace/src/lib/db.ts:338:18)
-    at /home/michael/Proj/campops-marketplace/src/lib/db.ts:750:6
+    at DrizzleDatabaseWrapper.resetMockStore (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:338:18)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:750:6
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
-    at /home/michael/Proj/campops-marketplace/src/lib/auth.ts:3:1
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/auth.ts:3:1
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
 [DB Init] Error normalizing property data: TypeError: Cannot read properties of null (reading 'prepare')
-    at /home/michael/Proj/campops-marketplace/src/lib/db.ts:756:6
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:756:6
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
-    at /home/michael/Proj/campops-marketplace/src/lib/auth.ts:3:1
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/auth.ts:3:1
     at VitestModuleEvaluator._runInlinedModule (file:///home/michael/Proj/node_modules/vitest/dist/module-evaluator.js:206:4)
     at VitestModuleRunner.directRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1284:61)
     at VitestModuleRunner.cachedRequest (file:///home/michael/Proj/node_modules/vite/dist/node/module-runner.js:1180:76)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/auth.test.ts:26:22
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/auth.test.ts:26:22
 
 stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook registers with hookManager
 [DB Init] Executing: DROP TABLE IF EXISTS available_plugins
@@ -7433,9 +7433,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > executeHook calls registered handlers
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7446,9 +7446,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > executeHook calls reg
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7578,9 +7578,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > executeHook calls reg
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook returns unregister function
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7591,9 +7591,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7604,7 +7604,7 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 }
 
 stdout | src/lib/__tests__/auth.test.ts > Auth Configuration > should fallback to sqlite when no DATABASE_URL and not in test
-[DB Init] Using SQLite database: campops.db (NODE_ENV=production)
+[DB Init] Using SQLite database: sinaicamps.db (NODE_ENV=production)
 
 stderr | src/lib/__tests__/auth.test.ts > Auth Configuration > should fallback to sqlite when no DATABASE_URL and not in test
 2026-05-15T08:16:00.739Z WARN [Better Auth]: [better-auth] Base URL could not be determined. Please set a valid base URL using the baseURL config option or the BETTER_AUTH_URL environment variable. Without this, callbacks and redirects may not work correctly.
@@ -7726,9 +7726,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.registerHook re
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.execute calls registered handlers
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7739,9 +7739,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.execute calls r
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7811,9 +7811,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.execute calls r
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.executeHook calls hookManager with propertyId
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7824,9 +7824,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.executeHook cal
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7896,9 +7896,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > hooks.executeHook cal
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.payment.initiatePayment returns mock URL
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7909,9 +7909,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.payment.init
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7983,9 +7983,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.payment.init
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculateTaxes is callable
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -7996,9 +7996,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculat
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8068,9 +8068,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculat
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification.send is callable
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8081,9 +8081,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8153,9 +8153,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t returns key as-is
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8166,9 +8166,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t retur
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8238,9 +8238,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t retur
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > publish logs message to console
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8251,9 +8251,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > publish logs message 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8323,9 +8323,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > publish logs message 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > subscribe returns unregister function
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8336,9 +8336,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > subscribe returns unr
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8408,9 +8408,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > subscribe returns unr
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > events.emit logs to console
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8421,9 +8421,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > events.emit logs to c
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8493,9 +8493,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > events.emit logs to c
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > plugins.get returns null
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8506,9 +8506,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > plugins.get returns n
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8578,9 +8578,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > plugins.get returns n
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > registerRoute logs registration
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8591,9 +8591,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > registerRoute logs re
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8663,9 +8663,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > registerRoute logs re
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSlot is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8676,9 +8676,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSlot is a 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8748,9 +8748,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSlot is a 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSlotComponent is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8761,9 +8761,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSlotComponent i
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8833,9 +8833,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSlotComponent i
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerMenuItem is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8846,9 +8846,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerMenuItem i
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8918,9 +8918,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerMenuItem i
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addMenuItem is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -8931,9 +8931,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addMenuItem is a n
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9003,9 +9003,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addMenuItem is a n
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerDashboardWidget is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9016,9 +9016,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerDashboardW
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9088,9 +9088,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerDashboardW
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addDashboardWidget is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9101,9 +9101,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addDashboardWidget
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9173,9 +9173,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addDashboardWidget
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSettingsPage is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9186,9 +9186,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSettingsPa
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9258,9 +9258,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.registerSettingsPa
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSettingsPage is a no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9271,9 +9271,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSettingsPage is
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9343,9 +9343,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > ui.addSettingsPage is
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable returns a scoped repository with all CRUD methods
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9356,9 +9356,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable returns a
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9428,9 +9428,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable returns a
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable prefixes the table name with plugin_<id>_
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9441,9 +9441,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable prefixes 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9513,9 +9513,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable prefixes 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable does not double-prefix if name already starts with plugin_
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9526,9 +9526,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable does not 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9598,9 +9598,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable does not 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.query delegates to db.query
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9611,9 +9611,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.query delegates to
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9683,9 +9683,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.query delegates to
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.queryOne delegates to db.queryOne
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9696,9 +9696,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.queryOne delegates
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9768,9 +9768,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.queryOne delegates
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.execute delegates to db.execute
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9781,9 +9781,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.execute delegates 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9853,9 +9853,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.execute delegates 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.createTable creates plugin-specific table
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9866,9 +9866,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.createTable create
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9938,9 +9938,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.createTable create
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.dropTable drops plugin-specific table
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -9951,9 +9951,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.dropTable drops pl
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10023,9 +10023,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.dropTable drops pl
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.tableExists checks plugin-specific table
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10036,9 +10036,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.tableExists checks
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10108,9 +10108,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.tableExists checks
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > works without propertyId (master context)
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10121,9 +10121,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > works without propert
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10193,9 +10193,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > works without propert
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculateTaxes returns tax calculation
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10206,9 +10206,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculat
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10337,9 +10337,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.tax.calculat
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification.send is async no-op
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10350,9 +10350,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10422,9 +10422,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.notification
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t returns key
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10435,9 +10435,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t retur
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10507,9 +10507,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > services.i18n.t retur
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findMany calls db.query with property filter
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10520,9 +10520,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findMan
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10592,9 +10592,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findMan
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findById calls db.queryOne with property filter
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10605,9 +10605,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findByI
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10677,9 +10677,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().findByI
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().create includes property_id in insert
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10690,9 +10690,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().create 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10821,9 +10821,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().create 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().update includes property filter
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10834,9 +10834,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().update 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10906,9 +10906,9 @@ stdout | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().update 
 stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().delete includes property filter
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -10919,9 +10919,9 @@ stderr | src/lib/__tests__/PluginAPI.test.ts > PluginAPI > db.getTable().delete 
 }
 [DB] prepare failed for "DELETE FROM plugin_test_table": SqliteError: no such table: plugin_test_table
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:23)
-    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/campops-marketplace/src/lib/db.ts:219:17)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:23)
+    at DrizzleDatabaseWrapper.execute (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:219:17)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/PluginAPI.test.ts:10:16
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at wrapper (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:722:10)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
@@ -11755,7 +11755,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at PWAInstallBanner (/home/michael/Proj/campops-marketplace/plugins/pwa/src/ui.tsx:8:29)
+    at PWAInstallBanner (/home/michael/Proj/sinaicamps-marketplace/plugins/pwa/src/ui.tsx:8:29)
 Warning: An update to PWAInstallBanner inside a test was not wrapped in act(...).
 
 When testing, code that causes React state updates should be wrapped into act(...):
@@ -11766,7 +11766,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at PWAInstallBanner (/home/michael/Proj/campops-marketplace/plugins/pwa/src/ui.tsx:8:29)
+    at PWAInstallBanner (/home/michael/Proj/sinaicamps-marketplace/plugins/pwa/src/ui.tsx:8:29)
 
 stdout | plugins/pwa/__tests__/ui.test.tsx > PWA UI Components > should show banner on beforeinstallprompt event
 [DB Init] Executing: DROP TABLE IF EXISTS available_plugins
@@ -13654,10 +13654,10 @@ stdout | src/lib/__tests__/db.test.ts > Database Wrapper > Transactions > should
 
 stderr | src/lib/__tests__/db.test.ts > Database Wrapper > Transactions > should rollback failed transactions
 [DB] Transaction failed: Error: Force failure
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:91:17
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:91:17
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:255:22)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:89:9
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:255:22)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:89:9
 
 stdout | src/components/homepage/__tests__/FeaturedListings.test.tsx > FeaturedListings component > should use custom locale prop
 [DB Init] Executing: DROP TABLE IF EXISTS available_plugins
@@ -15038,10 +15038,10 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts
 
 stderr | src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts > Manage Rooms API Route > GET should handle database errors gracefully
 [Manager Rooms API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:41:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:41:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/route.ts:8:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:45:28
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/route.ts:8:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:45:28
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -15222,11 +15222,11 @@ stdout | src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts > Manage R
 
 stderr | src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts > Manage Rooms API Route > POST should handle database errors gracefully
 [Manager Rooms API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:87:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:87:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.POST (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/route.ts:38:8)
+    at Module.POST (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/route.ts:38:8)
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:95:22
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts:95:22
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/manage/[listingId]/rooms/__tests__/route.test.ts > Manage Rooms API Route > POST should handle database errors gracefully
@@ -15477,7 +15477,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:63:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:63:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -15955,7 +15955,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/p
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:180:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:180:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -17662,7 +17662,7 @@ stdout | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should handle database errors gracefully
 [Homepage Config API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -17732,10 +17732,10 @@ stdout | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should return default config on fetch error
 [Homepage Config API] Error: Error: Unexpected error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/route.ts:23:21)
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/route.ts:23:21)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -18089,7 +18089,7 @@ stdout | src/app/api/public/homepage-config/__tests__/route.test.ts > PUT /api/p
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > PUT /api/public/homepage-config > should handle database errors on update
 [Homepage Config API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -19889,7 +19889,7 @@ stdout | src/app/api/public/featured-listings/__tests__/route.test.ts > GET /api
 
 stderr | src/app/api/plugins/ui-registry/__tests__/route.test.ts > GET /api/plugins/ui-registry > should handle DB errors gracefully
 [UI Registry API] Error: Error: DB Error
-    at /home/michael/Proj/campops-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:93:44
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:93:44
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -20253,7 +20253,7 @@ stdout | src/app/[locale]/__tests__/page.test.tsx
 
 stderr | src/app/api/public/featured-listings/__tests__/route.test.ts > GET /api/public/featured-listings > should handle database errors gracefully
 [Featured Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -20879,7 +20879,7 @@ stdout | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should 
 
 stderr | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should handle database errors gracefully
 [UI Registry API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/ui-registry.test.ts:182:44
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/ui-registry.test.ts:182:44
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -23322,10 +23322,10 @@ stdout | src/app/api/public/search/__tests__/route.test.ts > Public Search API R
 
 stderr | src/app/api/public/search/__tests__/route.test.ts > Public Search API Route > GET should handle database errors gracefully
 [Public Search API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/public/search/__tests__/route.test.ts:57:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/search/__tests__/route.test.ts:57:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/public/search/route.ts:20:33)
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/search/__tests__/route.test.ts:61:28
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/search/route.ts:20:33)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/search/__tests__/route.test.ts:61:28
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -25032,7 +25032,7 @@ stdout | src/app/api/master/admins/__tests__/route.test.ts > Master Admins API R
 
 stderr | src/app/api/master/admins/__tests__/route.test.ts > Master Admins API Route > GET should handle database errors gracefully
 Failed to fetch admins: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/admins/__tests__/route.test.ts:50:50
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/admins/__tests__/route.test.ts:50:50
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -25399,11 +25399,11 @@ stdout | src/app/api/master/admins/__tests__/route.test.ts > Master Admins API R
 
 stderr | src/app/api/master/admins/__tests__/route.test.ts > Master Admins API Route > POST should handle database errors gracefully
 [Admin API] Failed to create admin: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/master/admins/__tests__/route.test.ts:100:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/admins/__tests__/route.test.ts:100:13)
     at Object.Mock [as insert] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.POST (/home/michael/Proj/campops-marketplace/src/app/api/master/admins/route.ts:69:19)
+    at Module.POST (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/admins/route.ts:69:19)
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/admins/__tests__/route.test.ts:112:22
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/admins/__tests__/route.test.ts:112:22
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/lib/__tests__/PluginAPI-repository.test.ts > PluginAPI Scoped Repository Coverage > repository update with propertyId includes property in where clause
@@ -26270,7 +26270,7 @@ stdout | src/app/api/public/categories/__tests__/route.test.ts > GET /api/public
 
 stderr | src/app/api/public/categories/__tests__/route.test.ts > GET /api/public/categories > should handle database errors gracefully
 [Categories API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -26746,10 +26746,10 @@ stdout | src/app/api/manage/[listingId]/guests/__tests__/route.test.ts > Manage 
 
 stderr | src/app/api/manage/[listingId]/guests/__tests__/route.test.ts > Manage Guests API Route > should handle database errors gracefully
 [Manager Guests API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/guests/__tests__/route.test.ts:60:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/guests/__tests__/route.test.ts:60:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/guests/route.ts:10:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/guests/__tests__/route.test.ts:64:28
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/guests/route.ts:10:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/guests/__tests__/route.test.ts:64:28
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -28431,10 +28431,10 @@ stdout | src/app/api/master/listings/[id]/__tests__/route.test.ts > Master Listi
 
 stderr | src/app/api/master/listings/[id]/__tests__/route.test.ts > Master Listings Detail API Route > should handle database errors gracefully
 [Master Listings Detail API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/master/listings/[id]/__tests__/route.test.ts:80:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/[id]/__tests__/route.test.ts:80:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/listings/[id]/route.ts:15:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/listings/[id]/__tests__/route.test.ts:84:28
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/[id]/route.ts:15:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/[id]/__tests__/route.test.ts:84:28
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -28680,7 +28680,7 @@ stdout | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/l
 
 stderr | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/listings > should handle database errors gracefully
 [Master Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/listings/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -29615,11 +29615,11 @@ stdout | src/app/api/guest/reservations/__tests__/route.test.ts > Guest Reservat
 
 stderr | src/app/api/guest/reservations/__tests__/route.test.ts > Guest Reservations API Route (Deprecated) > should handle database errors gracefully
 [Guest Reservations API] Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/guest/reservations/__tests__/route.test.ts:71:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/guest/reservations/__tests__/route.test.ts:71:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/guest/reservations/route.ts:32:8)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/guest/reservations/route.ts:32:8)
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/guest/reservations/__tests__/route.test.ts:75:22
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/guest/reservations/__tests__/route.test.ts:75:22
 
 stdout | src/app/api/guest/reservations/__tests__/route.test.ts > Guest Reservations API Route (Deprecated) > should handle database errors gracefully
 [DB Init] Executing: DROP TABLE IF EXISTS available_plugins
@@ -30624,7 +30624,7 @@ stdout | src/app/api/manage/[listingId]/staff/__tests__/route.test.ts > Manage S
  ✓ plugins/test-dock/src/__tests__/index.test.js (3 tests) 60ms
 stderr | src/app/api/manage/[listingId]/staff/__tests__/route.test.ts > Manage Staff API Route > should handle database errors gracefully
 Failed to fetch staff: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/staff/__tests__/route.test.ts:43:50
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/staff/__tests__/route.test.ts:43:50
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -30811,10 +30811,10 @@ stdout | src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts > Manage
 
 stderr | src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts > Manage Plugins API Route > should handle database errors gracefully
 [Manage Plugins API] Error: Error: Database error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts:64:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts:64:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/plugins/route.ts:17:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts:68:28
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/plugins/route.ts:17:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/plugins/__tests__/route.test.ts:68:28
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20

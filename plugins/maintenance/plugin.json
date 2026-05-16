@@ -3,7 +3,7 @@
   "name": "Asset Maintenance",
   "version": "1.0.0",
   "description": "Equipment maintenance, work orders, and preventative maintenance schedules for campsites.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "Operations",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",

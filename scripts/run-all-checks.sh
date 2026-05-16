@@ -87,7 +87,7 @@ run_step() {
   rm -f "$output_file"
 }
 
-print_header "CampOps Full Verification Suite"
+print_header "SinaiCamps Full Verification Suite"
 print_info "This combines formatting, linting, API/core tests, frontend template tests, and Playwright E2E."
 
 TOTAL_START=$(date +%s)

@@ -12,8 +12,8 @@
     "jsx": "react-jsx",
     "outDir": "dist",
     "paths": {
-      "campops-sdk": ["../../packages/plugin-sdk/src/types.ts"],
-      "@campops/plugin-sdk": ["../../packages/plugin-sdk/src/index.ts"]
+      "sinaicamps-sdk": ["../../packages/plugin-sdk/src/types.ts"],
+      "@sinaicamps/plugin-sdk": ["../../packages/plugin-sdk/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

@@ -72,7 +72,7 @@ test.describe('Cross-System Integration Flow', () => {
 
       console.log('2.1 Filling booking form...');
       await publicPage.getByPlaceholder('Jane Smith').fill('Integration Guest');
-      await publicPage.getByPlaceholder('jane@example.com').fill('guest@campops.com');
+      await publicPage.getByPlaceholder('jane@example.com').fill('guest@sinaicamps.com');
 
       console.log('2.2 Continuing to payment...');
       await publicPage.getByRole('button', { name: /Continue to payment/i }).click();

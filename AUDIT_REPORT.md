@@ -1,4 +1,4 @@
-# CampOps Marketplace — Core Genericization Audit Report
+# SinaiCamps Marketplace — Core Genericization Audit Report
 
 **Date:** May 2026  
 **Scope:** `src/` (excluding `plugins/`), `packages/plugin-sdk/`  
@@ -329,7 +329,7 @@ _End of Audit Report_
 
 ### 1. Booking Flow (HIGH PRIORITY)
 
-**Location**: `/home/michael/Proj/campops-marketplace/src/app/[locale]/stay/[slug]/page.tsx`
+**Location**: `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/stay/[slug]/page.tsx`
 
 **Hardcoded Logic**:
 
@@ -348,7 +348,7 @@ _End of Audit Report_
 
 ### 2. Guest Dashboard (HIGH PRIORITY)
 
-**Location**: `/home/michael/Proj/campops-marketplace/src/app/[locale]/guest/page.tsx`
+**Location**: `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/guest/page.tsx`
 
 **Hardcoded Logic**:
 
@@ -366,7 +366,7 @@ _End of Audit Report_
 
 ### 3. Manager Bookings Page (HIGH PRIORITY)
 
-**Location**: `/home/michael/Proj/campops-marketplace/src/app/[locale]/manage/[listingId]/bookings/page.tsx`
+**Location**: `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/manage/[listingId]/bookings/page.tsx`
 
 **Hardcoded Logic**:
 
@@ -401,7 +401,7 @@ _End of Audit Report_
 
 ### 5. Search & Filters (MEDIUM PRIORITY)
 
-**Location**: `/home/michael/Proj/campops-marketplace/src/app/[locale]/search/page.tsx`
+**Location**: `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/search/page.tsx`
 
 **Hardcoded Logic**:
 
@@ -419,9 +419,9 @@ _End of Audit Report_
 
 **Locations**:
 
-- `/home/michael/Proj/campops-marketplace/src/app/[locale]/manage/[listingId]/rooms/page.tsx` (if exists)
-- `/home/michael/Proj/campops-marketplace/src/app/[locale]/manage/[listingId]/guests/page.tsx` (if exists)
-- `/home/michael/Proj/campops-marketplace/src/app/[locale]/manage/[listingId]/plugins/page.tsx` (if exists)
+- `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/manage/[listingId]/rooms/page.tsx` (if exists)
+- `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/manage/[listingId]/guests/page.tsx` (if exists)
+- `/home/michael/Proj/sinaicamps-marketplace/src/app/[locale]/manage/[listingId]/plugins/page.tsx` (if exists)
 
 **Hardcoded Logic**:
 
@@ -509,7 +509,7 @@ plugins/<plugin-name>/
   "name": "<Plugin Display Name>",
   "version": "1.0.0",
   "description": "<Brief description of plugin purpose>",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "<category>",
   "apiVersion": "^2.0.0",
   "entry": "src/index.ts",
@@ -532,7 +532,7 @@ plugins/<plugin-name>/
 ### src/index.ts Template
 
 ```typescript
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { z } from 'zod';
 
 /**
@@ -693,7 +693,7 @@ export const hooks = {
 
 ## Dependencies
 
-- @campops/plugin-sdk
+- @sinaicamps/plugin-sdk
 - zod
 - drizzle-orm
 

@@ -20,7 +20,7 @@ echo "🌍 Environment: $ENVIRONMENT"
 
 # Set environment variables for this build
 export VITE_SHOP_SLUG="$SHOP_SLUG"
-export VITE_API_BASE="${VITE_API_BASE:-https://api.campops.com}"
+export VITE_API_BASE="${VITE_API_BASE:-https://api.sinaicamps.com}"
 export VITE_BUILD_MODE="shop"
 
 # Determine output directory based on environment

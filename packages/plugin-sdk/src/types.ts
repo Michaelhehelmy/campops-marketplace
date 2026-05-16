@@ -1,5 +1,5 @@
 /**
- * CampOps Plugin SDK – Public API surface exposed to all plugins.
+ * SinaiCamps Plugin SDK – Public API surface exposed to all plugins.
  *
  * A plugin is a Node.js module that exports a default function:
  *   export default function init(api: PluginAPI): void | Promise<void>
@@ -147,7 +147,7 @@ export interface OTAAdapter {
 export interface PluginManifestEntry {
   name: string;
   version: string;
-  campopsVersion: string; // semver range, e.g. ">=2.0.0"
+  sinaicampsVersion: string; // semver range, e.g. ">=2.0.0"
   path: string; // resolved module path
   config: Record<string, any>; // env vars resolved server-side
   enabled?: boolean; // defaults to true

@@ -16,7 +16,7 @@ Add to `plugin-manifest.json`:
 {
   "name": "ical",
   "version": "1.0.0",
-  "campopsVersion": ">=2.0.0",
+  "sinaicampsVersion": ">=2.0.0",
   "path": "./plugins/ical/src/index.ts",
   "enabled": true,
   "config": {}

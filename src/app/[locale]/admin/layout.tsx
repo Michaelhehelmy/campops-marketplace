@@ -31,7 +31,7 @@ export default function MasterLayout({ children }: { children: React.ReactNode }
               <div className="h-8 w-8 bg-purple-600 rounded-lg flex items-center justify-center font-black text-white">
                 C
               </div>
-              <h2 className="font-black text-xl tracking-tight">CampOps</h2>
+              <h2 className="font-black text-xl tracking-tight">SinaiCamps</h2>
             </div>
             <span className="text-[10px] text-purple-400 font-bold uppercase tracking-widest">
               Marketplace Master

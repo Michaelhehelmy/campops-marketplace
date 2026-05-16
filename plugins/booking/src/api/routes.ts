@@ -1,4 +1,4 @@
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { BookingService } from '../services/BookingService.js';
 import { RoomService } from '../services/RoomService.js';
 import { hooks } from '../hooks.js';

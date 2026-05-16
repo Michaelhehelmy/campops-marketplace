@@ -2,18 +2,18 @@
 # Complete Shop Build Script
 # Fetches branding from API, generates .env, and builds full frontend
 # Usage: ./scripts/build-shop-complete.sh <shop-slug> [environment] [api-base]
-# Example: ./scripts/build-shop-complete.sh safari-camp production https://api.campops.com
+# Example: ./scripts/build-shop-complete.sh safari-camp production https://api.sinaicamps.com
 
 set -e
 
 SHOP_SLUG=${1:-}
 ENVIRONMENT=${2:-production}
-API_BASE=${3:-${VITE_API_BASE:-https://api.campops.com}}
+API_BASE=${3:-${VITE_API_BASE:-https://api.sinaicamps.com}}
 
 if [ -z "$SHOP_SLUG" ]; then
     echo "Error: Shop slug is required"
     echo "Usage: $0 <shop-slug> [environment] [api-base]"
-    echo "Example: $0 safari-camp production https://api.campops.com"
+    echo "Example: $0 safari-camp production https://api.sinaicamps.com"
     exit 1
 fi
 
@@ -415,13 +415,13 @@ cat > "$OUTPUT_DIR/nginx.conf" << 'EOF'
 
 server {
     listen 80;
-    server_name {{SHOP_SUBDOMAIN}}.campops.com {{SHOP_DOMAIN}};
+    server_name {{SHOP_SUBDOMAIN}}.sinaicamps.com {{SHOP_DOMAIN}};
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name {{SHOP_SUBDOMAIN}}.campops.com {{SHOP_DOMAIN}};
+    server_name {{SHOP_SUBDOMAIN}}.sinaicamps.com {{SHOP_DOMAIN}};
     
     root /var/www/shops/{{SHOP_SLUG}};
     index index.html;
@@ -529,8 +529,8 @@ All branding and configuration is embedded at build time via:
 ✓ Public pages
 
 ## Post-Deploy:
-1. Configure DNS: $SHOP_SLUG.campops.com → your server
-2. Test at: https://$SHOP_SLUG.campops.com
+1. Configure DNS: $SHOP_SLUG.sinaicamps.com → your server
+2. Test at: https://$SHOP_SLUG.sinaicamps.com
 3. Verify branding loads from API
 4. Test all user roles (guest, admin, staff)
 
@@ -559,9 +559,9 @@ echo ""
 echo "🚀 Next steps:"
 echo "   1. Copy $OUTPUT_DIR/ to your web server"
 echo "   2. Configure nginx using $OUTPUT_DIR/nginx.conf"
-echo "   3. Set up DNS: $SHOP_SLUG.campops.com"
+echo "   3. Set up DNS: $SHOP_SLUG.sinaicamps.com"
 echo "   4. See $OUTPUT_DIR/DEPLOY.md for full instructions"
 echo ""
 echo "🌐 Shop will be available at:"
-echo "   https://$SHOP_SLUG.campops.com"
+echo "   https://$SHOP_SLUG.sinaicamps.com"
 echo ""

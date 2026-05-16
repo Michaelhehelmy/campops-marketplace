@@ -1,4 +1,4 @@
-# CampOps Marketplace Go-Live Checklist - LIVE
+# SinaiCamps Marketplace Go-Live Checklist - LIVE
 
 ## 1. Infrastructure (Oracle Cloud)
 - [x] **VM Instance**: Ubuntu 24.04 (129.151.224.102) active.

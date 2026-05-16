@@ -1,4 +1,4 @@
-import { PluginAPI } from '@campops/plugin-sdk';
+import { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { rosterRouter } from './routes/roster.js';
 
 export async function init(api: PluginAPI) {

@@ -3,7 +3,7 @@
   "name": "Resource",
   "version": "1.0.0",
   "description": "Manages marketplace listings — public search, detail pages, master CRUD, and admin editing.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",
   "slots": {

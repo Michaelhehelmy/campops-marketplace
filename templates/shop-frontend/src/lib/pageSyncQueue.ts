@@ -36,7 +36,7 @@ interface PageSyncDB extends DBSchema {
   };
 }
 
-const DB_NAME = "campops-page-sync";
+const DB_NAME = "sinaicamps-page-sync";
 const DB_VERSION = 1;
 const MAX_RETRIES = 3;
 

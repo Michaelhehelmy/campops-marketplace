@@ -8,7 +8,7 @@ const originalBaseDomain = process.env.BASE_DOMAIN;
 
 describe('Tenant Resolve API', () => {
   beforeEach(async () => {
-    process.env.BASE_DOMAIN = 'campops.localhost';
+    process.env.BASE_DOMAIN = 'sinaicamps.localhost';
     await db
       .prepare(
         "DELETE FROM properties WHERE slug LIKE 'tenant-resolve-%' OR custom_domain LIKE 'tenant-resolve-%'"
@@ -36,7 +36,7 @@ describe('Tenant Resolve API', () => {
       .run(listingId, ownerId, 'Tenant Resolve Shop', slug, slug);
 
     const req = new NextRequest(
-      `http://localhost/api/tenant/resolve?host=${slug}.campops.localhost`
+      `http://localhost/api/tenant/resolve?host=${slug}.sinaicamps.localhost`
     );
     const res = await GET(req);
     const data = await res.json();

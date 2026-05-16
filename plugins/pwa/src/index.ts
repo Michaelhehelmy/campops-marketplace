@@ -1,10 +1,10 @@
 /**
  * PWA Plugin - Reference Implementation
  * ────────────────────────────────────
- * Registers Progressive Web App capabilities as a first-class CampOps plugin.
+ * Registers Progressive Web App capabilities as a first-class SinaiCamps plugin.
  */
 
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 
 export const PLUGIN_ID = 'pwa';
 

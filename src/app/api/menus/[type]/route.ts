@@ -166,7 +166,7 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
       `
         )
         .get(slug);
-    } else if (subdomain && subdomain !== 'campops' && subdomain !== 'www') {
+    } else if (subdomain && subdomain !== 'sinaicamps' && subdomain !== 'www') {
       property = await db
         .prepare(
           `

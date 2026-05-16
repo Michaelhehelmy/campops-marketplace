@@ -1,4 +1,4 @@
-import { PluginAPI } from '@campops/plugin-sdk';
+import { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { inventoryRouter } from './routes/inventory.js';
 import { wasteRouter } from './routes/waste.js';
 

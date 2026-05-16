@@ -3,7 +3,7 @@
   "name": "Marketplace Booking",
   "version": "1.0.0",
   "description": "Standardized booking flow and management.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",
   "slots": {

@@ -9,7 +9,7 @@ export function PointsWidget() {
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex items-center justify-between">
-        <h4 className="font-bold text-gray-900">CampOps Rewards</h4>
+        <h4 className="font-bold text-gray-900">SinaiCamps Rewards</h4>
         <div className="bg-brand-100 text-brand-600 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
           Gold Tier
         </div>

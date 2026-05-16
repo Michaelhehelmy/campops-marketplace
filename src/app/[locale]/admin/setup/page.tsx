@@ -237,7 +237,7 @@ export default function CampSetupWizardPage() {
 # ============================================
 VITE_SHOP_SLUG=${slugSafe}
 VITE_SHOP_NAME="${form.name}"
-VITE_API_BASE=${API_BASE || 'https://api.campops.com'}
+VITE_API_BASE=${API_BASE || 'https://api.sinaicamps.com'}
 
 # ============================================
 # BRANDING

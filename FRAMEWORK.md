@@ -1,6 +1,6 @@
-# CampOps — Core Framework Guide
+# SinaiCamps — Core Framework Guide
 
-This document describes the **generic core framework** that powers CampOps Marketplace.
+This document describes the **generic core framework** that powers SinaiCamps Marketplace.
 The core is intentionally domain-agnostic; all business logic lives in plugins.
 
 ---

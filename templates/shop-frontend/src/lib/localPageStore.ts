@@ -28,7 +28,7 @@ interface PageDraftDB extends DBSchema {
   };
 }
 
-const DB_NAME = "campops-page-drafts";
+const DB_NAME = "sinaicamps-page-drafts";
 const DB_VERSION = 1;
 
 class LocalPageStore {

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Playwright Configuration for CampOps Marketplace
+ * Playwright Configuration for SinaiCamps Marketplace
  *
  * Base URL: http://localhost:3001 (dev server)
  * Tests are organized by user role in e2e/tests/
@@ -40,7 +40,7 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      'BASE_DOMAIN=campops.localhost NEXT_PUBLIC_BASE_DOMAIN=campops.localhost API_URL=http://localhost:3000 NEXT_PUBLIC_API_URL=http://localhost:3000 npm run dev',
+      'BASE_DOMAIN=sinaicamps.localhost NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.localhost API_URL=http://localhost:3000 NEXT_PUBLIC_API_URL=http://localhost:3000 npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',

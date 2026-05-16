@@ -28,7 +28,7 @@ Running 4 tests using 1 worker
       26 |     await bookingToggle.click();
       27 |
       28 |     // Verify it changed to "Enabled"
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:25:33
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:25:33
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/test-failed-1.png
@@ -52,7 +52,7 @@ Running 4 tests using 1 worker
       79 |       await toggle.click();
       80 |       await expect(page.getByText('Enabled')).toBeVisible();
       81 |     }
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:78:23
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:78:23
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
@@ -76,7 +76,7 @@ Running 4 tests using 1 worker
       114 |
       115 |     const crmToggle = page.getByRole('button', { name: /Customer Relations/i });
       116 |     if ((await crmToggle.textContent())?.includes('Disabled')) await crmToggle.click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:113:30
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:113:30
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
@@ -100,7 +100,7 @@ Running 4 tests using 1 worker
       150 |
       151 |     // Mountain Lodge -> Disable
       152 |     await page.getByRole('combobox').selectOption('2');
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:149:30
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:149:30
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/test-failed-1.png

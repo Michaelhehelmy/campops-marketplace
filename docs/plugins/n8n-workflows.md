@@ -1,12 +1,12 @@
 # n8n Workflows
 
-CampOps integrates with [n8n](https://n8n.io) to provide no-code automation for camp operators. This page documents the available workflow templates and how to use them.
+SinaiCamps integrates with [n8n](https://n8n.io) to provide no-code automation for camp operators. This page documents the available workflow templates and how to use them.
 
 ---
 
 ## What is n8n?
 
-n8n is an open-source workflow automation tool — think Zapier but self-hosted. It connects to the CampOps API via webhooks and REST calls to automate repetitive tasks.
+n8n is an open-source workflow automation tool — think Zapier but self-hosted. It connects to the SinaiCamps API via webhooks and REST calls to automate repetitive tasks.
 
 ---
 
@@ -51,7 +51,7 @@ Open **http://localhost:5678** in your browser.
 
 ### 1. Booking Confirmation Email (`booking-confirmation-email.json`)
 
-**Trigger:** CampOps webhook → `booking.created`  
+**Trigger:** SinaiCamps webhook → `booking.created`  
 **Actions:** Send a branded HTML email to the guest via SMTP
 
 **Setup:**
@@ -68,7 +68,7 @@ Open **http://localhost:5678** in your browser.
 
 ### 2. WhatsApp Booking Notification (`whatsapp-booking-alert.json`)
 
-**Trigger:** CampOps webhook → `booking.created`  
+**Trigger:** SinaiCamps webhook → `booking.created`  
 **Actions:** Send a WhatsApp message to the property manager via Twilio or WA Business API
 
 **Setup:**
@@ -89,7 +89,7 @@ Open **http://localhost:5678** in your browser.
 
 **Setup:**
 
-1. Set your CampOps API URL and Bearer token in n8n credentials.
+1. Set your SinaiCamps API URL and Bearer token in n8n credentials.
 2. Set `SLACK_WEBHOOK_URL` or SMTP credentials.
 3. Adjust `quantity_threshold` (default: 5).
 
@@ -97,7 +97,7 @@ Open **http://localhost:5678** in your browser.
 
 ### 4. Checkout Review Request (`checkout-review-request.json`)
 
-**Trigger:** CampOps webhook → `booking.checkout`  
+**Trigger:** SinaiCamps webhook → `booking.checkout`  
 **Actions:** Wait 2 hours, then send a review request email with a Google Reviews or TripAdvisor link
 
 ---
@@ -126,7 +126,7 @@ Open **http://localhost:5678** in your browser.
 
 ## Building a custom workflow
 
-All CampOps API endpoints are accessible from n8n using the **HTTP Request** node with:
+All SinaiCamps API endpoints are accessible from n8n using the **HTTP Request** node with:
 
 - **URL:** `https://api.yourcamp.com/api/...`
 - **Authentication:** Bearer token (set in n8n credentials)
@@ -138,7 +138,7 @@ All CampOps API endpoints are accessible from n8n using the **HTTP Request** nod
 Method: GET
 URL: https://api.yourcamp.com/api/reservations?checkIn=today
 Headers:
-  Authorization: Bearer {{$credentials.campopsApi.token}}
+  Authorization: Bearer {{$credentials.sinaicampsApi.token}}
   X-Property-Id: {{$env.PROPERTY_ID}}
 ```
 
@@ -156,7 +156,7 @@ See [submission-guidelines.md](submission-guidelines.md) for the full process.
 
 ---
 
-## CampOps webhooks reference
+## SinaiCamps webhooks reference
 
 Enable webhook sending in Acacia Camp settings. Supported events:
 

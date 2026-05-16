@@ -21,7 +21,7 @@ export function PWAInstallBanner() {
           </svg>
         </div>
         <div>
-          <h4 className="font-bold">Install CampOps App</h4>
+          <h4 className="font-bold">Install SinaiCamps App</h4>
           <p className="text-white/80 text-sm">
             Access your dashboard faster and get offline support.
           </p>

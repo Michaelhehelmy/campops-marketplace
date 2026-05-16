@@ -23,7 +23,7 @@ This document summarizes the changes made to fix failing E2E tests as part of th
 **Fixes:**
 
 - Changed property name from "Safari Luxury Camp" to "Safari Camp" to match seeded data
-- Updated to use guest@campops.com to match the guest session email
+- Updated to use guest@sinaicamps.com to match the guest session email
 - Added data-testid to Check-in button in bookings page for reliable selection
 - Changed check-in selector to use page-level getByTestId instead of staffRow descendant
 - Added explicit wait for check-in button visibility

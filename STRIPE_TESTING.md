@@ -16,7 +16,7 @@ Set environment variables before running tests:
 ```bash
 export STRIPE_SECRET_KEY_TEST=sk_test_...
 export STRIPE_PUBLISHABLE_KEY_TEST=pk_test_...
-export DATABASE_URL=postgresql://campops:campops@localhost:5432/campops_test
+export DATABASE_URL=postgresql://sinaicamps:sinaicamps@localhost:5432/sinaicamps_test
 ```
 
 ## Running Tests
@@ -129,7 +129,7 @@ For a $500.00 booking with 10% commission:
 ### Database connection errors
 
 - Verify PostgreSQL is running: `pg_isready -h localhost`
-- Check DATABASE_URL points to campops_test database
+- Check DATABASE_URL points to sinaicamps_test database
 
 ### 403 Forbidden errors
 

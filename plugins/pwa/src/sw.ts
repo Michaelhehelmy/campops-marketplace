@@ -4,7 +4,7 @@
  * Demonstrates offline readiness and lifecycle logging.
  */
 
-const CACHE_NAME = 'campops-pwa-v1';
+const CACHE_NAME = 'sinaicamps-pwa-v1';
 
 self.addEventListener('install', (event: any) => {
   console.log('[PWA SW] Installing Service Worker...');

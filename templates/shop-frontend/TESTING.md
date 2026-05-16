@@ -1,6 +1,6 @@
-# CampOps Testing Guide
+# SinaiCamps Testing Guide
 
-This document explains how to run tests for the CampOps frontend application.
+This document explains how to run tests for the SinaiCamps frontend application.
 
 ## Prerequisites
 

@@ -66,7 +66,7 @@ echo "✅ PostgreSQL is running"
 echo ""
 
 # Set test database URL
-export DATABASE_URL="${DATABASE_URL:-postgresql://campops:campops@localhost:5432/campops_test}"
+export DATABASE_URL="${DATABASE_URL:-postgresql://sinaicamps:sinaicamps@localhost:5432/sinaicamps_test}"
 
 echo "🧪 Running Stripe sandbox tests..."
 echo ""

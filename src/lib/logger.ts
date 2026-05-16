@@ -119,4 +119,4 @@ export class Logger {
   }
 }
 
-export const logger = new Logger('campops');
+export const logger = new Logger('sinaicamps');

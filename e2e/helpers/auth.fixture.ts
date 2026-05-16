@@ -34,7 +34,7 @@ async function getStorageState(request: APIRequestContext, email: string) {
   // Better Auth sets cookies in the response. Playwright request object manages these.
   const state = await request.storageState();
 
-  // Also set a legacy campops_role cookie for the middleware
+  // Also set a legacy sinaicamps_role cookie for the middleware
   const role = email.includes('master')
     ? 'master'
     : email.includes('manager')
@@ -43,7 +43,7 @@ async function getStorageState(request: APIRequestContext, email: string) {
         ? 'staff'
         : 'guest';
   state.cookies.push({
-    name: 'campops_role',
+    name: 'sinaicamps_role',
     value: role,
     domain: 'localhost',
     path: '/',
@@ -63,22 +63,22 @@ export const test = base.extend<{
   staffSession: { storageState: string };
 }>({
   guestSession: async ({ request }, use) => {
-    const storageState = await getStorageState(request, 'guest@campops.com');
+    const storageState = await getStorageState(request, 'guest@sinaicamps.com');
     await use({ storageState: JSON.stringify(storageState) });
   },
 
   managerSession: async ({ request }, use) => {
-    const storageState = await getStorageState(request, 'manager@campops.com');
+    const storageState = await getStorageState(request, 'manager@sinaicamps.com');
     await use({ storageState: JSON.stringify(storageState) });
   },
 
   masterSession: async ({ request }, use) => {
-    const storageState = await getStorageState(request, 'master@campops.com');
+    const storageState = await getStorageState(request, 'master@sinaicamps.com');
     await use({ storageState: JSON.stringify(storageState) });
   },
 
   staffSession: async ({ request }, use) => {
-    const storageState = await getStorageState(request, 'staff@campops.com');
+    const storageState = await getStorageState(request, 'staff@sinaicamps.com');
     await use({ storageState: JSON.stringify(storageState) });
   },
 });

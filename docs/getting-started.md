@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks you through running CampOps Marketplace locally from scratch — including setting up the Acacia Camp backend it depends on.
+This guide walks you through running SinaiCamps Marketplace locally from scratch — including setting up the Acacia Camp backend it depends on.
 
 ---
 
@@ -20,8 +20,8 @@ Install the following before proceeding:
 ## Step 2 – Clone the repository
 
 ```bash
-git clone https://github.com/your-org/campops-marketplace.git
-cd campops-marketplace
+git clone https://github.com/your-org/sinaicamps-marketplace.git
+cd sinaicamps-marketplace
 ```
 
 ---
@@ -73,7 +73,7 @@ See [integrating-acacia-camp.md](integrating-acacia-camp.md) for full instructio
 
 ## Step 6 – Run the Marketplace
 
-Back in the `campops-marketplace` directory:
+Back in the `sinaicamps-marketplace` directory:
 
 ```bash
 npm run dev
@@ -109,7 +109,7 @@ Open your browser at **[http://localhost:3001/en](http://localhost:3001/en)**.
 
 **`NEXT_PUBLIC_BASE_DOMAIN` — when should I set this?**
 
-- Only matters when running behind a real domain with subdomain routing (e.g. `campname.campops.com`). Leave it as `localhost` for local development.
+- Only matters when running behind a real domain with subdomain routing (e.g. `campname.sinaicamps.com`). Leave it as `localhost` for local development.
 
 **Hot reload not working**
 

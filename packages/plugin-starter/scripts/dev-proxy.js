@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * CampOps Plugin Dev Proxy
+ * SinaiCamps Plugin Dev Proxy
  * ─────────────────────────
- * Registers this plugin with a running local CampOps instance and hot-reloads
+ * Registers this plugin with a running local SinaiCamps instance and hot-reloads
  * it when source files change.
  *
  * Usage:
@@ -11,7 +11,7 @@
  * How it works:
  *   1. Watches src/ for changes via fs.watch.
  *   2. On change: runs `tsc --noEmit` to type-check, then POSTs the plugin
- *      entry path to the CampOps /api/plugins/reload endpoint (requires
+ *      entry path to the SinaiCamps /api/plugins/reload endpoint (requires
  *      admin API key).
  *   3. The server responds with the new plugin load status.
  */
@@ -27,7 +27,7 @@ const ROOT = resolve(__dirname, '..');
 const CAMPOPS_URL = process.env.CAMPOPS_URL ?? 'http://localhost:5000';
 const CAMPOPS_API_KEY = process.env.CAMPOPS_API_KEY ?? '';
 const PLUGIN_NAME =
-  JSON.parse((await import('node:fs')).readFileSync(resolve(ROOT, 'package.json'), 'utf8')).campops
+  JSON.parse((await import('node:fs')).readFileSync(resolve(ROOT, 'package.json'), 'utf8')).sinaicamps
     ?.pluginId ?? 'my-plugin';
 
 console.log(`[dev-proxy] Watching ${ROOT}/src for changes…`);

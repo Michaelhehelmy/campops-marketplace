@@ -3,7 +3,7 @@
   "name": "Enterprise Accounting",
   "version": "1.0.0",
   "description": "Full-featured accounting module with general ledger, invoicing, and expense tracking.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "Finance",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",

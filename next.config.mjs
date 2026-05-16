@@ -11,7 +11,7 @@ const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   env: {
     NEXT_PUBLIC_API_URL: process.env.API_URL || API_URL,
-    NEXT_PUBLIC_BASE_DOMAIN: process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'campops.com',
+    NEXT_PUBLIC_BASE_DOMAIN: process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com',
     NEXT_PUBLIC_TENANT_ID: process.env.TENANT_ID || '',
   },
   images: {

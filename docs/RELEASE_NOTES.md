@@ -1,8 +1,8 @@
-# CampOps Marketplace - Release Notes v1.0.0
+# SinaiCamps Marketplace - Release Notes v1.0.0
 
 ## Overview
 
-This is the initial production-ready release of the CampOps Marketplace. The platform provides a multi-tenant, plugin-based architecture for managing camp properties, bookings, and global administrative operations.
+This is the initial production-ready release of the SinaiCamps Marketplace. The platform provides a multi-tenant, plugin-based architecture for managing camp properties, bookings, and global administrative operations.
 
 ## Key Features
 

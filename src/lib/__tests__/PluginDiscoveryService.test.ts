@@ -21,7 +21,7 @@ describe('PluginDiscoveryService', () => {
 
     expect(db.prepare).not.toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[campops]'),
+      expect.stringContaining('[sinaicamps]'),
       expect.stringContaining('Synchronisation complete')
     );
   });
@@ -35,7 +35,7 @@ describe('PluginDiscoveryService', () => {
     await PluginDiscoveryService.syncPlugins();
 
     expect(errorSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[campops]'),
+      expect.stringContaining('[sinaicamps]'),
       expect.stringContaining('Error processing plugin-invalid'),
       expect.any(Error)
     );
@@ -48,7 +48,7 @@ describe('PluginDiscoveryService', () => {
     await PluginDiscoveryService.syncPlugins();
 
     expect(errorSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[campops]'),
+      expect.stringContaining('[sinaicamps]'),
       expect.stringContaining('Error during sync:'),
       expect.any(Error)
     );

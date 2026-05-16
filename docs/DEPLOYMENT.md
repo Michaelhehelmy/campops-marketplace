@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers the production deployment of the CampOps Marketplace.
+This guide covers the production deployment of the SinaiCamps Marketplace.
 
 ## Prerequisites
 
@@ -15,9 +15,9 @@ This guide covers the production deployment of the CampOps Marketplace.
 
    ```env
    BETTER_AUTH_SECRET=your-32-char-secret
-   NEXT_PUBLIC_BASE_DOMAIN=campops.com
-   NEXT_PUBLIC_API_URL=https://api.campops.com
-   DATABASE_URL=file:./campops.db
+   NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.com
+   NEXT_PUBLIC_API_URL=https://api.sinaicamps.com
+   DATABASE_URL=file:./sinaicamps.db
    ```
 
 2. **Build and Start**:
@@ -31,8 +31,8 @@ This guide covers the production deployment of the CampOps Marketplace.
 The `Dockerfile` is optimized using Next.js standalone output.
 
 ```bash
-docker build -t campops-marketplace .
-docker run -p 3000:3000 campops-marketplace
+docker build -t sinaicamps-marketplace .
+docker run -p 3000:3000 sinaicamps-marketplace
 ```
 
 ## Infrastructure Configuration
@@ -46,7 +46,7 @@ The production environment uses the pre-configured `nginx-multi-tenant.conf` whi
 nginx -t -c $(pwd)/nginx-multi-tenant.conf
 
 # Symbolically link to nginx sites-enabled
-sudo ln -s $(pwd)/nginx-multi-tenant.conf /etc/nginx/sites-enabled/campops
+sudo ln -s $(pwd)/nginx-multi-tenant.conf /etc/nginx/sites-enabled/sinaicamps
 sudo systemctl reload nginx
 ```
 
@@ -56,12 +56,12 @@ To support subdomains, use the DNS-01 challenge with Certbot.
 
 1. **Obtain Certificate**:
    ```bash
-   sudo certbot certonly --manual --preferred-challenges dns -d marketplace.com -d "*.marketplace.com"
+   sudo certbot certonly --manual --preferred-challenges dns -d sinaicamps.com -d "*.sinaicamps.com"
    ```
 2. **Auto-Renewal**:
    A renewal script is provided at `scripts/renew-ssl.sh`. Add it to your crontab:
    ```bash
-   0 0 * * * /path/to/campops-marketplace/scripts/renew-ssl.sh >> /var/log/campops-ssl.log 2>&1
+   0 0 * * * /path/to/sinaicamps-marketplace/scripts/renew-ssl.sh >> /var/log/sinaicamps-ssl.log 2>&1
    ```
 
 ## PostgreSQL Configuration
@@ -72,7 +72,7 @@ For production-grade scalability, use PostgreSQL instead of SQLite.
    Set `DATABASE_URL` in `.env.production`:
 
    ```env
-   DATABASE_URL=postgres://user:password@host:5432/campops
+   DATABASE_URL=postgres://user:password@host:5432/sinaicamps
    ```
 
 2. **Run Migration**:

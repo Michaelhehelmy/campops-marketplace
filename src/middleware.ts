@@ -9,7 +9,7 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'always',
 });
 
-const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'campops.com').toLowerCase();
+const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL !== ''
     ? process.env.NEXT_PUBLIC_API_URL
@@ -60,7 +60,7 @@ export async function middleware(req: NextRequest) {
 
   const needsAuth = AUTH_REQUIRED.some((p) => barePath.startsWith(p));
   const token =
-    req.cookies.get('campops_token')?.value ||
+    req.cookies.get('sinaicamps_token')?.value ||
     req.cookies.get('better-auth.session_token')?.value ||
     req.cookies.get('better-auth.session-token')?.value;
 
@@ -81,7 +81,7 @@ export async function middleware(req: NextRequest) {
     const pathParts = barePath.split('/');
     if (pathParts.length >= 3) {
       const listingSlug = pathParts[2];
-      const userRole = req.cookies.get('campops_role')?.value;
+      const userRole = req.cookies.get('sinaicamps_role')?.value;
       // Staff restrictions on their own listing (done before external check)
       if (userRole === 'staff') {
         const restricted = ['/finance', '/settings', '/plugins'];
@@ -96,7 +96,7 @@ export async function middleware(req: NextRequest) {
             `${API_URL}/api/listing-access?listing=${encodeURIComponent(listingSlug)}`,
             {
               headers: {
-                Cookie: `campops_token=${token}; better-auth.session_token=${token}; campops_role=${userRole || ''}`,
+                Cookie: `sinaicamps_token=${token}; better-auth.session_token=${token}; sinaicamps_role=${userRole || ''}`,
               },
             }
           );

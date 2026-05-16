@@ -17,7 +17,7 @@ export function TestBanner() {
 
   return (
     <div data-testid="pwa-install-banner" className="bg-blue-500 text-white p-4">
-      Install CampOps App
+      Install SinaiCamps App
     </div>
   );
 }

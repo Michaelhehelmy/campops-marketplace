@@ -1,10 +1,10 @@
-# CampOps Marketplace Plugin Development Guide
+# SinaiCamps Marketplace Plugin Development Guide
 
-This guide provides everything you need to know to build, test, and deploy a plugin for the CampOps Marketplace.
+This guide provides everything you need to know to build, test, and deploy a plugin for the SinaiCamps Marketplace.
 
 ## 1. Overview
 
-A CampOps plugin is a self-contained module that extends the core marketplace functionality. Plugins can:
+A SinaiCamps plugin is a self-contained module that extends the core marketplace functionality. Plugins can:
 
 - Define their own database schema.
 - Inject UI components into specific slots.
@@ -17,7 +17,7 @@ A CampOps plugin is a self-contained module that extends the core marketplace fu
 Plugins are discovered at startup by the `PluginDiscoveryService` and initialized by the `PluginRuntimeService`. Each plugin must export a default `init` function:
 
 ```typescript
-import type { PluginAPI } from 'campops-sdk';
+import type { PluginAPI } from 'sinaicamps-sdk';
 
 export default async function init(api: PluginAPI) {
   api.logger.info('Plugin initializing...');
@@ -87,7 +87,7 @@ const mySettings = await api.db.query('SELECT * FROM plugin_my_plugin_settings')
 
 ## 4. UI Registration
 
-CampOps uses a "Slot & Component" architecture. You register components in `ui.tsx` and map them to slots in `plugin.json` or dynamically in `index.ts`.
+SinaiCamps uses a "Slot & Component" architecture. You register components in `ui.tsx` and map them to slots in `plugin.json` or dynamically in `index.ts`.
 
 ### Registering Components (`ui.tsx`)
 
@@ -132,7 +132,7 @@ await api.services.notification.send({
 
 ## 6. Testing
 
-Testing is critical for marketplace stability. For detailed instructions, see the [Plugin Testing Guide](file:///home/michael/Proj/campops-marketplace/docs/plugin-testing-guide.md).
+Testing is critical for marketplace stability. For detailed instructions, see the [Plugin Testing Guide](file:///home/michael/Proj/sinaicamps-marketplace/docs/plugin-testing-guide.md).
 
 ### Unit Testing
 
@@ -152,7 +152,7 @@ Use Playwright to verify that your UI appears in the shell when the plugin is en
 
 ## 7. Full Example: PWA Plugin
 
-The PWA plugin ([plugins/pwa](file:///home/michael/Proj/campops-marketplace/plugins/pwa)) is the official reference implementation. It demonstrates:
+The PWA plugin ([plugins/pwa](file:///home/michael/Proj/sinaicamps-marketplace/plugins/pwa)) is the official reference implementation. It demonstrates:
 
 - Persistent storage for push subscriptions.
 - Mobile install banner injection.
@@ -161,4 +161,4 @@ The PWA plugin ([plugins/pwa](file:///home/michael/Proj/campops-marketplace/plug
 
 ---
 
-_For more details, see the [Plugin SDK types](file:///home/michael/Proj/campops-marketplace/packages/plugin-sdk/src/types.ts)._
+_For more details, see the [Plugin SDK types](file:///home/michael/Proj/sinaicamps-marketplace/packages/plugin-sdk/src/types.ts)._

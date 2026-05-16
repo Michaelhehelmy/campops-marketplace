@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'CampOps Marketplace',
-    short_name: 'CampOps',
+    name: 'SinaiCamps Marketplace',
+    short_name: 'SinaiCamps',
     description: 'Find and book your perfect camp stay',
     start_url: '/',
     display: 'standalone',

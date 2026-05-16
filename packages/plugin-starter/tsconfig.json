@@ -12,7 +12,7 @@
     "jsx": "react-jsx",
     "outDir": "dist",
     "paths": {
-      "campops-sdk": ["../../packages/plugin-sdk/dist/index.d.ts"]
+      "sinaicamps-sdk": ["../../packages/plugin-sdk/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*"],

@@ -378,7 +378,7 @@ describe("useTenant", () => {
 
       // Should use default API base
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("https://api.campops.com"),
+        expect.stringContaining("https://api.sinaicamps.com"),
         expect.any(Object)
       );
     });

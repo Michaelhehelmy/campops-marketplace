@@ -1,5 +1,5 @@
 /**
- * Pre-defined hook names used by the CampOps core system.
+ * Pre-defined hook names used by the SinaiCamps core system.
  * Plugins may register on these or define their own string literals.
  *
  * Keep in sync with server/lib/hooks.ts until the server imports from this SDK.

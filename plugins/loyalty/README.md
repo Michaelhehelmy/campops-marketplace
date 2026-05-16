@@ -19,7 +19,7 @@ Add to `plugin-manifest.json`:
 {
   "name": "loyalty",
   "version": "1.0.0",
-  "campopsVersion": ">=2.0.0",
+  "sinaicampsVersion": ">=2.0.0",
   "path": "./plugins/loyalty/src/index.ts",
   "enabled": true,
   "config": {

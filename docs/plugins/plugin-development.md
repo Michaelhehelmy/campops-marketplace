@@ -1,6 +1,6 @@
 # Plugin Development — Full Tutorial
 
-This guide walks you through building a complete CampOps plugin from scratch, covering the full Plugin API surface.
+This guide walks you through building a complete SinaiCamps plugin from scratch, covering the full Plugin API surface.
 
 ---
 
@@ -71,7 +71,7 @@ Every plugin exports a single default function:
 
 ```typescript
 // src/index.ts
-import type { PluginAPI } from 'campops-sdk';
+import type { PluginAPI } from 'sinaicamps-sdk';
 
 export default function init(api: PluginAPI): void | Promise<void> {
   // Your plugin logic here
@@ -240,7 +240,7 @@ export const components = {
 // src/index.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import init from './index.js';
-import type { PluginAPI } from 'campops-sdk';
+import type { PluginAPI } from 'sinaicamps-sdk';
 
 function createMockAPI(): PluginAPI {
   return {
@@ -346,7 +346,7 @@ Add to `plugin-manifest.json`:
 {
   "name": "my-plugin",
   "version": "1.0.0",
-  "campopsVersion": ">=2.0.0",
+  "sinaicampsVersion": ">=2.0.0",
   "path": "./plugins/my-plugin/src/index.ts",
   "enabled": true,
   "config": {
@@ -378,7 +378,7 @@ Confirm load:
 ## Tutorial: Payment Gateway Plugin
 
 ```typescript
-import type { PluginAPI } from 'campops-sdk';
+import type { PluginAPI } from 'sinaicamps-sdk';
 
 export default function init(api: PluginAPI) {
   api.registerHook('payment.initiated', async (data, ctx) => {
@@ -414,7 +414,7 @@ export default function init(api: PluginAPI) {
 ## Tutorial: OTA Adapter Plugin
 
 ```typescript
-import type { PluginAPI, OTAAdapter, ChannelReservation } from 'campops-sdk';
+import type { PluginAPI, OTAAdapter, ChannelReservation } from 'sinaicamps-sdk';
 
 const adapter: OTAAdapter = {
   id: 'my-ota',

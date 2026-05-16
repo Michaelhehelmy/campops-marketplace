@@ -3,7 +3,7 @@
   "name": "SiteMinder",
   "version": "1.0.0",
   "description": "Two-way synchronisation with SiteMinder Channel Manager.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",
   "slots": {

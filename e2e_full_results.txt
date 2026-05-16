@@ -97,7 +97,7 @@ Running 73 tests using 6 workers
       42 |     await expect(page.getByText(/Integration Guest/i)).toBeVisible();
       43 |     
       44 |     // 4. Manager (Shop Front) logs in and sees the booking in their list
-        at /home/michael/Proj/campops-marketplace/e2e/tests/integration.spec.ts:41:50
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/integration.spec.ts:41:50
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/integration-Cross-System-I-b4f68--booking-and-staff-check-in-chromium/test-failed-1.png
@@ -126,7 +126,7 @@ Running 73 tests using 6 workers
       13 |     await expect(page.getByText(/Occupancy/i)).toBeVisible();
       14 |     await expect(page.getByText(/Revenue/i)).toBeVisible();
       15 |     await expect(page.getByText(/Marketplace Commission/i)).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:12:77
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:12:77
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-272d4-shboard-with-property-stats-chromium/test-failed-1.png
@@ -155,7 +155,7 @@ Running 73 tests using 6 workers
       26 |     
       27 |     // Create manual booking
       28 |     await page.getByRole('button', { name: /Add Booking/i }).click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:25:75
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:25:75
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-300f9-t-and-create-manual-booking-chromium/test-failed-1.png
@@ -184,7 +184,7 @@ Running 73 tests using 6 workers
       43 |     
       44 |     // Add a room type
       45 |     await page.getByRole('button', { name: /Add Room Type/i }).click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:42:70
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:42:70
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-2de04-dmin-Manage-rooms-and-units-chromium/test-failed-1.png
@@ -213,7 +213,7 @@ Running 73 tests using 6 workers
       59 |     
       60 |     // View guest details
       61 |     const guestRow = page.getByRole('row').filter({ hasText: /Alice Smith/i });
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:58:69
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:58:69
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-d1dd3-ty-Admin-Manage-guests-CRM--chromium/test-failed-1.png
@@ -242,7 +242,7 @@ Running 73 tests using 6 workers
       75 |     
       76 |     // Housekeeping
       77 |     await page.goto('/en/manage/safari-camp/housekeeping');
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:74:73
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:74:73
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-7e48f-rs-Housekeeping-Maintenance-chromium/test-failed-1.png
@@ -271,7 +271,7 @@ Running 73 tests using 6 workers
       92 |     await expect(page.getByText(/Commission Fees/i)).toBeVisible();
       93 |   });
       94 |
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-manager.spec.ts:91:50
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-manager.spec.ts:91:50
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-manager-Market-5f7da-ce-Payments-and-net-payouts-chromium/test-failed-1.png
@@ -300,7 +300,7 @@ Running 73 tests using 6 workers
       12 |     await expect(page.getByText(/Total Listings/i)).toBeVisible();
       13 |     await expect(page.getByText(/Global Revenue/i)).toBeVisible();
       14 |     await expect(page.getByText(/System Health/i)).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:11:77
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:11:77
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-0afdc-al-platform-dashboard-stats-chromium/test-failed-1.png
@@ -329,7 +329,7 @@ Running 73 tests using 6 workers
       23 |     
       24 |     // View specific listing details
       25 |     const listingRow = page.getByRole('row').filter({ hasText: /Safari Camp/i });
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:22:77
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:22:77
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-9429d-istings-View-and-drill-down-chromium/test-failed-1.png
@@ -358,7 +358,7 @@ Running 73 tests using 6 workers
       36 |     
       37 |     // Create new admin
       38 |     await page.getByRole('button', { name: /Add Account/i }).click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:35:74
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:35:74
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-f0439-Manage-admin-accounts-CRUD--chromium/test-failed-1.png
@@ -387,7 +387,7 @@ Running 73 tests using 6 workers
       82 |     await expect(page.getByRole('table')).toBeVisible();
       83 |     await expect(page.getByText(/Total Fees Collected/i)).toBeVisible();
       84 |   });
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:81:78
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:81:78
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-74bff-n-reports-and-platform-fees-chromium/test-failed-1.png
@@ -416,7 +416,7 @@ Running 73 tests using 6 workers
       92 |     
       93 |     // Update platform name
       94 |     const platformNameInput = page.getByLabel(/Platform Name/i);
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:91:80
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:91:80
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-6254b-place-settings-and-branding-chromium/test-failed-1.png
@@ -445,7 +445,7 @@ Running 73 tests using 6 workers
       109 |     
       110 |     // Change section order
       111 |     const firstSection = page.locator('.section-item').first();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-master.spec.ts:108:81
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-master.spec.ts:108:81
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-master-Marketp-84c4e-features-homepage-sections--chromium/test-failed-1.png
@@ -457,7 +457,7 @@ Running 73 tests using 6 workers
 
     Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveTitle[2m([22m[32mexpected[39m[2m)[22m failed
 
-    Expected pattern: [32m/CampOps/i[39m
+    Expected pattern: [32m/SinaiCamps/i[39m
     Received string:  [31m"404: This page could not be found."[39m
     Timeout: 5000ms
 
@@ -468,12 +468,12 @@ Running 73 tests using 6 workers
 
       4 |   test('Browse homepage and view search results', async ({ page }) => {
       5 |     await page.goto('/');
-    > 6 |     await expect(page).toHaveTitle(/CampOps/i);
+    > 6 |     await expect(page).toHaveTitle(/SinaiCamps/i);
         |                        ^
       7 |     
       8 |     // Browse to search
       9 |     await page.getByRole('link', { name: /Search/i }).click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-public.spec.ts:6:24
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-public.spec.ts:6:24
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-public-Marketp-50a65-age-and-view-search-results-chromium/test-failed-1.png
@@ -497,7 +497,7 @@ Running 73 tests using 6 workers
       22 |     await searchInput.press('Enter');
       23 |     
       24 |     await expect(page.getByRole('link', { name: /Safari Camp/i }).first()).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-public.spec.ts:21:23
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-public.spec.ts:21:23
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-public-Marketp-6201d--Search-and-filter-listings-chromium/test-failed-1.png
@@ -521,7 +521,7 @@ Running 73 tests using 6 workers
       33 |     await expect(page).toHaveURL(/\/en\/stay\/safari-camp/);
       34 |     
       35 |     // Select dates (using URL params for stability in test)
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-public.spec.ts:32:68
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-public.spec.ts:32:68
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-public-Marketp-e0e0d-e---Select---Book---Confirm-chromium/test-failed-1.png
@@ -545,7 +545,7 @@ Running 73 tests using 6 workers
       68 |     await expect(page).toHaveURL(/\/en\/login/);
       69 |     
       70 |     await page.getByRole('link', { name: /Register your property/i }).click();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/marketplace-public.spec.ts:67:56
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/marketplace-public.spec.ts:67:56
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/marketplace-public-Marketp-a2964-avigate-to-login-and-signup-chromium/test-failed-1.png
@@ -574,7 +574,7 @@ Running 73 tests using 6 workers
       101 |     await expect(page.getByText('Alice Smith')).toBeVisible();
       102 |   });
       103 |
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:100:78
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:100:78
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
@@ -603,7 +603,7 @@ Running 73 tests using 6 workers
       139 |     await expect(activityWidget).toContainText('BOOKING CREATED');
       140 |   });
       141 |
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:138:34
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:138:34
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
@@ -632,7 +632,7 @@ Running 73 tests using 6 workers
       12 |     
       13 |     // 2. Staff can view operations
       14 |     await page.goto('/en/manage/safari-camp/operations');
-        at /home/michael/Proj/campops-marketplace/e2e/tests/shopfront-staff.spec.ts:11:75
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/shopfront-staff.spec.ts:11:75
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/shopfront-staff-Shop-Front-c32d2-ions-but-not-sensitive-data-chromium/test-failed-1.png

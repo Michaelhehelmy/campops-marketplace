@@ -13,6 +13,6 @@ test.describe('PWA Plugin E2E', () => {
 
     const banner = page.getByTestId('pwa-install-banner').first();
     await expect(banner).toBeVisible();
-    await expect(banner).toContainText('Install CampOps App');
+    await expect(banner).toContainText('Install SinaiCamps App');
   });
 });

@@ -66,7 +66,7 @@ Running 47 tests using 6 workers
       14 |     await page.waitForTimeout(500);
       15 |
       16 |     // Enable CRM
-        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:13:25
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/booking_crm.spec.ts:13:25
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/test-failed-1.png
@@ -90,7 +90,7 @@ Running 47 tests using 6 workers
       56 |     await page.waitForTimeout(500);
       57 |     
       58 |     // 2. Book as guest
-        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:55:25
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/booking_crm.spec.ts:55:25
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/booking_crm-Booking-CRM-Pl-9a99e-rks-even-if-CRM-is-disabled-chromium/test-failed-1.png
@@ -118,7 +118,7 @@ Running 47 tests using 6 workers
       100 |     });
       101 |
       102 |     authenticatedTest('manager can access their own listings', async ({ page, managerSession }) => {
-        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:99:26
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/manager.spec.ts:99:26
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/manager-Authenticated-mana-7d492-another-listing-admin-pages-chromium/test-failed-1.png
@@ -156,7 +156,7 @@ Running 47 tests using 6 workers
       25 |     
       26 |     const bookingToggle = page.getByRole('button', { name: /Enable Marketplace Booking plugin/i });
       27 |     await expect(bookingToggle).toBeVisible();
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:24:26
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:24:26
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/test-failed-1.png
@@ -194,7 +194,7 @@ Running 47 tests using 6 workers
       60 |     
       61 |     const toggle = page.getByRole('button', { name: /Marketplace Booking plugin/i });
       62 |     if ((await toggle.textContent())?.includes('Disabled')) {
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:59:38
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:59:38
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
@@ -232,7 +232,7 @@ Running 47 tests using 6 workers
       89 |
       90 |     // Enable both
       91 |     const bookingToggle = page.getByRole('button', { name: /Marketplace Booking plugin/i });
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:88:38
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:88:38
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
@@ -270,7 +270,7 @@ Running 47 tests using 6 workers
       126 |     const bookingToggleSafari = page.getByRole('button', { name: /Marketplace Booking plugin/i });
       127 |     if ((await bookingToggleSafari.textContent())?.includes('Disabled')) await bookingToggleSafari.click();
       128 |
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:125:38
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:125:38
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/test-failed-1.png
@@ -299,7 +299,7 @@ Running 47 tests using 6 workers
       16 |     
       17 |     // Ensure it's enabled (if it's a toggle, we might need to check state)
       18 |     // For this test, we'll just click it to ensure it's "on"
-        at /home/michael/Proj/campops-marketplace/e2e/tests/pwa.spec.ts:15:29
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/pwa.spec.ts:15:29
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/pwa-PWA-Plugin-E2E-toggle-PWA-plugin-and-verify-banner-chromium/test-failed-1.png

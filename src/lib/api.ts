@@ -1,5 +1,5 @@
 /**
- * Typed API client for the CampOps marketplace.
+ * Typed API client for the SinaiCamps marketplace.
  * All requests go through /api/public/* which is proxied to the Express
  * server via next.config.ts rewrites.
  */

@@ -16,7 +16,7 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"],
-      "@campops/plugin-sdk": ["./packages/plugin-sdk/src/index.ts"]
+      "@sinaicamps/plugin-sdk": ["./packages/plugin-sdk/src/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,5 +1,5 @@
 
-> @campops/marketplace@1.0.0 build
+> @sinaicamps/marketplace@1.0.0 build
 > next build
 
   ▲ Next.js 14.2.29
@@ -29,8 +29,8 @@ Type error: Argument of type '$ZodIssue[]' is not assignable to parameter of typ
 Next.js build worker exited with code: 1 and signal: null
 npm error Lifecycle script `build` failed with error:
 npm error code 1
-npm error path /home/michael/Proj/campops-marketplace
-npm error workspace @campops/marketplace@1.0.0
-npm error location /home/michael/Proj/campops-marketplace
+npm error path /home/michael/Proj/sinaicamps-marketplace
+npm error workspace @sinaicamps/marketplace@1.0.0
+npm error location /home/michael/Proj/sinaicamps-marketplace
 npm error command failed
 npm error command sh -c next build

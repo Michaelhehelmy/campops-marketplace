@@ -4,7 +4,7 @@
   "apiVersion": "2.0.0",
   "uiVersion": "1.0.0",
   "description": "Minimal probe plugin for verifying core framework integration points in tests. Not for production use.",
-  "author": "CampOps Core Team",
+  "author": "SinaiCamps Core Team",
   "ui": {
     "slots": ["dashboard.widgets", "listing.sidebar"],
     "menuItems": [

@@ -1,4 +1,4 @@
-import { PluginAPI } from '@campops/plugin-sdk';
+import { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { posRouter } from './routes/pos.js';
 import { orderRouter } from './routes/orders.js';
 

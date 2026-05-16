@@ -22,7 +22,7 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
               Hello, {session?.user?.name || 'Explorer'}.
             </h1>
             <p className="text-slate-400 text-lg max-w-md mb-8">
-              Welcome back to CampOps. Ready to explore?
+              Welcome back to SinaiCamps. Ready to explore?
             </p>
             <div className="flex gap-4">
               <button className="bg-brand-600 hover:bg-brand-700 px-8 py-3 rounded-2xl font-bold transition-all">

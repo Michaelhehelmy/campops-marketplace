@@ -19,7 +19,7 @@ const PLANS: Plan[] = [
     name: 'Basic Listing',
     price: 'Free forever',
     features: [
-      'Public listing on CampOps marketplace',
+      'Public listing on SinaiCamps marketplace',
       'View incoming bookings (read-only)',
       'Edit property details, photos & amenities',
       'Basic rate management',
@@ -36,7 +36,7 @@ const PLANS: Plan[] = [
       'POS, KDS, Housekeeping & Inventory',
       'Loyalty & rewards program',
       'Reports & analytics',
-      'Your own campname.campops.com subdomain',
+      'Your own campname.sinaicamps.com subdomain',
       'Plugin ecosystem access',
     ],
     note: '14-day free trial, cancel anytime',
@@ -215,7 +215,7 @@ export default function Step3PlanPage() {
                   />
                   <p className="text-xs text-gray-400 mt-1">
                     Point a CNAME record from this domain to{' '}
-                    <code className="bg-gray-100 px-1 rounded">campops.com</code> after registering.
+                    <code className="bg-gray-100 px-1 rounded">sinaicamps.com</code> after registering.
                   </p>
                 </div>
               )}

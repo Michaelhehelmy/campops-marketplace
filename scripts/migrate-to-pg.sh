@@ -1,9 +1,9 @@
 #!/bin/bash
-# PostgreSQL Migration Script for CampOps Marketplace
+# PostgreSQL Migration Script for SinaiCamps Marketplace
 set -e
 
 # Configuration
-DB_URL=${DATABASE_URL:-"postgres://user:password@localhost:5432/campops"}
+DB_URL=${DATABASE_URL:-"postgres://user:password@localhost:5432/sinaicamps"}
 HEALTH_ENDPOINT=${HEALTH_URL:-"http://localhost:3000/api/health"}
 HASHED_PASSWORD="e8c2be85ca9fe13f47c6ef1de40ac92d:4a8432eb6e15066427f96f1f9a3ca66fa19037c985f5cd3a5a46a73226d2f59f09ca5d4398b52918403865dd9f5ce4f254bddfbf16afc92517dbf50115f9799c"
 
@@ -34,7 +34,7 @@ echo "Step 3: Seeding Master Admin..."
 psql "$DB_URL" <<EOF
 -- Insert Master Admin
 INSERT INTO users (id, email, password, role, name, email_verified, is_verified)
-VALUES ('master-admin', 'master@campops.com', '$HASHED_PASSWORD', 'master', 'Master Admin', TRUE, TRUE)
+VALUES ('master-admin', 'master@sinaicamps.com', '$HASHED_PASSWORD', 'master', 'Master Admin', TRUE, TRUE)
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO accounts (id, user_id, account_id, provider_id, password)
@@ -57,5 +57,5 @@ echo "Step 4: Seeding baseline plugins..."
 
 echo "Migration complete!"
 echo "Default Credentials:"
-echo "Email: master@campops.com"
+echo "Email: master@sinaicamps.com"
 echo "Password: password123"

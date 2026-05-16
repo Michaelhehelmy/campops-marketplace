@@ -1,7 +1,7 @@
 {
-  "name": "@campops/plugin-testing",
+  "name": "@sinaicamps/plugin-testing",
   "version": "1.0.0",
-  "description": "Testing utilities for CampOps plugins",
+  "description": "Testing utilities for SinaiCamps plugins",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@campops/plugin-sdk": "*",
+    "@sinaicamps/plugin-sdk": "*",
     "better-sqlite3": "^11.0.0"
   },
   "devDependencies": {

@@ -4,7 +4,7 @@ import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env.test", override: true });
 
 /**
- * CampOps E2E Test Configuration
+ * SinaiCamps E2E Test Configuration
  * Tests the new React frontend at localhost:5173 against backend at localhost:5000
  */
 export default defineConfig({

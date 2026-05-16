@@ -3,7 +3,7 @@
   "name": "Marketing Automation",
   "version": "1.0.0",
   "description": "Automated email campaigns, guest segmentation, and social media scheduling.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "Marketing",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",

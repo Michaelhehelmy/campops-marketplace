@@ -6,7 +6,7 @@
 set -e
 
 ENVIRONMENT=${1:-production}
-API_BASE="${VITE_API_BASE:-https://api.campops.com}"
+API_BASE="${VITE_API_BASE:-https://api.sinaicamps.com}"
 
 echo "🔨 Building frontend bundles for all active shops"
 echo "🌍 Environment: $ENVIRONMENT"

@@ -36,7 +36,7 @@ describe('PWA UI Components', () => {
     render(<PWAInstallBanner />);
 
     expect(screen.getByTestId('pwa-install-banner')).toBeInTheDocument();
-    expect(screen.getByText('Install CampOps App')).toBeInTheDocument();
+    expect(screen.getByText('Install SinaiCamps App')).toBeInTheDocument();
     expect(screen.getByLabelText('Install App')).toBeInTheDocument();
   });
 

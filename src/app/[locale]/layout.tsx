@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n/request';
 
 export const metadata: Metadata = {
-  title: { default: 'CampOps Marketplace', template: '%s | CampOps' },
+  title: { default: 'SinaiCamps Marketplace', template: '%s | SinaiCamps' },
   description: 'Find and book your perfect camp stay',
 };
 
@@ -40,7 +40,7 @@ function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-400 text-sm py-8 mt-16">
       <div className="max-w-7xl mx-auto px-4 text-center">
-        <p>© {new Date().getFullYear()} CampOps. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} SinaiCamps. All rights reserved.</p>
       </div>
     </footer>
   );

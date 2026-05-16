@@ -231,7 +231,7 @@ export default function StepBrandingPage() {
               </label>
               <div className="flex items-center">
                 <span className="px-3 py-2.5 bg-gray-100 border border-r-0 border-gray-200 rounded-l-lg text-sm text-gray-500">
-                  campops.com/stay/
+                  sinaicamps.com/stay/
                 </span>
                 <input
                   type="text"

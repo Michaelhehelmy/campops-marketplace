@@ -1,17 +1,17 @@
 
-> @campops/marketplace@1.0.0 test
+> @sinaicamps/marketplace@1.0.0 test
 > vitest run
 
 
- RUN  v4.1.5 /home/michael/Proj/campops-marketplace
+ RUN  v4.1.5 /home/michael/Proj/sinaicamps-marketplace
 
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admin/shops > should list all shops with owner details
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createAdminUser (/home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:14:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:65:29
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createAdminUser (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:14:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:65:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -25,9 +25,9 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admi
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admin/shops > should list all shops with owner details
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:74:10
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:74:10
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
   code: 'SQLITE_ERROR'
@@ -38,11 +38,11 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admi
 stderr | src/lib/__tests__/owner.test.ts > Marketplace Owner Registration > should register a new owner and property in master DB
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/owner.test.ts:19:10
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:193:24)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/owner.test.ts:13:20
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/owner.test.ts:19:10
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:193:24)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/owner.test.ts:13:20
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
   code: 'SQLITE_ERROR'
 } SQL: INSERT INTO users (id, email, password, is_verified) VALUES ($1, $2, $3, true)
@@ -50,10 +50,10 @@ stderr | src/lib/__tests__/owner.test.ts > Marketplace Owner Registration > shou
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Stripe Connect Account Management > should create a Stripe Connect account for a property owner
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:56:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:56:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -67,9 +67,9 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admin/shops > should filter shops by active status
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:105:10
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:105:10
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -86,10 +86,10 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > GET /api/admi
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Stripe Connect Account Management > should update Stripe Connect account status after onboarding
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:86:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:86:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -102,7 +102,7 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 
 stderr | src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts > GET /api/manage/:listingId/bookings > should handle database errors gracefully
 [Manager Bookings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts:50:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts:50:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -116,9 +116,9 @@ stderr | src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts > GET /
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > POST /api/admin/shops/:id/deactivate > should deactivate a shop
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:141:10
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:141:10
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -132,7 +132,7 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > POST /api/adm
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -146,10 +146,10 @@ stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Commission Rate Management > should create custom commission rate for a property
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:141:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:141:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -163,9 +163,9 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > PUT /api/admin/shops/:id/override > should override listing data for a shop
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:168:10
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:168:10
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -179,9 +179,9 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > PUT /api/admi
 
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB Drizzle] Transaction failed: Error: Test error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:36:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:193:30)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:35:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:36:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:193:30)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:35:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -192,7 +192,7 @@ stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should handle database errors gracefully
 [Homepage Config API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -206,10 +206,10 @@ stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Marketplace Bookings > should create a marketplace booking
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:169:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:169:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -223,10 +223,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > Authorization > should verify marketplace_master role for admin access
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createAdminUser (/home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:14:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:198:29
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createAdminUser (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:14:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:198:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -240,10 +240,10 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > Authorization
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Plugin Assets (UI Injection) > should fetch active assets for frontend injection
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:193:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:193:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -256,10 +256,10 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should return default config on fetch error
 [Homepage Config API] Error: Error: Unexpected error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/route.ts:24:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/route.ts:24:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -270,10 +270,10 @@ stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Marketplace Bookings > should create booking with Stripe payment intent
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:209:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:209:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -287,10 +287,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > Authorization > should reject non-admin users from admin operations
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createAdminUser (/home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:14:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/admin.test.ts:215:35
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createAdminUser (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:14:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/admin.test.ts:215:35
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -304,10 +304,10 @@ stderr | src/lib/__tests__/admin.test.ts > Marketplace Admin API > Authorization
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Property Plugin Management > should enable a plugin for a property
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:263:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:263:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -328,10 +328,10 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Commission Transactions > should calculate and record commission for a booking
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:254:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:254:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -345,10 +345,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Property Plugin Management > should disable a plugin for a property
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:302:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:302:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -362,10 +362,10 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Commission Transactions > should update transaction status after Stripe transfer
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:334:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:334:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -379,10 +379,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Property Plugin Management > should update plugin configuration
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:349:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:349:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -396,10 +396,10 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Payout Summaries > should create payout summary for a period
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:418:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:418:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -413,10 +413,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & Commission > Payout Summaries > should update payout summary after payment
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/payments.test.ts:464:45
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/payments.test.ts:464:45
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -430,10 +430,10 @@ stderr | src/lib/__tests__/payments.test.ts > Marketplace Payment Processing & C
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Property Plugin Management > should list active plugins with their manifests for the frontend
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:388:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:388:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -447,7 +447,7 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
  ✓ src/lib/__tests__/payments.test.ts (10 tests) 1083ms
 stderr | src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts > POST /api/manage/:listingId/bookings > should handle POST database errors gracefully
 [Manager Bookings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts:189:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts:189:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -461,10 +461,10 @@ stderr | src/app/api/manage/safari-camp/bookings/__tests__/route.test.ts > POST 
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Plugin Analytics > should track plugin events
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:440:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:440:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -477,7 +477,7 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > PUT /api/public/homepage-config > should handle database errors on update
 [Homepage Config API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -492,10 +492,10 @@ stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > PUT /api/p
 stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosystem > Plugin Analytics > should aggregate plugin usage statistics
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at createOwnerAndProperty (/home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:495:36
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at createOwnerAndProperty (/home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:16:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugin-ecosystem.test.ts:495:36
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -508,7 +508,7 @@ stderr | src/lib/__tests__/plugin-ecosystem.test.ts > Marketplace Plugin Ecosyst
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:167:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:167:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -521,7 +521,7 @@ stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/p
 
 stderr | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should handle database errors gracefully
 [UI Registry] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/ui-registry.test.ts:170:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/ui-registry.test.ts:170:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -538,9 +538,9 @@ stderr | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should 
  ✓ src/app/api/master/plugins/__tests__/route.test.ts (11 tests) 1540ms
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB Drizzle] Transaction failed: Error: Transaction failed
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:156:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:193:30)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:155:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:156:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:193:30)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:155:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -553,14 +553,14 @@ stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
  ✓ plugins/test-dock/src/__tests__/index.test.ts (8 tests) 939ms
 stderr | src/lib/__tests__/db.test.ts > Database Wrapper > Transactions > should rollback failed transactions
 [DB Drizzle] Transaction failed: Error: Force failure
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:91:17
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:91:17
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:193:24)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:89:9
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:193:24)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:89:9
 
 stderr | src/app/api/public/featured-listings/__tests__/route.test.ts > GET /api/public/featured-listings > should handle database errors gracefully
 [Featured Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -580,7 +580,7 @@ stderr | src/app/api/public/featured-listings/__tests__/route.test.ts > GET /api
  ✓ src/components/homepage/__tests__/Categories.test.tsx (9 tests) 1245ms
 stderr | src/app/api/manage/safari-camp/finance/__tests__/route.test.ts > GET /api/manage/:listingId/finance > should handle database errors gracefully
 [Manager Finance API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/safari-camp/finance/__tests__/route.test.ts:41:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/safari-camp/finance/__tests__/route.test.ts:41:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -597,7 +597,7 @@ stderr | src/app/api/manage/safari-camp/finance/__tests__/route.test.ts > GET /a
  ✓ src/app/api/manage/safari-camp/finance/__tests__/route.test.ts (5 tests) 761ms
 stderr | src/app/api/public/categories/__tests__/route.test.ts > GET /api/public/categories > should handle database errors gracefully
 [Categories API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -628,7 +628,7 @@ stdout | plugins/pwa/__tests__/pwa-plugin.test.ts > PWA Plugin > should register
 
 stderr | src/app/api/plugins/ui-registry/__tests__/route.test.ts > GET /api/plugins/ui-registry > should handle DB errors gracefully
 [UI Registry] Error: Error: DB Error
-    at /home/michael/Proj/campops-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:80:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:80:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -652,7 +652,7 @@ stdout | plugins/pwa/__tests__/pwa-plugin.test.ts > PWA Plugin > should register
  ✓ src/components/plugins/__tests__/ComponentRegistry.test.ts (5 tests) 613ms
 stderr | src/app/api/guest/dashboard/__tests__/route.test.ts > GET /api/guest/dashboard > should handle database errors gracefully
 [Guest Dashboard API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/guest/dashboard/__tests__/route.test.ts:70:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/guest/dashboard/__tests__/route.test.ts:70:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -698,7 +698,7 @@ stdout | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/l
  ✓ plugins/pwa/__tests__/ui.test.tsx (4 tests) 814ms
 stderr | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/listings > should handle database errors gracefully
 [Master Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/listings/__tests__/route.test.ts:59:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/__tests__/route.test.ts:59:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -817,9 +817,9 @@ stdout | src/lib/__tests__/plugin-discovery.test.ts > PluginDiscoveryService Int
 stderr | src/lib/__tests__/properties.test.ts > Marketplace Properties API > should return properties for a specific owner
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/properties.test.ts:12:8
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/properties.test.ts:12:8
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -835,9 +835,9 @@ stderr | src/lib/__tests__/properties.test.ts > Marketplace Properties API > sho
 stderr | src/lib/__tests__/tenant.test.ts > Marketplace Tenant Resolution > should resolve a valid subdomain
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/tenant.test.ts:17:8
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/tenant.test.ts:17:8
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -851,9 +851,9 @@ stderr | src/lib/__tests__/tenant.test.ts > Marketplace Tenant Resolution > shou
 stderr | src/lib/__tests__/plugins.test.ts > Marketplace Plugin Registry API > should return active plugins for a property
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/plugins.test.ts:12:8
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/plugins.test.ts:12:8
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -866,9 +866,9 @@ stderr | src/lib/__tests__/plugins.test.ts > Marketplace Plugin Registry API > s
 stderr | src/lib/__tests__/branding.test.ts > Marketplace Branding API > should return branding settings for a specific property
 [DB Drizzle] Exec failed: SqliteError: table users has no column named password
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/campops-marketplace/src/lib/db.ts:161:35)
-    at Object.run (/home/michael/Proj/campops-marketplace/src/lib/db.ts:185:39)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/branding.test.ts:12:8
+    at DrizzleDatabaseWrapper.exec (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:161:35)
+    at Object.run (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:185:39)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/branding.test.ts:12:8
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -916,8 +916,8 @@ TypeError: Cannot read properties of null (reading 'id')
 
 npm error Lifecycle script `test` failed with error:
 npm error code 1
-npm error path /home/michael/Proj/campops-marketplace
-npm error workspace @campops/marketplace@1.0.0
-npm error location /home/michael/Proj/campops-marketplace
+npm error path /home/michael/Proj/sinaicamps-marketplace
+npm error workspace @sinaicamps/marketplace@1.0.0
+npm error location /home/michael/Proj/sinaicamps-marketplace
 npm error command failed
 npm error command sh -c vitest run

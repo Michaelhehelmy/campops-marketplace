@@ -1,4 +1,4 @@
-# CampOps PWA & Responsive Editor Implementation
+# SinaiCamps PWA & Responsive Editor Implementation
 
 This document summarizes the implementation of Phase 1-3: Responsive Layout, PWA Installation, and Offline Data Sync for the Canvas Page Editor.
 
@@ -52,8 +52,8 @@ This document summarizes the implementation of Phase 1-3: Responsive Layout, PWA
 
 - **Generated via**: `vite.config.ts` (VitePWA plugin)
 - Configuration includes:
-  - `name: "CampOps"`
-  - `short_name: "CampOps"`
+  - `name: "SinaiCamps"`
+  - `short_name: "SinaiCamps"`
   - `start_url: "/"`
   - `display: "standalone"`
   - `theme_color: "#0f172a"`

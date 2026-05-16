@@ -1,8 +1,8 @@
 #!/bin/bash
-# SQLite Migration Script for CampOps Marketplace (Simulation)
+# SQLite Migration Script for SinaiCamps Marketplace (Simulation)
 set -e
 
-DB_FILE=${1:-"campops-prod-sim.db"}
+DB_FILE=${1:-"sinaicamps-prod-sim.db"}
 HEALTH_ENDPOINT="http://localhost:3000/api/health"
 
 echo "Starting SQLite simulation migration for $DB_FILE..."

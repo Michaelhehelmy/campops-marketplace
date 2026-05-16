@@ -1,6 +1,6 @@
 # Customization — Theming, Branding & Layout
 
-CampOps Marketplace is built with Tailwind CSS and designed to be fully white-labeled. This guide covers every customization point.
+SinaiCamps Marketplace is built with Tailwind CSS and designed to be fully white-labeled. This guide covers every customization point.
 
 ---
 

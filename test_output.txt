@@ -1,17 +1,17 @@
 
-> @campops/marketplace@1.0.0 test
+> @sinaicamps/marketplace@1.0.0 test
 > vitest run
 
 
- RUN  v4.1.5 /home/michael/Proj/campops-marketplace
+ RUN  v4.1.5 /home/michael/Proj/sinaicamps-marketplace
 
  ❯ src/lib/__tests__/plugins.test.ts (1 test | 1 failed) 10ms
      × should return active plugins for a property 7ms
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB] Transaction failed: Error: Test error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:38:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:28)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:37:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:38:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:28)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:37:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -30,9 +30,9 @@ stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
      × repository create without propertyId does not include property in insert 1ms
 stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > transaction returns null on error
 [DB] Transaction failed: Error: Transaction failed
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:158:13
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:28)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db-coverage.test.ts:157:29
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:158:13
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:28)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db-coverage.test.ts:157:29
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -110,10 +110,10 @@ stderr | src/lib/__tests__/db-coverage.test.ts > Database Coverage Tests > trans
 stderr | src/app/api/master/stats/__tests__/route.test.ts > GET /api/master/stats > returns stats if adminId is correct
 [Master Stats API] Error: SqliteError: no such column: "paid" - should this be a string literal in single-quotes?
     at Database.prepare (/home/michael/Proj/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/campops-marketplace/src/lib/db.ts:100:23)
-    at GET (/home/michael/Proj/campops-marketplace/src/app/api/master/stats/route.ts:19:36)
+    at DrizzleDatabaseWrapper.prepare (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:100:23)
+    at GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/stats/route.ts:19:36)
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/stats/__tests__/route.test.ts:13:17
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/stats/__tests__/route.test.ts:13:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
   code: 'SQLITE_ERROR'
 }
@@ -183,18 +183,18 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
 [PluginDiscovery] Error processing accounting: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
 [PluginDiscovery] Error processing activities: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:50:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
@@ -268,178 +268,178 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing accounting: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing activities: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing booking: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing financial-ops: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing guest-crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing housekeeping: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing hr-core: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing ical: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing ical-import: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing inventory-waste: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing listing-admin: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing loyalty: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing maintenance: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing marketing-automation: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing ota-channel-manager: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing pos-kds: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing pwa: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing siteminder: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing staff-roster: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing subscriptions: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [PluginDiscovery] Error processing test-dock: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:65:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
@@ -447,7 +447,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -463,178 +463,178 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing accounting: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing activities: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing booking: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing financial-ops: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing guest-crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing housekeeping: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing hr-core: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing ical: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing ical-import: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing inventory-waste: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing listing-admin: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing loyalty: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing maintenance: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing marketing-automation: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing ota-channel-manager: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing pos-kds: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing pwa: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing siteminder: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing staff-roster: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing subscriptions: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [PluginDiscovery] Error processing test-dock: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:78:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
@@ -642,7 +642,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -658,178 +658,178 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing accounting: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing activities: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing booking: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing financial-ops: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing guest-crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing housekeeping: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing hr-core: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing ical: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing ical-import: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing inventory-waste: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing listing-admin: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing loyalty: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing maintenance: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing marketing-automation: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing ota-channel-manager: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing pos-kds: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing pwa: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing siteminder: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing staff-roster: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing subscriptions: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [PluginDiscovery] Error processing test-dock: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:92:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
@@ -837,7 +837,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -853,178 +853,178 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing accounting: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing activities: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing booking: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing financial-ops: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing guest-crm: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing housekeeping: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing hr-core: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing ical: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing ical-import: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing inventory-waste: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing listing-admin: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing loyalty: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing maintenance: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing marketing-automation: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing ota-channel-manager: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing pos-kds: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing pwa: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing siteminder: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing staff-roster: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing subscriptions: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [PluginDiscovery] Error processing test-dock: TypeError: __vite_ssr_import_2__.db.prepare(...).run is not a function
-    at Function.processPlugin (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
-    at Function.syncPlugins (/home/michael/Proj/campops-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/master/plugins/route.ts:14:5)
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
+    at Function.processPlugin (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:86:10)
+    at Function.syncPlugins (/home/michael/Proj/sinaicamps-marketplace/src/lib/PluginDiscoveryService.ts:26:26)
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/route.ts:14:5)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:105:17
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
 stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
@@ -1032,7 +1032,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/pl
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1063,7 +1063,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/p
 
 stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
 [Master Plugins API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:177:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:177:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1095,7 +1095,7 @@ stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/p
  ❯ src/app/api/guest/dashboard/__tests__/route.test.ts (0 test)
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should handle database errors gracefully
 [Homepage Config API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:61:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1108,10 +1108,10 @@ stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/public/homepage-config > should return default config on fetch error
 [Homepage Config API] Error: Error: Unexpected error
-    at Object.<anonymous> (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
+    at Object.<anonymous> (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:74:13)
     at Object.Mock [as prepare] (file:///home/michael/Proj/node_modules/@vitest/spy/dist/index.js:332:34)
-    at Module.GET (/home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/route.ts:24:8)
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
+    at Module.GET (/home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/route.ts:24:8)
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:78:23
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1121,7 +1121,7 @@ stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > GET /api/p
 
 stderr | src/app/api/public/homepage-config/__tests__/route.test.ts > PUT /api/public/homepage-config > should handle database errors on update
 [Homepage Config API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/homepage-config/__tests__/route.test.ts:169:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1152,7 +1152,7 @@ stderr | src/lib/__tests__/auth.test.ts > Auth Configuration > should fallback t
      ✓ should use sqlite provider when VITEST is true  656ms
 stderr | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should handle database errors gracefully
 [UI Registry API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/ui-registry.test.ts:170:41
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/ui-registry.test.ts:170:41
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1166,7 +1166,7 @@ stderr | src/lib/__tests__/ui-registry.test.ts > UI Registry API Route > should 
  ✓ src/lib/__tests__/ui-registry.test.ts (10 tests) 93ms
 stderr | src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts > GET /api/manage/:listingId/bookings > should handle database errors gracefully
 [Manager Bookings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts:50:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts:50:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1179,7 +1179,7 @@ stderr | src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts > GET /
 
 stderr | src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts > POST /api/manage/:listingId/bookings > should handle POST database errors gracefully
 [Manager Bookings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts:189:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/manage/[listingId]/bookings/__tests__/route.test.ts:189:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1205,7 +1205,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at PWAInstallBanner (/home/michael/Proj/campops-marketplace/plugins/pwa/src/ui.tsx:9:81)
+    at PWAInstallBanner (/home/michael/Proj/sinaicamps-marketplace/plugins/pwa/src/ui.tsx:9:81)
 Warning: An update to PWAInstallBanner inside a test was not wrapped in act(...).
 
 When testing, code that causes React state updates should be wrapped into act(...):
@@ -1216,7 +1216,7 @@ act(() => {
 /* assert on the output */
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-    at PWAInstallBanner (/home/michael/Proj/campops-marketplace/plugins/pwa/src/ui.tsx:9:81)
+    at PWAInstallBanner (/home/michael/Proj/sinaicamps-marketplace/plugins/pwa/src/ui.tsx:9:81)
 
  ✓ plugins/pwa/__tests__/ui.test.tsx (6 tests) 205ms
 stdout | src/lib/__tests__/plugin-discovery.test.ts > PluginDiscoveryService Integration > should sync plugins from filesystem to database
@@ -1302,7 +1302,7 @@ stdout | src/lib/__tests__/plugin-discovery.test.ts > PluginDiscoveryService Int
      ✓ should have all guest options  405ms
 stderr | src/app/api/public/featured-listings/__tests__/route.test.ts > GET /api/public/featured-listings > should handle database errors gracefully
 [Featured Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/featured-listings/__tests__/route.test.ts:101:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1319,7 +1319,7 @@ stdout | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/l
 
 stderr | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/listings > should handle database errors gracefully
 [Master Listings API] Error: Error: Database error
-    at /home/michael/Proj/campops-marketplace/src/app/api/master/listings/__tests__/route.test.ts:59:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/master/listings/__tests__/route.test.ts:59:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1336,7 +1336,7 @@ stdout | src/app/api/master/listings/__tests__/route.test.ts > GET /api/master/l
  ✓ src/app/api/master/listings/__tests__/route.test.ts (3 tests) 42ms
 stderr | src/app/api/public/categories/__tests__/route.test.ts > GET /api/public/categories > should handle database errors gracefully
 [Categories API] Error: Error: Database connection failed
-    at /home/michael/Proj/campops-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/public/categories/__tests__/route.test.ts:67:38
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1354,7 +1354,7 @@ stderr | src/app/api/plugins/ui-registry/__tests__/route.test.ts
 
 stderr | src/app/api/plugins/ui-registry/__tests__/route.test.ts > GET /api/plugins/ui-registry > should handle DB errors gracefully
 [UI Registry API] Error: Error: DB Error
-    at /home/michael/Proj/campops-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:80:41
+    at /home/michael/Proj/sinaicamps-marketplace/src/app/api/plugins/ui-registry/__tests__/route.test.ts:80:41
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
     at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
@@ -1466,10 +1466,10 @@ stdout | src/lib/__tests__/PluginDiscoveryService.test.ts > PluginDiscoveryServi
  ✓ src/lib/__tests__/branding.test.ts (1 test) 6ms
 stderr | src/lib/__tests__/db.test.ts > Database Wrapper > Transactions > should rollback failed transactions
 [DB] Transaction failed: Error: Force failure
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:91:17
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:91:17
     at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/campops-marketplace/src/lib/db.ts:168:22)
-    at /home/michael/Proj/campops-marketplace/src/lib/__tests__/db.test.ts:89:9
+    at DrizzleDatabaseWrapper.transaction (/home/michael/Proj/sinaicamps-marketplace/src/lib/db.ts:168:22)
+    at /home/michael/Proj/sinaicamps-marketplace/src/lib/__tests__/db.test.ts:89:9
 
  ✓ src/lib/__tests__/db.test.ts (14 tests) 23ms
  ↓ src/lib/__tests__/stripe-sandbox.test.ts (7 tests | 7 skipped)
@@ -1893,8 +1893,8 @@ AssertionError: expected 500 to be 200 // Object.is equality
 
 npm error Lifecycle script `test` failed with error:
 npm error code 1
-npm error path /home/michael/Proj/campops-marketplace
-npm error workspace @campops/marketplace@1.0.0
-npm error location /home/michael/Proj/campops-marketplace
+npm error path /home/michael/Proj/sinaicamps-marketplace
+npm error workspace @sinaicamps/marketplace@1.0.0
+npm error location /home/michael/Proj/sinaicamps-marketplace
 npm error command failed
 npm error command sh -c vitest run

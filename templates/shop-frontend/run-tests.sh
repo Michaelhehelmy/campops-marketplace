@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CampOps Comprehensive Test Script
+# SinaiCamps Comprehensive Test Script
 # This script runs all quality checks: lint, format, unit tests, and e2e tests
 
 set -e  # Exit on error
@@ -168,7 +168,7 @@ fi
 # Start timer
 START_TIME=$(date +%s)
 
-print_header "CampOps Comprehensive Test Suite"
+print_header "SinaiCamps Comprehensive Test Suite"
 
 # Initialize counters
 TESTS_PASSED=0

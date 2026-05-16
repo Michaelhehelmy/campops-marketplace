@@ -183,11 +183,11 @@ describe('Logger', () => {
       expect(logger).toBeInstanceOf(Logger);
     });
 
-    it('should log with campops name', () => {
+    it('should log with sinaicamps name', () => {
       logger.info('singleton test');
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
       const call = consoleLogSpy.mock.calls[0];
-      expect(call[0]).toContain('[campops]');
+      expect(call[0]).toContain('[sinaicamps]');
     });
   });
 });

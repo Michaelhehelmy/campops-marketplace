@@ -1,4 +1,4 @@
-# CampOps Marketplace Plugin Inventory
+# SinaiCamps Marketplace Plugin Inventory
 
 This document provides a comprehensive overview of all plugins currently implemented in the `plugins/` directory.
 

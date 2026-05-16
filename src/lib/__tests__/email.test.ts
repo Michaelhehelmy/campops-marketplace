@@ -25,7 +25,7 @@ describe('EmailService', () => {
       to: 'guest@example.com',
       subject: 'Test',
       html: '<p>Hello</p>',
-      from: 'noreply@campops.com',
+      from: 'noreply@sinaicamps.com',
     });
   });
 
@@ -37,10 +37,10 @@ describe('EmailService', () => {
       to: 'guest@example.com',
       subject: 'Test',
       html: '<p>Hello</p>',
-      from: 'custom@campops.com',
+      from: 'custom@sinaicamps.com',
     });
 
-    expect(sendFn).toHaveBeenCalledWith(expect.objectContaining({ from: 'custom@campops.com' }));
+    expect(sendFn).toHaveBeenCalledWith(expect.objectContaining({ from: 'custom@sinaicamps.com' }));
   });
 
   it('should log to console when no transport configured', async () => {

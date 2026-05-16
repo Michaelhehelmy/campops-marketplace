@@ -1,4 +1,4 @@
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { registerRoutes } from './routes/index.js';
 
 /**

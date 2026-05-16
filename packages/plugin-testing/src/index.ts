@@ -1,4 +1,4 @@
-import { PluginAPI, PluginDatabaseAPI, ScopedRepository } from '@campops/plugin-sdk';
+import { PluginAPI, PluginDatabaseAPI, ScopedRepository } from '@sinaicamps/plugin-sdk';
 import Database from 'better-sqlite3';
 
 /**

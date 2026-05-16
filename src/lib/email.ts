@@ -27,7 +27,7 @@ export class EmailService {
    * Send an email. Falls back to console logging if no transport is configured.
    */
   static async send(opts: EmailOptions): Promise<void> {
-    const from = opts.from || process.env.EMAIL_FROM || 'noreply@campops.com';
+    const from = opts.from || process.env.EMAIL_FROM || 'noreply@sinaicamps.com';
 
     if (this.transport) {
       await this.transport({ ...opts, from });

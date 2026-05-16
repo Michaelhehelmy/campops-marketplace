@@ -52,17 +52,17 @@ describe('Marketplace Admin API', () => {
     await db.prepare("DELETE FROM properties WHERE slug LIKE 'shop-%' OR slug LIKE 'test-%'").run();
     await db
       .prepare(
-        "DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE email LIKE 'test-%' OR email LIKE '%@marketplace.com')"
+        "DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE email LIKE 'test-%' OR email LIKE '%@sinaicamps.com')"
       )
       .run();
     await db
-      .prepare("DELETE FROM users WHERE email LIKE 'test-%' OR email LIKE '%@marketplace.com'")
+      .prepare("DELETE FROM users WHERE email LIKE 'test-%' OR email LIKE '%@sinaicamps.com'")
       .run();
   });
 
   describe('GET /api/admin/shops', () => {
     it('should list all shops with owner details', async () => {
-      const adminId = await createAdminUser('test-admin@marketplace.com');
+      const adminId = await createAdminUser('test-admin@sinaicamps.com');
       const ownerId = uuidv4();
 
       await db
@@ -195,7 +195,7 @@ describe('Marketplace Admin API', () => {
 
   describe('Authorization', () => {
     it('should verify marketplace_master role for admin access', async () => {
-      const adminId = await createAdminUser('test-master@marketplace.com', 'marketplace_master');
+      const adminId = await createAdminUser('test-master@sinaicamps.com', 'marketplace_master');
 
       const roles = await db
         .prepare(

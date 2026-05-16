@@ -1,5 +1,5 @@
 {
-  "name": "@campops/plugin-subscriptions",
+  "name": "@sinaicamps/plugin-subscriptions",
   "version": "1.0.0",
   "private": true,
   "type": "module",

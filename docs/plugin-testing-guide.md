@@ -1,6 +1,6 @@
 # Plugin Testing Guide
 
-This guide defines the testing strategy for the CampOps Marketplace plugin ecosystem. Every plugin must be verified at three levels to ensure stability and compatibility with the core platform and other plugins.
+This guide defines the testing strategy for the SinaiCamps Marketplace plugin ecosystem. Every plugin must be verified at three levels to ensure stability and compatibility with the core platform and other plugins.
 
 ## 1. Testing Pyramid Overview
 

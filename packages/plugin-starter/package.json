@@ -1,7 +1,7 @@
 {
-  "name": "campops-plugin-starter",
+  "name": "sinaicamps-plugin-starter",
   "version": "1.0.0",
-  "description": "GitHub template for building CampOps plugins",
+  "description": "GitHub template for building SinaiCamps plugins",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "proxy": "node scripts/dev-proxy.js"
   },
   "devDependencies": {
-    "campops-sdk": "*",
+    "sinaicamps-sdk": "*",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0",
     "eslint": "^8.57.0",
@@ -21,10 +21,10 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0"
   },
   "peerDependencies": {
-    "campops-sdk": ">=2.0.0"
+    "sinaicamps-sdk": ">=2.0.0"
   },
-  "campops": {
+  "sinaicamps": {
     "pluginId": "my-plugin",
-    "campopsVersion": ">=2.0.0"
+    "sinaicampsVersion": ">=2.0.0"
   }
 }

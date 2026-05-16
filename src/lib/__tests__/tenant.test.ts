@@ -26,7 +26,7 @@ describe('Marketplace Tenant Resolution', () => {
       .run(propertyId, ownerId, 'Test Shop', slug, subdomain);
 
     // Resolution logic (simulating what the API will do)
-    const host = `${subdomain}.campops.com`;
+    const host = `${subdomain}.sinaicamps.com`;
     const sub = host.split('.')[0];
     const property = (await db
       .prepare('SELECT id, slug FROM properties WHERE subdomain = $1 AND is_active = true')

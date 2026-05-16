@@ -1,5 +1,5 @@
 #!/bin/bash
-# SSL Renewal Script for CampOps Marketplace
+# SSL Renewal Script for SinaiCamps Marketplace
 set -e
 
 echo "Starting SSL renewal process..."

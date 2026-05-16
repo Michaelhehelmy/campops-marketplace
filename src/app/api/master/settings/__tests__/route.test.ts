@@ -57,7 +57,7 @@ describe('Master Settings API Route', () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.platformName).toBe('CampOps Marketplace'); // Default
+    expect(data.platformName).toBe('SinaiCamps Marketplace'); // Default
     expect(data.commissionRate).toBe(10.0); // Default
   });
 

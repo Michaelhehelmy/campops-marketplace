@@ -1,5 +1,5 @@
 import { Hono, type Context } from 'hono';
-import { PluginAPI } from '@campops/plugin-sdk';
+import { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { UISlots } from '../../../packages/plugin-sdk/src/ui.js';
 
 export async function init(api: PluginAPI) {

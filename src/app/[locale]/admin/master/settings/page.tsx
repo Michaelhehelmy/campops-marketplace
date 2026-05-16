@@ -16,7 +16,7 @@ import {
 export default function MasterSettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
   const [saved, setSaved] = useState(false);
-  const [platformName, setPlatformName] = useState('CampOps Marketplace');
+  const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
 
   const handleSave = () => {
     setSaved(true);
@@ -144,7 +144,7 @@ export default function MasterSettingsPage() {
                     className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-purple-200 focus:ring-4 focus:ring-purple-50 transition-all outline-none text-sm font-medium"
                   />
                 </div>
-                <InputGroup label="Support Email" value="support@campops.com" />
+                <InputGroup label="Support Email" value="support@sinaicamps.com" />
                 <div className="p-8 rounded-[2rem] bg-slate-900 text-white relative overflow-hidden">
                   <div className="relative z-10">
                     <h4 className="font-bold mb-2">Global Branding Cluster</h4>

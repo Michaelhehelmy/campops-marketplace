@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { Tenant } from "./useTenant";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "https://api.campops.com";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://api.sinaicamps.com";
 
 export interface PluginAsset {
   asset_type: "script" | "stylesheet" | "icon" | "image" | "config";

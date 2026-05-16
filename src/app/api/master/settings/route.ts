@@ -8,8 +8,8 @@ export async function GET(request: Request) {
     // if the table doesn't exist yet.
 
     let settings = {
-      platformName: 'CampOps Marketplace',
-      supportEmail: 'support@campops.com',
+      platformName: 'SinaiCamps Marketplace',
+      supportEmail: 'support@sinaicamps.com',
       currency: 'USD',
       timezone: 'UTC',
       commissionRate: 10.0,

@@ -5,7 +5,7 @@
 ## What it does
 
 - Syncs external calendars on a scheduled interval (default: every hour).
-- Creates `blocked` reservations in the CampOps database for each `VEVENT` found.
+- Creates `blocked` reservations in the SinaiCamps database for each `VEVENT` found.
 - Removes blocks automatically when events disappear from the external feed.
 - Supports multiple feeds per room.
 
@@ -17,7 +17,7 @@ Add to `plugin-manifest.json`:
 {
   "name": "ical-import",
   "version": "1.0.0",
-  "campopsVersion": ">=2.0.0",
+  "sinaicampsVersion": ">=2.0.0",
   "path": "./plugins/ical-import/src/index.ts",
   "enabled": true,
   "config": {

@@ -40,7 +40,7 @@ function OwnerLayoutInner({ children }: { children: React.ReactNode }) {
       <aside className="w-60 bg-gray-900 text-white flex flex-col shrink-0">
         <div className="px-6 py-6 border-b border-white/10">
           <Link href="/" className="block text-lg font-bold text-brand-400">
-            CampOps
+            SinaiCamps
           </Link>
           <p className="text-xs text-white/40 mt-0.5">Owner Portal</p>
         </div>

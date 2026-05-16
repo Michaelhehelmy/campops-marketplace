@@ -3,7 +3,7 @@
   "name": "PWA & Notifications",
   "version": "1.0.0",
   "description": "Enables offline support and mobile install prompts for the shop frontend.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",
   "slots": {

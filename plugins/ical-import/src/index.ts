@@ -5,7 +5,7 @@
  * through a standardized interface.
  */
 
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import type {
   OTAAdapter,
   RoomMapping,

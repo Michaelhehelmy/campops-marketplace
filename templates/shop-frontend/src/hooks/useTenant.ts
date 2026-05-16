@@ -51,7 +51,7 @@ export function useTenant(): UseTenantReturn {
     setError(null);
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE || "https://api.campops.com";
+      const API_BASE = import.meta.env.VITE_API_BASE || "https://api.sinaicamps.com";
 
       // Determine shop identifier
       const shopSlug = import.meta.env.VITE_SHOP_SLUG;

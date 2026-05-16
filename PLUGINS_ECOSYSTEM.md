@@ -1,15 +1,15 @@
-# CampOps Plugin Ecosystem
+# SinaiCamps Plugin Ecosystem
 
-> Plugin marketplace, SDK, and extension library for the CampOps platform. Now integrated into the main marketplace repository.
+> Plugin marketplace, SDK, and extension library for the SinaiCamps platform. Now integrated into the main marketplace repository.
 
 ## Overview
 
-This directory contains all plugins, the plugin SDK, and documentation for extending CampOps functionality. Previously a separate repository (`campops-ecosystem`), now unified within `campops-marketplace`.
+This directory contains all plugins, the plugin SDK, and documentation for extending SinaiCamps functionality. Previously a separate repository (`sinaicamps-ecosystem`), now unified within `sinaicamps-marketplace`.
 
 ## Directory Structure
 
 ```
-campops-marketplace/
+sinaicamps-marketplace/
 ├── plugins/                    # Built-in & community plugins
 │   ├── activities/             # Activity booking management
 │   ├── booking/                # Core booking engine
@@ -66,7 +66,7 @@ campops-marketplace/
 
 ```bash
 # 1. Copy the starter template
-cd campops-marketplace
+cd sinaicamps-marketplace
 cp -r packages/plugin-starter plugins/my-plugin
 cd plugins/my-plugin
 
@@ -113,9 +113,9 @@ plugins/my-plugin/
 
 ```typescript
 // src/index.ts
-import { CampOpsPlugin, HookContext } from 'campops-sdk';
+import { SinaiCampsPlugin, HookContext } from 'sinaicamps-sdk';
 
-const plugin: CampOpsPlugin = {
+const plugin: SinaiCampsPlugin = {
   id: 'my-plugin',
 
   async init(context) {
@@ -152,7 +152,7 @@ npm run build
 
 ### Key Types
 
-- `CampOpsPlugin` - Main plugin interface
+- `SinaiCampsPlugin` - Main plugin interface
 - `HookContext` - Context passed to hook handlers
 - `PluginContext` - Context provided during init
 - `RouteHandler` - API route handler type
@@ -232,19 +232,19 @@ npm test
 
 ## Migration from Separate Ecosystem Repo
 
-This ecosystem was previously in `campops-ecosystem/`. It has been consolidated into `campops-marketplace/` for unified development.
+This ecosystem was previously in `sinaicamps-ecosystem/`. It has been consolidated into `sinaicamps-marketplace/` for unified development.
 
 ### Changes:
 
-- **Old**: `campops-ecosystem/plugins/`
-- **New**: `campops-marketplace/plugins/`
+- **Old**: `sinaicamps-ecosystem/plugins/`
+- **New**: `sinaicamps-marketplace/plugins/`
 
-- **Old**: `campops-ecosystem/packages/`
-- **New**: `campops-marketplace/packages/`
+- **Old**: `sinaicamps-ecosystem/packages/`
+- **New**: `sinaicamps-marketplace/packages/`
 
-- **Old**: `campops-ecosystem/docs/`
-- **New**: `campops-marketplace/docs/plugins/`
+- **Old**: `sinaicamps-ecosystem/docs/`
+- **New**: `sinaicamps-marketplace/docs/plugins/`
 
 ## License
 
-Part of CampOps Marketplace - Internal use only
+Part of SinaiCamps Marketplace - Internal use only

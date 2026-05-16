@@ -19,7 +19,7 @@ describe("PWA Plugin", () => {
 
   it("renders PWAInstallBanner correctly", () => {
     render(<PWAInstallBanner />);
-    expect(screen.getByText("Install CampOps App")).toBeInTheDocument();
+    expect(screen.getByText("Install SinaiCamps App")).toBeInTheDocument();
     expect(screen.getByText("Install Now")).toBeInTheDocument();
   });
 

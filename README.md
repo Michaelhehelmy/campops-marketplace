@@ -1,4 +1,4 @@
-# CampOps Marketplace & Enterprise ERP
+# SinaiCamps Marketplace & Enterprise ERP
 
 > The ultimate modular platform for hospitality management. A unified monorepo featuring a Next.js Marketplace, a plugin-driven Admin Shell, and a comprehensive Enterprise ERP ecosystem.
 
@@ -6,7 +6,7 @@
 
 ## 🏗️ Architecture: The "Clean Core"
 
-CampOps is built on a **Clean Core** architecture. The main platform handles only identity, property isolation, and plugin lifecycle. All business logic—from bookings to payroll—is encapsulated in modular plugins.
+SinaiCamps is built on a **Clean Core** architecture. The main platform handles only identity, property isolation, and plugin lifecycle. All business logic—from bookings to payroll—is encapsulated in modular plugins.
 
 ```mermaid
 graph TD
@@ -32,7 +32,7 @@ graph TD
 ## 📂 Repository Structure
 
 ```text
-campops-marketplace/
+sinaicamps-marketplace/
 ├── src/                      # 🏛️ Core Platform (Marketplace & Admin)
 │   ├── app/api/plugins/      # Plugin Registry & Lifecycle routes
 │   ├── app/[locale]/         # Marketplace & Admin Pages
@@ -63,8 +63,8 @@ campops-marketplace/
 ### 2. Installation
 
 ```bash
-git clone https://github.com/campops/marketplace.git
-cd campops-marketplace
+git clone https://github.com/sinaicamps/marketplace.git
+cd sinaicamps-marketplace
 npm install
 ```
 
@@ -162,4 +162,4 @@ The ecosystem is categorised for enterprise-grade scalability:
 
 ## 📄 License
 
-Internal use only. Part of the CampOps Marketplace ecosystem.
+Internal use only. Part of the SinaiCamps Marketplace ecosystem.

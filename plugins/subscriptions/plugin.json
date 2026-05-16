@@ -3,7 +3,7 @@
   "name": "Memberships & Seasonal",
   "version": "1.0.0",
   "description": "Recurring billing for seasonal pitches, long-term stays, and club memberships.",
-  "author": "CampOps Core",
+  "author": "SinaiCamps Core",
   "category": "Sales & CRM",
   "entry": "src/index.ts",
   "uiEntry": "src/ui.tsx",

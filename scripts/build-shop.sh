@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# CampOps Shop Build Script
+# SinaiCamps Shop Build Script
 # Builds a branded shop frontend using the template
 #
 # Usage: ./scripts/build-shop.sh <shop-slug> [environment] [api-base]
-# Example: ./scripts/build-shop.sh safari-camp production https://api.campops.com
+# Example: ./scripts/build-shop.sh safari-camp production https://api.sinaicamps.com
 #
 
 set -e
@@ -17,18 +17,18 @@ TEMPLATE_DIR="$PROJECT_ROOT/templates/shop-frontend"
 # Arguments
 SHOP_SLUG="${1:-}"
 ENVIRONMENT="${2:-production}"
-API_BASE="${3:-https://api.campops.com}"
+API_BASE="${3:-https://api.sinaicamps.com}"
 OUTPUT_DIR="${4:-$PROJECT_ROOT/builds/$SHOP_SLUG}"
 
 if [ -z "$SHOP_SLUG" ]; then
     echo "❌ Error: Shop slug is required"
     echo "Usage: $0 <shop-slug> [environment] [api-base] [output-dir]"
-    echo "Example: $0 safari-camp production https://api.campops.com"
+    echo "Example: $0 safari-camp production https://api.sinaicamps.com"
     exit 1
 fi
 
 echo "=========================================="
-echo "🏕️  CampOps Shop Build"
+echo "🏕️  SinaiCamps Shop Build"
 echo "=========================================="
 echo "Shop:        $SHOP_SLUG"
 echo "Environment: $ENVIRONMENT"
@@ -103,7 +103,7 @@ echo ""
 echo "📝 Generating .env file..."
 
 cat > "$OUTPUT_DIR/.env" << EOF
-# CampOps Shop Environment Configuration
+# SinaiCamps Shop Environment Configuration
 # Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
 # Shop: $SHOP_SLUG
 

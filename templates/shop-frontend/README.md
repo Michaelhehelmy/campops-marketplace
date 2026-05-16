@@ -1,10 +1,10 @@
-# CampOps Shop Frontend Template
+# SinaiCamps Shop Frontend Template
 
 React + TypeScript + Vite template for generating branded camp/hotel shop websites.
 
 ## Overview
 
-This is the base template used by CampOps to generate individual shop frontends. Each camp gets a branded build with their own colors, logo, content, and domain.
+This is the base template used by SinaiCamps to generate individual shop frontends. Each camp gets a branded build with their own colors, logo, content, and domain.
 
 ## Build a Shop
 
@@ -13,7 +13,7 @@ This is the base template used by CampOps to generate individual shop frontends.
 ./scripts/build-shop.sh <shop-slug> [environment] [api-base]
 
 # Example:
-./scripts/build-shop.sh safari-camp production https://api.campops.com
+./scripts/build-shop.sh safari-camp production https://api.sinaicamps.com
 ```
 
 ## Development
@@ -79,4 +79,4 @@ See `/api/branding` endpoint for full branding schema.
 
 ## License
 
-Part of CampOps Marketplace - Internal use only
+Part of SinaiCamps Marketplace - Internal use only

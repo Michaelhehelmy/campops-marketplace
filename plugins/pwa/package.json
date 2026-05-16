@@ -1,5 +1,5 @@
 {
-  "name": "@campops/plugin-pwa",
+  "name": "@sinaicamps/plugin-pwa",
   "version": "1.0.0",
   "private": true,
   "type": "module",

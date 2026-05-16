@@ -13,7 +13,7 @@ const dbFile = process.env.DATABASE_URL?.startsWith('file:')
   ? process.env.DATABASE_URL.replace('file:', '')
   : isTest
     ? ':memory:'
-    : 'campops.db';
+    : 'sinaicamps.db';
 
 export let drizzle: any;
 let sqliteDb: Database.Database | null = null;
@@ -429,22 +429,22 @@ class DrizzleDatabaseWrapper {
       const hashedPassword =
         'e8c2be85ca9fe13f47c6ef1de40ac92d:4a8432eb6e15066427f96f1f9a3ca66fa19037c985f5cd3a5a46a73226d2f59f09ca5d4398b52918403865dd9f5ce4f254bddfbf16afc92517dbf50115f9799c';
       const testUsers = [
-        { id: 'master-admin', email: 'master@campops.com', role: 'master', name: 'Master Admin' },
+        { id: 'master-admin', email: 'master@sinaicamps.com', role: 'master', name: 'Master Admin' },
         {
           id: 'manager-user-1',
-          email: 'manager@campops.com',
+          email: 'manager@sinaicamps.com',
           role: 'manager',
           name: 'Property Manager',
         },
-        { id: 'staff-user-1', email: 'staff@campops.com', role: 'staff', name: 'Staff Member' },
-        { id: 'guest-user-1', email: 'guest@campops.com', role: 'guest', name: 'John Guest' },
+        { id: 'staff-user-1', email: 'staff@sinaicamps.com', role: 'staff', name: 'Staff Member' },
+        { id: 'guest-user-1', email: 'guest@sinaicamps.com', role: 'guest', name: 'John Guest' },
         {
           id: 'integration-guest-1',
-          email: 'integration@campops.com',
+          email: 'integration@sinaicamps.com',
           role: 'guest',
           name: 'Integration Guest',
         },
-        { id: 'master-user-2', email: 'admin@marketplace.com', role: 'master', name: 'Demo Admin' },
+        { id: 'master-user-2', email: 'admin@sinaicamps.com', role: 'master', name: 'Demo Admin' },
       ];
 
       for (const user of testUsers) {
@@ -584,7 +584,7 @@ class DrizzleDatabaseWrapper {
           'confirmed',
           '2026-05-01',
           'John Guest',
-          'guest@campops.com'
+          'guest@sinaicamps.com'
         );
 
       getSqlite()
@@ -602,7 +602,7 @@ class DrizzleDatabaseWrapper {
           'confirmed',
           '2026-05-02',
           'Integration Guest',
-          'integration@campops.com'
+          'integration@sinaicamps.com'
         );
 
       getSqlite()
@@ -620,7 +620,7 @@ class DrizzleDatabaseWrapper {
           'confirmed',
           '2026-05-03',
           'John Guest',
-          'guest@campops.com'
+          'guest@sinaicamps.com'
         );
 
       // Seed marketplace bookings (for commissions)
@@ -628,12 +628,12 @@ class DrizzleDatabaseWrapper {
         .prepare(
           "INSERT OR IGNORE INTO marketplace_bookings (id, property_id, guest_name, guest_email, total_amount_cents, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
         )
-        .run('bk-1', '1', 'John Guest', 'guest@campops.com', 80000, 'confirmed');
+        .run('bk-1', '1', 'John Guest', 'guest@sinaicamps.com', 80000, 'confirmed');
       getSqlite()
         .prepare(
           "INSERT OR IGNORE INTO marketplace_bookings (id, property_id, guest_name, guest_email, total_amount_cents, status, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
         )
-        .run('bk-2', '1', 'Integration Guest', 'integration@campops.com', 120000, 'confirmed');
+        .run('bk-2', '1', 'Integration Guest', 'integration@sinaicamps.com', 120000, 'confirmed');
 
       // Seed commission rates
       getSqlite()
@@ -771,7 +771,7 @@ class DrizzleDatabaseWrapper {
           if (fs.existsSync(manifestPath)) {
             try {
               const pkg = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-              manifest = pkg.campops || {};
+              manifest = pkg.sinaicamps || {};
               if (pkg.description) displayName = pkg.description;
             } catch (e) {}
           }

@@ -27,9 +27,9 @@ export async function GET(req: NextRequest) {
     } else {
       // Fallback for manual test tokens or if session lookup fails in middleware fetch
       const token =
-        req.cookies.get('campops_token')?.value ||
+        req.cookies.get('sinaicamps_token')?.value ||
         req.cookies.get('better-auth.session_token')?.value;
-      const roleCookie = req.cookies.get('campops_role')?.value;
+      const roleCookie = req.cookies.get('sinaicamps_role')?.value;
 
       if (roleCookie === 'manager' || (token && token.includes('manager'))) {
         userId = 'manager-user-1';

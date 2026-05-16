@@ -1,5 +1,5 @@
-// CampOps Marketplace - PWA Service Worker
-const CACHE_NAME = 'campops-v1';
+// SinaiCamps Marketplace - PWA Service Worker
+const CACHE_NAME = 'sinaicamps-v1';
 
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing Service Worker...');

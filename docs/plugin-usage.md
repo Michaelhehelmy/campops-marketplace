@@ -22,8 +22,8 @@ Plugins are loaded server-side by the Acacia Camp backend and can:
 | Source        | Description                                                                                                               |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Built-in**  | `stripe`, `ical`, `ical-import`, `loyalty`, `siteminder` — shipped with Acacia Camp                                       |
-| **Ecosystem** | Community plugins from [github.com/your-org/campops-ecosystem](https://github.com/your-org/campops-ecosystem)             |
-| **Custom**    | Build your own using the [Plugin SDK](https://github.com/your-org/campops-ecosystem/blob/main/docs/plugin-development.md) |
+| **Ecosystem** | Community plugins from [github.com/your-org/sinaicamps-ecosystem](https://github.com/your-org/sinaicamps-ecosystem)             |
+| **Custom**    | Build your own using the [Plugin SDK](https://github.com/your-org/sinaicamps-ecosystem/blob/main/docs/plugin-development.md) |
 
 ---
 
@@ -37,7 +37,7 @@ Copy the plugin folder into the `plugins/` directory of your Acacia Camp install
 
 ```bash
 cd acacia-camp
-git submodule add https://github.com/community-dev/campops-my-plugin plugins/my-plugin
+git submodule add https://github.com/community-dev/sinaicamps-my-plugin plugins/my-plugin
 # or simply copy the folder
 ```
 
@@ -51,7 +51,7 @@ Open `plugin-manifest.json` and add an entry:
     {
       "name": "my-plugin",
       "version": "1.0.0",
-      "campopsVersion": ">=2.0.0",
+      "sinaicampsVersion": ">=2.0.0",
       "path": "./plugins/my-plugin/src/index.ts",
       "enabled": true,
       "config": {
@@ -163,6 +163,6 @@ Set `"enabled": false` in `plugin-manifest.json` for the plugin, then restart. N
 
 ## Further reading
 
-- [Full plugin development guide](https://github.com/your-org/campops-ecosystem/blob/main/docs/plugin-development.md)
-- [Hook catalog](https://github.com/your-org/campops-ecosystem/blob/main/docs/hook-catalog.md)
-- [Submission guidelines](https://github.com/your-org/campops-ecosystem/blob/main/docs/submission-guidelines.md)
+- [Full plugin development guide](https://github.com/your-org/sinaicamps-ecosystem/blob/main/docs/plugin-development.md)
+- [Hook catalog](https://github.com/your-org/sinaicamps-ecosystem/blob/main/docs/hook-catalog.md)
+- [Submission guidelines](https://github.com/your-org/sinaicamps-ecosystem/blob/main/docs/submission-guidelines.md)

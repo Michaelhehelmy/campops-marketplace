@@ -1,5 +1,5 @@
 /**
- * Standardised error classes for the CampOps platform.
+ * Standardised error classes for the SinaiCamps platform.
  *
  * All API errors should use these classes so that the catch-all route
  * handlers can produce a consistent JSON error envelope:

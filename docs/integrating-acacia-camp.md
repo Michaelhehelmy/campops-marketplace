@@ -24,7 +24,7 @@ sequenceDiagram
     Marketplace->>Express: POST /api/owner/register
     Express->>DB: INSERT users, properties, subscriptions
     Express-->>Marketplace: { token, property }
-    Marketplace-->>Browser: Set-Cookie: campops_token
+    Marketplace-->>Browser: Set-Cookie: sinaicamps_token
 ```
 
 ---
@@ -121,13 +121,13 @@ That's it. The Next.js rewrite handles the rest.
 
 ## Shared JWT secret
 
-The Marketplace issues `campops_token` cookies (via `/api/auth/callback`) from JWTs it receives from the backend. To validate these tokens server-side in Next.js pages (e.g., for SSR user data), set the same `JWT_SECRET` in both `.env` files:
+The Marketplace issues `sinaicamps_token` cookies (via `/api/auth/callback`) from JWTs it receives from the backend. To validate these tokens server-side in Next.js pages (e.g., for SSR user data), set the same `JWT_SECRET` in both `.env` files:
 
 ```env
 # acacia-camp/.env
 JWT_SECRET=super-secret-value
 
-# campops-marketplace/.env.local
+# sinaicamps-marketplace/.env.local
 JWT_SECRET=super-secret-value
 ```
 
@@ -136,7 +136,7 @@ JWT_SECRET=super-secret-value
 ## Production configuration
 
 ```env
-# campops-marketplace/.env.production
+# sinaicamps-marketplace/.env.production
 NEXT_PUBLIC_API_URL=https://api.yourcamp.com
 ADMIN_SPA_URL=https://admin-internal.yourcamp.com
 NEXT_PUBLIC_BASE_DOMAIN=yourcamp.com

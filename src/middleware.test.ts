@@ -7,8 +7,8 @@ describe('middleware tenant rewrites', () => {
   const originalPublicBaseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
 
   beforeEach(() => {
-    process.env.BASE_DOMAIN = 'campops.localhost';
-    process.env.NEXT_PUBLIC_BASE_DOMAIN = 'campops.localhost';
+    process.env.BASE_DOMAIN = 'sinaicamps.localhost';
+    process.env.NEXT_PUBLIC_BASE_DOMAIN = 'sinaicamps.localhost';
     vi.stubGlobal(
       'fetch',
       vi.fn(
@@ -32,7 +32,7 @@ describe('middleware tenant rewrites', () => {
 
   it('rewrites the tenant root host to the white-labeled listing page', async () => {
     const req = new NextRequest('http://localhost/', {
-      headers: { 'x-forwarded-host': 'safari-camp.campops.localhost' },
+      headers: { 'x-forwarded-host': 'safari-camp.sinaicamps.localhost' },
     });
 
     const res = await middleware(req);
@@ -57,7 +57,7 @@ describe('middleware tenant rewrites', () => {
 
   it('redirects unauthenticated manage requests to login', async () => {
     const req = new NextRequest('http://localhost/en/manage/safari-camp/rooms', {
-      headers: { 'x-forwarded-host': 'safari-camp.campops.localhost' },
+      headers: { 'x-forwarded-host': 'safari-camp.sinaicamps.localhost' },
     });
 
     const res = await middleware(req);
@@ -70,8 +70,8 @@ describe('middleware tenant rewrites', () => {
   it('redirects basic-tier admins away from restricted manage pages', async () => {
     const req = new NextRequest('http://localhost/en/manage/safari-camp/rooms', {
       headers: {
-        'x-forwarded-host': 'safari-camp.campops.localhost',
-        cookie: 'campops_token=test-token',
+        'x-forwarded-host': 'safari-camp.sinaicamps.localhost',
+        cookie: 'sinaicamps_token=test-token',
       },
     });
 
@@ -106,8 +106,8 @@ describe('middleware tenant rewrites', () => {
 
     const req = new NextRequest('http://localhost/en/manage/premium-camp/rooms', {
       headers: {
-        'x-forwarded-host': 'premium-camp.campops.localhost',
-        cookie: 'campops_token=test-token',
+        'x-forwarded-host': 'premium-camp.sinaicamps.localhost',
+        cookie: 'sinaicamps_token=test-token',
       },
     });
 

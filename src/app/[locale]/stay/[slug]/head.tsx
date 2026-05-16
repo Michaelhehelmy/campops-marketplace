@@ -31,7 +31,7 @@ export default async function Head({ params }: { params: { slug: string } }) {
     <>
       <style>{`:root{--listing-primary:${colors.primary};--listing-secondary:${colors.secondary};--listing-accent:${colors.accent};}`}</style>
       <meta name="theme-color" content={colors.primary} />
-      <meta name="listing-name" content={property?.name || 'CampOps Listing'} />
+      <meta name="listing-name" content={property?.name || 'SinaiCamps Listing'} />
     </>
   );
 }

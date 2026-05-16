@@ -4,7 +4,7 @@ import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   const host = req.nextUrl.searchParams.get('host')?.toLowerCase().trim();
-  const BASE_DOMAIN = (process.env.BASE_DOMAIN ?? 'campops.com').toLowerCase();
+  const BASE_DOMAIN = (process.env.BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
   if (!host) {
     return NextResponse.json({ error: 'host query parameter is required' }, { status: 400 });

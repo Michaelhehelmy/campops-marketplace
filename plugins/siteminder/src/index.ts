@@ -1,10 +1,10 @@
 /**
  * SiteMinder Channel Manager Adapter Plugin
  * ─────────────────────────────────────────
- * Connects CampOps to the SiteMinder REST API for two-way sync.
+ * Connects SinaiCamps to the SiteMinder REST API for two-way sync.
  */
 
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import type {
   OTAAdapter,
   RoomMapping,

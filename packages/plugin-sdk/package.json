@@ -1,7 +1,7 @@
 {
-  "name": "campops-sdk",
+  "name": "sinaicamps-sdk",
   "version": "2.0.0",
-  "description": "TypeScript types and interfaces for building CampOps plugins",
+  "description": "TypeScript types and interfaces for building SinaiCamps plugins",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "typescript": "^5.4.0"
   },
   "keywords": [
-    "campops",
+    "sinaicamps",
     "plugin",
     "sdk",
     "types"

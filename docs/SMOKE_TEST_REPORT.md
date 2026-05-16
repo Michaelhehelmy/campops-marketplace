@@ -1,4 +1,4 @@
-# CampOps Marketplace Smoke Test Report
+# SinaiCamps Marketplace Smoke Test Report
 
 **Date:** 2026-05-15
 **Environment:** Local Development (localhost:3000)
@@ -25,7 +25,7 @@
 | `/en/login`            | PASS   | None                    | Auth form functional.                                            |
 | `/en/signup`           | PASS   | None                    | Correctly redirects to `/en/list-your-camp`.                     |
 
-### Guest Pages (guest@campops.com)
+### Guest Pages (guest@sinaicamps.com)
 
 | URL                      | Result | Console Errors/Warnings | Notes                                       |
 | ------------------------ | ------ | ----------------------- | ------------------------------------------- |
@@ -48,7 +48,7 @@
 | `/en/manage/1/domain`     | PASS   | None                    | Custom domain management functional.    |
 | `/en/manage/1/operations` | PASS   | None                    | Operations dashboard renders.           |
 
-### Master Admin Pages (master@campops.com)
+### Master Admin Pages (master@sinaicamps.com)
 
 | URL                       | Result | Console Errors/Warnings | Notes                                            |
 | ------------------------- | ------ | ----------------------- | ------------------------------------------------ |
@@ -65,7 +65,7 @@
 
 | URL                     | Result | Console Errors/Warnings | Notes                                                                     |
 | ----------------------- | ------ | ----------------------- | ------------------------------------------------------------------------- |
-| `/en/pwa-preview`       | PASS   | None                    | Correctly redirects to listing and displays "Install CampOps App" banner. |
+| `/en/pwa-preview`       | PASS   | None                    | Correctly redirects to listing and displays "Install SinaiCamps App" banner. |
 | `/manifest.webmanifest` | PASS   | None                    | Generated correctly by `src/app/manifest.ts`.                             |
 | `http://127.0.0.1:3000` | PASS   | None                    | Custom domain logic verified; rewrites to Safari Camp branding.           |
 

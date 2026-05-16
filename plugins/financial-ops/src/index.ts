@@ -1,4 +1,4 @@
-import type { PluginAPI } from '@campops/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 
 export default async function init(api: PluginAPI) {
   api.logger.info('Initializing Financial Operations Plugin...');

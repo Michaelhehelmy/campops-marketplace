@@ -104,7 +104,7 @@ export default async function PropertyPage({ params, searchParams }: Props) {
           <div className="flex items-center gap-3">
             <Download className="w-5 h-5" />
             <div>
-              <p className="font-bold">Install CampOps App</p>
+              <p className="font-bold">Install SinaiCamps App</p>
               <p className="text-sm text-brand-100">Get the full experience</p>
             </div>
           </div>

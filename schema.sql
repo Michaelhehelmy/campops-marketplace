@@ -1,4 +1,4 @@
--- CampOps Marketplace PostgreSQL Schema
+-- SinaiCamps Marketplace PostgreSQL Schema
 -- Optimized for production launch
 
 -- Enable extensions

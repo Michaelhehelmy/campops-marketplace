@@ -1,6 +1,6 @@
 # Deployment
 
-This guide covers deploying CampOps Marketplace to production. The app is a standard Next.js application and can be deployed anywhere Node.js runs.
+This guide covers deploying SinaiCamps Marketplace to production. The app is a standard Next.js application and can be deployed anywhere Node.js runs.
 
 ---
 
@@ -64,11 +64,11 @@ CMD ["node", "server.js"]
 ### Build & run
 
 ```bash
-docker build -t campops-marketplace .
+docker build -t sinaicamps-marketplace .
 docker run -p 3001:3001 \
   -e NEXT_PUBLIC_API_URL=https://api.yourcamp.com \
   -e NEXT_PUBLIC_BASE_DOMAIN=yourcamp.com \
-  campops-marketplace
+  sinaicamps-marketplace
 ```
 
 ---
@@ -89,8 +89,8 @@ docker run -p 3001:3001 \
 npm install -g pm2
 
 # Clone and build
-git clone https://github.com/your-org/campops-marketplace.git
-cd campops-marketplace
+git clone https://github.com/your-org/sinaicamps-marketplace.git
+cd sinaicamps-marketplace
 npm install
 npm run build
 
@@ -106,7 +106,7 @@ pm2 startup
 # /etc/caddy/Caddyfile
 
 # Wildcard for subdomains (requires DNS-01 challenge)
-*.campops.com, campops.com {
+*.sinaicamps.com, sinaicamps.com {
     tls {
         dns cloudflare {env.CF_API_TOKEN}
     }

@@ -66,7 +66,7 @@ Running 47 tests using 6 workers
       14 |     await page.waitForTimeout(500);
       15 |
       16 |     // Enable CRM
-        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:13:25
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/booking_crm.spec.ts:13:25
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/test-failed-1.png
@@ -90,7 +90,7 @@ Running 47 tests using 6 workers
       62 |     await expect(page.locator('text=Booking Confirmed!')).toBeVisible();
       63 |     
       64 |     // 3. Verify NO CRM activity (widget should be missing)
-        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:61:16
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/booking_crm.spec.ts:61:16
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/booking_crm-Booking-CRM-Pl-9a99e-rks-even-if-CRM-is-disabled-chromium/test-failed-1.png
@@ -118,7 +118,7 @@ Running 47 tests using 6 workers
       100 |     });
       101 |
       102 |     authenticatedTest('manager can access their own listings', async ({ page, managerSession }) => {
-        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:99:26
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/manager.spec.ts:99:26
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/manager-Authenticated-mana-7d492-another-listing-admin-pages-chromium/test-failed-1.png
@@ -147,7 +147,7 @@ Running 47 tests using 6 workers
       32 |     await expect(page.getByText('Enabled')).toBeVisible();
       33 |
       34 |     // 2. Visit listing as guest and verify banner
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:31:93
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:31:93
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/test-failed-1.png
@@ -171,7 +171,7 @@ Running 47 tests using 6 workers
       73 |     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
       74 |
       75 |     // 3. Check as manager in admin
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:72:62
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:72:62
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
@@ -195,7 +195,7 @@ Running 47 tests using 6 workers
       102 |     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
       103 |
       104 |     // 2. Check CRM history as manager
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:101:62
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:101:62
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
@@ -224,7 +224,7 @@ Running 47 tests using 6 workers
       138 |
       139 |     // Verify Mountain Lodge doesn't
       140 |     await page.goto('/en/stay/mountain-lodge');
-        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:137:73
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/plugin-lifecycle.spec.ts:137:73
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/test-failed-1.png
@@ -250,10 +250,10 @@ Running 47 tests using 6 workers
       35 |     const banner = page.getByTestId('pwa-install-banner');
     > 36 |     await expect(banner).toBeVisible();
          |                          ^
-      37 |     await expect(banner).toContainText('Install CampOps App');
+      37 |     await expect(banner).toContainText('Install SinaiCamps App');
       38 |     
       39 |     // 4. Disable PWA plugin and verify banner disappears
-        at /home/michael/Proj/campops-marketplace/e2e/tests/pwa.spec.ts:36:26
+        at /home/michael/Proj/sinaicamps-marketplace/e2e/tests/pwa.spec.ts:36:26
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/pwa-PWA-Plugin-E2E-toggle-PWA-plugin-and-verify-banner-chromium/test-failed-1.png

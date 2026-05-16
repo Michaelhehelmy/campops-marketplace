@@ -19,7 +19,7 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
             <div className="h-8 w-8 bg-brand-600 rounded-lg flex items-center justify-center font-black text-white cursor-pointer">
               C
             </div>
-            <h2 className="font-black text-xl tracking-tight cursor-pointer">CampOps</h2>
+            <h2 className="font-black text-xl tracking-tight cursor-pointer">SinaiCamps</h2>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -72,7 +72,7 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
       <footer className="bg-white border-t border-gray-100 py-12 mt-20">
         <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
           <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-            © 2026 CampOps Marketplace. All rights reserved.
+            © 2026 SinaiCamps Marketplace. All rights reserved.
           </div>
           <div className="flex gap-8">
             <button className="text-[10px] text-gray-400 font-bold uppercase tracking-widest hover:text-brand-600 transition-all">

@@ -1,5 +1,5 @@
 {
-  "name": "@campops/plugin-listing-admin",
+  "name": "@sinaicamps/plugin-listing-admin",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "typescript": "^6.0.3",
-    "@campops/plugin-sdk": "file:../../packages/plugin-sdk"
+    "@sinaicamps/plugin-sdk": "file:../../packages/plugin-sdk"
   }
 }

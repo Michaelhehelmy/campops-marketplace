@@ -45,7 +45,7 @@ test.describe('Marketplace Master (Global Admin)', () => {
 
     // Update platform name
     const platformNameInput = page.getByLabel(/Platform Name/i);
-    await platformNameInput.fill('CampOps Pro');
+    await platformNameInput.fill('SinaiCamps Pro');
     await page.getByRole('button', { name: /Save Settings/i }).click();
 
     await expect(page.getByText(/Settings saved/i).first()).toBeVisible();

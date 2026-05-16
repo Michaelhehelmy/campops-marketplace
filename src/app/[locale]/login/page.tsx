@@ -100,7 +100,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
                     data-testid="email-input"
                     className="block w-full pl-10 pr-3 py-3 bg-gray-50 border-0 rounded-2xl ring-1 ring-gray-200 focus:ring-2 focus:ring-brand-600 transition-all text-gray-900 placeholder-gray-400"
                     placeholder="name@example.com"
-                    defaultValue="admin@marketplace.com"
+                    defaultValue="admin@sinaicamps.com"
                   />
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
 
           <div className="mt-8 pt-6 border-t border-gray-100 text-center">
             <p className="text-sm text-gray-500">
-              New to CampOps?{' '}
+              New to SinaiCamps?{' '}
               <a
                 href={`/${params.locale}/list-your-camp`}
                 className="font-bold text-brand-600 hover:underline"
@@ -175,7 +175,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
 
         <div className="text-center">
           <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">
-            Demo Credentials: admin@marketplace.com / password123
+            Demo Credentials: admin@sinaicamps.com / password123
           </p>
         </div>
       </div>
