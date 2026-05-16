@@ -1,45 +1,67 @@
-# Cloudflare Deployment Configuration
+# Cloudflare Setup Guide for SinaiCamps
 
-## Architecture Overview
+This guide explains how to connect your **Oracle Cloud VM** (The Backend) and **Cloudflare Pages** (The Listing Frontends) for a professional, secure, and automated setup.
 
-SinaiCamps Marketplace uses a hybrid deployment model suitable for Cloudflare:
+---
 
-- **Cloudflare CDN/WAF**: Caches static assets, handles SSL termination, and proxies API requests.
-- **Backend Service**: Can be hosted on a PaaS (Render, Railway, Fly.io) or VPS using the provided `Dockerfile`.
+## 1. The Backend: Cloudflare Tunnel (Recommended)
+Instead of opening firewall ports on Oracle Cloud, use a **Cloudflare Tunnel**. It creates a secure bridge between your VM and Cloudflare.
 
-## DNS Configuration
+### Steps to Setup:
+1.  **Go to Cloudflare Zero Trust Dashboard**:
+    *   Navigate to **Networks** > **Tunnels**.
+    *   Click **Create a Tunnel** and name it `sinaicamps-backend`.
+2.  **Install on Oracle VM**:
+    *   Copy the installation command for "Debian" or "Ubuntu" provided by Cloudflare.
+    *   Run it on your Oracle VM via SSH.
+3.  **Configure Public Hostnames**:
+    *   In the Tunnel settings, add these hostnames:
+        *   `sinaicamps.com` -> `http://localhost:3000`
+        *   `api.sinaicamps.com` -> `http://localhost:3000`
 
-To support tenant subdomains, configure a wildcard DNS record in Cloudflare:
+---
 
-- **Type**: CNAME (or A record if using an IP)
-- **Name**: `*`
-- **Target**: `sinaicamps.com` (or your root origin hostname)
-- **Proxy status**: Proxied (Orange cloud)
+## 2. The Marketplace Domain (`sinaicamps.com`)
+This is your main platform where owners list their camps.
 
-## Page Rules / Cache Rules
+### DNS Settings:
+*   **A Record**: Name `@`, Content `129.151.224.102` (Set to **DNS Only** initially).
+*   **A Record**: Name `api`, Content `129.151.224.102` (Set to **DNS Only** initially).
+*   **SSL/TLS Mode**: Set to **Full (Strict)**.
 
-Ensure API and dynamic routes bypass the cache to maintain tenant isolation and authentication contexts:
+---
 
-1. **Bypass Cache for API**:
-   - URL: `*sinaicamps.com/api/*`
-   - Cache Level: Bypass
-2. **Bypass Cache for Dashboard**:
-   - URL: `*sinaicamps.com/dashboard/*`
-   - Cache Level: Bypass
-3. **Cache Static Assets**:
-   - URL: `*sinaicamps.com/_next/static/*`
-   - Cache Level: Cache Everything
+## 3. The Listing Sites (e.g., `acaciacamp.com`)
+These are high-performance "build frontends" hosted on **Cloudflare Pages**.
 
-## Edge Rules for Tenancy
+### Project Build Settings:
+1.  **Framework Preset**: `Next.js (Static Export)` or `None`.
+2.  **Build Command**: `npm run build`
+3.  **Build Output Directory**: `.next`
+4.  **Root Directory**: `/`
 
-If hosting multiple tenants on custom domains (e.g., `tenant1.com`), ensure you have **Cloudflare Custom Hostnames (SSL for SaaS)** configured to map their domain to your core infrastructure, allowing Next.js middleware to resolve the hostname.
+### Environment Variables:
+In your Pages project settings, add these variables to "Environment Variables":
+*   **`NEXT_PUBLIC_TENANT_ID`**: `acacia-1` (Match the ID in your database).
+*   **`NEXT_PUBLIC_API_URL`**: `https://api.sinaicamps.com`
+*   **`NODE_VERSION`**: `20`
 
-## Environment Variables
+### Custom Domain:
+1.  Go to the **Custom Domains** tab in your Pages project.
+2.  Add `acaciacamp.com`.
+3.  Cloudflare will handle the DNS and SSL automatically.
 
-Ensure the origin server's `.env` configuration contains:
+---
 
-```env
-NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.com
-```
+## 4. Automation & Sync
+Every time you push code to your **GitHub `main` branch**:
+1.  **Oracle Cloud** (via GitHub Actions) pulls the latest backend logic.
+2.  **Cloudflare Pages** automatically rebuilds every listing site.
+3.  All your camps get the latest features instantly without you doing anything.
 
-This is essential for the Next.js middleware to correctly extract tenant subdomains (e.g., `safari.sinaicamps.com` -> `safari`).
+---
+
+## 5. Security Checklist
+- [ ] **SSL/TLS**: Always use "Full (Strict)" in Cloudflare.
+- [ ] **WAF**: Enable the "Cloudflare Managed Ruleset" for SinaiCamps.com to block bots.
+- [ ] **CORS**: Ensure your Oracle Nginx config allows requests from your listing domains.
