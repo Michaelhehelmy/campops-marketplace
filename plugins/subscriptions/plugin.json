@@ -1,0 +1,21 @@
+{
+  "id": "subscriptions",
+  "name": "Memberships & Seasonal",
+  "version": "1.0.0",
+  "description": "Recurring billing for seasonal pitches, long-term stays, and club memberships.",
+  "author": "CampOps Core",
+  "category": "Sales & CRM",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["subscriptions:RecurringRevenueWidget"]
+  },
+  "menuItems": [
+    {
+      "id": "subscriptions-active",
+      "label": "Subscriptions",
+      "path": "/admin/sales/subscriptions",
+      "order": 35
+    }
+  ]
+}

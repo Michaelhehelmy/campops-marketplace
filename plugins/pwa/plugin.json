@@ -1,0 +1,22 @@
+{
+  "id": "pwa",
+  "name": "PWA & Notifications",
+  "version": "1.0.0",
+  "description": "Enables offline support and mobile install prompts for the shop frontend.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "listing.header": ["pwa:PWAInstallBanner"],
+    "dashboard.top": ["pwa:PWAInstallBanner"],
+    "admin.settings.tabs": ["pwa:PWASettingsPage"]
+  },
+  "menuItems": [
+    {
+      "id": "pwa-settings",
+      "label": "PWA Settings",
+      "path": "/admin/settings?tab=pwa",
+      "order": 90
+    }
+  ]
+}

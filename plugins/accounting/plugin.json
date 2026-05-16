@@ -1,0 +1,21 @@
+{
+  "id": "accounting",
+  "name": "Enterprise Accounting",
+  "version": "1.0.0",
+  "description": "Full-featured accounting module with general ledger, invoicing, and expense tracking.",
+  "author": "CampOps Core",
+  "category": "Finance",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["accounting:FinancialHealthWidget"]
+  },
+  "menuItems": [
+    {
+      "id": "accounting-ledger",
+      "label": "Accounting",
+      "path": "/admin/accounting",
+      "order": 20
+    }
+  ]
+}

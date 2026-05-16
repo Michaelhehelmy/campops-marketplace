@@ -1,0 +1,17 @@
+{
+  "name": "@campops/plugin-listing-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "lucide-react": "^0.511.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "@campops/plugin-sdk": "file:../../packages/plugin-sdk"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "maintenance",
+  "name": "Asset Maintenance",
+  "version": "1.0.0",
+  "description": "Equipment maintenance, work orders, and preventative maintenance schedules for campsites.",
+  "author": "CampOps Core",
+  "category": "Operations",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["maintenance:ActiveWorkOrdersWidget"]
+  },
+  "menuItems": [
+    {
+      "id": "maintenance-orders",
+      "label": "Maintenance",
+      "path": "/admin/maintenance",
+      "order": 45
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "resource",
+  "name": "Resource",
+  "version": "1.0.0",
+  "description": "Manages marketplace listings — public search, detail pages, master CRUD, and admin editing.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "public.homepage": ["resource:FeaturedListings"],
+    "public.search": ["resource:SearchBar"],
+    "public.listing-detail": ["resource:ListingDetail"],
+    "master.listings": ["resource:MasterListingsTable"],
+    "manage.property": ["resource:AdminEditForm"]
+  }
+}

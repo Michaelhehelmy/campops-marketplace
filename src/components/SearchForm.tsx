@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Search, Users, MapPin } from "lucide-react";
+import { useState } from 'react';
+import { Search, Users, MapPin } from 'lucide-react';
 
 interface SearchFormProps {
   onSearch: (params: {
@@ -22,24 +22,20 @@ interface SearchFormProps {
   };
 }
 
-const today = () => new Date().toISOString().split("T")[0];
+const today = () => new Date().toISOString().split('T')[0];
 const tomorrow = () => {
   const d = new Date();
   d.setDate(d.getDate() + 1);
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split('T')[0];
 };
 
-export default function SearchForm({
-  onSearch,
-  loading = false,
-  initialValues,
-}: SearchFormProps) {
+export default function SearchForm({ onSearch, loading = false, initialValues }: SearchFormProps) {
   const [checkIn, setCheckIn] = useState(initialValues?.checkIn ?? today());
   const [checkOut, setCheckOut] = useState(initialValues?.checkOut ?? tomorrow());
   const [adults, setAdults] = useState(initialValues?.adults ?? 2);
   const [children, setChildren] = useState(initialValues?.children ?? 0);
-  const [destination, setDestination] = useState(initialValues?.destination ?? "");
-  const [currency, setCurrency] = useState("USD");
+  const [destination, setDestination] = useState(initialValues?.destination ?? '');
+  const [currency, setCurrency] = useState('USD');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +53,7 @@ export default function SearchForm({
             type="text"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
-            placeholder="Anywhere"
+            placeholder="Search for camps"
             className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none"
           />
         </div>
@@ -126,8 +122,10 @@ export default function SearchForm({
             onChange={(e) => setCurrency(e.target.value)}
             className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none bg-white"
           >
-            {["USD", "EUR", "GBP", "AED", "EGP", "SAR"].map((c) => (
-              <option key={c} value={c}>{c}</option>
+            {['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR'].map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>
@@ -137,7 +135,7 @@ export default function SearchForm({
           className="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
         >
           <Search className="w-4 h-4" />
-          {loading ? "Searching…" : "Search"}
+          {loading ? 'Searching…' : 'Search'}
         </button>
       </div>
     </form>

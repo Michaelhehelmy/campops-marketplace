@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { CalendarDays, DollarSign, Star, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { CalendarDays, DollarSign, Star, ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { PluginShell } from '@/app/PluginShell';
 
 interface Stats {
   upcomingBookings: number;
@@ -15,26 +16,28 @@ interface Stats {
 export default function OwnerDashboardPage() {
   const { locale } = useParams();
   const [stats, setStats] = useState<Stats | null>(null);
-  const [propertyName, setPropertyName] = useState<string>("");
-  const [plan, setPlan] = useState<string>("basic");
+  const [propertyName, setPropertyName] = useState<string>('');
+  const [plan, setPlan] = useState<string>('basic');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/owner/me");
+        const res = await fetch('/api/owner/me');
         if (res.ok) {
           const data = await res.json();
           setPropertyName(data.property.name);
           setPlan(data.property.plan);
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
 
       // Stub stats — replace with real API call when endpoint exists
       setStats({
         upcomingBookings: 3,
         totalRevenue: 4200,
-        currency: "USD",
+        currency: 'USD',
         occupancyRate: 67,
       });
       setLoading(false);
@@ -51,17 +54,22 @@ export default function OwnerDashboardPage() {
 
   return (
     <div>
+      <PluginShell name="dashboard.top" />
+
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {propertyName ? `${propertyName}` : "Your Dashboard"}
+            {propertyName ? `${propertyName}` : 'Your Dashboard'}
           </h1>
           <p className="text-gray-500 mt-0.5">
             Plan: <span className="font-medium text-gray-700 capitalize">{plan}</span>
-            {plan === "basic" && (
+            {plan === 'basic' && (
               <>
-                {" · "}
-                <Link href={`/${locale}/list-your-camp/plan`} className="text-brand-600 hover:underline text-sm">
+                {' · '}
+                <Link
+                  href={`/${locale}/list-your-camp/plan`}
+                  className="text-brand-600 hover:underline text-sm"
+                >
                   Upgrade for full operations →
                 </Link>
               </>
@@ -69,6 +77,8 @@ export default function OwnerDashboardPage() {
           </p>
         </div>
       </div>
+
+      <PluginShell name="dashboard.middle" />
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
@@ -92,6 +102,8 @@ export default function OwnerDashboardPage() {
         />
       </div>
 
+      <PluginShell name="dashboard.widgets" />
+
       {/* Quick actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <QuickAction
@@ -107,11 +119,23 @@ export default function OwnerDashboardPage() {
           icon={<Star size={20} />}
         />
       </div>
+
+      <PluginShell name="dashboard.bottom" />
     </div>
   );
 }
 
-function StatCard({ icon, label, value, bg }: { icon: React.ReactNode; label: string; value: string; bg: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  bg,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  bg: string;
+}) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
       <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center mb-3`}>
@@ -123,7 +147,17 @@ function StatCard({ icon, label, value, bg }: { icon: React.ReactNode; label: st
   );
 }
 
-function QuickAction({ href, title, description, icon }: { href: string; title: string; description: string; icon: React.ReactNode }) {
+function QuickAction({
+  href,
+  title,
+  description,
+  icon,
+}: {
+  href: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
@@ -134,8 +168,13 @@ function QuickAction({ href, title, description, icon }: { href: string; title: 
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
-          <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors">{title}</h3>
-          <ArrowUpRight size={15} className="text-gray-400 group-hover:text-brand-600 transition-colors" />
+          <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors">
+            {title}
+          </h3>
+          <ArrowUpRight
+            size={15}
+            className="text-gray-400 group-hover:text-brand-600 transition-colors"
+          />
         </div>
         <p className="text-sm text-gray-500 mt-0.5">{description}</p>
       </div>

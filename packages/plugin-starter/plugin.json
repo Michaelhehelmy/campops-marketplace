@@ -1,0 +1,14 @@
+{
+  "id": "starter-plugin",
+  "name": "My Starter Plugin",
+  "version": "1.0.0",
+  "description": "A starter template for building CampOps plugins.",
+  "author": "Your Name",
+  "category": "general",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": []
+  },
+  "menuItems": []
+}

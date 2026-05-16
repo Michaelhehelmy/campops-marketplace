@@ -1,0 +1,19 @@
+{
+  "name": "@campops/plugin-testing",
+  "version": "1.0.0",
+  "description": "Testing utilities for CampOps plugins",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@campops/plugin-sdk": "*",
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0",
+    "typescript": "^5.4.5"
+  }
+}

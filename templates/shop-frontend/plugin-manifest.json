@@ -1,0 +1,49 @@
+[
+  {
+    "name": "stripe",
+    "version": "1.0.0",
+    "campopsVersion": ">=2.0.0",
+    "path": "plugins/stripe/index.ts",
+    "enabled": true,
+    "config": {
+      "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}",
+      "STRIPE_WEBHOOK_SECRET": "${STRIPE_WEBHOOK_SECRET}"
+    }
+  },
+  {
+    "name": "ical",
+    "version": "1.0.0",
+    "campopsVersion": ">=2.0.0",
+    "path": "plugins/ical/index.ts",
+    "enabled": true,
+    "config": {}
+  },
+  {
+    "name": "loyalty",
+    "version": "1.0.0",
+    "campopsVersion": ">=2.0.0",
+    "path": "plugins/loyalty/index.ts",
+    "enabled": false,
+    "config": {}
+  },
+  {
+    "name": "ical-import",
+    "version": "1.0.0",
+    "campopsVersion": ">=2.0.0",
+    "path": "plugins/ical-import/index.ts",
+    "enabled": false,
+    "config": {}
+  },
+  {
+    "name": "siteminder",
+    "version": "1.0.0",
+    "campopsVersion": ">=2.0.0",
+    "path": "plugins/siteminder/index.ts",
+    "enabled": false,
+    "config": {
+      "SITEMINDER_API_KEY": "${SITEMINDER_API_KEY}",
+      "SITEMINDER_HOTEL_ID": "${SITEMINDER_HOTEL_ID}",
+      "SITEMINDER_BASE_URL": "${SITEMINDER_BASE_URL}"
+    }
+  }
+]

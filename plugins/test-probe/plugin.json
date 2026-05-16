@@ -1,0 +1,26 @@
+{
+  "name": "test-probe",
+  "version": "1.0.0",
+  "apiVersion": "2.0.0",
+  "uiVersion": "1.0.0",
+  "description": "Minimal probe plugin for verifying core framework integration points in tests. Not for production use.",
+  "author": "CampOps Core Team",
+  "ui": {
+    "slots": ["dashboard.widgets", "listing.sidebar"],
+    "menuItems": [
+      {
+        "id": "test-probe-menu",
+        "label": "Test Probe",
+        "icon": "flask",
+        "path": "/admin/test-probe",
+        "order": 100
+      }
+    ]
+  },
+  "api": {
+    "staffEndpoints": [
+      { "method": "GET", "path": "/api/test-probe/ping", "auth": false },
+      { "method": "POST", "path": "/api/test-probe/echo", "auth": false }
+    ]
+  }
+}

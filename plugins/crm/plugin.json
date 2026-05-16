@@ -1,0 +1,13 @@
+{
+  "id": "crm",
+  "name": "Customer Relations",
+  "version": "1.0.0",
+  "description": "Guest relationship management and activity logging.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "guest.dashboard.bottom": ["crm:ActivityWidget"],
+    "admin.settings.tabs": ["crm:GuestHistory"]
+  }
+}

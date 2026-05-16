@@ -20,11 +20,11 @@ flowchart TD
 
 ## The three plans
 
-| Plan | Price | What the owner gets | Access URL |
-|------|-------|---------------------|------------|
-| **Basic** | Free | Public listing, read-only bookings, edit property details | `yourmarketplace.com/en/owner/dashboard` |
-| **Operations Suite** | $49/mo | Full Acacia Camp admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports | `campname.yourmarketplace.com/admin` |
-| **White Label** | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding | `ownersdomain.com/admin` |
+| Plan                 | Price  | What the owner gets                                                                       | Access URL                               |
+| -------------------- | ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **Basic**            | Free   | Public listing, read-only bookings, edit property details                                 | `yourmarketplace.com/en/owner/dashboard` |
+| **Operations Suite** | $49/mo | Full Acacia Camp admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports | `campname.yourmarketplace.com/admin`     |
+| **White Label**      | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding            | `ownersdomain.com/admin`                 |
 
 ---
 
@@ -33,6 +33,7 @@ flowchart TD
 ### Step 1 — Account details
 
 The owner provides:
+
 - Full name
 - Email address (must be unique in the system)
 - Password (minimum 8 characters)
@@ -42,6 +43,7 @@ This data is stored in `sessionStorage` and not sent to the API yet.
 ### Step 2 — Property details
 
 The owner provides:
+
 - Property name (a URL-safe slug is auto-generated from this)
 - Property type (camp, hotel, glamping, lodge, resort, villa)
 - City and country
@@ -54,6 +56,7 @@ The slug must be globally unique — it becomes the subdomain for the Operations
 The owner selects a plan. For **Basic**, no payment is required — the account is created immediately. For premium plans, a Stripe payment method is required before submission.
 
 On submit, the frontend calls `POST /api/owner/register` with all three steps' data combined. The backend atomically creates:
+
 1. A `users` record
 2. A `profiles` record (role: `property_owner`)
 3. A `properties` record (with `plan`, `subdomain`, and `custom_domain` fields populated)

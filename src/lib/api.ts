@@ -4,24 +4,33 @@
  * server via next.config.ts rewrites.
  */
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+import { logger } from './logger';
+
+const BASE =
+  typeof window === 'undefined' ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000' : '';
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const url = `${BASE}/api/public${path}`;
+  const url = path.startsWith('http') ? path : `${BASE}/api/public${path}`;
+  logger.debug(`[apiFetch] Fetching ${url}`);
   const res = await fetch(url, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...(init?.headers ?? {}),
     },
   });
 
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error((body as any).error ?? `HTTP ${res.status}`);
+  logger.debug(`[apiFetch] Received response for ${url}: status=${res.status}`);
+  const text = await res.text();
+  logger.debug(`[apiFetch] Raw response for ${url}:`, text);
+  try {
+    const data = JSON.parse(text);
+    logger.debug(`[apiFetch] Parsed JSON for ${url}:`, JSON.stringify(data));
+    return data as T;
+  } catch (e) {
+    logger.error(`[apiFetch] JSON parse error for ${url}:`, e);
+    throw new Error(`Invalid JSON response from ${url}`);
   }
-
-  return res.json() as Promise<T>;
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -103,19 +112,24 @@ export async function searchProperties(params: {
   return apiFetch<SearchResponse>(`/search?${qs}`);
 }
 
-export async function getProperty(slug: string, checkIn?: string, checkOut?: string, currency?: string) {
+export async function getProperty(
+  slug: string,
+  checkIn?: string,
+  checkOut?: string,
+  currency?: string
+) {
   const qs = new URLSearchParams();
-  if (checkIn) qs.set("checkIn", checkIn);
-  if (checkOut) qs.set("checkOut", checkOut);
-  if (currency) qs.set("currency", currency);
+  if (checkIn) qs.set('checkIn', checkIn);
+  if (checkOut) qs.set('checkOut', checkOut);
+  if (currency) qs.set('currency', currency);
   return apiFetch<{ property: any; room_types: any[]; availability: any[] }>(
-    `/properties/${slug}?${qs}`,
+    `/properties/${slug}?${qs}`
   );
 }
 
 export async function createBooking(payload: BookingPayload): Promise<BookingResponse> {
-  return apiFetch<BookingResponse>("/book", {
-    method: "POST",
+  return apiFetch<BookingResponse>('/book', {
+    method: 'POST',
     body: JSON.stringify(payload),
   });
 }
@@ -125,5 +139,5 @@ export async function getBooking(id: string) {
 }
 
 export async function getCurrencies(): Promise<{ currencies: string[] }> {
-  return apiFetch<{ currencies: string[] }>("/currencies");
+  return apiFetch<{ currencies: string[] }>('/currencies');
 }

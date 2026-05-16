@@ -1,0 +1,20 @@
+{
+  "id": "loyalty",
+  "name": "Beats Loyalty",
+  "version": "1.0.0",
+  "description": "Guest loyalty program based on Beats points. Awards points for stays and payments.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["loyalty:LoyaltyStatusWidget"]
+  },
+  "menuItems": [
+    {
+      "id": "loyalty-status",
+      "label": "My Loyalty",
+      "path": "/loyalty",
+      "order": 50
+    }
+  ]
+}

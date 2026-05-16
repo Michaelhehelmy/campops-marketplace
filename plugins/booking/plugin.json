@@ -1,0 +1,15 @@
+{
+  "id": "booking",
+  "name": "Marketplace Booking",
+  "version": "1.0.0",
+  "description": "Standardized booking flow and management.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "public.booking": ["booking:PublicBookingWidget"],
+    "manager.bookings": ["booking:ManagerBookingsList"],
+    "staff.checkins": ["booking:StaffCheckInPanel"],
+    "guest.dashboard": ["booking:GuestReservationsList"]
+  }
+}

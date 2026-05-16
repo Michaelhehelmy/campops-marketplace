@@ -1,0 +1,10 @@
+
+> @campops/marketplace@1.0.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.29
+  - Local:        http://localhost:3000
+  - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.7s

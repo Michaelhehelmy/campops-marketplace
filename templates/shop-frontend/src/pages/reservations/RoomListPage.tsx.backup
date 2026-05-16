@@ -1,0 +1,247 @@
+/**
+ * Room List Page
+ * Displays all rooms with availability status and check-in/check-out controls
+ */
+
+import { useState } from "react";
+import { useRooms, useReservations, useCheckIn, useCheckOut } from "@/hooks/queries/useRooms";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { formatCurrency } from "@/lib/utils";
+import type { Room, Reservation } from "@/types/api";
+import { LogIn, LogOut, X, User, Calendar } from "lucide-react";
+import { format } from "date-fns";
+import toast from "react-hot-toast";
+
+export default function RoomListPage() {
+  const { hasPermission } = useAuth();
+  const { data: rooms, isLoading } = useRooms();
+  const { data: reservationsData } = useReservations();
+  const checkIn = useCheckIn();
+  const checkOut = useCheckOut();
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+
+  const reservations = reservationsData?.data ?? [];
+
+  function getReservationForRoom(roomId: string): Reservation | undefined {
+    return reservations.find(
+      (r) => r.room_id === roomId && (r.status === "confirmed" || r.status === "checked_in")
+    );
+  }
+
+  function handleCheckIn(reservation: Reservation) {
+    if (!confirm(`Check in guest for reservation ${reservation.id.slice(0, 8)}...?`)) return;
+    checkIn.mutate(reservation.id, {
+      onSuccess: () => toast.success("Guest checked in successfully!"),
+      onError: () => toast.error("Check-in failed"),
+    });
+  }
+
+  function handleCheckOut(reservation: Reservation) {
+    if (!confirm(`Check out guest for reservation ${reservation.id.slice(0, 8)}...?`)) return;
+    checkOut.mutate(reservation.id, {
+      onSuccess: () => toast.success("Guest checked out successfully!"),
+      onError: () => toast.error("Check-out failed"),
+    });
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "available":
+        return "bg-green-100 text-green-800";
+      case "occupied":
+        return "bg-red-100 text-red-800";
+      case "dirty":
+        return "bg-yellow-100 text-yellow-800";
+      case "maintenance":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Rooms & Reservations</h1>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-40" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const selectedReservation = selectedRoom ? getReservationForRoom(selectedRoom.id) : undefined;
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Rooms & Reservations</h1>
+      </div>
+
+      <div className="flex gap-6">
+        {/* Room Grid */}
+        <div className="flex-1">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {rooms?.data.map((room) => {
+              const res = getReservationForRoom(room.id);
+              return (
+                <Card
+                  key={room.id}
+                  className={`cursor-pointer transition-shadow hover:shadow-lg ${
+                    selectedRoom?.id === room.id ? "ring-2 ring-primary" : ""
+                  }`}
+                  onClick={() => setSelectedRoom(room)}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-base">{room.name}</CardTitle>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(room.status)}`}
+                      >
+                        {room.status}
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">
+                        {room.type} · {room.capacity} guests
+                      </p>
+                      {room.rate_plans && (
+                        <p className="text-sm font-semibold">
+                          {formatCurrency(room.rate_plans.base_price)}
+                          <span className="text-xs text-muted-foreground font-normal"> /night</span>
+                        </p>
+                      )}
+                      {res && (
+                        <div className="mt-2 pt-2 border-t">
+                          <Badge
+                            variant={res.status === "checked_in" ? "success" : "warning"}
+                            className="text-xs"
+                          >
+                            {res.status === "checked_in" ? "Occupied" : "Arriving"}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Side Panel */}
+        {selectedRoom && (
+          <div className="w-80 shrink-0">
+            <Card className="sticky top-6">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                  <CardTitle>{selectedRoom.name}</CardTitle>
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedRoom(null)}>
+                    <X size={16} />
+                  </Button>
+                </div>
+                <span
+                  className={`inline-block px-2 py-1 rounded-full text-xs font-medium w-fit ${getStatusColor(selectedRoom.status)}`}
+                >
+                  {selectedRoom.status}
+                </span>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-sm space-y-1">
+                  <p>
+                    <span className="text-muted-foreground">Type:</span> {selectedRoom.type}
+                  </p>
+                  <p>
+                    <span className="text-muted-foreground">Capacity:</span> {selectedRoom.capacity}{" "}
+                    guests
+                  </p>
+                  {selectedRoom.rate_plans && (
+                    <p>
+                      <span className="text-muted-foreground">Rate:</span>{" "}
+                      {formatCurrency(selectedRoom.rate_plans.base_price)}/night
+                    </p>
+                  )}
+                </div>
+
+                {/* Reservation Details */}
+                {selectedReservation ? (
+                  <div className="border-t pt-4 space-y-3">
+                    <h4 className="font-semibold text-sm flex items-center gap-2">
+                      <User size={14} /> Current Reservation
+                    </h4>
+                    <div className="text-sm space-y-1">
+                      <p>
+                        <span className="text-muted-foreground">Guest:</span>{" "}
+                        {selectedReservation.guest_name ||
+                          selectedReservation.guest_id?.slice(0, 8)}
+                      </p>
+                      <p>
+                        <span className="text-muted-foreground">Status:</span>{" "}
+                        <Badge variant="outline">{selectedReservation.status}</Badge>
+                      </p>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Calendar size={12} />
+                        <span>
+                          {selectedReservation.check_in
+                            ? format(new Date(selectedReservation.check_in), "MMM d")
+                            : "—"}{" "}
+                          –{" "}
+                          {selectedReservation.check_out
+                            ? format(new Date(selectedReservation.check_out), "MMM d, yyyy")
+                            : "—"}
+                        </span>
+                      </div>
+                      {selectedReservation.guest_count && (
+                        <p>
+                          <span className="text-muted-foreground">Guests:</span>{" "}
+                          {selectedReservation.guest_count}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    {hasPermission("reservations.edit") && (
+                      <div className="flex gap-2">
+                        {selectedReservation.status === "confirmed" && (
+                          <Button
+                            className="flex-1 gap-2"
+                            onClick={() => handleCheckIn(selectedReservation)}
+                            disabled={checkIn.isPending}
+                          >
+                            <LogIn size={16} /> Check In
+                          </Button>
+                        )}
+                        {selectedReservation.status === "checked_in" && (
+                          <Button
+                            variant="outline"
+                            className="flex-1 gap-2"
+                            onClick={() => handleCheckOut(selectedReservation)}
+                            disabled={checkOut.isPending}
+                          >
+                            <LogOut size={16} /> Check Out
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="border-t pt-4 text-center text-sm text-muted-foreground">
+                    No active reservation for this room.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

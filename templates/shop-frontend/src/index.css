@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 25% 98%; /* Cream/Beige */
+    --foreground: 204 19% 15%; /* Charcoal */
+    --card: 0 0% 100%;
+    --card-foreground: 204 19% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 204 19% 15%;
+    --primary: 30 52% 35.5%; /* Acacia */
+    --primary-foreground: 45 20% 98%;
+    --secondary: 146 50.3% 36.3%;
+    --secondary-foreground: 45 20% 98%;
+    --muted: 40 10% 95%;
+    --muted-foreground: 204 19% 46%;
+    --accent: 30 52% 45.5%;
+    --accent-foreground: 45 20% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 30 52% 35.5%;
+    --radius: 0.75rem;
+
+    /* Sidebar - Premium Navy */
+    --sidebar-background: 222 47% 11%; /* Deep Navy */
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 30 52% 45.5%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 30 52% 35.5%;
+  }
+
+  .dark {
+    /* Maintain light theme colors even in dark mode for brand consistency, 
+       or define a very subtle dark desert theme if needed. 
+       For now, we follow the user's focus on the warm earthy light theme. */
+    --background: 204 19% 15%;
+    --foreground: 39 81% 95%;
+    --primary: 30 52% 45.5%;
+    --primary-foreground: 45 20% 98%;
+    --secondary: 146 40.3% 46.3%;
+    --card: 204 19% 20%;
+    --card-foreground: 39 81% 95%;
+    --border: 204 19% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

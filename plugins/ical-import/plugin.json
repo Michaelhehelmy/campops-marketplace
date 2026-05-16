@@ -1,0 +1,8 @@
+{
+  "id": "ical-import",
+  "name": "iCal Import Adapter",
+  "version": "1.0.0",
+  "description": "Wraps ICalSyncService as an OTAAdapter for the OtaSyncQueue.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts"
+}

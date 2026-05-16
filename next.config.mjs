@@ -1,49 +1,24 @@
-import createNextIntlPlugin from "next-intl/plugin";
+import createNextIntlPlugin from 'next-intl/plugin';
 
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
-const ADMIN_SPA_URL = process.env.ADMIN_SPA_URL ?? "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const ADMIN_SPA_URL = process.env.ADMIN_SPA_URL ?? 'http://localhost:3000';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   env: {
-    NEXT_PUBLIC_API_URL: API_URL,
-    NEXT_PUBLIC_BASE_DOMAIN: process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "campops.com",
+    NEXT_PUBLIC_API_URL: process.env.API_URL || API_URL,
+    NEXT_PUBLIC_BASE_DOMAIN: process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'campops.com',
+    NEXT_PUBLIC_TENANT_ID: process.env.TENANT_ID || '',
   },
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "**" },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },
   async rewrites() {
-    return [
-      // Next.js Route Handlers at /api/auth/* must NOT be proxied to Express
-      // (they are handled by the Next.js app itself)
-      {
-        source: "/api/auth/callback",
-        destination: "/api/auth/callback",
-      },
-      {
-        source: "/api/auth/logout",
-        destination: "/api/auth/logout",
-      },
-      // All other /api/* calls → Express backend
-      {
-        source: "/api/:path*",
-        destination: `${API_URL}/api/:path*`,
-      },
-      // /admin/* → Vite SPA (dev server or built static files)
-      {
-        source: "/admin",
-        destination: `${ADMIN_SPA_URL}/admin`,
-      },
-      {
-        source: "/admin/:path*",
-        destination: `${ADMIN_SPA_URL}/admin/:path*`,
-      },
-    ];
+    return [];
   },
 };
 

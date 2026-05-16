@@ -1,0 +1,40 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [main, 'tenant/**']
+
+jobs:
+  deploy-oracle:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Oracle
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ORACLE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && ./scripts/deploy-prod.sh"
+
+  deploy-cloudflare:
+    if: startsWith(github.ref, 'refs/heads/tenant/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Tenant Frontend
+        env:
+          TENANT_ID: ${{ github.ref_name }}
+          API_URL: https://api.marketplace.com
+          NODE_ENV: production
+        run: |
+          npm install
+          npm run build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: campops-tenant
+          directory: .next

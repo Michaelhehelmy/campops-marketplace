@@ -1,0 +1,12 @@
+{
+  "id": "ical",
+  "name": "iCal Sync",
+  "version": "1.0.0",
+  "description": "Sync room availability and reservations with external iCal feeds.",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["ical:ICalSyncWidget"]
+  }
+}

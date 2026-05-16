@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { Building2, MapPin, Globe } from "lucide-react";
+import { useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { Building2, MapPin, Globe } from 'lucide-react';
 
-const PROPERTY_TYPES = ["camp", "hotel", "glamping", "lodge", "resort", "villa"];
-const CURRENCIES = ["USD", "EUR", "GBP", "AED", "EGP", "SAR", "ZAR"];
+const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa'];
+const CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR', 'ZAR'];
 
 function toSlug(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[^a-z0-9\s-]/g, '')
     .trim()
-    .replace(/\s+/g, "-")
+    .replace(/\s+/g, '-')
     .slice(0, 40);
 }
 
@@ -21,12 +21,12 @@ export default function Step2PropertyPage() {
   const { locale } = useParams();
 
   const [form, setForm] = useState({
-    property_name: "",
-    slug: "",
-    type: "camp",
-    city: "",
-    country: "",
-    currency_code: "USD",
+    property_name: '',
+    slug: '',
+    type: 'camp',
+    city: '',
+    country: '',
+    currency_code: 'USD',
   });
   const [slugEdited, setSlugEdited] = useState(false);
 
@@ -40,7 +40,7 @@ export default function Step2PropertyPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("reg_step2", JSON.stringify(form));
+    sessionStorage.setItem('reg_step2', JSON.stringify(form));
     router.push(`/${locale}/list-your-camp/plan`);
   };
 
@@ -48,13 +48,15 @@ export default function Step2PropertyPage() {
     <div>
       <div className="mb-8">
         <div className="flex gap-2 mb-6">
-          {["Account", "Property", "Plan", "Done"].map((label, i) => (
+          {['Account', 'Property', 'Plan', 'Done'].map((label, i) => (
             <div key={label} className="flex items-center gap-2">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                ${i <= 1 ? "bg-brand-600 text-white" : "bg-gray-200 text-gray-400"}`}>
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
+                ${i <= 1 ? 'bg-brand-600 text-white' : 'bg-gray-200 text-gray-400'}`}
+              >
                 {i + 1}
               </div>
-              {i < 3 && <div className={`h-0.5 w-12 ${i < 1 ? "bg-brand-600" : "bg-gray-200"}`} />}
+              {i < 3 && <div className={`h-0.5 w-12 ${i < 1 ? 'bg-brand-600' : 'bg-gray-200'}`} />}
             </div>
           ))}
         </div>
@@ -62,7 +64,10 @@ export default function Step2PropertyPage() {
         <p className="text-gray-500 mt-1">This will appear on your public listing.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5"
+      >
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">Property name</label>
           <div className="relative">
@@ -80,7 +85,7 @@ export default function Step2PropertyPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            URL slug{" "}
+            URL slug{' '}
             <span className="text-xs font-normal text-gray-400">(used in your listing URL)</span>
           </label>
           <div className="flex items-center">
@@ -94,13 +99,15 @@ export default function Step2PropertyPage() {
               value={form.slug}
               onChange={(e) => {
                 setSlugEdited(true);
-                setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") });
+                setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') });
               }}
               placeholder="acacia-safari-camp"
               className="input rounded-l-none flex-1"
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1">3–40 lowercase letters, numbers, hyphens only.</p>
+          <p className="text-xs text-gray-400 mt-1">
+            3–40 lowercase letters, numbers, hyphens only.
+          </p>
         </div>
 
         <div>
@@ -111,7 +118,9 @@ export default function Step2PropertyPage() {
             className="input capitalize"
           >
             {PROPERTY_TYPES.map((t) => (
-              <option key={t} value={t} className="capitalize">{t}</option>
+              <option key={t} value={t} className="capitalize">
+                {t}
+              </option>
             ))}
           </select>
         </div>
@@ -153,7 +162,9 @@ export default function Step2PropertyPage() {
             className="input"
           >
             {CURRENCIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>

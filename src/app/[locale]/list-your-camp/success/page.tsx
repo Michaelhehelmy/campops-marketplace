@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useSearchParams, useParams } from "next/navigation";
-import Link from "next/link";
-import { CheckCircle2, ArrowRight, Globe } from "lucide-react";
+import { useSearchParams, useParams } from 'next/navigation';
+import Link from 'next/link';
+import { CheckCircle2, ArrowRight, Globe } from 'lucide-react';
 
-const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "campops.com";
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'campops.com';
 
 export default function SuccessPage() {
   const { locale } = useParams();
   const params = useSearchParams();
-  const plan = params.get("plan") ?? "basic";
-  const slug = params.get("slug") ?? "";
+  const plan = params.get('plan') ?? 'basic';
+  const slug = params.get('slug') ?? '';
 
-  const isPremium = plan === "subdomain" || plan === "custom_domain";
+  const isPremium = plan === 'subdomain' || plan === 'custom_domain';
   const dashboardUrl =
-    plan === "subdomain"
+    plan === 'subdomain'
       ? `https://${slug}.${BASE_DOMAIN}/admin/dashboard`
-      : plan === "custom_domain"
-      ? `/admin/dashboard`
-      : `/${locale}/owner/dashboard`;
+      : plan === 'custom_domain'
+        ? `/admin/dashboard`
+        : `/${locale}/owner/dashboard`;
 
   return (
     <div className="text-center py-8">
@@ -29,23 +29,28 @@ export default function SuccessPage() {
       <h1 className="text-3xl font-bold text-gray-900 mb-3">You're all set!</h1>
       <p className="text-gray-500 text-lg mb-8">
         {isPremium
-          ? "Your Operations Suite is ready. Head to your admin panel to set up rooms, rates, and more."
-          : "Your property is listed on CampOps. You can manage it from your owner dashboard."}
+          ? 'Your Operations Suite is ready. Head to your admin panel to set up rooms, rates, and more.'
+          : 'Your property is listed on CampOps. You can manage it from your owner dashboard.'}
       </p>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 text-left max-w-sm mx-auto">
         <h2 className="font-semibold text-gray-900 mb-4">What's next</h2>
         <ul className="space-y-3 text-sm text-gray-600">
-          {plan === "subdomain" && (
+          {plan === 'subdomain' && (
             <li className="flex items-start gap-2">
               <Globe className="w-4 h-4 text-brand-500 mt-0.5 shrink-0" />
-              Your subdomain: <strong className="text-gray-900 ml-1">{slug}.{BASE_DOMAIN}</strong>
+              Your subdomain:{' '}
+              <strong className="text-gray-900 ml-1">
+                {slug}.{BASE_DOMAIN}
+              </strong>
             </li>
           )}
-          {plan === "custom_domain" && (
+          {plan === 'custom_domain' && (
             <li className="flex items-start gap-2">
               <Globe className="w-4 h-4 text-brand-500 mt-0.5 shrink-0" />
-              Point your domain's CNAME to <strong className="text-gray-900 ml-1">{BASE_DOMAIN}</strong> — SSL will be provisioned automatically.
+              Point your domain's CNAME to{' '}
+              <strong className="text-gray-900 ml-1">{BASE_DOMAIN}</strong> — SSL will be
+              provisioned automatically.
             </li>
           )}
           <li className="flex items-start gap-2">
@@ -58,7 +63,9 @@ export default function SuccessPage() {
           </li>
           <li className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 text-brand-500 mt-0.5 shrink-0" />
-            {isPremium ? "Configure POS menus and inventory" : "View your first bookings as they arrive"}
+            {isPremium
+              ? 'Configure POS menus and inventory'
+              : 'View your first bookings as they arrive'}
           </li>
         </ul>
       </div>

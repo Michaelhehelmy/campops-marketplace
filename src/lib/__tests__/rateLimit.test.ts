@@ -1,0 +1,83 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { RateLimiter } from '../rateLimit';
+import { RateLimitError } from '../errors';
+
+describe('RateLimiter', () => {
+  let limiter: RateLimiter;
+
+  beforeEach(() => {
+    limiter = new RateLimiter(5, 60_000);
+  });
+
+  afterEach(() => {
+    limiter.stopCleanup();
+  });
+
+  it('should allow requests within limit', () => {
+    for (let i = 0; i < 5; i++) {
+      const info = limiter.check('user-1');
+      expect(info.remaining).toBe(4 - i);
+      expect(info.limit).toBe(5);
+    }
+  });
+
+  it('should throw RateLimitError when limit exceeded', () => {
+    for (let i = 0; i < 5; i++) {
+      limiter.check('user-1');
+    }
+    expect(() => limiter.check('user-1')).toThrow(RateLimitError);
+  });
+
+  it('should track different keys independently', () => {
+    for (let i = 0; i < 5; i++) {
+      limiter.check('user-1');
+    }
+    // user-2 should still be allowed
+    const info = limiter.check('user-2');
+    expect(info.remaining).toBe(4);
+  });
+
+  it('should reset window after expiry', async () => {
+    const shortLimiter = new RateLimiter(2, 10); // 10ms window
+    shortLimiter.check('user-1');
+    shortLimiter.check('user-1');
+    expect(() => shortLimiter.check('user-1')).toThrow(RateLimitError);
+
+    // Wait for window to expire
+    await new Promise((r) => setTimeout(r, 15));
+    const info = shortLimiter.check('user-1');
+    expect(info.remaining).toBe(1);
+    shortLimiter.stopCleanup();
+  });
+
+  it('should cleanup expired entries', async () => {
+    const shortLimiter = new RateLimiter(5, 10); // 10ms window
+    shortLimiter.check('user-1');
+    expect(shortLimiter.size).toBe(1);
+
+    await new Promise((r) => setTimeout(r, 15));
+    shortLimiter.cleanup();
+    expect(shortLimiter.size).toBe(0);
+    shortLimiter.stopCleanup();
+  });
+
+  it('should reset all state', () => {
+    limiter.check('user-1');
+    limiter.check('user-2');
+    limiter.reset();
+    expect(limiter.size).toBe(0);
+  });
+
+  it('should include retryAfter in RateLimitError', () => {
+    for (let i = 0; i < 5; i++) {
+      limiter.check('user-1');
+    }
+    try {
+      limiter.check('user-1');
+      expect.fail('Should have thrown');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RateLimitError);
+      expect((err as RateLimitError).details).toHaveProperty('retryAfter');
+    }
+  });
+});

@@ -1,191 +1,165 @@
-# CampOps Marketplace
+# CampOps Marketplace & Enterprise ERP
 
-> The public-facing hub for the CampOps platform — a Next.js application that lets guests discover and book camps, and lets owners self-register, manage their listings, and (on premium plans) access the full Acacia Camp operations suite.
+> The ultimate modular platform for hospitality management. A unified monorepo featuring a Next.js Marketplace, a plugin-driven Admin Shell, and a comprehensive Enterprise ERP ecosystem.
 
 ---
 
-## What is this?
+## 🏗️ Architecture: The "Clean Core"
 
-**CampOps Marketplace** is the main entry point for the entire CampOps ecosystem. It is built with [Next.js 14](https://nextjs.org), [Tailwind CSS](https://tailwindcss.com), and [next-intl](https://next-intl-docs.vercel.app). It connects to a running **Acacia Camp** backend (Express API) and optionally proxies the Acacia Camp admin SPA for premium property owners.
+CampOps is built on a **Clean Core** architecture. The main platform handles only identity, property isolation, and plugin lifecycle. All business logic—from bookings to payroll—is encapsulated in modular plugins.
 
 ```mermaid
-graph LR
-    Guest["🏕️ Guest (browser)"] -->|search / book| MKT["campops-marketplace\n(Next.js · port 3001)"]
-    Owner["🏠 Property Owner"] -->|register / manage| MKT
-    MKT -->|/api/* proxy| API["acacia-camp\n(Express · port 5000)"]
-    MKT -->|/admin/* proxy| SPA["Acacia Camp Admin SPA\n(Vite · port 3000)"]
-    API --> DB["PostgreSQL"]
-    API --> PLG["campops-ecosystem\n(Plugins)"]
+graph TD
+    Marketplace["🌐 Marketplace\n(Next.js · Port 3001)"] --> Core["⚙️ Clean Core API\n(Hono / Next.js)"]
+    Core --> Plugins["🔌 Plugin Ecosystem\n(/plugins)"]
+    Core --> DB["🗄️ Unified Database\n(PostgreSQL / D1)"]
+
+    subgraph "Enterprise Modules"
+        Plugins --> Accounting["💰 Accounting"]
+        Plugins --> HR["👥 HR & Payroll"]
+        Plugins --> CRM["🤝 Guest CRM"]
+        Plugins --> Ops["🛠️ Maintenance"]
+    end
+
+    subgraph "Frontend Shells"
+        Marketplace --> Admin["🛡️ Admin Shell"]
+        Marketplace --> Shop["🛒 Shop Template"]
+    end
 ```
 
 ---
 
-## Quick Start
+## 📂 Repository Structure
 
-### Prerequisites
-
-| Tool | Version |
-|------|---------|
-| Node.js | ≥ 20 |
-| npm | ≥ 10 |
-| Running Acacia Camp backend | see [integrating-acacia-camp.md](docs/integrating-acacia-camp.md) |
-
-### 1. Clone
-
-```bash
-git clone https://github.com/your-org/campops-marketplace.git
-cd campops-marketplace
+```text
+campops-marketplace/
+├── src/                      # 🏛️ Core Platform (Marketplace & Admin)
+│   ├── app/api/plugins/      # Plugin Registry & Lifecycle routes
+│   ├── app/[locale]/         # Marketplace & Admin Pages
+│   └── lib/                  # PluginDiscoveryService, DB, Auth
+│
+├── plugins/                  # 🔌 Enterprise Plugins (Self-contained packages)
+│   ├── accounting/           # Finance & Invoicing
+│   ├── loyalty/              # Guest Beats program
+│   ├── hr-core/              # Employee & Payroll
+│   └── ... (15+ modules)
+│
+├── packages/
+│   └── plugin-sdk/           # 🧰 The SDK used by all plugins
+│
+└── templates/
+    └── shop-frontend/        # 🎨 Premium React/Vite shop template
 ```
 
-### 2. Install dependencies
+---
+
+## 🚀 Quick Start
+
+### 1. Prerequisites
+
+- **Node.js**: ≥ 20
+- **Database**: PostgreSQL (or D1 for Cloudflare deployments)
+
+### 2. Installation
 
 ```bash
+git clone https://github.com/campops/marketplace.git
+cd campops-marketplace
 npm install
 ```
 
-### 3. Configure environment
+### 3. Synchronise Plugins
+
+Before starting, synchronise the filesystem plugins with the database:
 
 ```bash
-cp .env.example .env.local
-# Edit .env.local — at minimum set NEXT_PUBLIC_API_URL
+# Triggers the PluginDiscoveryService to scan /plugins and update registry
+curl -X POST http://localhost:3001/api/admin/plugins/sync
 ```
 
-### 4. Run in development
+### 4. Launch the System
 
 ```bash
-npm run dev        # starts on http://localhost:3001
+npm run dev
 ```
 
-### 5. Open
+- **Marketplace**: `http://localhost:3001`
+- **Admin Dashboard**: `http://localhost:3001/admin`
+- **Plugin Registry**: `http://localhost:3001/api/plugins/ui-registry`
 
-- Guest search: [http://localhost:3001/en/search](http://localhost:3001/en/search)
-- Owner registration: [http://localhost:3001/en/list-your-camp](http://localhost:3001/en/list-your-camp)
+## ✅ Code Quality & Checks
 
----
-
-## Repository Structure
-
-```
-campops-marketplace/
-├── src/
-│   ├── app/
-│   │   ├── [locale]/
-│   │   │   ├── page.tsx                    ← redirect to /search
-│   │   │   ├── layout.tsx                  ← locale wrapper (Nav + Footer)
-│   │   │   ├── search/page.tsx             ← property search
-│   │   │   ├── stay/[slug]/page.tsx        ← property detail
-│   │   │   ├── book/
-│   │   │   │   ├── page.tsx
-│   │   │   │   └── summary/page.tsx
-│   │   │   ├── list-your-camp/             ← owner registration flow
-│   │   │   │   ├── layout.tsx
-│   │   │   │   ├── page.tsx                ← step 1: account
-│   │   │   │   ├── property/page.tsx       ← step 2: property details
-│   │   │   │   ├── plan/page.tsx           ← step 3: plan selection
-│   │   │   │   └── success/page.tsx        ← step 4: confirmation
-│   │   │   ├── owner/                      ← basic-plan owner dashboard
-│   │   │   │   ├── layout.tsx
-│   │   │   │   ├── dashboard/page.tsx
-│   │   │   │   ├── bookings/page.tsx
-│   │   │   │   └── property/page.tsx
-│   │   │   └── login/page.tsx
-│   │   ├── api/
-│   │   │   └── auth/
-│   │   │       ├── callback/route.ts       ← sets httpOnly cookie
-│   │   │       └── logout/route.ts
-│   │   ├── layout.tsx                      ← root layout (html/body)
-│   │   ├── page.tsx                        ← redirects / → /en
-│   │   └── globals.css
-│   ├── components/
-│   │   ├── Nav.tsx
-│   │   ├── Footer.tsx
-│   │   ├── PropertyCard.tsx
-│   │   └── SearchForm.tsx
-│   ├── lib/
-│   │   └── api.ts                          ← fetch wrapper for /api/public/*
-│   ├── i18n/
-│   │   └── request.ts
-│   ├── messages/
-│   │   └── en.json
-│   └── middleware.ts                       ← tenant resolver + auth guard
-├── docs/
-│   ├── getting-started.md
-│   ├── customization.md
-│   ├── owner-onboarding.md
-│   ├── deployment.md
-│   ├── integrating-acacia-camp.md
-│   └── plugin-usage.md
-├── .env.example
-├── next.config.mjs
-├── tailwind.config.ts
-├── postcss.config.js
-├── tsconfig.json
-└── package.json
-```
-
----
-
-## Environment Variables
-
-See [`.env.example`](.env.example) for the full list. Key variables:
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | ✅ | URL of the Acacia Camp Express API (e.g. `http://localhost:5000`) |
-| `NEXT_PUBLIC_BASE_DOMAIN` | ✅ | Root domain for subdomain routing (e.g. `campops.com`) |
-| `ADMIN_SPA_URL` | — | URL of the Acacia Camp admin SPA for `/admin` proxy (default: `http://localhost:3000`) |
-| `JWT_SECRET` | — | Must match the secret used by the Acacia Camp backend |
-
----
-
-## Plans & Owner Access
-
-| Plan | Dashboard | Access URL |
-|------|-----------|------------|
-| `basic` | `/[locale]/owner/dashboard` | yourmarketplace.com |
-| `subdomain` | `/admin` (proxied SPA) | campname.yourmarketplace.com |
-| `custom_domain` | `/admin` (proxied SPA) | ownersdomain.com |
-
----
-
-## Documentation
-
-| Guide | Description |
-|-------|-------------|
-| [Getting Started](docs/getting-started.md) | Full installation walk-through |
-| [Customization](docs/customization.md) | Theming, branding, layout |
-| [Owner Onboarding](docs/owner-onboarding.md) | How camp owners register and choose plans |
-| [Deployment](docs/deployment.md) | Vercel, Docker, custom server |
-| [Integrating Acacia Camp](docs/integrating-acacia-camp.md) | Connecting to the backend |
-| [Plugin Usage](docs/plugin-usage.md) | Installing and activating plugins |
-
----
-
-## Scripts
+To maintain code health and high test coverage (>80%), the project uses a unified suite of checks.
 
 ```bash
-npm run dev          # development server (port 3001)
-npm run build        # production build
-npm run start        # production server
-npm run lint         # ESLint
+# Run formatting check, linting, and tests with coverage
+npm run check
+
+# Auto-format all code
+npm run format
+
+# Run full CI suite (including Playwright E2E)
+npm run check:full
+```
+
+For more details on the testing architecture, see [TESTING.md](TESTING.md).
+
+---
+
+## 🔌 Plugin Development
+
+### Creating a New Plugin
+
+We provide a standard starter template to ensure consistency:
+
+```bash
+cp -r packages/plugin-starter plugins/my-awesome-plugin
+# Edit plugins/my-awesome-plugin/plugin.json
+```
+
+### Package Structure
+
+Each plugin must follow this structure to be discovered by the core:
+
+- `plugin.json`: Metadata, slots, and menu items.
+- `package.json`: Dependencies.
+- `src/index.ts`: Backend logic (hooks, API).
+- `src/ui.tsx`: Frontend components (widgets, settings).
+
+### Registering UI Components
+
+Plugins export a `components` map in `src/ui.tsx`. These are automatically registered in the shell's `ComponentRegistry` via the `ui-registry` API.
+
+```typescript
+// plugins/my-plugin/src/ui.tsx
+export const components = {
+  MyWidget,
+  MySettingsPage,
+};
 ```
 
 ---
 
-## Tech Stack
+## 🛠️ Enterprise Categories (Odoo-Inspired)
 
-- **Framework:** Next.js 14 (App Router)
-- **Styling:** Tailwind CSS 3
-- **i18n:** next-intl
-- **Icons:** Lucide React
-- **API:** Fetch (proxied to Acacia Camp Express backend)
+The ecosystem is categorised for enterprise-grade scalability:
+
+- **Sales & CRM**: `loyalty`, `subscriptions`, `guest-crm`
+- **Finance**: `accounting`, `financial-ops`
+- **Operations**: `booking`, `maintenance`, `housekeeping`, `inventory-waste`
+- **Human Resources**: `hr-core`, `staff-roster`
+- **Marketing**: `marketing-automation`
 
 ---
 
-## Contributing
+## 📜 Documentation
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All code contributions require a linked issue.
+- [Plugin Development Guide](docs/plugins/plugin-development.md)
+- [Hook Catalog](docs/plugins/hook-catalog.md)
+- [Marketplace Integration](docs/integrating-acacia-camp.md)
 
-## License
+---
 
-MIT © CampOps
+## 📄 License
+
+Internal use only. Part of the CampOps Marketplace ecosystem.

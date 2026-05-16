@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Save, Loader2 } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Save, Loader2 } from 'lucide-react';
 
 interface PropertyForm {
   name: string;
@@ -12,13 +12,18 @@ interface PropertyForm {
   type: string;
 }
 
-const CURRENCIES = ["USD", "EUR", "GBP", "AED", "EGP", "SAR", "ZAR"];
-const PROPERTY_TYPES = ["camp", "hotel", "glamping", "lodge", "resort", "villa"];
+const CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR', 'ZAR'];
+const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa'];
 
 export default function OwnerPropertyPage() {
   const [propertyId, setPropertyId] = useState<string | null>(null);
   const [form, setForm] = useState<PropertyForm>({
-    name: "", description: "", city: "", country: "", currency_code: "USD", type: "camp",
+    name: '',
+    description: '',
+    city: '',
+    country: '',
+    currency_code: 'USD',
+    type: 'camp',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,21 +33,23 @@ export default function OwnerPropertyPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/owner/me");
+        const res = await fetch('/api/owner/me');
         if (res.ok) {
           const data = await res.json();
           const p = data.property;
           setPropertyId(p.id);
           setForm({
-            name: p.name ?? "",
-            description: p.description ?? "",
-            city: p.city ?? "",
-            country: p.country ?? "",
-            currency_code: p.currency_code ?? "USD",
-            type: p.type ?? "camp",
+            name: p.name ?? '',
+            description: p.description ?? '',
+            city: p.city ?? '',
+            country: p.country ?? '',
+            currency_code: p.currency_code ?? 'USD',
+            type: p.type ?? 'camp',
           });
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       setLoading(false);
     })();
   }, []);
@@ -55,19 +62,19 @@ export default function OwnerPropertyPage() {
 
     try {
       const res = await fetch(`/api/properties/${propertyId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Failed to save changes.");
+        setError(data.error ?? 'Failed to save changes.');
       } else {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError('Network error. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -88,7 +95,10 @@ export default function OwnerPropertyPage() {
         <p className="text-gray-500 mt-0.5">Update your public listing details.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6"
+      >
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
             {error}
@@ -152,7 +162,9 @@ export default function OwnerPropertyPage() {
               className="input capitalize"
             >
               {PROPERTY_TYPES.map((t) => (
-                <option key={t} value={t} className="capitalize">{t}</option>
+                <option key={t} value={t} className="capitalize">
+                  {t}
+                </option>
               ))}
             </select>
           </div>
@@ -164,7 +176,9 @@ export default function OwnerPropertyPage() {
               className="input"
             >
               {CURRENCIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
@@ -177,9 +191,13 @@ export default function OwnerPropertyPage() {
             className="btn-primary flex items-center gap-2 px-6"
           >
             {saving ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Saving…
+              </>
             ) : (
-              <><Save className="w-4 h-4" /> Save changes</>
+              <>
+                <Save className="w-4 h-4" /> Save changes
+              </>
             )}
           </button>
         </div>

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useTransition } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useTransition } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 
 interface Plan {
-  id: "basic" | "subdomain" | "custom_domain";
+  id: 'basic' | 'subdomain' | 'custom_domain';
   name: string;
   price: string;
   badge?: string;
@@ -15,52 +15,52 @@ interface Plan {
 
 const PLANS: Plan[] = [
   {
-    id: "basic",
-    name: "Basic Listing",
-    price: "Free forever",
+    id: 'basic',
+    name: 'Basic Listing',
+    price: 'Free forever',
     features: [
-      "Public listing on CampOps marketplace",
-      "View incoming bookings (read-only)",
-      "Edit property details, photos & amenities",
-      "Basic rate management",
+      'Public listing on CampOps marketplace',
+      'View incoming bookings (read-only)',
+      'Edit property details, photos & amenities',
+      'Basic rate management',
     ],
   },
   {
-    id: "subdomain",
-    name: "Operations Suite",
-    price: "$49 / month",
-    badge: "Most Popular",
+    id: 'subdomain',
+    name: 'Operations Suite',
+    price: '$49 / month',
+    badge: 'Most Popular',
     features: [
-      "Everything in Basic",
-      "Full Acacia Camp operations panel",
-      "POS, KDS, Housekeeping & Inventory",
-      "Loyalty & rewards program",
-      "Reports & analytics",
-      "Your own campname.campops.com subdomain",
-      "Plugin ecosystem access",
+      'Everything in Basic',
+      'Full Acacia Camp operations panel',
+      'POS, KDS, Housekeeping & Inventory',
+      'Loyalty & rewards program',
+      'Reports & analytics',
+      'Your own campname.campops.com subdomain',
+      'Plugin ecosystem access',
     ],
-    note: "14-day free trial, cancel anytime",
+    note: '14-day free trial, cancel anytime',
   },
   {
-    id: "custom_domain",
-    name: "White Label",
-    price: "$99 / month",
+    id: 'custom_domain',
+    name: 'White Label',
+    price: '$99 / month',
     features: [
-      "Everything in Operations Suite",
-      "Your own domain (e.g. bookings.mycamp.com)",
-      "Custom branding (logo & colors)",
-      "SSL certificate — fully managed",
-      "Priority support",
+      'Everything in Operations Suite',
+      'Your own domain (e.g. bookings.mycamp.com)',
+      'Custom branding (logo & colors)',
+      'SSL certificate — fully managed',
+      'Priority support',
     ],
-    note: "14-day free trial, cancel anytime",
+    note: '14-day free trial, cancel anytime',
   },
 ];
 
 export default function Step3PlanPage() {
   const router = useRouter();
   const { locale } = useParams();
-  const [selected, setSelected] = useState<Plan["id"]>("basic");
-  const [customDomain, setCustomDomain] = useState("");
+  const [selected, setSelected] = useState<Plan['id']>('basic');
+  const [customDomain, setCustomDomain] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -68,60 +68,65 @@ export default function Step3PlanPage() {
     e.preventDefault();
     setError(null);
 
-    const step1 = JSON.parse(sessionStorage.getItem("reg_step1") ?? "{}");
-    const step2 = JSON.parse(sessionStorage.getItem("reg_step2") ?? "{}");
+    const step1 = JSON.parse(sessionStorage.getItem('reg_step1') ?? '{}');
+    const step2 = JSON.parse(sessionStorage.getItem('reg_step2') ?? '{}');
 
     if (!step1.email || !step2.slug) {
-      setError("Registration data missing. Please start over.");
+      setError('Registration data missing. Please start over.');
       return;
     }
 
-    if (selected === "custom_domain" && !customDomain.trim()) {
-      setError("Please enter your custom domain.");
+    if (selected === 'custom_domain' && !customDomain.trim()) {
+      setError('Please enter your custom domain.');
       return;
     }
 
     startTransition(() => {
       void (async () => {
         try {
+          // Get branding data from session if available
+          const brandingData = sessionStorage.getItem('reg_branding');
+          const branding = brandingData ? JSON.parse(brandingData) : {};
+
           const body: Record<string, any> = {
             ...step1,
             ...step2,
             plan: selected,
+            branding,
           };
-          if (selected === "custom_domain") {
+          if (selected === 'custom_domain') {
             body.custom_domain = customDomain.trim().toLowerCase();
-            body.stripe_payment_method_id = "pm_placeholder"; // swap for real Stripe flow
+            body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
           }
-          if (selected === "subdomain") {
-            body.stripe_payment_method_id = "pm_placeholder"; // swap for real Stripe flow
+          if (selected === 'subdomain') {
+            body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
           }
 
-          const res = await fetch("/api/owner/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const res = await fetch('/api/owner/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
           });
 
           const data = await res.json();
           if (!res.ok) {
-            setError(data.error ?? "Registration failed. Please try again.");
+            setError(data.error ?? 'Registration failed. Please try again.');
             return;
           }
 
           // Store token as cookie via the auth callback route
-          await fetch("/api/auth/callback", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          await fetch('/api/auth/callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: data.token }),
           });
 
-          sessionStorage.removeItem("reg_step1");
-          sessionStorage.removeItem("reg_step2");
+          sessionStorage.removeItem('reg_step1');
+          sessionStorage.removeItem('reg_step2');
 
           router.push(`/${locale}/list-your-camp/success?plan=${selected}&slug=${step2.slug}`);
         } catch {
-          setError("Network error. Please check your connection and try again.");
+          setError('Network error. Please check your connection and try again.');
         }
       })();
     });
@@ -131,13 +136,15 @@ export default function Step3PlanPage() {
     <div>
       <div className="mb-8">
         <div className="flex gap-2 mb-6">
-          {["Account", "Property", "Plan", "Done"].map((label, i) => (
+          {['Account', 'Branding', 'Plan', 'Done'].map((label, i) => (
             <div key={label} className="flex items-center gap-2">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                ${i <= 2 ? "bg-brand-600 text-white" : "bg-gray-200 text-gray-400"}`}>
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
+                ${i <= 2 ? 'bg-brand-600 text-white' : 'bg-gray-200 text-gray-400'}`}
+              >
                 {i + 1}
               </div>
-              {i < 3 && <div className={`h-0.5 w-12 ${i < 2 ? "bg-brand-600" : "bg-gray-200"}`} />}
+              {i < 3 && <div className={`h-0.5 w-12 ${i < 2 ? 'bg-brand-600' : 'bg-gray-200'}`} />}
             </div>
           ))}
         </div>
@@ -159,8 +166,8 @@ export default function Step3PlanPage() {
               onClick={() => setSelected(plan.id)}
               className={`cursor-pointer rounded-2xl border-2 p-6 transition-all ${
                 selected === plan.id
-                  ? "border-brand-600 bg-brand-50 shadow-sm"
-                  : "border-gray-200 bg-white hover:border-brand-300"
+                  ? 'border-brand-600 bg-brand-50 shadow-sm'
+                  : 'border-gray-200 bg-white hover:border-brand-300'
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -182,20 +189,18 @@ export default function Step3PlanPage() {
                       </li>
                     ))}
                   </ul>
-                  {plan.note && (
-                    <p className="text-xs text-gray-400 mt-3">{plan.note}</p>
-                  )}
+                  {plan.note && <p className="text-xs text-gray-400 mt-3">{plan.note}</p>}
                 </div>
-                <div className={`w-5 h-5 rounded-full border-2 mt-0.5 shrink-0 flex items-center justify-center
-                  ${selected === plan.id ? "border-brand-600 bg-brand-600" : "border-gray-300"}`}>
-                  {selected === plan.id && (
-                    <div className="w-2 h-2 rounded-full bg-white" />
-                  )}
+                <div
+                  className={`w-5 h-5 rounded-full border-2 mt-0.5 shrink-0 flex items-center justify-center
+                  ${selected === plan.id ? 'border-brand-600 bg-brand-600' : 'border-gray-300'}`}
+                >
+                  {selected === plan.id && <div className="w-2 h-2 rounded-full bg-white" />}
                 </div>
               </div>
 
               {/* Custom domain input shown inline */}
-              {plan.id === "custom_domain" && selected === "custom_domain" && (
+              {plan.id === 'custom_domain' && selected === 'custom_domain' && (
                 <div className="mt-4 pt-4 border-t border-brand-200">
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Your custom domain
@@ -209,7 +214,8 @@ export default function Step3PlanPage() {
                     onClick={(e) => e.stopPropagation()}
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    Point a CNAME record from this domain to <code className="bg-gray-100 px-1 rounded">campops.com</code> after registering.
+                    Point a CNAME record from this domain to{' '}
+                    <code className="bg-gray-100 px-1 rounded">campops.com</code> after registering.
                   </p>
                 </div>
               )}
@@ -217,9 +223,10 @@ export default function Step3PlanPage() {
           ))}
         </div>
 
-        {(selected === "subdomain" || selected === "custom_domain") && (
+        {(selected === 'subdomain' || selected === 'custom_domain') && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-5 text-sm text-yellow-800">
-            <strong>Payment:</strong> Premium plans require a card. We'll collect payment details on the next step via Stripe. Your 14-day trial starts today.
+            <strong>Payment:</strong> Premium plans require a card. We'll collect payment details on
+            the next step via Stripe. Your 14-day trial starts today.
           </div>
         )}
 
@@ -242,7 +249,7 @@ export default function Step3PlanPage() {
                 Creating your account…
               </>
             ) : (
-              "Create my account →"
+              'Create my account →'
             )}
           </button>
         </div>

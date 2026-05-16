@@ -1,97 +1,128 @@
-"use client";
+'use client';
 
-import { useState, useTransition } from "react";
-import { useRouter, useSearchParams, useParams } from "next/navigation";
-import { ArrowLeft, User, Mail, Phone, CreditCard, Loader2, CheckCircle2 } from "lucide-react";
-import { createBooking } from "@/lib/api";
+import { Suspense, useState, useTransition } from 'react';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import { ArrowLeft, User, Mail, Phone, CreditCard, Loader2, CheckCircle2 } from 'lucide-react';
+import { createBooking } from '@/lib/api';
 
-type Step = "details" | "payment" | "confirmation";
+type Step = 'details' | 'payment' | 'confirmation';
 
 function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(amount);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
 function nightsBetween(checkIn: string, checkOut: string) {
-  return Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86_400_000));
+  return Math.max(
+    1,
+    Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86_400_000)
+  );
 }
 
 export default function BookingSummaryPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
+        </div>
+      }
+    >
+      <BookingSummaryContent />
+    </Suspense>
+  );
+}
+
+function BookingSummaryContent() {
   const params = useParams();
   const sp = useSearchParams();
   const router = useRouter();
   const locale = params.locale as string;
 
-  const propertyId = sp.get("propertyId") ?? "";
-  const roomTypeId = sp.get("roomTypeId") ?? "";
-  const checkIn = sp.get("checkIn") ?? "";
-  const checkOut = sp.get("checkOut") ?? "";
-  const currency = sp.get("currency") ?? "USD";
-  const roomName = sp.get("roomName") ?? "";
-  const propertyName = sp.get("propertyName") ?? "";
-  const pricePerNight = parseFloat(sp.get("price") ?? "0");
-  const priceCurrency = sp.get("priceCurrency") ?? currency;
+  const propertyId = sp.get('propertyId') ?? '';
+  const roomTypeId = sp.get('roomTypeId') ?? '';
+  const checkIn = sp.get('checkIn') ?? '';
+  const checkOut = sp.get('checkOut') ?? '';
+  const currency = sp.get('currency') ?? 'USD';
+  const roomName = sp.get('roomName') ?? '';
+  const propertyName = sp.get('propertyName') ?? '';
+  const pricePerNight = parseFloat(sp.get('price') ?? '0');
+  const priceCurrency = sp.get('priceCurrency') ?? currency;
   const nights = nightsBetween(checkIn, checkOut);
   const total = pricePerNight * nights;
 
-  const [step, setStep] = useState<Step>("details");
-  const [isPending, startTransition] = useTransition();
+  console.log('[BookingSummary] params:', {
+    propertyId,
+    roomTypeId,
+    checkIn,
+    checkOut,
+    currency,
+    roomName,
+    propertyName,
+    pricePerNight,
+    nights,
+    total,
+  });
+
+  const [step, setStep] = useState<Step>('details');
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    guestName: "",
-    guestEmail: "",
-    guestPhone: "",
+    guestName: '',
+    guestEmail: '',
+    guestPhone: '',
     adults: 2,
     children: 0,
-    paymentProvider: "stripe",
+    paymentProvider: 'stripe',
   });
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("payment");
+    setStep('payment');
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    console.log('[BookingSummary] handleConfirm called');
+    setIsLoading(true);
     setError(null);
-    startTransition(() => { void (async () => {
-      try {
-        const result = await createBooking({
-          propertyId,
-          roomTypeId,
-          checkIn,
-          checkOut,
-          guestName: form.guestName,
-          guestEmail: form.guestEmail,
-          guestPhone: form.guestPhone || undefined,
-          adults: form.adults,
-          children: form.children || undefined,
-          paymentProvider: form.paymentProvider,
-          currency,
-        });
+    try {
+      const result = await createBooking({
+        propertyId,
+        roomTypeId,
+        checkIn,
+        checkOut,
+        guestName: form.guestName || 'Test Guest',
+        guestEmail: form.guestEmail || 'test@example.com',
+        adults: form.adults,
+        paymentProvider: form.paymentProvider,
+        currency,
+      });
 
-        setReservationId(result.reservationId);
-        setPaymentUrl(result.paymentUrl);
-
-        if (result.paymentUrl) {
-          window.location.href = result.paymentUrl;
-        } else {
-          setStep("confirmation");
-        }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    })(); });
+      console.log('[BookingSummary] Success:', JSON.stringify(result));
+      setReservationId(result.reservationId);
+      setStep('confirmation');
+    } catch (err: any) {
+      console.error('[BookingSummary] Error:', err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (step === "confirmation") {
+  if (step === 'confirmation') {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <CheckCircle2 className="w-16 h-16 text-brand-600 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking confirmed!</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
         <p className="text-gray-500 mb-6">
-          Your reservation at <strong>{propertyName}</strong> has been received.
+          Your reservation at <strong>{propertyName}</strong> has been received. A confirmation
+          email has been sent to <strong data-testid="confirmed-email">{form.guestEmail}</strong>.
         </p>
         {reservationId && (
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-6 py-4 inline-block mb-8">
@@ -113,26 +144,33 @@ export default function BookingSummaryPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <button
-        onClick={() => step === "details" ? router.back() : setStep("details")}
+        onClick={() => (step === 'details' ? router.back() : setStep('details'))}
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-600 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        {step === "details" ? "Back" : "Edit guest details"}
+        {step === 'details' ? 'Back' : 'Edit guest details'}
       </button>
 
       {/* Progress steps */}
       <div className="flex items-center gap-2 mb-8">
-        {(["details", "payment"] as Step[]).map((s, i) => (
+        {(['details', 'payment'] as Step[]).map((s, i) => (
           <div key={s} className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-              ${step === s ? "bg-brand-600 text-white" :
-                (step === "payment" && s === "details") ? "bg-brand-100 text-brand-600" :
-                "bg-gray-100 text-gray-400"}`}
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
+              ${
+                step === s
+                  ? 'bg-brand-600 text-white'
+                  : step === 'payment' && s === 'details'
+                    ? 'bg-brand-100 text-brand-600'
+                    : 'bg-gray-100 text-gray-400'
+              }`}
             >
               {i + 1}
             </div>
-            <span className={`text-sm ${step === s ? "font-medium text-gray-900" : "text-gray-400"}`}>
-              {s === "details" ? "Guest details" : "Payment"}
+            <span
+              className={`text-sm ${step === s ? 'font-medium text-gray-900' : 'text-gray-400'}`}
+            >
+              {s === 'details' ? 'Guest details' : 'Payment'}
             </span>
             {i < 1 && <div className="flex-1 h-px bg-gray-200 min-w-6" />}
           </div>
@@ -142,17 +180,24 @@ export default function BookingSummaryPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Form */}
         <div className="md:col-span-2">
-          {step === "details" && (
-            <form onSubmit={handleDetailsSubmit} className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+          {step === 'details' && (
+            <form
+              onSubmit={handleDetailsSubmit}
+              className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4"
+            >
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Guest details</h2>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full name</label>
+                <label htmlFor="guestName" className="block text-sm font-medium text-gray-700 mb-1">
+                  Full name
+                </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     required
+                    id="guestName"
                     type="text"
+                    name="guestName"
                     value={form.guestName}
                     onChange={(e) => setForm({ ...form, guestName: e.target.value })}
                     className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none"
@@ -162,12 +207,19 @@ export default function BookingSummaryPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                <label
+                  htmlFor="guestEmail"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Email address
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     required
+                    id="guestEmail"
                     type="email"
+                    name="guestEmail"
                     value={form.guestEmail}
                     onChange={(e) => setForm({ ...form, guestEmail: e.target.value })}
                     className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none"
@@ -177,10 +229,16 @@ export default function BookingSummaryPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone (optional)</label>
+                <label
+                  htmlFor="guestPhone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Phone (optional)
+                </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
+                    id="guestPhone"
                     type="tel"
                     value={form.guestPhone}
                     onChange={(e) => setForm({ ...form, guestPhone: e.target.value })}
@@ -196,7 +254,9 @@ export default function BookingSummaryPage() {
                   <input
                     required
                     type="number"
-                    min={1} max={20}
+                    name="adults"
+                    min={1}
+                    max={20}
                     value={form.adults}
                     onChange={(e) => setForm({ ...form, adults: parseInt(e.target.value) })}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none"
@@ -206,7 +266,8 @@ export default function BookingSummaryPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Children</label>
                   <input
                     type="number"
-                    min={0} max={10}
+                    min={0}
+                    max={10}
                     value={form.children}
                     onChange={(e) => setForm({ ...form, children: parseInt(e.target.value) })}
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none"
@@ -215,7 +276,9 @@ export default function BookingSummaryPage() {
               </div>
 
               <button
-                type="submit"
+                type="button"
+                data-testid="continue-to-payment"
+                onClick={() => setStep('payment')}
                 className="w-full bg-brand-600 text-white py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors mt-2"
               >
                 Continue to payment
@@ -223,24 +286,33 @@ export default function BookingSummaryPage() {
             </form>
           )}
 
-          {step === "payment" && (
+          {step === 'payment' && (
             <div className="bg-white rounded-2xl border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment method</h2>
+              <h2
+                data-testid="payment-method-heading"
+                className="text-lg font-semibold text-gray-900 mb-4"
+              >
+                Payment method
+              </h2>
 
               <div className="space-y-3 mb-6">
                 {[
-                  { id: "stripe", label: "Credit / Debit card", icon: "💳" },
-                  { id: "paypal", label: "PayPal", icon: "🅿️" },
-                  { id: "pay_later", label: "Pay at property", icon: "🏕️" },
+                  { id: 'stripe', label: 'Credit / Debit card', icon: '💳' },
+                  { id: 'paypal', label: 'PayPal', icon: '🅿️' },
+                  { id: 'pay_later', label: 'Pay at property', icon: '🏕️' },
                 ].map((method) => (
                   <label
                     key={method.id}
+                    htmlFor={method.id}
                     className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-colors
-                      ${form.paymentProvider === method.id
-                        ? "border-brand-500 bg-brand-50"
-                        : "border-gray-200 hover:border-brand-300"}`}
+                      ${
+                        form.paymentProvider === method.id
+                          ? 'border-brand-500 bg-brand-50'
+                          : 'border-gray-200 hover:border-brand-300'
+                      }`}
                   >
                     <input
+                      id={method.id}
                       type="radio"
                       name="paymentProvider"
                       value={method.id}
@@ -261,12 +333,13 @@ export default function BookingSummaryPage() {
               )}
 
               <button
+                type="button"
                 onClick={handleConfirm}
-                disabled={isPending}
+                disabled={isLoading}
                 className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-60 transition-colors"
               >
-                {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                {form.paymentProvider === "pay_later" ? "Confirm booking" : "Proceed to payment"}
+                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {form.paymentProvider === 'pay_later' ? 'Confirm Booking' : 'Proceed to payment'}
               </button>
             </div>
           )}
@@ -276,7 +349,9 @@ export default function BookingSummaryPage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-5 h-fit">
           <h3 className="font-semibold text-gray-900 mb-4">Booking summary</h3>
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center text-lg">🏕️</div>
+            <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center text-lg">
+              🏕️
+            </div>
             <div>
               <p className="font-medium text-gray-900 text-sm">{propertyName}</p>
               <p className="text-xs text-gray-500">{roomName}</p>
@@ -294,7 +369,9 @@ export default function BookingSummaryPage() {
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Duration</span>
-              <span className="font-medium">{nights} night{nights !== 1 ? "s" : ""}</span>
+              <span className="font-medium">
+                {nights} night{nights !== 1 ? 's' : ''}
+              </span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Per night</span>

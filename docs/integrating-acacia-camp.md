@@ -44,6 +44,7 @@ async rewrites() {
 ```
 
 This means:
+
 - The browser never needs to know the backend URL.
 - CORS is not needed between the frontend and backend.
 - Cookies are same-origin.
@@ -54,19 +55,19 @@ This means:
 
 The Marketplace depends on these Acacia Camp routes:
 
-| Method | Path | Used for |
-|--------|------|---------|
-| `GET` | `/api/public/properties` | Search results |
-| `GET` | `/api/public/properties/:slug` | Property detail |
-| `POST` | `/api/public/bookings` | Create booking |
-| `GET` | `/api/public/bookings/:id` | Booking confirmation |
-| `GET` | `/api/public/currencies` | Currency list |
-| `POST` | `/api/owner/register` | Owner self-registration |
-| `GET` | `/api/owner/me` | Owner property + subscription info |
-| `PATCH` | `/api/properties/:id` | Owner edits their listing |
-| `GET` | `/api/reservations` | Owner bookings list |
-| `GET` | `/api/tenant/resolve?host=` | Tenant hostname resolution |
-| `GET` | `/api/feature-flags` | Feature flag state |
+| Method  | Path                           | Used for                           |
+| ------- | ------------------------------ | ---------------------------------- |
+| `GET`   | `/api/public/properties`       | Search results                     |
+| `GET`   | `/api/public/properties/:slug` | Property detail                    |
+| `POST`  | `/api/public/bookings`         | Create booking                     |
+| `GET`   | `/api/public/bookings/:id`     | Booking confirmation               |
+| `GET`   | `/api/public/currencies`       | Currency list                      |
+| `POST`  | `/api/owner/register`          | Owner self-registration            |
+| `GET`   | `/api/owner/me`                | Owner property + subscription info |
+| `PATCH` | `/api/properties/:id`          | Owner edits their listing          |
+| `GET`   | `/api/reservations`            | Owner bookings list                |
+| `GET`   | `/api/tenant/resolve?host=`    | Tenant hostname resolution         |
+| `GET`   | `/api/feature-flags`           | Feature flag state                 |
 
 ---
 
@@ -98,6 +99,7 @@ npm run dev:server
 ```
 
 Verify it is running:
+
 ```bash
 curl http://localhost:5000/api/feature-flags
 # → { "flags": [...] }
@@ -153,6 +155,7 @@ node scripts/mock-api.mjs   # starts on http://localhost:5000
 ```
 
 Then set:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```

@@ -1,0 +1,11 @@
+{
+  "id": "listing-admin",
+  "name": "Listing Admin",
+  "version": "1.0.0",
+  "description": "Property-level dashboard for marketplace stats (revenue, fees)",
+  "author": "CampOps Core",
+  "entry": "src/index.ts",
+  "category": "operations",
+  "isOfficial": true,
+  "permissions": ["read_properties", "read_reservations"]
+}

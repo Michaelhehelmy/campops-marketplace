@@ -1,0 +1,223 @@
+
+> @campops/marketplace@1.0.0 test
+> vitest run --run src/app/api/master/plugins/__tests__/route.test.ts
+
+
+ RUN  v4.1.5 /home/michael/Proj/campops-marketplace
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
+[Master Plugins API] Fetching plugins...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
+[Master Plugins API] Fetching total count...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
+[Master Plugins API] Fetching associations...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return all plugins
+[Master Plugins API] Success: 1 plugins, 10 total, 0 associations
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
+[Master Plugins API] Fetching plugins...
+
+stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle database errors gracefully
+[Master Plugins API] Error: Error: Database error
+    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
+[Master Plugins API] Fetching plugins...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
+[Master Plugins API] Fetching total count...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
+[Master Plugins API] Fetching associations...
+
+stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
+[Master Plugins API] Error: Error: Database error
+    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
+[Master Plugins API] Fetching plugins...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
+[Master Plugins API] Fetching total count...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
+[Master Plugins API] Fetching associations...
+
+stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
+[Master Plugins API] Error: Error: Database error
+    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
+[Master Plugins API] Fetching plugins...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
+[Master Plugins API] Fetching total count...
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
+[Master Plugins API] Fetching associations...
+
+stderr | src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
+[Master Plugins API] Error: Error: Database error
+    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:60:38
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should enable a plugin for a property
+[Master Plugins API] Toggle: plugin=ical-sync, property=1, enabled=true
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should enable a plugin for a property
+[Master Plugins API] Creating new association
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should disable a plugin for a property
+[Master Plugins API] Toggle: plugin=ical-sync, property=1, enabled=false
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should disable a plugin for a property
+[Master Plugins API] Updating existing association: existing
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should return 400 for missing required fields
+[Master Plugins API] Toggle: plugin=ical-sync, property=undefined, enabled=undefined
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
+[Master Plugins API] Toggle: plugin=ical-sync, property=1, enabled=true
+
+stderr | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should handle database errors gracefully
+[Master Plugins API] Error: Error: Database error
+    at /home/michael/Proj/campops-marketplace/src/app/api/master/plugins/__tests__/route.test.ts:177:38
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+    at file:///home/michael/Proj/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should not create new record when disabling non-existent plugin
+[Master Plugins API] Toggle: plugin=ical-sync, property=1, enabled=false
+
+stdout | src/app/api/master/plugins/__tests__/route.test.ts > POST /api/master/plugins/toggle > should return 400 when enabled is not a boolean
+[Master Plugins API] Toggle: plugin=ical-sync, property=1, enabled=true
+
+ ❯ src/app/api/master/plugins/__tests__/route.test.ts (11 tests | 3 failed) 42ms
+     ✓ should return all plugins 11ms
+     ✓ should handle database errors gracefully 5ms
+     × should return empty array when no plugins exist 6ms
+     × should handle null count result 3ms
+     × should handle custom limit and skip parameters 3ms
+     ✓ should enable a plugin for a property 2ms
+     ✓ should disable a plugin for a property 1ms
+     ✓ should return 400 for missing required fields 1ms
+     ✓ should handle database errors gracefully 3ms
+     ✓ should not create new record when disabling non-existent plugin 2ms
+     ✓ should return 400 when enabled is not a boolean 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should return empty array when no plugins exist
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ src/app/api/master/plugins/__tests__/route.test.ts:81:24
+     79|     const data = await res.json();
+     80|
+     81|     expect(res.status).toBe(200);
+       |                        ^
+     82|     expect(data.plugins).toEqual([]);
+     83|     expect(data.total).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle null count result
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ src/app/api/master/plugins/__tests__/route.test.ts:95:24
+     93|     const data = await res.json();
+     94|
+     95|     expect(res.status).toBe(200);
+       |                        ^
+     96|     expect(data.total).toBe(0);
+     97|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/app/api/master/plugins/__tests__/route.test.ts > GET /api/master/plugins > should handle custom limit and skip parameters
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ src/app/api/master/plugins/__tests__/route.test.ts:107:24
+    105|     const res = await GET(req);
+    106|
+    107|     expect(res.status).toBe(200);
+       |                        ^
+    108|   });
+    109| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 8 passed (11)
+   Start at  06:08:46
+   Duration  1.47s (transform 195ms, setup 922ms, import 81ms, tests 42ms, environment 0ms)
+
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /home/michael/Proj/campops-marketplace
+npm error workspace @campops/marketplace@1.0.0
+npm error location /home/michael/Proj/campops-marketplace
+npm error command failed
+npm error command sh -c vitest run --run src/app/api/master/plugins/__tests__/route.test.ts

@@ -1,0 +1,278 @@
+
+Running 47 tests using 6 workers
+
+  ✓   1 [chromium] › e2e/tests/guest.spec.ts:24:20 › Authenticated guest journeys › view reservations list (1.5s)
+  ✓   5 [chromium] › e2e/tests/guest.spec.ts:32:20 › Authenticated guest journeys › view following page (1.4s)
+  ✓   3 [chromium] › e2e/tests/guest.spec.ts:6:9 › Guest (logged-in user) › Authentication › guest dashboard redirects to login without auth (1.5s)
+  ✓   6 [chromium] › e2e/tests/guest.spec.ts:14:20 › Authenticated guest journeys › login and view dashboard (2.5s)
+  ✓   9 [chromium] › e2e/tests/manager.spec.ts:11:9 › Listing Manager / Staff › Navigation (unauthenticated) › bookings page loads (1.3s)
+  ✓   7 [chromium] › e2e/tests/guest.spec.ts:40:20 › Authenticated guest journeys › access settings page (1.5s)
+  ✓   8 [chromium] › e2e/tests/manager.spec.ts:6:9 › Listing Manager / Staff › Navigation (unauthenticated) › manage listing page loads (1.5s)
+  ✓  10 [chromium] › e2e/tests/manager.spec.ts:16:9 › Listing Manager / Staff › Navigation (unauthenticated) › finance page loads (1.2s)
+  ✓  11 [chromium] › e2e/tests/manager.spec.ts:21:9 › Listing Manager / Staff › Navigation (unauthenticated) › settings page loads (1.1s)
+  ✓  13 [chromium] › e2e/tests/manager.spec.ts:33:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner bookings redirects to login without auth (1.0s)
+  ✓  12 [chromium] › e2e/tests/manager.spec.ts:28:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner dashboard redirects to login without auth (1.1s)
+  ✓  14 [chromium] › e2e/tests/manager.spec.ts:38:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner property redirects to login without auth (1.0s)
+  ✓  16 [chromium] › e2e/tests/manager.spec.ts:62:20 › Authenticated manager journeys › access settings page (903ms)
+  ✓  15 [chromium] › e2e/tests/manager.spec.ts:46:20 › Authenticated manager journeys › login as manager and view bookings (1.0s)
+  ✓  17 [chromium] › e2e/tests/manager.spec.ts:54:20 › Authenticated manager journeys › view finance page (1.0s)
+  ✓  20 [chromium] › e2e/tests/manager.spec.ts:102:22 › Authenticated manager journeys › Cross-listing access › manager can access their own listings (884ms)
+  ✓  21 [chromium] › e2e/tests/manager.spec.ts:116:20 › Staff role restrictions › staff can view bookings (847ms)
+  ✓  22 [chromium] › e2e/tests/manager.spec.ts:124:20 › Staff role restrictions › staff can access settings (702ms)
+  ✓  23 [chromium] › e2e/tests/master.spec.ts:6:9 › Master account › Navigation (unauthenticated) › master admin page redirects to login without auth (718ms)
+  ✓  18 [chromium] › e2e/tests/manager.spec.ts:71:22 › Authenticated manager journeys › Admin financials › finance page shows commission and payment data matching bookings (1.9s)
+  ✓  24 [chromium] › e2e/tests/master.spec.ts:11:9 › Master account › Navigation (unauthenticated) › master dashboard redirects to login without auth (978ms)
+  ✓  25 [chromium] › e2e/tests/master.spec.ts:16:9 › Master account › Navigation (unauthenticated) › listings page redirects to login without auth (961ms)
+  ✓  26 [chromium] › e2e/tests/master.spec.ts:21:9 › Master account › Navigation (unauthenticated) › plugins page redirects to login without auth (874ms)
+  ✓  27 [chromium] › e2e/tests/master.spec.ts:26:9 › Master account › Navigation (unauthenticated) › accounts page redirects to login without auth (991ms)
+  ✓  28 [chromium] › e2e/tests/master.spec.ts:31:9 › Master account › Navigation (unauthenticated) › settings page redirects to login without auth (1.0s)
+  ✓  29 [chromium] › e2e/tests/master.spec.ts:38:9 › Master account › Setup flow (unauthenticated) › setup page redirects to login without auth (941ms)
+  ✘   2 [chromium] › e2e/tests/booking_crm.spec.ts:5:20 › Booking & CRM Plugin Integration E2E › full flow: book and see activity (9.3s)
+  ✓  31 [chromium] › e2e/tests/master.spec.ts:54:20 › Authenticated master journeys › view all listings (1.0s)
+  ✓  32 [chromium] › e2e/tests/master.spec.ts:62:20 › Authenticated master journeys › view plugins page (1.1s)
+  ✓  30 [chromium] › e2e/tests/master.spec.ts:46:20 › Authenticated master journeys › login as master and view dashboard (1.2s)
+  ✓  34 [chromium] › e2e/tests/master.spec.ts:87:22 › Authenticated master journeys › Plugin slot injection › enable plugin for listing and verify UI change (1.1s)
+  ✘  19 [chromium] › e2e/tests/manager.spec.ts:91:22 › Authenticated manager journeys › Cross-listing access › manager cannot access another listing admin pages (5.9s)
+  ✓  33 [chromium] › e2e/tests/master.spec.ts:78:20 › Authenticated master journeys › view settings page (1.2s)
+  ✓  35 [chromium] › e2e/tests/master.spec.ts:119:22 › Authenticated master journeys › Plugin slot injection › disable plugin for listing and verify UI change (1.1s)
+  ✓  36 [chromium] › e2e/tests/master.spec.ts:70:20 › Authenticated master journeys › view accounts page (1.2s)
+  ✓  37 [chromium] › e2e/tests/master.spec.ts:151:22 › Authenticated master journeys › Master configuration › change homepage section order and verify (3.4s)
+  ✓  42 [chromium] › e2e/tests/public.spec.ts:5:9 › Public (no login) › Basic navigation › homepage loads (1.3s)
+  ✓  43 [chromium] › e2e/tests/public.spec.ts:10:9 › Public (no login) › Basic navigation › login page loads (706ms)
+  ✓  44 [chromium] › e2e/tests/public.spec.ts:15:9 › Public (no login) › Basic navigation › search page loads (763ms)
+  ✓  45 [chromium] › e2e/tests/public.spec.ts:20:9 › Public (no login) › Basic navigation › list-your-camp page loads (722ms)
+  ✓  46 [chromium] › e2e/tests/public.spec.ts:27:9 › Public (no login) › Full booking flow › select listing, book dates, confirm (761ms)
+  ✘  41 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:15:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it (7.5s)
+  ✘  40 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:117:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings (8.8s)
+  ✘  47 [chromium] › e2e/tests/pwa.spec.ts:5:20 › PWA Plugin E2E › toggle PWA plugin and verify banner (7.9s)
+  ✘   4 [chromium] › e2e/tests/booking_crm.spec.ts:43:20 › Booking & CRM Plugin Integration E2E › Booking works even if CRM is disabled (30.1s)
+  ✘  38 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:84:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) (30.1s)
+  ✘  39 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:54:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) (30.1s)
+
+
+  1) [chromium] › e2e/tests/booking_crm.spec.ts:5:20 › Booking & CRM Plugin Integration E2E › full flow: book and see activity 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('booking-widget')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByTestId('booking-widget')[22m
+
+
+      24 |     
+      25 |     const bookingWidget = page.getByTestId('booking-widget');
+    > 26 |     await expect(bookingWidget).toBeVisible();
+         |                                 ^
+      27 |     
+      28 |     // Fill form and submit
+      29 |     await page.click('button:has-text("Reserve Now")');
+        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:26:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/error-context.md
+
+  2) [chromium] › e2e/tests/booking_crm.spec.ts:43:20 › Booking & CRM Plugin Integration E2E › Booking works even if CRM is disabled 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Reserve Now")')[22m
+
+
+      59 |     await page.context().clearCookies();
+      60 |     await page.goto('/en/stay/safari-camp?checkIn=2025-06-15&checkOut=2025-06-20');
+    > 61 |     await page.click('button:has-text("Reserve Now")');
+         |                ^
+      62 |     await expect(page.locator('text=Booking Confirmed!')).toBeVisible();
+      63 |     
+      64 |     // 3. Verify NO CRM activity (widget should be missing)
+        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:61:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/booking_crm-Booking-CRM-Pl-9a99e-rks-even-if-CRM-is-disabled-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/booking_crm-Booking-CRM-Pl-9a99e-rks-even-if-CRM-is-disabled-chromium/error-context.md
+
+  3) [chromium] › e2e/tests/manager.spec.ts:91:22 › Authenticated manager journeys › Cross-listing access › manager cannot access another listing admin pages 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/en\/owner\/dashboard/[39m
+    Received string:  [31m"http://localhost:3001/en/manage/mountain-lodge/bookings"[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 5000ms[22m
+    [2m    9 × unexpected value "http://localhost:3001/en/manage/mountain-lodge/bookings"[22m
+
+
+       97 |       
+       98 |       // Should be redirected to owner dashboard (RBAC middleware blocks access)
+    >  99 |       await expect(page).toHaveURL(/\/en\/owner\/dashboard/);
+          |                          ^
+      100 |     });
+      101 |
+      102 |     authenticatedTest('manager can access their own listings', async ({ page, managerSession }) => {
+        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:99:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/manager-Authenticated-mana-7d492-another-listing-admin-pages-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/manager-Authenticated-mana-7d492-another-listing-admin-pages-chromium/error-context.md
+
+  4) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:15:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('button', { name: /Disable Marketplace Booking plugin/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('button', { name: /Disable Marketplace Booking plugin/i })[22m
+
+
+      29 |     
+      30 |     // Verify it changed to "Enabled"
+    > 31 |     await expect(page.getByRole('button', { name: /Disable Marketplace Booking plugin/i })).toBeVisible();
+         |                                                                                             ^
+      32 |     await expect(page.getByText('Enabled')).toBeVisible();
+      33 |
+      34 |     // 2. Visit listing as guest and verify banner
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:31:93
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/error-context.md
+
+  5) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:54:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Reserve Now/i })[22m
+
+
+      70 |     await page.goto('/en/stay/safari-camp');
+      71 |     
+    > 72 |     await page.getByRole('button', { name: /Reserve Now/i }).click();
+         |                                                              ^
+      73 |     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
+      74 |
+      75 |     // 3. Check as manager in admin
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:72:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/error-context.md
+
+  6) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:84:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Reserve Now/i })[22m
+
+
+       99 |     await page.context().addCookies(guestState.cookies);
+      100 |     await page.goto('/en/stay/safari-camp');
+    > 101 |     await page.getByRole('button', { name: /Reserve Now/i }).click();
+          |                                                              ^
+      102 |     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
+      103 |
+      104 |     // 2. Check CRM history as manager
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:101:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/error-context.md
+
+  7) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:117:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('region', { name: /Book Your Stay/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('region', { name: /Book Your Stay/i })[22m
+
+
+      135 |     await page.context().clearCookies();
+      136 |     await page.goto('/en/stay/safari-camp');
+    > 137 |     await expect(page.getByRole('region', { name: /Book Your Stay/i })).toBeVisible();
+          |                                                                         ^
+      138 |
+      139 |     // Verify Mountain Lodge doesn't
+      140 |     await page.goto('/en/stay/mountain-lodge');
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:137:73
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/error-context.md
+
+  8) [chromium] › e2e/tests/pwa.spec.ts:5:20 › PWA Plugin E2E › toggle PWA plugin and verify banner 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByTestId('pwa-install-banner')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByTestId('pwa-install-banner')[22m
+
+
+      34 |     
+      35 |     const banner = page.getByTestId('pwa-install-banner');
+    > 36 |     await expect(banner).toBeVisible();
+         |                          ^
+      37 |     await expect(banner).toContainText('Install CampOps App');
+      38 |     
+      39 |     // 4. Disable PWA plugin and verify banner disappears
+        at /home/michael/Proj/campops-marketplace/e2e/tests/pwa.spec.ts:36:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/pwa-PWA-Plugin-E2E-toggle-PWA-plugin-and-verify-banner-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/pwa-PWA-Plugin-E2E-toggle-PWA-plugin-and-verify-banner-chromium/error-context.md
+
+  8 failed
+    [chromium] › e2e/tests/booking_crm.spec.ts:5:20 › Booking & CRM Plugin Integration E2E › full flow: book and see activity 
+    [chromium] › e2e/tests/booking_crm.spec.ts:43:20 › Booking & CRM Plugin Integration E2E › Booking works even if CRM is disabled 
+    [chromium] › e2e/tests/manager.spec.ts:91:22 › Authenticated manager journeys › Cross-listing access › manager cannot access another listing admin pages 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:15:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:54:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:84:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:117:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings 
+    [chromium] › e2e/tests/pwa.spec.ts:5:20 › PWA Plugin E2E › toggle PWA plugin and verify banner ─
+  39 passed (42.4s)

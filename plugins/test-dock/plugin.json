@@ -1,0 +1,42 @@
+{
+  "name": "test-dock",
+  "version": "2.0.0",
+  "apiVersion": "2.0.0",
+  "uiVersion": "1.0.0",
+  "description": "Test plugin for the Plugin Dock",
+  "author": "Acacia Camp",
+  "ui": {
+    "slots": ["admin.pos_widget"],
+    "menuItems": [
+      {
+        "id": "test-dock-item",
+        "label": "Test Dock",
+        "icon": "info",
+        "path": "/admin/test-dock",
+        "order": 99
+      }
+    ],
+    "dashboardWidgets": [{ "id": "test_widget", "position": "main-top" }]
+  },
+  "migrations": {
+    "enabled": false,
+    "path": "migrations/"
+  },
+  "adminPages": [
+    {
+      "title": "Dummy Records",
+      "path": "/admin/test-dock/dummy",
+      "table": "plugin_test_dock_dummy",
+      "columns": ["name", "value", "property_id", "created_at"],
+      "canCreate": true,
+      "canEdit": true,
+      "canDelete": true
+    }
+  ],
+  "api": {
+    "staffEndpoints": [
+      { "method": "GET", "path": "/api/test-dock/dummy", "auth": true, "roles": ["admin"] },
+      { "method": "GET", "path": "/api/test-dock/ping", "auth": true, "roles": ["admin"] }
+    ]
+  }
+}

@@ -47,8 +47,8 @@ All components use `text-brand-600`, `bg-brand-600`, `hover:bg-brand-700` etc., 
 Install and configure a Google Font or any web font in `src/app/layout.tsx`:
 
 ```tsx
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
+import { Inter } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }) {
   return (
@@ -126,8 +126,8 @@ The `SearchForm` component (`src/components/SearchForm.tsx`) controls the search
 If you do not want public self-registration, simply remove the `/list-your-camp` pages or add a redirect in `middleware.ts`:
 
 ```typescript
-if (barePath.startsWith("/list-your-camp")) {
-  return NextResponse.redirect(new URL("/en", req.url));
+if (barePath.startsWith('/list-your-camp')) {
+  return NextResponse.redirect(new URL('/en', req.url));
 }
 ```
 
@@ -137,10 +137,10 @@ if (barePath.startsWith("/list-your-camp")) {
 
 Key utility classes defined in `src/app/globals.css`:
 
-| Class | Purpose |
-|-------|---------|
-| `.btn-primary` | Green action button |
-| `.card` | White rounded card with shadow |
-| `.input` | Styled form input field |
+| Class          | Purpose                        |
+| -------------- | ------------------------------ |
+| `.btn-primary` | Green action button            |
+| `.card`        | White rounded card with shadow |
+| `.input`       | Styled form input field        |
 
 Add your own in the `@layer components` block.

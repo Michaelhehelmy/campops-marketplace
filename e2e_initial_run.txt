@@ -1,0 +1,102 @@
+
+Running 73 tests using 6 workers
+
+  ✓   6 [chromium] › e2e/tests/manager.spec.ts:6:9 › Listing Manager / Staff › Navigation (unauthenticated) › manage listing page redirects to login (11.0s)
+  ✓   2 [chromium] › e2e/tests/guest.spec.ts:6:9 › Guest (logged-in user) › Authentication › guest dashboard redirects to login without auth (11.1s)
+  ✓   3 [chromium] › e2e/tests/marketplace-guest.spec.ts:4:7 › Marketplace Guest (authenticated) › View guest dashboard stats and activity (11.2s)
+  ✓   7 [chromium] › e2e/tests/manager.spec.ts:11:9 › Listing Manager / Staff › Navigation (unauthenticated) › bookings page redirects to login (2.7s)
+  ✘   4 [chromium] › e2e/tests/marketplace-manager.spec.ts:4:7 › Marketplace Manager (Property Admin) › View management dashboard with property stats (18.1s)
+  ✓  10 [chromium] › e2e/tests/manager.spec.ts:16:9 › Listing Manager / Staff › Navigation (unauthenticated) › finance page redirects to login (6.6s)
+  ✓   9 [chromium] › e2e/tests/marketplace-guest.spec.ts:17:7 › Marketplace Guest (authenticated) › View and filter reservation list (10.4s)
+  ✓   8 [chromium] › e2e/tests/guest.spec.ts:14:20 › Authenticated guest journeys › login and view dashboard (11.4s)
+  ✓  12 [chromium] › e2e/tests/manager.spec.ts:21:9 › Listing Manager / Staff › Navigation (unauthenticated) › settings page redirects to login (2.1s)
+  ✓  15 [chromium] › e2e/tests/manager.spec.ts:28:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner dashboard redirects to login without auth (3.2s)
+  ✓  14 [chromium] › e2e/tests/guest.spec.ts:24:20 › Authenticated guest journeys › view reservations list (3.3s)
+  ✓  13 [chromium] › e2e/tests/marketplace-guest.spec.ts:30:7 › Marketplace Guest (authenticated) › Follow and unfollow a listing (4.3s)
+  ✓  16 [chromium] › e2e/tests/manager.spec.ts:33:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner bookings redirects to login without auth (2.6s)
+  ✘  11 [chromium] › e2e/tests/marketplace-manager.spec.ts:18:7 › Marketplace Manager (Property Admin) › Manage bookings: List and create manual booking (11.8s)
+  ✘   1 [chromium] › e2e/tests/booking_crm.spec.ts:5:20 › Booking & CRM Plugin Integration E2E › full flow: book and see activity (31.4s)
+  ✓  17 [chromium] › e2e/tests/guest.spec.ts:32:20 › Authenticated guest journeys › view following page (5.8s)
+  ✘   5 [chromium] › e2e/tests/integration.spec.ts:4:7 › Cross-System Integration Flow › Full journey from platform config to guest booking and staff check-in (31.7s)
+  ✓  19 [chromium] › e2e/tests/manager.spec.ts:38:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner property redirects to login without auth (3.4s)
+  ✓  18 [chromium] › e2e/tests/marketplace-guest.spec.ts:54:7 › Marketplace Guest (authenticated) › Edit profile information (6.1s)
+  ✓  20 [chromium] › e2e/tests/guest.spec.ts:40:20 › Authenticated guest journeys › access settings page (2.3s)
+  ✓  22 [chromium] › e2e/tests/manager.spec.ts:46:20 › Authenticated manager journeys › login as manager and view bookings (2.4s)
+  ✓  23 [chromium] › e2e/tests/marketplace-guest.spec.ts:69:7 › Marketplace Guest (authenticated) › Contextual listing view with active reservation (2.3s)
+  ✓  28 [chromium] › e2e/tests/master.spec.ts:6:9 › Master account › Navigation (unauthenticated) › master admin page redirects to login without auth (3.0s)
+  ✓  29 [chromium] › e2e/tests/master.spec.ts:11:9 › Master account › Navigation (unauthenticated) › master dashboard redirects to login without auth (2.4s)
+  ✓  27 [chromium] › e2e/tests/manager.spec.ts:54:20 › Authenticated manager journeys › view finance page (5.6s)
+  ✘  26 [chromium] › e2e/tests/marketplace-public.spec.ts:4:7 › Marketplace Public (unauthenticated) › Browse homepage and view search results (7.4s)
+  ✘  21 [chromium] › e2e/tests/marketplace-manager.spec.ts:37:7 › Marketplace Manager (Property Admin) › Manage rooms and units (9.9s)
+  ✓  30 [chromium] › e2e/tests/master.spec.ts:16:9 › Master account › Navigation (unauthenticated) › listings page redirects to login without auth (2.9s)
+  ✓  31 [chromium] › e2e/tests/manager.spec.ts:62:20 › Authenticated manager journeys › access settings page (5.1s)
+  ✘  25 [chromium] › e2e/tests/marketplace-master.spec.ts:4:7 › Marketplace Master (Global Admin) › View global platform dashboard stats (11.9s)
+  ✓  24 [chromium] › e2e/tests/booking_crm.spec.ts:51:20 › Booking & CRM Plugin Integration E2E › Booking works even if CRM is disabled (13.3s)
+  ✓  33 [chromium] › e2e/tests/master.spec.ts:21:9 › Master account › Navigation (unauthenticated) › plugins page redirects to login without auth (3.3s)
+  ✓  38 [chromium] › e2e/tests/master.spec.ts:26:9 › Master account › Navigation (unauthenticated) › accounts page redirects to login without auth (2.1s)
+  ✓  35 [chromium] › e2e/tests/manager.spec.ts:71:22 › Authenticated manager journeys › Admin financials › finance page shows commission and payment data matching bookings (3.6s)
+  ✓  39 [chromium] › e2e/tests/master.spec.ts:31:9 › Master account › Navigation (unauthenticated) › settings page redirects to login without auth (1.4s)
+  ✓  41 [chromium] › e2e/tests/master.spec.ts:38:9 › Master account › Setup flow (unauthenticated) › setup page redirects to login without auth (2.4s)
+  ✓  40 [chromium] › e2e/tests/manager.spec.ts:94:22 › Authenticated manager journeys › Cross-listing access › manager cannot access another listing admin pages (3.8s)
+  ✘  36 [chromium] › e2e/tests/marketplace-master.spec.ts:17:7 › Marketplace Master (Global Admin) › Manage all listings: View and drill down (7.2s)
+  ✘  34 [chromium] › e2e/tests/marketplace-manager.spec.ts:53:7 › Marketplace Manager (Property Admin) › Manage guests (CRM) (10.3s)
+  ✓  42 [chromium] › e2e/tests/master.spec.ts:46:20 › Authenticated master journeys › login as master and view dashboard (1.7s)
+  ✓  43 [chromium] › e2e/tests/manager.spec.ts:108:22 › Authenticated manager journeys › Cross-listing access › manager can access their own listings (1.3s)
+  ✓  44 [chromium] › e2e/tests/master.spec.ts:54:20 › Authenticated master journeys › view all listings (1.5s)
+  ✓  45 [chromium] › e2e/tests/manager.spec.ts:122:20 › Staff role restrictions › staff can view bookings (1.7s)
+  ✓  48 [chromium] › e2e/tests/master.spec.ts:62:20 › Authenticated master journeys › view plugins page (6.6s)
+  ✘  46 [chromium] › e2e/tests/marketplace-master.spec.ts:30:7 › Marketplace Master (Global Admin) › Manage admin accounts (CRUD) (7.6s)
+  ✓  49 [chromium] › e2e/tests/manager.spec.ts:130:20 › Staff role restrictions › staff can access settings (6.5s)
+  ✓  37 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:9:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it (16.3s)
+  ✓  51 [chromium] › e2e/tests/public.spec.ts:5:9 › Public (no login) › Basic navigation › homepage loads (3.0s)
+  ✓  50 [chromium] › e2e/tests/master.spec.ts:70:20 › Authenticated master journeys › view accounts page (3.3s)
+  ✓  53 [chromium] › e2e/tests/marketplace-master.spec.ts:58:7 › Marketplace Master (Global Admin) › Global plugin catalog management (2.8s)
+  ✘  47 [chromium] › e2e/tests/marketplace-manager.spec.ts:68:7 › Marketplace Manager (Property Admin) › View operations: Orders, Housekeeping, Maintenance (12.2s)
+  ✓  54 [chromium] › e2e/tests/public.spec.ts:10:9 › Public (no login) › Basic navigation › login page loads (2.1s)
+  ✓  57 [chromium] › e2e/tests/public.spec.ts:15:9 › Public (no login) › Basic navigation › search page loads (2.6s)
+  ✓  55 [chromium] › e2e/tests/master.spec.ts:78:20 › Authenticated master journeys › view settings page (4.7s)
+  ✘  32 [chromium] › e2e/tests/marketplace-public.spec.ts:17:7 › Marketplace Public (unauthenticated) › Search and filter listings (30.1s)
+  ✓  60 [chromium] › e2e/tests/master.spec.ts:87:22 › Authenticated master journeys › Plugin slot injection › enable plugin for listing and verify UI change (4.2s)
+  ✓  59 [chromium] › e2e/tests/public.spec.ts:20:9 › Public (no login) › Basic navigation › list-your-camp page loads (4.5s)
+  ✘  56 [chromium] › e2e/tests/marketplace-master.spec.ts:76:7 › Marketplace Master (Global Admin) › View commission reports and platform fees (9.0s)
+  ✓  62 [chromium] › e2e/tests/master.spec.ts:126:22 › Authenticated master journeys › Plugin slot injection › disable plugin for listing and verify UI change (1.4s)
+  ✓  52 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:66:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) (14.4s)
+  ✓  63 [chromium] › e2e/tests/public.spec.ts:27:9 › Public (no login) › Full booking flow › select listing, book dates, confirm (2.5s)
+  ✘  58 [chromium] › e2e/tests/marketplace-manager.spec.ts:85:7 › Marketplace Manager (Property Admin) › View finance: Payments and net payouts (11.4s)
+  ✓  64 [chromium] › e2e/tests/master.spec.ts:163:22 › Authenticated master journeys › Master configuration › change homepage section order and verify (3.9s)
+  ✓  67 [chromium] › e2e/tests/pwa.spec.ts:4:7 › PWA Plugin E2E › PWA banner shows with pwa-preview flag (3.0s)
+  ✓  69 [chromium] › e2e/tests/marketplace-manager.spec.ts:95:7 › Marketplace Manager (Property Admin) › Manage property settings and plugins (1.3s)
+  ✘  65 [chromium] › e2e/tests/marketplace-master.spec.ts:86:7 › Marketplace Master (Global Admin) › Manage marketplace settings and branding (6.3s)
+  ✘  68 [chromium] › e2e/tests/shopfront-staff.spec.ts:4:7 › Shop Front Staff (Limited Access) › Staff can view bookings and operations but not sensitive data (6.3s)
+  ✘  66 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:104:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) (10.7s)
+  ✓  71 [chromium] › e2e/tests/shopfront-staff.spec.ts:28:7 › Shop Front Staff (Limited Access) › Staff can handle check-ins (1.1s)
+  ✘  70 [chromium] › e2e/tests/marketplace-master.spec.ts:103:7 › Marketplace Master (Global Admin) › Configure listing features (homepage sections) (6.0s)
+  ✓  72 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:142:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings (3.1s)
+  ✘  61 [chromium] › e2e/tests/marketplace-public.spec.ts:28:7 › Marketplace Public (unauthenticated) › Full booking flow: Browse -> Select -> Book -> Confirm (30.1s)
+  ✘  73 [chromium] › e2e/tests/marketplace-public.spec.ts:65:7 › Marketplace Public (unauthenticated) › Navigate to login and signup (30.1s)
+
+
+  1) [chromium] › e2e/tests/booking_crm.spec.ts:5:20 › Booking & CRM Plugin Integration E2E › full flow: book and see activity 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3001/en/guest", waiting until "load"[22m
+
+
+      40 |     const guestState = JSON.parse(guestSession.storageState);
+      41 |     await page.context().addCookies(guestState.cookies);
+    > 42 |     await page.goto('/en/guest');
+         |                ^
+      43 |
+      44 |     const activityWidget = page.getByRole('region', { name: /Recent Activity/i });
+      45 |     await expect(activityWidget).toBeVisible();
+        at /home/michael/Proj/campops-marketplace/e2e/tests/booking_crm.spec.ts:42:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/booking_crm-Booking-CRM-Pl-7e3cf--flow-book-and-see-activity-chromium/error-context.md
+

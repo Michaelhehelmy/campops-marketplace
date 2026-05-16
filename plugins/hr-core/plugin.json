@@ -1,0 +1,27 @@
+{
+  "id": "hr-core",
+  "name": "HR Core & Payroll",
+  "version": "1.0.0",
+  "description": "Employee directory, contracts, timesheets, and payroll management.",
+  "author": "CampOps Core",
+  "category": "Human Resources",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "dashboard.widgets": ["hr-core:StaffAttendanceWidget"]
+  },
+  "menuItems": [
+    {
+      "id": "hr-employees",
+      "label": "Employees",
+      "path": "/admin/hr/employees",
+      "order": 70
+    },
+    {
+      "id": "hr-payroll",
+      "label": "Payroll",
+      "path": "/admin/hr/payroll",
+      "order": 71
+    }
+  ]
+}

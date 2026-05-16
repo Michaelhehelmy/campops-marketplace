@@ -19,11 +19,11 @@ Plugins are loaded server-side by the Acacia Camp backend and can:
 
 ## Plugin sources
 
-| Source | Description |
-|--------|-------------|
-| **Built-in** | `stripe`, `ical`, `ical-import`, `loyalty`, `siteminder` — shipped with Acacia Camp |
-| **Ecosystem** | Community plugins from [github.com/your-org/campops-ecosystem](https://github.com/your-org/campops-ecosystem) |
-| **Custom** | Build your own using the [Plugin SDK](https://github.com/your-org/campops-ecosystem/blob/main/docs/plugin-development.md) |
+| Source        | Description                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Built-in**  | `stripe`, `ical`, `ical-import`, `loyalty`, `siteminder` — shipped with Acacia Camp                                       |
+| **Ecosystem** | Community plugins from [github.com/your-org/campops-ecosystem](https://github.com/your-org/campops-ecosystem)             |
+| **Custom**    | Build your own using the [Plugin SDK](https://github.com/your-org/campops-ecosystem/blob/main/docs/plugin-development.md) |
 
 ---
 
@@ -83,6 +83,7 @@ pm2 restart acacia-camp
 ```
 
 The plugin's `init(api)` function is called at startup. Check logs for:
+
 ```
 [PluginLoader] ✓ Loaded plugin: my-plugin v1.0.0
 ```
@@ -100,6 +101,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
 Enable in `plugin-manifest.json`:
+
 ```json
 { "name": "stripe", "enabled": true, "config": { "SECRET_KEY": "${STRIPE_SECRET_KEY}" } }
 ```
@@ -134,19 +136,19 @@ Subscribes to external iCal feeds and creates block reservations automatically.
 
 Plugins can inject React components into guest-facing pages using the `PluginSlot` system. Slot names available on guest pages:
 
-| Slot name | Location |
-|-----------|----------|
-| `guest.search.below_results` | Below search results |
-| `guest.property.below_description` | Property detail, below description |
-| `guest.booking.confirmation_extras` | Booking confirmation page extras |
-| `guest.nav.right` | Navigation bar, right side |
+| Slot name                           | Location                           |
+| ----------------------------------- | ---------------------------------- |
+| `guest.search.below_results`        | Below search results               |
+| `guest.property.below_description`  | Property detail, below description |
+| `guest.booking.confirmation_extras` | Booking confirmation page extras   |
+| `guest.nav.right`                   | Navigation bar, right side         |
 
 To add a slot to a page:
 
 ```tsx
-import { PluginSlot } from "@/components/PluginSlot";
+import { PluginSlot } from '@/components/PluginSlot';
 
-<PluginSlot name="guest.search.below_results" />
+<PluginSlot name="guest.search.below_results" />;
 ```
 
 The slot renders nothing if no plugin has registered a component for it — safe to add speculatively.

@@ -1,0 +1,24 @@
+- `[x]` Phase 4: Security & Hardening
+  - `[x]` Create `getAuthSession` utility in `src/lib/auth.ts`
+  - `[x]` Add global error handler utility for plugins
+- `[x]` Phase 2: Complete All Plugins
+  - `[x]` Booking Plugin (Auth checks, tenant isolation, tests)
+  - `[x]` CRM Plugin (API routes, tests)
+  - `[x]` Finance Plugin (Table, hooks, routes, UI, tests)
+  - `[x]` PWA Plugin (Fix toggle bug, tests)
+- `[x]` Phase 3: User Registration & Tier Flows
+  - `[x]` Update Resource Plugin to handle property registration & staff creation
+  - `[x]` Update Admin UI to respect tier access
+- `[x]` Phase 5: E2E Test Suite
+  - `[x]` Run full Playwright suite
+  - `[x]` Fix Manager Dashboard rendering (Next.js cache fix)
+  - `[x]` Verify Cross-System Integration (Guest -> Manager -> Staff -> Finance)
+  - `[x]` Achieve 100% E2E Pass Rate
+- `[x]` Phase 6: Deployment Config
+  - `[x]` Dockerfile for backend
+  - `[x]` PostgreSQL support in db.ts
+  - `[x]` .env.example
+  - `[x]` Cloudflare notes/config
+- `[x]` Phase 7: Final Verification
+  - `[x]` Full Vitest run (405 tests)
+  - `[x]` Full Playwright verification run

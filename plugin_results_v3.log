@@ -1,0 +1,115 @@
+
+Running 4 tests using 1 worker
+
+  ✘  1 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:9:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it (6.3s)
+  ✘  2 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:64:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) (30.1s)
+  ✘  3 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:100:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) (30.1s)
+  ✘  4 [chromium] › e2e/tests/plugin-lifecycle.spec.ts:138:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings (30.1s)
+
+
+  1) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:9:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('button', { name: /Marketplace Booking/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('button', { name: /Marketplace Booking/i })[22m
+
+
+      23 |
+      24 |     const bookingToggle = page.getByRole('button', { name: /Marketplace Booking/i });
+    > 25 |     await expect(bookingToggle).toBeVisible();
+         |                                 ^
+      26 |     await bookingToggle.click();
+      27 |
+      28 |     // Verify it changed to "Enabled"
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:25:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-4782b-ng-plugin-and-guest-sees-it-chromium/error-context.md
+
+  2) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:64:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Marketplace Booking plugin/i })[22m
+
+
+      76 |
+      77 |     const toggle = page.getByRole('button', { name: /Marketplace Booking plugin/i });
+    > 78 |     if ((await toggle.textContent())?.includes('Disabled')) {
+         |                       ^
+      79 |       await toggle.click();
+      80 |       await expect(page.getByText('Enabled')).toBeVisible();
+      81 |     }
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:78:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-65383-y-Guest-book---Manager-see--chromium/error-context.md
+
+  3) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:100:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Marketplace Booking/i })[22m
+
+
+      111 |     // Enable both
+      112 |     const bookingToggle = page.getByRole('button', { name: /Marketplace Booking/i });
+    > 113 |     if ((await bookingToggle.textContent())?.includes('Disabled')) await bookingToggle.click();
+          |                              ^
+      114 |
+      115 |     const crmToggle = page.getByRole('button', { name: /Customer Relations/i });
+      116 |     if ((await crmToggle.textContent())?.includes('Disabled')) await crmToggle.click();
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:113:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-c8eae--communication-Booking-CRM--chromium/error-context.md
+
+  4) [chromium] › e2e/tests/plugin-lifecycle.spec.ts:138:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Marketplace Booking/i })[22m
+
+
+      147 |     await page.getByRole('combobox').selectOption('1');
+      148 |     const bookingToggle = page.getByRole('button', { name: /Marketplace Booking/i });
+    > 149 |     if ((await bookingToggle.textContent())?.includes('Disabled')) await bookingToggle.click();
+          |                              ^
+      150 |
+      151 |     // Mountain Lodge -> Disable
+      152 |     await page.getByRole('combobox').selectOption('2');
+        at /home/michael/Proj/campops-marketplace/e2e/tests/plugin-lifecycle.spec.ts:149:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/plugin-lifecycle-Plugin-Li-98f3e-ns-isolated-across-listings-chromium/error-context.md
+
+  4 failed
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:9:7 › Plugin Lifecycle › Scenario 1 & 2: Master toggles Booking plugin and guest sees it 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:64:7 › Plugin Lifecycle › Scenario 3: Standalone Booking functionality (Guest book -> Manager see) 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:100:7 › Plugin Lifecycle › Scenario 4: Inter-plugin communication (Booking + CRM) 
+    [chromium] › e2e/tests/plugin-lifecycle.spec.ts:138:7 › Plugin Lifecycle › Scenario 5: Plugin remains isolated across listings 

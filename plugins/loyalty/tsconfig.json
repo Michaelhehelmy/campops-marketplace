@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "rootDir": "../../",
+    "paths": {
+      "@campops/plugin-sdk": ["../../packages/plugin-sdk/src/index.ts"],
+      "campops-sdk": ["../../packages/plugin-sdk/src/types.ts"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "../../packages/plugin-sdk/src/**/*",
+    "../../src/lib/hooks.ts",
+    "../../src/lib/featureFlags.ts",
+    "../../src/lib/db.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
+  "references": [
+    {
+      "path": "../../packages/plugin-sdk"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+
+Running 15 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/tests/manager.spec.ts:6:9 › Listing Manager / Staff › Navigation (unauthenticated) › manage listing page loads (777ms)
+  ✓   2 [chromium] › e2e/tests/manager.spec.ts:11:9 › Listing Manager / Staff › Navigation (unauthenticated) › bookings page loads (786ms)
+  ✓   3 [chromium] › e2e/tests/manager.spec.ts:16:9 › Listing Manager / Staff › Navigation (unauthenticated) › finance page loads (765ms)
+  ✓   4 [chromium] › e2e/tests/manager.spec.ts:21:9 › Listing Manager / Staff › Navigation (unauthenticated) › settings page loads (735ms)
+  ✓   5 [chromium] › e2e/tests/manager.spec.ts:28:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner dashboard redirects to login without auth (763ms)
+  ✓   6 [chromium] › e2e/tests/manager.spec.ts:33:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner bookings redirects to login without auth (743ms)
+  ✓   7 [chromium] › e2e/tests/manager.spec.ts:38:9 › Listing Manager / Staff › Owner routes (unauthenticated) › owner property redirects to login without auth (730ms)
+  ✓   8 [chromium] › e2e/tests/manager.spec.ts:46:20 › Authenticated manager journeys › login as manager and view bookings (894ms)
+  ✓   9 [chromium] › e2e/tests/manager.spec.ts:54:20 › Authenticated manager journeys › view finance page (897ms)
+  ✓  10 [chromium] › e2e/tests/manager.spec.ts:62:20 › Authenticated manager journeys › access settings page (927ms)
+  ✘  11 [chromium] › e2e/tests/manager.spec.ts:71:22 › Authenticated manager journeys › Admin financials › finance page shows commission and payment data matching bookings (6.0s)
+Current URL after accessing another listing: http://localhost:3001/en/manage/mountain-lodge/bookings
+  ✓  12 [chromium] › e2e/tests/manager.spec.ts:94:22 › Authenticated manager journeys › Cross-listing access › manager cannot access another listing admin pages (961ms)
+  ✓  13 [chromium] › e2e/tests/manager.spec.ts:113:22 › Authenticated manager journeys › Cross-listing access › manager can access their own listings (862ms)
+  ✘  14 [chromium] › e2e/tests/manager.spec.ts:127:20 › Staff role restrictions › staff can view bookings (5.9s)
+  ✘  15 [chromium] › e2e/tests/manager.spec.ts:135:20 › Staff role restrictions › staff can access settings (6.1s)
+
+
+  1) [chromium] › e2e/tests/manager.spec.ts:71:22 › Authenticated manager journeys › Admin financials › finance page shows commission and payment data matching bookings 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('h1:has-text("Financial Overview")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('h1:has-text("Financial Overview")')[22m
+
+
+      79 |
+      80 |         // Wait for finance page to load
+    > 81 |         await expect(page.locator('h1:has-text("Financial Overview")')).toBeVisible();
+         |                                                                         ^
+      82 |
+      83 |         // Verify commission data is displayed
+      84 |         await expect(page.locator('text=/Commission Breakdown/i')).toBeVisible();
+        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:81:73
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/manager-Authenticated-mana-3fe4b-ment-data-matching-bookings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/manager-Authenticated-mana-3fe4b-ment-data-matching-bookings-chromium/error-context.md
+
+  2) [chromium] › e2e/tests/manager.spec.ts:127:20 › Staff role restrictions › staff can view bookings 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/en\/manage\/safari-camp\/bookings/[39m
+    Received string:  [31m"http://localhost:3001/en/owner/dashboard"[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 5000ms[22m
+    [2m    9 × unexpected value "http://localhost:3001/en/owner/dashboard"[22m
+
+
+      130 |
+      131 |     await page.goto('/en/manage/safari-camp/bookings');
+    > 132 |     await expect(page).toHaveURL(/\/en\/manage\/safari-camp\/bookings/);
+          |                        ^
+      133 |   });
+      134 |
+      135 |   authenticatedTest('staff can access settings', async ({ page, staffSession }) => {
+        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:132:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/manager-Staff-role-restrictions-staff-can-view-bookings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/manager-Staff-role-restrictions-staff-can-view-bookings-chromium/error-context.md
+
+  3) [chromium] › e2e/tests/manager.spec.ts:135:20 › Staff role restrictions › staff can access settings 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/en\/manage\/safari-camp\/settings/[39m
+    Received string:  [31m"http://localhost:3001/en/owner/dashboard"[39m
+    Timeout: 5000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 5000ms[22m
+    [2m    9 × unexpected value "http://localhost:3001/en/owner/dashboard"[22m
+
+
+      138 |
+      139 |     await page.goto('/en/manage/safari-camp/settings');
+    > 140 |     await expect(page).toHaveURL(/\/en\/manage\/safari-camp\/settings/);
+          |                        ^
+      141 |   });
+      142 | });
+      143 |
+        at /home/michael/Proj/campops-marketplace/e2e/tests/manager.spec.ts:140:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/manager-Staff-role-restrictions-staff-can-access-settings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/manager-Staff-role-restrictions-staff-can-access-settings-chromium/error-context.md
+
+  3 failed
+    [chromium] › e2e/tests/manager.spec.ts:71:22 › Authenticated manager journeys › Admin financials › finance page shows commission and payment data matching bookings 
+    [chromium] › e2e/tests/manager.spec.ts:127:20 › Staff role restrictions › staff can view bookings 
+    [chromium] › e2e/tests/manager.spec.ts:135:20 › Staff role restrictions › staff can access settings 
+  12 passed (30.7s)

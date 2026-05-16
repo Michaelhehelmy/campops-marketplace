@@ -1,0 +1,73 @@
+import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
+  testIgnore: ["**/*.disabled.ts"],
+  fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: 1,
+  workers: 1,
+  reporter: [["html", { open: "never" }], ["list"]],
+  timeout: 60000,
+  expect: {
+    timeout: 15000,
+  },
+  use: {
+    baseURL: "http://localhost:5173",
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+  },
+  projects: [
+    // Auth setup project - runs first
+    {
+      name: "setup",
+      testMatch: /auth\.setup\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
+    // Chromium tests
+    {
+      name: "chromium",
+      testIgnore: /auth\.setup\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
+    },
+    // Firefox tests
+    {
+      name: "firefox",
+      testIgnore: /auth\.setup\.ts/,
+      use: { ...devices["Desktop Firefox"] },
+      dependencies: ["setup"],
+    },
+    // WebKit tests
+    {
+      name: "webkit",
+      testIgnore: /auth\.setup\.ts/,
+      use: { ...devices["Desktop Safari"] },
+      dependencies: ["setup"],
+    },
+    // Mobile Chrome
+    {
+      name: "Mobile Chrome",
+      testIgnore: /auth\.setup\.ts/,
+      use: { ...devices["Pixel 5"] },
+      dependencies: ["setup"],
+    },
+    // Mobile Safari
+    {
+      name: "Mobile Safari",
+      testIgnore: /auth\.setup\.ts/,
+      use: { ...devices["iPhone 12"] },
+      dependencies: ["setup"],
+    },
+  ],
+  webServer: {
+    command: "npm run dev",
+    url: "http://localhost:5173",
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
+});

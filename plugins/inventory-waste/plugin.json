@@ -1,0 +1,7 @@
+{
+  "id": "inventory-waste",
+  "name": "Inventory & Waste Management",
+  "version": "1.0.0",
+  "apiVersion": "^2.0.0",
+  "entry": "src/index.ts"
+}

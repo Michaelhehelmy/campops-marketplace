@@ -1,0 +1,140 @@
+/**
+ * Login Page Component
+ * Handles user authentication with email and password
+ */
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Leaf, Eye, EyeOff } from "lucide-react";
+import { loginSchema, type LoginFormData } from "@/lib/validation";
+
+export default function LoginPage() {
+  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData & { rememberMe?: boolean }>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "", rememberMe: true },
+  });
+
+  const rememberMe = watch("rememberMe");
+
+  const onSubmit = async (data: LoginFormData & { rememberMe?: boolean }) => {
+    setAuthError(null);
+    try {
+      await login({
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe ?? true,
+      });
+    } catch {
+      setAuthError("Invalid credentials");
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-sand px-4 relative overflow-hidden">
+      {/* Decorative Ornaments */}
+      <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-acacia/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-clay/5 rounded-full blur-3xl" />
+      
+      <Card className="w-full max-w-md border-none shadow-2xl shadow-acacia/10 rounded-3xl overflow-hidden bg-white/80 backdrop-blur-sm relative z-10">
+        <CardHeader className="space-y-2 text-center pt-10">
+          <div className="mx-auto w-12 h-12 bg-sand rounded-full flex items-center justify-center text-acacia mb-2">
+            <Leaf size={24} />
+          </div>
+          <CardTitle className="font-serif text-3xl text-charcoal">Welcome Back</CardTitle>
+          <CardDescription className="text-charcoal/60">Your serene escape awaits.</CardDescription>
+        </CardHeader>
+        <CardContent className="px-8 pb-10">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-charcoal/80 ml-4 font-medium">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                className="rounded-full h-12 px-6 border-stone-200 focus:ring-acacia"
+                {...register("email")}
+              />
+              {errors.email && <p className="text-xs text-destructive ml-4 font-medium">{errors.email.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-charcoal/80 ml-4 font-medium">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  className="rounded-full h-12 px-6 border-stone-200 focus:ring-acacia"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-acacia transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-destructive ml-4 font-medium">{errors.password.message}</p>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between px-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onCheckedChange={(checked: boolean | "indeterminate") => setValue("rememberMe", checked === true)}
+                  className="rounded border-stone-300 data-[state=checked]:bg-acacia"
+                />
+                <Label htmlFor="rememberMe" className="text-sm font-normal cursor-pointer text-charcoal/70">
+                  Keep me signed in
+                </Label>
+              </div>
+              <Link to="/forgot-password" title="Forgot Password" className="text-sm font-medium text-acacia hover:underline decoration-oasis">
+                Forgot?
+              </Link>
+            </div>
+
+            {authError && (
+              <p className="text-sm text-destructive font-medium text-center bg-destructive/5 py-2 rounded-full border border-destructive/10">
+                {authError}
+              </p>
+            )}
+
+            <Button type="submit" variant={isSubmitting ? "secondary" : "default"} className="w-full h-12 rounded-full text-lg shadow-lg shadow-acacia/20" disabled={isSubmitting}>
+              {isSubmitting ? "Opening the doors..." : "Enter Acacia Camp"}
+            </Button>
+          </form>
+
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            New to the camp?{" "}
+            <Link to="/signup" className="font-bold text-acacia hover:underline decoration-oasis">
+              Create an Account
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

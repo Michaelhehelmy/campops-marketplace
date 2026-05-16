@@ -26,6 +26,7 @@ JWT_SECRET                  = <same value as your backend>
 ### Wildcard subdomain support on Vercel
 
 Add a wildcard domain in your Vercel project settings:
+
 - `*.yourcamp.com` → your Vercel deployment
 
 Then add a wildcard `A` or `CNAME` DNS record pointing to Vercel's IP.
@@ -55,6 +56,7 @@ CMD ["node", "server.js"]
 ```
 
 > Requires `output: "standalone"` in `next.config.mjs`:
+>
 > ```js
 > const nextConfig = { output: "standalone", ... };
 > ```

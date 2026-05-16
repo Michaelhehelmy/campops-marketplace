@@ -1,0 +1,30 @@
+{
+  "name": "campops-plugin-starter",
+  "version": "1.0.0",
+  "description": "GitHub template for building CampOps plugins",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest run",
+    "proxy": "node scripts/dev-proxy.js"
+  },
+  "devDependencies": {
+    "campops-sdk": "*",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0"
+  },
+  "peerDependencies": {
+    "campops-sdk": ">=2.0.0"
+  },
+  "campops": {
+    "pluginId": "my-plugin",
+    "campopsVersion": ">=2.0.0"
+  }
+}
