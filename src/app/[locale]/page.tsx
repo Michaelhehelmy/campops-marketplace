@@ -3,10 +3,13 @@ import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvi
 import HeroSection from '@/components/homepage/HeroSection';
 import FeaturedListings from '@/components/homepage/FeaturedListings';
 import Categories from '@/components/homepage/Categories';
+import ListingDetailView from '@/components/ListingDetailView';
+import { getTenantListing } from '@/lib/api';
 import React from 'react';
 
 interface Props {
   params: { locale: string };
+  searchParams: { checkIn?: string; checkOut?: string; currency?: string };
 }
 
 async function getHomepageConfig() {
@@ -14,35 +17,50 @@ async function getHomepageConfig() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/public/homepage-config`, {
       cache: 'no-store',
     });
-    if (!res.ok) {
-      // Return default config on error
-      return {
-        sections: ['hero', 'featured-listings', 'categories'],
-        roleBased: {
-          guest: { hero: 'personalized-hero' },
-          admin: { hero: 'dashboard-link' },
-          master: { hero: 'dashboard-link' },
-        },
-      };
-    }
+    if (!res.ok) throw new Error('Failed to fetch config');
     return await res.json();
   } catch (error) {
-    // Return default config on error
     return {
       sections: ['hero', 'featured-listings', 'categories'],
-      roleBased: {
-        guest: { hero: 'personalized-hero' },
-        admin: { hero: 'dashboard-link' },
-        master: { hero: 'dashboard-link' },
-      },
+      roleBased: { guest: {}, admin: {}, master: {} },
     };
   }
 }
 
-export default async function HomePage({ params }: Props) {
-  const config = await getHomepageConfig();
+export default async function HomePage({ params, searchParams }: Props) {
   const { locale } = params;
+  const { checkIn, checkOut, currency = 'USD' } = searchParams;
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
 
+  // Mode 1: Universal Listing Template (Cloudflare Deployment for a specific tenant)
+  if (tenantId) {
+    try {
+      const { property, room_types } = await getTenantListing(
+        tenantId,
+        checkIn,
+        checkOut,
+        currency
+      );
+      return (
+        <PluginRegistryProvider>
+          <ListingDetailView
+            property={property}
+            room_types={room_types}
+            locale={locale}
+            checkIn={checkIn}
+            checkOut={checkOut}
+            currency={currency}
+          />
+        </PluginRegistryProvider>
+      );
+    } catch (error) {
+      console.error('[HomePage] Tenant lookup failed:', error);
+      // Fallback to marketplace if tenant not found or error
+    }
+  }
+
+  // Mode 2: Standard Marketplace Frontend (Oracle Deployment)
+  const config = await getHomepageConfig();
   const fallbackMap: Record<string, React.ReactNode> = {
     hero: <HeroSection locale={locale} />,
     'featured-listings': <FeaturedListings locale={locale} />,
@@ -52,12 +70,8 @@ export default async function HomePage({ params }: Props) {
   return (
     <PluginRegistryProvider>
       <main className="space-y-16 py-8">
-        {/* Resource plugin: public.homepage slot (featured listings) */}
         <PluginShell name="public.homepage" props={{ locale }} fallback={null} />
-
-        {/* Resource plugin: public.search slot */}
         <PluginShell name="public.search" props={{ locale }} fallback={null} />
-
         {config.sections.map((sectionName: string) => (
           <PluginShell
             key={sectionName}

@@ -141,3 +141,19 @@ export async function getBooking(id: string) {
 export async function getCurrencies(): Promise<{ currencies: string[] }> {
   return apiFetch<{ currencies: string[] }>('/currencies');
 }
+
+export async function getTenantListing(
+  tenantId: string,
+  checkIn?: string,
+  checkOut?: string,
+  currency?: string
+) {
+  const qs = new URLSearchParams();
+  qs.set('tenantId', tenantId);
+  if (checkIn) qs.set('checkIn', checkIn);
+  if (checkOut) qs.set('checkOut', checkOut);
+  if (currency) qs.set('currency', currency);
+  return apiFetch<{ property: any; room_types: any[]; availability: any[] }>(
+    `/tenant-listing?${qs}`
+  );
+}
