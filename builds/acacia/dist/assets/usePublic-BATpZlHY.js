@@ -1,0 +1,1 @@
+import{a as e,b as t,k as n,g as u}from"./index-GFB96b6Q.js";function a(){return e({queryKey:["public-settings"],queryFn:async()=>await u("/public/settings"),staleTime:1e3*60*30})}function o(){return t({mutationFn:async s=>await n("/public/inquiry",s)})}export{o as a,a as u};
