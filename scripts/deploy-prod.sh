@@ -5,21 +5,22 @@ set -e
 echo "Starting deployment..."
 cd ~/marketplace
 
-# Export environment variables
-export $(cat .env.production | xargs)
+# Ensure directories
+mkdir -p scripts logs
 
-# Stop old container
-sudo docker stop sinaicamps || true
-sudo docker rm sinaicamps || true
+# Setup boot script
+if [ -f boot.sh ]; then
+  mv boot.sh scripts/boot.sh
+  chmod +x scripts/boot.sh
+fi
 
-# Run new container
-sudo docker run -d --name sinaicamps \
-  --network="host" \
-  --restart always \
-  --env-file .env.production \
-  sinaicamps-marketplace:latest
+# Restart with PM2
+pm2 restart sinaicamps || pm2 start server.js --name sinaicamps
+pm2 save
 
 # Reload Nginx
+sudo cp ~/marketplace/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
+sudo ln -sf /etc/nginx/sites-available/sinaicamps /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 
 echo "Deployment complete!"

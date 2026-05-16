@@ -10,13 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build
+        run: |
+          npm install
+          cp .env.production .env.local
+          npm run build
+          bash scripts/fix-standalone.sh
       - name: Deploy to Oracle
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.ORACLE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && ./scripts/deploy-prod.sh"
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" .next/standalone/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" .next/static/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/.next/static/
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" public/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/public/
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" plugins/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/plugins/
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no .env.production nginx-unified.conf scripts/boot.sh scripts/deploy-prod.sh ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && bash scripts/deploy-prod.sh"
 
   deploy-cloudflare:
     if: startsWith(github.ref, 'refs/heads/tenant/')
@@ -26,7 +39,7 @@ jobs:
       - name: Build Tenant Frontend
         env:
           TENANT_ID: ${{ github.ref_name }}
-          API_URL: https://api.marketplace.com
+          API_URL: https://api.sinaicamps.com
           NODE_ENV: production
         run: |
           npm install

@@ -1,0 +1,7 @@
+.next/cache
+node_modules
+.git
+.tempmediaStorage
+build.log
+*.db
+*.log

@@ -58,6 +58,27 @@ sudo -u postgres psql -d sinaicamps -f ~/marketplace/schema.sql
 
 ---
 
+## Phase 4: Automated Deployment (The Easy Way)
+
+We have created a master script `scripts/deploy-sinaicamps.sh` to handle everything from your local machine.
+
+### 1. Requirements
+*   Your private key file at `/home/michael/Downloads/oracle.key`.
+*   The VM public IP: `84.235.239.6`.
+
+### 2. Run the Deployment
+```bash
+# From your local project root
+bash scripts/deploy-sinaicamps.sh
+```
+This script will:
+1. Build the application locally.
+2. Sync all necessary files to the VM using `rsync`.
+3. Restart the PM2 process on the VM.
+4. Reload Nginx configuration.
+
+---
+
 ## Phase 4: App Deployment & Persistence
 
 ### 1. Syncing your Files (From your Local Machine)
@@ -104,6 +125,25 @@ crontab -e
     sudo apt install certbot python3-certbot-nginx
     sudo certbot --nginx -d sinaicamps.com -d api.sinaicamps.com
     ```
+
+---
+
+## Phase 6: Cloudflare Setup
+
+To route your domains to the Oracle VM and enable multi-tenancy:
+
+### 1. Main Marketplace Domain (`sinaicamps.com`)
+*   **A Record**: Name `@`, Value `84.235.239.6`, Proxy `Enabled`.
+*   **A Record**: Name `api`, Value `84.235.239.6`, Proxy `Enabled`.
+
+### 2. Tenant Domains (e.g., `acaciacamp.com`)
+*   **CNAME Record**: Name `@`, Value `sinaicamps.com`, Proxy `Enabled`.
+*   **CNAME Record**: Name `www`, Value `sinaicamps.com`, Proxy `Enabled`.
+
+### 3. SSL/TLS Settings
+*   Set SSL/TLS encryption mode to **Full (strict)**.
+*   Enable **Always Use HTTPS**.
+*   Enable **Automatic HTTPS Rewrites**.
 
 ---
 

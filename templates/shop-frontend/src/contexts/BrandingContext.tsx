@@ -39,9 +39,9 @@ export interface BrandingConfig {
 }
 
 const buildTimeDefaults: BrandingConfig = {
-  appName: import.meta.env.VITE_APP_NAME || "My Camp",
-  shortName: import.meta.env.VITE_APP_SHORT_NAME || import.meta.env.VITE_APP_NAME || "Camp",
-  companyName: import.meta.env.VITE_COMPANY_NAME || import.meta.env.VITE_APP_NAME || "My Camp",
+  appName: import.meta.env.VITE_APP_NAME || "SinaiCamps",
+  shortName: import.meta.env.VITE_APP_SHORT_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
+  companyName: import.meta.env.VITE_COMPANY_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
   tagline: import.meta.env.VITE_APP_TAGLINE || "Hospitality Management",
   logoUrl: import.meta.env.VITE_APP_LOGO_URL || "/logo.png",
   faviconUrl: import.meta.env.VITE_APP_FAVICON_URL || "/favicon.ico",
@@ -53,7 +53,7 @@ const buildTimeDefaults: BrandingConfig = {
   website: import.meta.env.VITE_DOMAIN || "",
   domain: import.meta.env.VITE_DOMAIN || "",
   loginButtonLabel:
-    import.meta.env.VITE_APP_LOGIN_LABEL || `Enter ${import.meta.env.VITE_APP_NAME || "My Camp"}`,
+    import.meta.env.VITE_APP_LOGIN_LABEL || `Enter ${import.meta.env.VITE_APP_NAME || "SinaiCamps"}`,
   // Dynamic Image Constants
   heroMain:
     import.meta.env.VITE_IMG_HERO_MAIN ||
