@@ -57,7 +57,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         plugins,
         total_revenue_cents: 0,
         reservations_count: 0,
-        plan: 'Standard',
+        plan: shop.plan || 'Standard',
       },
     });
   } catch (err: any) {
@@ -65,3 +65,47 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+/**
+ * PUT /api/master/listings/[id]
+ *
+ * Updates listing configurations.
+ */
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
+    const body = await req.json();
+    const { name, slug, plan, isActive, city, country } = body;
+
+    if (!name || !slug) {
+      return NextResponse.json({ error: 'Name and slug are required' }, { status: 400 });
+    }
+
+    // Check if slug is used by another property
+    const existing = await db
+      .prepare('SELECT id FROM properties WHERE slug = ? AND id != ?')
+      .get(slug, id);
+    if (existing) {
+      return NextResponse.json({ error: 'Slug already in use by another property' }, { status: 400 });
+    }
+
+    await db
+      .prepare(
+        `UPDATE properties 
+         SET name = ?, 
+             slug = ?, 
+             plan = ?, 
+             is_active = ?, 
+             city = ?, 
+             country = ?
+         WHERE id = ?`
+      )
+      .run(name, slug, plan || 'Standard', isActive ? 1 : 0, city || null, country || null, id);
+
+    return NextResponse.json({ ok: true });
+  } catch (err: any) {
+    console.error('[Master Listings Update API] Error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
