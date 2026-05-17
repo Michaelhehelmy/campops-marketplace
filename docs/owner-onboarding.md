@@ -1,4 +1,4 @@
-# Owner Onboarding — How Camp Owners Register and Choose Plans
+# Owner Onboarding — Property Registration & Plans
 
 This guide explains the self-registration flow from the owner's perspective, and what happens technically at each step.
 
@@ -22,9 +22,9 @@ flowchart TD
 
 | Plan                 | Price  | What the owner gets                                                                       | Access URL                               |
 | -------------------- | ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **Basic**            | Free   | Public listing, read-only bookings, edit property details                                 | `yoursinaicamps.com/en/owner/dashboard` |
-| **Operations Suite** | $49/mo | Full Acacia Camp admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports | `campname.yoursinaicamps.com/admin`     |
-| **White Label**      | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding            | `ownersdomain.com/admin`                 |
+| **Basic**            | Free   | Public listing, read-only bookings, edit property details                                 | `yourdomain.com/en/owner/dashboard`        |
+| **Operations Suite** | $49/mo | Full admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports             | `campname.yourdomain.com/admin`            |
+| **White Label**      | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding            | `ownersdomain.com/admin`                   |
 
 ---
 
@@ -86,9 +86,9 @@ They **cannot** access `/admin` — the middleware redirects any attempt to `/en
 
 ## Premium owner access (subdomain / custom domain)
 
-When a premium owner visits `campname.yoursinaicamps.com`:
+When a premium owner visits `campname.yourdomain.com`:
 
-1. The Next.js middleware calls `GET /api/tenant/resolve?host=campname.yoursinaicamps.com`.
+1. The Next.js middleware calls `GET /api/tenant/resolve?host=campname.yourdomain.com`.
 2. The API returns the `propertyId` and `plan`.
 3. The middleware sets `x-tenant-property-id` header in the request.
 4. The `/admin` route is proxied to the Acacia Camp Vite SPA.
@@ -102,7 +102,7 @@ When a premium owner visits `campname.yoursinaicamps.com`:
 When an owner chooses the White Label plan:
 
 1. They enter their domain (e.g. `bookings.mycamp.com`) during registration.
-2. They are shown DNS instructions: point a `CNAME` record from their domain to `yoursinaicamps.com`.
+2. They are shown DNS instructions: point a `CNAME` record from their domain to `yourdomain.com`.
 3. A platform admin runs `PATCH /api/owner/domain-verify` once the DNS is confirmed.
 4. Caddy's on-demand TLS automatically provisions a Let's Encrypt certificate for the domain.
 

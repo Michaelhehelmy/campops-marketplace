@@ -1,116 +1,136 @@
-# Getting Started
+# Getting Started — Local Development
 
-This guide walks you through running SinaiCamps Marketplace locally from scratch — including setting up the Acacia Camp backend it depends on.
+This guide gets the platform running on your local machine in under 10 minutes.
 
----
-
-## Step 1 – Prerequisites
-
-Install the following before proceeding:
-
-| Requirement | Minimum | Notes                            |
-| ----------- | ------- | -------------------------------- |
-| Node.js     | 20 LTS  | [nodejs.org](https://nodejs.org) |
-| npm         | 10      | Bundled with Node 20             |
-| PostgreSQL  | 15      | Used by the Acacia Camp backend  |
-| Git         | any     |                                  |
+> For production deployment, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 
-## Step 2 – Clone the repository
+## Prerequisites
+
+| Requirement | Minimum | Notes |
+|-------------|---------|-------|
+| Node.js | 20 LTS | [nodejs.org](https://nodejs.org) |
+| npm | 10 | Bundled with Node 20 |
+| Git | any | |
+
+No database server needed — the app uses SQLite out of the box for local development.
+
+---
+
+## Step 1 — Clone and install
 
 ```bash
-git clone https://github.com/your-org/sinaicamps-marketplace.git
-cd sinaicamps-marketplace
-```
-
----
-
-## Step 3 – Install dependencies
-
-```bash
+git clone https://github.com/your-org/campops-marketplace.git
+cd campops-marketplace
 npm install
 ```
 
 ---
 
-## Step 4 – Configure environment
+## Step 2 — Configure environment
 
 ```bash
 cp .env.example .env.local
 ```
 
-Open `.env.local` and set at minimum:
+Minimum required variables in `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
+NODE_ENV=development
+BETTER_AUTH_SECRET=any-random-32-char-string
 NEXT_PUBLIC_BASE_DOMAIN=localhost
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+DATABASE_URL=file:./campops-dev.db
+AUTH_TRUST_HOST=true
+TRUSTED_ORIGINS=http://localhost:3000
 ```
 
-If you are connecting to a real Acacia Camp instance, set `NEXT_PUBLIC_API_URL` to its public address.
+Generate a secret with: `openssl rand -base64 32`
 
 ---
 
-## Step 5 – Start the Acacia Camp backend (required)
-
-The Marketplace is a frontend app — it needs the Express API to serve property data, handle bookings, and authenticate users.
-
-Clone and start the backend:
-
-```bash
-git clone https://github.com/your-org/acacia-camp.git
-cd acacia-camp
-cp .env.example .env
-# Fill in DATABASE_URL, JWT_SECRET
-npm install
-npx tsx server/scripts/migrate-phase8.ts   # run all migrations
-npm run dev:server                          # starts on http://localhost:5000
-```
-
-See [integrating-acacia-camp.md](integrating-acacia-camp.md) for full instructions.
-
----
-
-## Step 6 – Run the Marketplace
-
-Back in the `sinaicamps-marketplace` directory:
+## Step 3 — Start the dev server
 
 ```bash
 npm run dev
 ```
 
-Open your browser at **[http://localhost:3001/en](http://localhost:3001/en)**.
+Open **[http://localhost:3000/en](http://localhost:3000/en)**
+
+The SQLite database is created automatically on first run with seed data (demo users and properties).
 
 ---
 
-## Step 7 – Explore the app
+## Step 4 — Explore the platform
 
-| URL                   | What you see                                                     |
-| --------------------- | ---------------------------------------------------------------- |
-| `/en/search`          | Property search                                                  |
-| `/en/stay/:slug`      | Property detail page                                             |
-| `/en/book`            | Booking flow                                                     |
-| `/en/list-your-camp`  | Owner registration (Step 1)                                      |
-| `/en/owner/dashboard` | Basic-plan owner dashboard                                       |
-| `/admin`              | Full operations panel (requires premium plan + Vite SPA running) |
+| URL | What you see |
+|-----|-------------|
+| `/en` | Public marketplace homepage |
+| `/en/search` | Property search |
+| `/en/login` | Login page |
+| `/en/admin` | Master admin panel (master role required) |
+| `/en/manage/[id]` | Property owner dashboard |
+| `/en/list-your-space` | Owner self-registration |
+| `/api/health` | Health check endpoint |
+| `/api/branding?slug=<slug>` | Tenant branding data |
+
+---
+
+## Step 5 — Seed a test property (optional)
+
+The app seeds demo properties on startup. To add your own:
+
+```bash
+node scripts/seed-property.js \
+  --slug my-camp \
+  --name "My Camp" \
+  --domain mycamp.com
+```
+
+Or directly via the master admin UI at `/en/admin`.
+
+---
+
+## Step 6 — Build a tenant shop frontend (optional)
+
+Each tenant gets a branded Vite SPA hosted separately:
+
+```bash
+bash scripts/build-shop.sh <slug> development http://localhost:3000
+# Output: builds/<slug>/dist/
+```
+
+Serve it locally:
+```bash
+cd builds/<slug>/dist && npx serve .
+```
 
 ---
 
 ## Troubleshooting
 
-**Blank page / no properties showing**
+**Blank page — redirects to `/en` but nothing loads**
+- Check the terminal for Next.js errors
+- Verify `BETTER_AUTH_SECRET` is set
 
-- Confirm `NEXT_PUBLIC_API_URL` is correct and the backend is running.
-- Open browser DevTools → Network tab → look for failed `/api/public/properties` requests.
+**`Invalid origin` error on login**
+- Add `http://localhost:3000` to `TRUSTED_ORIGINS` in `.env.local`
 
-**`404` on `/en` after fresh start**
+**`Cannot find module 'better-sqlite3'`**
+- Run `npm rebuild better-sqlite3` — native module needs to be compiled for your Node version
 
-- Ensure you are visiting `/en` not just `/`. The middleware always redirects to a locale-prefixed path.
+**Port already in use**
+- Set `PORT=3001` in `.env.local` and update `NEXT_PUBLIC_APP_URL` accordingly
 
-**`NEXT_PUBLIC_BASE_DOMAIN` — when should I set this?**
+**`404` on `/` — expected**
+- The middleware always redirects `/` → `/en`. This is correct behaviour.
 
-- Only matters when running behind a real domain with subdomain routing (e.g. `campname.sinaicamps.com`). Leave it as `localhost` for local development.
+---
 
-**Hot reload not working**
+## Next Steps
 
-- Ensure you are using Node 20+. Older versions have issues with Next.js 14 file watching.
+- [Customization guide](customization.md) — change branding, colors, name
+- [Plugin development guide](plugin-development-guide.md) — build new plugins
+- [Deployment guide](DEPLOYMENT.md) — deploy to production

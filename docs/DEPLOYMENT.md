@@ -1,22 +1,6 @@
-# SinaiCamps: Deployment Guide
+# Production Deployment Guide
 
-**Last updated:** May 17, 2026
-
-## Current Live Status
-
-| Component | Status | URL |
-|-----------|--------|-----|
-| Oracle VM | ✅ Running | `84.235.239.6` |
-| Marketplace app (PM2) | ✅ Online (10h uptime) | `http://localhost:3000` |
-| Nginx | ✅ Active (HTTP only) | port 80 |
-| SSL certificates | ❌ Not yet issued | — |
-| `sinaicamps.com` DNS | ✅ Cloudflare proxied → VM | — |
-| `api.sinaicamps.com` DNS | ✅ Cloudflare proxied → VM | — |
-| Acacia tenant (CF Pages) | ✅ Deployed | `https://acaciacamp.pages.dev` |
-| `acaciacamp.com` DNS | ✅ Cloudflare proxied | Custom domain pending in Pages |
-| Acacia DB record | ✅ Seeded | slug: `acacia`, domain: `acaciacamp.com` |
-
----
+**Last updated:** May 2026
 
 ## Architecture
 
@@ -26,232 +10,287 @@ Browser
   ▼
 Cloudflare (DNS + Proxy)
   │
-  ├─ sinaicamps.com ──────────────► Oracle VM :80/:443 ─► PM2 :3000 (Next.js)
-  ├─ api.sinaicamps.com ──────────► Oracle VM :80/:443 ─► PM2 :3000 (Next.js API)
+  ├─ yourdomain.com ───────────────► Linux Server :443 ─► PM2 :3000 (Next.js)
+  ├─ api.yourdomain.com ───────────► Linux Server :443 ─► PM2 :3000 (Next.js API)
   │
-  └─ acaciacamp.com ──────────────► Cloudflare Pages (Vite SPA)
-                                         │
-                                         └─ API calls ──► api.sinaicamps.com
+  └─ tenant.com ───────────────────► Cloudflare Pages (Vite SPA)
+                                          └─ API calls ──► api.yourdomain.com
 ```
 
 ---
 
-## Key Facts
+## Key Variables (fill in your own)
 
-- **VM IP**: `84.235.239.6`
-- **SSH key**: `/home/michael/Downloads/oracle.key`
-- **SSH user**: `ubuntu`
-- **App directory**: `~/marketplace`
-- **Database**: `~/marketplace/campops-prod-sim.db` (SQLite)
-- **PM2 app name**: `sinaicamps`
-- **Node.js on VM**: v20.20.2
-- **GitHub repo**: `https://github.com/Michaelhehelmy/campops-marketplace`
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `YOUR_SERVER_IP` | `1.2.3.4` | Public IP of your Linux server |
+| `YOUR_SSH_KEY` | `~/.ssh/id_rsa` | Path to your SSH private key |
+| `YOUR_SSH_USER` | `ubuntu` | SSH user on the server |
+| `YOUR_APP_DIR` | `~/marketplace` | App directory on server |
+| `YOUR_DOMAIN` | `yourdomain.com` | Your marketplace domain |
+| `YOUR_PM2_NAME` | `campops` | PM2 process name |
 
 ---
 
-## Phase 1: Oracle Cloud Infrastructure (OCI)
+## Phase 1: Server Infrastructure
 
-### 1.1 VM Setup (one-time)
-- **Image**: Ubuntu 24.04 LTS
-- **Shape**: `VM.Standard.E4.Flex` (or free tier `VM.Standard.A1.Flex`)
-- **Networking**: Public subnet with Internet Gateway
+### 1.1 Supported Platforms
+Any Ubuntu 22.04/24.04 LTS server with a public IP:
+- **Oracle Cloud** — free tier: `VM.Standard.A1.Flex` (4 OCPUs, 24GB RAM)
+- **DigitalOcean** — $6/mo Droplet
+- **AWS/GCP/Azure** — any standard VM
+- **Hetzner** — CX11 or better
 
-### 1.2 OCI Security List — Required Ingress Rules
-Go to: OCI Console → Networking → Virtual Cloud Networks → your VCN → Security Lists
+### 1.2 Required Open Ports
+Open these in your cloud provider's firewall/security group **and** in the server's iptables:
 
-| Port | Protocol | Source | Purpose |
-|------|----------|--------|---------|
-| 22 | TCP | 0.0.0.0/0 | SSH |
-| 80 | TCP | 0.0.0.0/0 | HTTP / Certbot challenge |
-| 443 | TCP | 0.0.0.0/0 | HTTPS |
+| Port | Purpose |
+|------|---------|
+| 22 | SSH |
+| 80 | HTTP (required for Cloudflare proxy) |
+| 443 | HTTPS |
 
-### 1.3 Ubuntu Firewall (iptables — already open on this VM)
 ```bash
-sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+# Ubuntu iptables (run on server)
+sudo iptables -I INPUT 5 -m state --state NEW -p tcp --dport 80 -j ACCEPT
 sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
 sudo netfilter-persistent save
 ```
 
+> **Oracle Cloud:** You must also open ports 80 and 443 in the OCI Console → Networking → VCN → Security Lists (cloud-level firewall, separate from iptables).
+
 ---
 
-## Phase 2: Server Software (already installed on this VM)
+## Phase 2: Server Software Installation
+
+SSH into your server and run:
 
 ```bash
 # Node.js 20
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Nginx + Certbot + tools
-sudo apt install -y nginx certbot python3-certbot-nginx rsync
+# Nginx + SSL tools + rsync
+sudo apt install -y nginx certbot python3-certbot-nginx rsync vim
 
-# PM2
+# PM2 (global process manager)
 sudo npm install -g pm2
 ```
 
 ---
 
-## Phase 3: First-Time Deployment (from local machine)
+## Phase 3: Environment Configuration
+
+Create `.env.production` in your project root (never commit this file):
+
+```env
+NODE_ENV=production
+PORT=3000
+
+# Generate with: openssl rand -base64 32
+BETTER_AUTH_SECRET=<your-random-secret>
+
+# Your domain names
+NEXT_PUBLIC_BASE_DOMAIN=yourdomain.com
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+
+# Database (SQLite — change path as needed)
+DATABASE_URL=file:./campops-prod.db
+
+# Auth
+NEXTAUTH_URL=https://yourdomain.com
+AUTH_TRUST_HOST=true
+
+# Comma-separated list of allowed origins
+TRUSTED_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
+# Add tenant domains as you create them:
+# TRUSTED_ORIGINS=https://yourdomain.com,https://api.yourdomain.com,https://tenant.com
+```
+
+---
+
+## Phase 4: First Deployment (from local machine)
 
 ```bash
-# 1. Build the app
+# 1. Build
 cp .env.production .env.local
 npm run build
-bash scripts/fix-standalone.sh   # ensures node_modules are complete in standalone
+bash scripts/fix-standalone.sh
 
-# 2. Sync to VM
-rsync -avz -e "ssh -i /home/michael/Downloads/oracle.key" \
-  .next/standalone/ ubuntu@84.235.239.6:~/marketplace/
+# 2. Sync to server
+rsync -avz -e "ssh -i YOUR_SSH_KEY" \
+  .next/standalone/ YOUR_SSH_USER@YOUR_SERVER_IP:YOUR_APP_DIR/
 
-rsync -avz -e "ssh -i /home/michael/Downloads/oracle.key" \
-  .next/static/ ubuntu@84.235.239.6:~/marketplace/.next/static/
+rsync -avz -e "ssh -i YOUR_SSH_KEY" \
+  .next/static/ YOUR_SSH_USER@YOUR_SERVER_IP:YOUR_APP_DIR/.next/static/
 
-rsync -avz -e "ssh -i /home/michael/Downloads/oracle.key" \
-  public/ ubuntu@84.235.239.6:~/marketplace/public/
+rsync -avz -e "ssh -i YOUR_SSH_KEY" \
+  public/ YOUR_SSH_USER@YOUR_SERVER_IP:YOUR_APP_DIR/public/
 
-rsync -avz -e "ssh -i /home/michael/Downloads/oracle.key" \
-  plugins/ ubuntu@84.235.239.6:~/marketplace/plugins/
+rsync -avz -e "ssh -i YOUR_SSH_KEY" \
+  plugins/ YOUR_SSH_USER@YOUR_SERVER_IP:YOUR_APP_DIR/plugins/
 
-scp -i /home/michael/Downloads/oracle.key \
+scp -i YOUR_SSH_KEY \
   .env.production nginx-unified.conf \
   scripts/boot.sh scripts/deploy-prod.sh \
-  ubuntu@84.235.239.6:~/marketplace/
+  YOUR_SSH_USER@YOUR_SERVER_IP:YOUR_APP_DIR/
 
-# 3. Fix native modules for VM's Node.js version
-ssh -i /home/michael/Downloads/oracle.key ubuntu@84.235.239.6 \
-  "cd ~/marketplace && npm rebuild better-sqlite3"
+# 3. Rebuild native modules on server
+ssh -i YOUR_SSH_KEY YOUR_SSH_USER@YOUR_SERVER_IP \
+  "cd YOUR_APP_DIR && npm rebuild better-sqlite3"
 
-# 4. Start with PM2
-ssh -i /home/michael/Downloads/oracle.key ubuntu@84.235.239.6 \
-  "cd ~/marketplace && pm2 restart sinaicamps || pm2 start server.js --name sinaicamps && pm2 save"
+# 4. Start app
+ssh -i YOUR_SSH_KEY YOUR_SSH_USER@YOUR_SERVER_IP \
+  "cd YOUR_APP_DIR && pm2 restart YOUR_PM2_NAME || pm2 start server.js --name YOUR_PM2_NAME && pm2 save"
 ```
 
-Or use the one-command script (does all of the above):
+### 4.1 Enable PM2 Auto-Start on Reboot (run once on server)
 ```bash
-bash scripts/deploy-sinaicamps.sh
-```
-
-### 3.1 Enable PM2 Auto-Start on Reboot (one-time)
-Run on VM:
-```bash
-sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u YOUR_SSH_USER --hp /home/YOUR_SSH_USER
 pm2 save
 ```
 
 ---
 
-## Phase 4: Ongoing Deployments via GitHub Actions
+## Phase 5: SSL Certificates
 
-Push to `main` branch triggers `.github/workflows/deploy.yml` which:
-1. Installs dependencies and builds the app on the CI runner
-2. Runs `scripts/fix-standalone.sh` to complete node_modules
-3. `rsync`s the built output to `ubuntu@84.235.239.6:~/marketplace/`
-4. SSHes in and runs `scripts/deploy-prod.sh` (PM2 restart + Nginx reload)
+When using Cloudflare proxy (orange cloud), the Let's Encrypt HTTP challenge is intercepted. Use one of these options:
 
-**Required GitHub Secrets** (Settings → Secrets → Actions):
-
-| Secret | Value |
-|--------|-------|
-| `ORACLE_KEY` | Contents of `/home/michael/Downloads/oracle.key` |
-| `ORACLE_IP` | `84.235.239.6` |
-
----
-
-## Phase 5: SSL Certificates — ⚠️ PENDING ACTION REQUIRED
-
-SSL is blocked by Cloudflare's orange-cloud proxy. The HTTP challenge reaches Cloudflare, not the VM.
-
-### Option A — Temporarily disable proxy (recommended, fastest)
-1. Go to Cloudflare dashboard → `sinaicamps.com` zone → **DNS**
-2. Click the orange cloud on **both** `@` and `api` A records → turn them **grey (DNS only)**
-3. On the VM, run:
+### Option A — Cloudflare Origin Certificate (recommended — works with proxy enabled)
+1. Cloudflare dashboard → your zone → **SSL/TLS** → **Origin Server** → **Create Certificate**
+2. Hostnames: `yourdomain.com`, `*.yourdomain.com` — validity: 15 years
+3. Copy the **Origin Certificate** (PEM) and **Private Key** to the server:
    ```bash
-   sudo certbot certonly --nginx -d sinaicamps.com -d api.sinaicamps.com \
-     --non-interactive --agree-tos --email admin@sinaicamps.com
+   sudo mkdir -p /etc/ssl/your-domain
+   sudo vi /etc/ssl/your-domain/fullchain.pem   # paste Origin Certificate
+   sudo vi /etc/ssl/your-domain/privkey.pem     # paste Private Key
    ```
-4. Once certs are issued (`/etc/letsencrypt/live/sinaicamps.com/`), deploy the full Nginx config:
+4. Also append the Cloudflare CA root to complete the chain:
    ```bash
-   sudo cp ~/marketplace/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
+   sudo bash -c 'curl -s https://developers.cloudflare.com/ssl/static/origin_ca_rsa_root.pem >> /etc/ssl/your-domain/fullchain.pem'
+   ```
+5. Update `nginx-unified.conf` cert paths, then reload:
+   ```bash
+   sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/campops
    sudo nginx -t && sudo systemctl reload nginx
    ```
-5. Turn the Cloudflare proxy back to **orange** on both records
-6. In Cloudflare SSL/TLS settings → set mode to **Full (Strict)**
+6. Cloudflare SSL/TLS → set mode to **Full (Strict)**
 
-### Option B — Cloudflare Origin Certificate (no certbot needed)
-1. Cloudflare dashboard → SSL/TLS → **Origin Server** → Create Certificate
-2. Include hostnames: `sinaicamps.com`, `*.sinaicamps.com`
-3. Copy the certificate and key to the VM:
+### Option B — Let's Encrypt (temporarily disable proxy)
+1. Cloudflare DNS → set `@` and `api` records to **DNS only** (grey cloud)
+2. On server:
    ```bash
-   sudo mkdir -p /etc/letsencrypt/live/sinaicamps.com
-   # paste cert content:
-   sudo nano /etc/letsencrypt/live/sinaicamps.com/fullchain.pem
-   # paste key content:
-   sudo nano /etc/letsencrypt/live/sinaicamps.com/privkey.pem
+   sudo certbot certonly --nginx -d yourdomain.com -d api.yourdomain.com \
+     --non-interactive --agree-tos --email admin@yourdomain.com
    ```
-4. Deploy Nginx config and reload:
-   ```bash
-   sudo cp ~/marketplace/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
-   sudo nginx -t && sudo systemctl reload nginx
-   ```
-5. Set Cloudflare SSL/TLS mode to **Full (Strict)**
+3. Re-enable Cloudflare proxy → set SSL mode to **Full (Strict)**
 
 ---
 
 ## Phase 6: Nginx Configuration
 
-Current active config on VM: `/etc/nginx/sites-available/sinaicamps`
+The `nginx-unified.conf` in the repo root is the template. Update the domain names and cert paths for your deployment, then:
 
-After SSL is set up, the final config is at `nginx-unified.conf` in the repo root.
-It handles:
+```bash
+sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/campops
+sudo ln -sf /etc/nginx/sites-available/campops /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+The config handles:
 - HTTP → HTTPS redirect
-- `sinaicamps.com` → proxy to `localhost:3000`
-- `api.sinaicamps.com` → proxy to `localhost:3000` with CORS headers
+- `yourdomain.com` → proxy to `localhost:3000`
+- `api.yourdomain.com` → proxy to `localhost:3000` with CORS + no-cache headers
 
 ---
 
-## Phase 7: Tenant Frontends (Cloudflare Pages)
+## Phase 7: GitHub Actions CI/CD (optional)
 
-### 7.1 Build a tenant shop frontend
-```bash
-bash scripts/build-shop.sh acacia production https://api.sinaicamps.com
-# Output: builds/acacia/dist/
-```
+Push to `main` → `.github/workflows/deploy.yml` auto-deploys.
 
-### 7.2 Deploy to Cloudflare Pages
+**Required GitHub Secrets** (repo → Settings → Secrets → Actions):
+
+| Secret | Value |
+|--------|-------|
+| `ORACLE_KEY` | Contents of your SSH private key file |
+| `ORACLE_IP` | Your server's public IP |
+| `CLOUDFLARE_API_TOKEN` | CF API token with Pages:Edit permission |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
+
+---
+
+## Phase 8: Tenant Shop Frontends (Cloudflare Pages)
+
 ```bash
-npx wrangler pages deploy builds/acacia/dist \
-  --project-name acaciacamp \
+# 1. Build the tenant's branded frontend
+bash scripts/build-shop.sh <tenant-slug> production https://api.yourdomain.com
+# Output: builds/<tenant-slug>/dist/
+
+# 2. Deploy to Cloudflare Pages
+npx wrangler pages deploy builds/<tenant-slug>/dist \
+  --project-name <cf-project-name> \
   --branch main
+
+# 3. Add custom domain in Cloudflare Pages dashboard
+# → Pages → <project> → Custom Domains → Add domain
 ```
 
-### 7.3 Add custom domain
-In the [Cloudflare Pages dashboard](https://dash.cloudflare.com) → project `acaciacamp` → **Custom Domains** → Add `acaciacamp.com`.
-Cloudflare will auto-configure DNS and SSL.
+See [cloudflare_config.md](cloudflare_config.md) for full Cloudflare setup.
+
+---
+
+## Phase 9: Add a New Tenant Property
+
+On the server, run:
+```bash
+cd YOUR_APP_DIR
+node -e "
+const db = require('better-sqlite3')('campops-prod.db');
+const now = Date.now();
+db.prepare(\`INSERT OR REPLACE INTO properties
+  (id, slug, name, is_active, custom_domain, plan, branding, settings, created_at)
+  VALUES (?, ?, ?, 1, ?, 'premium', ?, '{}', ?)\`)
+.run(
+  'tenant-id-1', 'my-tenant', 'My Tenant Name',
+  'mytenantdomain.com',
+  JSON.stringify({ name: 'My Tenant', colors: { primary: '#0f172a' } }),
+  now
+);
+console.log('Done');
+"
+```
+
+Then add `https://mytenantdomain.com` to `TRUSTED_ORIGINS` in `.env.production` and restart:
+```bash
+pm2 restart YOUR_PM2_NAME --update-env
+```
 
 ---
 
 ## Maintenance
 
 ```bash
-# SSH into VM
-ssh -i /home/michael/Downloads/oracle.key ubuntu@84.235.239.6
+# SSH into server
+ssh -i YOUR_SSH_KEY YOUR_SSH_USER@YOUR_SERVER_IP
 
 # App status
 pm2 list
-pm2 logs sinaicamps --lines 50
+pm2 logs YOUR_PM2_NAME --lines 50
 
-# Restart app
-pm2 restart sinaicamps
+# Restart with updated env
+pm2 restart YOUR_PM2_NAME --update-env
 
-# Check health
+# Health check
 curl http://localhost:3000/api/health
 
-# Nginx status
-sudo systemctl status nginx
-sudo nginx -t
+# Nginx
+sudo nginx -t && sudo systemctl reload nginx
 
-# View DB properties
+# View properties in DB
+cd YOUR_APP_DIR
 node -e "
-const db = require('better-sqlite3')('campops-prod-sim.db');
-console.log(db.prepare('SELECT id,slug,name,custom_domain FROM properties').all());
+const db = require('better-sqlite3')('campops-prod.db');
+console.table(db.prepare('SELECT id,slug,name,custom_domain FROM properties').all());
 "
 ```

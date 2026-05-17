@@ -1,6 +1,6 @@
-# Customization — Theming, Branding & Layout
+# Customization — Theming, Branding & White-Labeling
 
-SinaiCamps Marketplace is built with Tailwind CSS and designed to be fully white-labeled. This guide covers every customization point.
+The platform is built with Tailwind CSS and designed to be fully white-labeled. Rename it, recolor it, and deploy it under any brand. This guide covers every customization point.
 
 ---
 

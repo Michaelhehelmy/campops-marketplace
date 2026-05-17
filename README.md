@@ -1,165 +1,140 @@
-# SinaiCamps Marketplace & Enterprise ERP
+# CampOps — Modular Hospitality Marketplace Platform
 
-> The ultimate modular platform for hospitality management. A unified monorepo featuring a Next.js Marketplace, a plugin-driven Admin Shell, and a comprehensive Enterprise ERP ecosystem.
+> A white-label, multi-tenant hospitality marketplace. One platform powers your public listing site, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem you control.
 
 ---
 
-## 🏗️ Architecture: The "Clean Core"
+## Architecture Overview
 
-SinaiCamps is built on a **Clean Core** architecture. The main platform handles only identity, property isolation, and plugin lifecycle. All business logic—from bookings to payroll—is encapsulated in modular plugins.
-
-```mermaid
-graph TD
-    Marketplace["🌐 Marketplace\n(Next.js · Port 3001)"] --> Core["⚙️ Clean Core API\n(Hono / Next.js)"]
-    Core --> Plugins["🔌 Plugin Ecosystem\n(/plugins)"]
-    Core --> DB["🗄️ Unified Database\n(PostgreSQL / D1)"]
-
-    subgraph "Enterprise Modules"
-        Plugins --> Accounting["💰 Accounting"]
-        Plugins --> HR["👥 HR & Payroll"]
-        Plugins --> CRM["🤝 Guest CRM"]
-        Plugins --> Ops["🛠️ Maintenance"]
-    end
-
-    subgraph "Frontend Shells"
-        Marketplace --> Admin["🛡️ Admin Shell"]
-        Marketplace --> Shop["🛒 Shop Template"]
-    end
+```
+Browser
+  │
+  ├── marketplace.yourdomain.com  ──► Next.js Core (App Router)
+  │                                      ├── /api/*          ← REST API
+  │                                      ├── /[locale]/      ← Public pages
+  │                                      ├── /admin          ← Master admin
+  │                                      └── /manage/[id]    ← Owner dashboard
+  │
+  └── tenant.theirdomain.com  ──────► Cloudflare Pages (Vite SPA)
+                                          └── API calls ──► api.yourdomain.com
 ```
 
+**Clean Core principle:** the platform core handles only identity, tenant isolation, and plugin lifecycle. All business logic (bookings, POS, loyalty, HR) lives in self-contained plugins.
+
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
-```text
-sinaicamps-marketplace/
-├── src/                      # 🏛️ Core Platform (Marketplace & Admin)
-│   ├── app/api/plugins/      # Plugin Registry & Lifecycle routes
-│   ├── app/[locale]/         # Marketplace & Admin Pages
-│   └── lib/                  # PluginDiscoveryService, DB, Auth
+```
+campops-marketplace/
+├── src/                        # Core platform
+│   ├── app/api/                # REST API routes
+│   ├── app/[locale]/           # Marketplace UI pages
+│   ├── lib/                    # Auth, DB, Plugin runtime
+│   └── middleware.ts           # Tenant routing + auth guard
 │
-├── plugins/                  # 🔌 Enterprise Plugins (Self-contained packages)
-│   ├── accounting/           # Finance & Invoicing
-│   ├── loyalty/              # Guest Beats program
-│   ├── hr-core/              # Employee & Payroll
-│   └── ... (15+ modules)
+├── plugins/                    # Business logic modules
+│   ├── booking/                # Reservations & room management
+│   ├── loyalty/                # Guest points program
+│   ├── ical/                   # Calendar sync (iCal)
+│   ├── siteminder/             # OTA channel manager
+│   └── ...                     # 15+ modules
 │
 ├── packages/
-│   └── plugin-sdk/           # 🧰 The SDK used by all plugins
+│   └── plugin-sdk/             # TypeScript SDK for plugin authors
 │
-└── templates/
-    └── shop-frontend/        # 🎨 Premium React/Vite shop template
+├── templates/
+│   └── shop-frontend/          # React/Vite tenant shop template
+│
+├── scripts/                    # Build & deployment scripts
+└── docs/                       # Full documentation (start here ↓)
 ```
 
 ---
 
-## 🚀 Quick Start
-
-### 1. Prerequisites
-
-- **Node.js**: ≥ 20
-- **Database**: PostgreSQL (or D1 for Cloudflare deployments)
-
-### 2. Installation
+## Quick Start
 
 ```bash
-git clone https://github.com/sinaicamps/marketplace.git
-cd sinaicamps-marketplace
+# 1. Clone and install
+git clone https://github.com/your-org/campops-marketplace.git
+cd campops-marketplace
 npm install
-```
 
-### 3. Synchronise Plugins
+# 2. Configure environment
+cp .env.example .env.local
+# Edit .env.local — see docs/getting-started.md
 
-Before starting, synchronise the filesystem plugins with the database:
-
-```bash
-# Triggers the PluginDiscoveryService to scan /plugins and update registry
-curl -X POST http://localhost:3001/api/admin/plugins/sync
-```
-
-### 4. Launch the System
-
-```bash
+# 3. Start dev server
 npm run dev
+# → http://localhost:3000/en
 ```
 
-- **Marketplace**: `http://localhost:3001`
-- **Admin Dashboard**: `http://localhost:3001/admin`
-- **Plugin Registry**: `http://localhost:3001/api/plugins/ui-registry`
+Full setup guide: **[docs/getting-started.md](docs/getting-started.md)**
 
-## ✅ Code Quality & Checks
+---
 
-To maintain code health and high test coverage (>80%), the project uses a unified suite of checks.
+## Documentation
+
+| Document | What it covers |
+|----------|---------------|
+| [docs/index.md](docs/index.md) | **Master index — start here** |
+| [docs/getting-started.md](docs/getting-started.md) | Local development setup |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production server deployment |
+| [docs/cloudflare_config.md](docs/cloudflare_config.md) | Cloudflare DNS, Pages & SSL |
+| [docs/customization.md](docs/customization.md) | Branding, theming & white-labeling |
+| [docs/owner-onboarding.md](docs/owner-onboarding.md) | Property owner registration flow |
+| [docs/plugin-development-guide.md](docs/plugin-development-guide.md) | Building plugins |
+| [docs/plugins/hook-catalog.md](docs/plugins/hook-catalog.md) | All available hooks & payloads |
+| [FRAMEWORK.md](FRAMEWORK.md) | Core framework internals |
+| [TESTING.md](TESTING.md) | Test suite guide |
+
+---
+
+## Key Concepts
+
+- **Tenant** — a property (camp, hotel, lodge) with its own slug, domain, and plugin set
+- **Plugin** — a self-contained module with its own DB tables, API routes, and UI slots
+- **Shop Frontend** — a branded Vite SPA built from `templates/shop-frontend` for each tenant
+- **Master Admin** — platform-level management at `/admin` (plugins, tenants, stats)
+- **Better Auth** — authentication with email/password and session management
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Database | SQLite via `better-sqlite3` (swappable to PostgreSQL) |
+| Auth | Better Auth |
+| Tenant Frontends | React + Vite + shadcn/ui |
+| Styling | Tailwind CSS |
+| Testing | Vitest + Playwright |
+| Deployment | Oracle Cloud VM (backend) + Cloudflare Pages (frontends) |
+| Process Manager | PM2 |
+| Web Server | Nginx (reverse proxy + SSL) |
+
+---
+
+## Plugin Categories
+
+| Category | Plugins |
+|----------|---------|
+| Operations | `booking`, `housekeeping`, `maintenance` |
+| Revenue | `pos`, `accounting`, `financial-ops` |
+| Guests | `loyalty`, `guest-crm`, `marketing-automation` |
+| Distribution | `siteminder`, `ical`, `ical-import` |
+| HR | `hr-core`, `staff-roster` |
+
+---
+
+## Code Quality
 
 ```bash
-# Run formatting check, linting, and tests with coverage
-npm run check
-
-# Auto-format all code
-npm run format
-
-# Run full CI suite (including Playwright E2E)
-npm run check:full
+npm run check          # lint + typecheck + tests
+npm run format         # auto-format
+npm run check:full     # full CI suite including E2E
 ```
 
-For more details on the testing architecture, see [TESTING.md](TESTING.md).
-
----
-
-## 🔌 Plugin Development
-
-### Creating a New Plugin
-
-We provide a standard starter template to ensure consistency:
-
-```bash
-cp -r packages/plugin-starter plugins/my-awesome-plugin
-# Edit plugins/my-awesome-plugin/plugin.json
-```
-
-### Package Structure
-
-Each plugin must follow this structure to be discovered by the core:
-
-- `plugin.json`: Metadata, slots, and menu items.
-- `package.json`: Dependencies.
-- `src/index.ts`: Backend logic (hooks, API).
-- `src/ui.tsx`: Frontend components (widgets, settings).
-
-### Registering UI Components
-
-Plugins export a `components` map in `src/ui.tsx`. These are automatically registered in the shell's `ComponentRegistry` via the `ui-registry` API.
-
-```typescript
-// plugins/my-plugin/src/ui.tsx
-export const components = {
-  MyWidget,
-  MySettingsPage,
-};
-```
-
----
-
-## 🛠️ Enterprise Categories (Odoo-Inspired)
-
-The ecosystem is categorised for enterprise-grade scalability:
-
-- **Sales & CRM**: `loyalty`, `subscriptions`, `guest-crm`
-- **Finance**: `accounting`, `financial-ops`
-- **Operations**: `booking`, `maintenance`, `housekeeping`, `inventory-waste`
-- **Human Resources**: `hr-core`, `staff-roster`
-- **Marketing**: `marketing-automation`
-
----
-
-## 📜 Documentation
-
-- [Plugin Development Guide](docs/plugins/plugin-development.md)
-- [Hook Catalog](docs/plugins/hook-catalog.md)
-- [Marketplace Integration](docs/integrating-acacia-camp.md)
-
----
-
-## 📄 License
-
-Internal use only. Part of the SinaiCamps Marketplace ecosystem.
+See [TESTING.md](TESTING.md) for the full testing guide (337 tests, Vitest + Playwright).
