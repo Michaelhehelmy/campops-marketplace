@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
-import { LayoutDashboard, LogOut, Search, Menu, X } from 'lucide-react';
+import { LayoutDashboard, LogOut, Search, Menu, X, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export function Nav({ locale }: { locale: string }) {
@@ -30,19 +30,25 @@ export function Nav({ locale }: { locale: string }) {
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-900/80 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <a href={`/${locale}`} className="flex items-center gap-3">
-          <img src="/sinaicamps.png" alt="SinaiCamps Logo" className="h-8 w-auto object-contain" />
-          <span className="text-2xl font-black text-brand-600">SinaiCamps</span>
+        {/* Brand Logo & Name */}
+        <a href={`/${locale}`} className="flex items-center gap-3 group">
+          <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-500/20 group-hover:border-amber-500/40 transition-colors duration-300">
+            <img src="/sinaicamps.png" alt="SinaiCamps Logo" className="h-full w-full object-cover scale-[1.2]" />
+          </div>
+          <span className="text-xl font-black bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
+            SinaiCamps
+          </span>
         </a>
 
+        {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6">
           <a
             href={`/${locale}/search`}
-            className="text-gray-500 hover:text-brand-600 transition-colors font-bold flex items-center gap-1.5"
+            className="text-zinc-400 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-4 h-4 text-amber-500/80" />
             Search
           </a>
 
@@ -53,35 +59,35 @@ export function Nav({ locale }: { locale: string }) {
                   {dashboardLink && (
                     <a
                       href={dashboardLink}
-                      className="text-gray-500 hover:text-brand-600 transition-colors font-bold flex items-center gap-1.5"
+                      className="text-zinc-400 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
                     >
-                      <LayoutDashboard className="w-4 h-4" />
+                      <LayoutDashboard className="w-4 h-4 text-amber-500/80" />
                       Dashboard
                     </a>
                   )}
-                  <div className="h-8 w-px bg-gray-100" />
+                  <div className="h-8 w-px bg-slate-800/80" />
                   <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                      <p className="text-xs font-black text-gray-900 leading-none">
+                      <p className="text-xs font-black text-white leading-none">
                         {session.user.name}
                       </p>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                      <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mt-1">
                         {(session.user as any).role}
                       </p>
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors bg-gray-50 rounded-xl"
+                      className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-all bg-slate-900/60 border border-slate-800 rounded-xl"
                       title="Sign Out"
                     >
-                      <LogOut className="w-5 h-5" />
+                      <LogOut className="w-4.5 h-4.5" />
                     </button>
                   </div>
                 </div>
               ) : (
                 <a
                   href={`/${locale}/login`}
-                  className="bg-brand-600 text-white px-6 py-2.5 rounded-2xl font-black hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 px-5 py-2 rounded-xl text-sm font-black transition-all shadow-md shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-[0.98]"
                 >
                   Sign In
                 </a>
@@ -90,32 +96,32 @@ export function Nav({ locale }: { locale: string }) {
           )}
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile Hamburger */}
         <button
-          className="lg:hidden p-2 text-gray-500 hover:text-brand-600 transition-colors rounded-xl hover:bg-gray-50"
+          className="lg:hidden p-2 text-zinc-400 hover:text-amber-400 transition-colors rounded-xl bg-slate-900/60 border border-slate-800"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
           aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile menu panel */}
+      {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-gray-100 bg-white">
+        <div className="lg:hidden border-t border-slate-900 bg-slate-950">
           <div className="px-4 py-3 space-y-1">
             <a
               href={`/${locale}`}
               onClick={closeMobileMenu}
-              className="block px-3 py-2.5 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+              className="block px-3 py-2.5 rounded-xl text-zinc-300 font-bold hover:bg-slate-900 hover:text-amber-400 transition-colors"
             >
               Home
             </a>
             <a
               href={`/${locale}/search`}
               onClick={closeMobileMenu}
-              className="block px-3 py-2.5 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+              className="block px-3 py-2.5 rounded-xl text-zinc-300 font-bold hover:bg-slate-900 hover:text-amber-400 transition-colors"
             >
               Search
             </a>
@@ -127,20 +133,20 @@ export function Nav({ locale }: { locale: string }) {
                       <a
                         href={dashboardLink}
                         onClick={closeMobileMenu}
-                        className="block px-3 py-2.5 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+                        className="block px-3 py-2.5 rounded-xl text-zinc-300 font-bold hover:bg-slate-900 hover:text-amber-400 transition-colors"
                       >
                         Dashboard
                       </a>
                     )}
-                    <div className="px-3 py-2 text-xs text-gray-400 uppercase tracking-widest">
-                      {userName} &middot; {userRole}
+                    <div className="px-3 py-2 text-xs text-zinc-500 uppercase tracking-widest border-t border-slate-900 mt-2 pt-2">
+                      {userName} &middot; <span className="text-amber-400">{userRole}</span>
                     </div>
                     <button
                       onClick={() => {
                         closeMobileMenu();
                         handleSignOut();
                       }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl text-red-600 font-bold hover:bg-red-50 transition-colors"
+                      className="w-full text-left px-3 py-2.5 rounded-xl text-red-400 font-bold hover:bg-red-950/20 transition-colors"
                     >
                       Sign Out
                     </button>
@@ -149,7 +155,7 @@ export function Nav({ locale }: { locale: string }) {
                   <a
                     href={`/${locale}/login`}
                     onClick={closeMobileMenu}
-                    className="block px-3 py-2.5 rounded-xl text-brand-600 font-bold hover:bg-brand-50 transition-colors"
+                    className="block px-3 py-2.5 rounded-xl text-center bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black hover:from-amber-600 hover:to-amber-700 transition-all mt-2"
                   >
                     Sign In
                   </a>
