@@ -17,10 +17,13 @@ const stmt = db.prepare(`
 `);
 
 stmt.run(
-  id, slug, name,
+  id,
+  slug,
+  name,
   'Experience the beauty of Sinai at Acacia Camp. A serene desert oasis offering authentic Bedouin hospitality, comfortable accommodations, and unforgettable adventures.',
   'Desert oasis with authentic Bedouin hospitality',
-  'Dahab', 'Egypt',
+  'Dahab',
+  'Egypt',
   'acaciacamp.com',
   JSON.stringify({
     name: 'Acacia Camp',
@@ -29,7 +32,7 @@ stmt.run(
     logo: { url: '' },
     images: { hero: '' },
     contact: { email: 'info@acaciacamp.com', phone: '+20 100 123 4567' },
-    business: { currency: 'USD', timezone: 'Africa/Cairo' }
+    business: { currency: 'USD', timezone: 'Africa/Cairo' },
   }),
   JSON.stringify({}),
   now

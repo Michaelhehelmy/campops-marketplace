@@ -49,11 +49,14 @@ npm run format
 ### Unit / Integration (Vitest)
 
 ```bash
-# All core tests (100% must pass)
-npm run test
+# All core tests — unit + integration + API smoke (must all pass)
+npm run test:all
 
-# Run with coverage report
+# Run with coverage report (HTML + LCOV in coverage/)
 npm run test:coverage
+
+# API smoke tests only (fast, no DB required for mocked routes)
+npm run test:smoke
 
 # Watch mode
 npx vitest
@@ -66,13 +69,94 @@ npx vitest
 npm run dev   # or npm run build && npm start
 
 # All E2E tests
-npx playwright test
+npm run test:e2e:all
 
 # Core E2E only (no domain dependencies)
 npx playwright test e2e/tests/core/
 
 # With UI
-npx playwright test --ui
+npm run test:e2e:ui
+```
+
+---
+
+## Non-Functional Testing
+
+These checks are run manually and results documented in `docs/`.
+
+### Performance (Lighthouse)
+
+Requires `google-chrome` or `chromium` and a running dev server.
+
+```bash
+# Audit a page and output JSON
+npx lighthouse http://localhost:3000/en \
+  --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+  --output=json --output-path=/tmp/lh-homepage.json
+
+# Audit all key pages in one shot
+for page in "en" "en/stay/safari-camp" "en/login" "en/search"; do
+  slug=$(echo $page | tr '/' '-')
+  npx lighthouse "http://localhost:3000/$page" \
+    --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+    --output=json --output-path="/tmp/lh-${slug}.json" --quiet
+done
+```
+
+See `docs/PERFORMANCE_REPORT.md` for full results.
+
+### Load Testing (Apache Bench)
+
+```bash
+# 500 requests, 50 concurrent users
+ab -n 500 -c 50 http://localhost:3000/api/health
+ab -n 200 -c 50 "http://localhost:3000/api/master/listings"
+ab -n 200 -c 50 "http://localhost:3000/api/tenant/resolve?host=localhost"
+```
+
+### Accessibility (Lighthouse)
+
+The Lighthouse JSON output includes a full accessibility audit. Extract scores:
+
+```bash
+node -e "
+const d = require('/tmp/lh-homepage.json');
+console.log('a11y:', Math.round(d.categories.accessibility.score * 100));
+const fails = d.categories.accessibility.auditRefs
+  .filter(r => d.audits[r.id]?.score < 1)
+  .map(r => r.id);
+console.log('failures:', fails.join(', '));
+"
+```
+
+See `docs/ACCESSIBILITY_REPORT.md` for full results.
+
+### Security (npm audit)
+
+```bash
+# Check for vulnerabilities
+npm audit
+
+# JSON output for scripting
+npm audit --json | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(d['metadata']['vulnerabilities'])
+"
+```
+
+See `docs/TEST_COVERAGE_REPORT.md` — Security Findings section for findings and risk assessment.
+
+### Resilience
+
+```bash
+# Run the resilience unit tests
+npx vitest run src/lib/__tests__/resilience.test.ts
+
+# Manual DB failure test (SQLite — rename file and re-curl health)
+mv sinaicamps.db sinaicamps.db.disabled
+curl http://localhost:3000/api/health   # check 'db' status in response
+mv sinaicamps.db.disabled sinaicamps.db
 ```
 
 ---

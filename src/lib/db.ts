@@ -429,7 +429,12 @@ class DrizzleDatabaseWrapper {
       const hashedPassword =
         'e8c2be85ca9fe13f47c6ef1de40ac92d:4a8432eb6e15066427f96f1f9a3ca66fa19037c985f5cd3a5a46a73226d2f59f09ca5d4398b52918403865dd9f5ce4f254bddfbf16afc92517dbf50115f9799c';
       const testUsers = [
-        { id: 'master-admin', email: 'master@sinaicamps.com', role: 'master', name: 'Master Admin' },
+        {
+          id: 'master-admin',
+          email: 'master@sinaicamps.com',
+          role: 'master',
+          name: 'Master Admin',
+        },
         {
           id: 'manager-user-1',
           email: 'manager@sinaicamps.com',

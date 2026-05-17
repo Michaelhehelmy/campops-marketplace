@@ -38,7 +38,9 @@ describe('Manage Plugins API Route', () => {
     const propertyPlugins = [{ plugin_name: 'booking', is_enabled: 1 }];
 
     // Mock first call for available_plugins, second for property_plugins
-    (db.all as any).mockResolvedValueOnce(availablePlugins).mockResolvedValueOnce(propertyPlugins);
+    ((db as any).all as any)
+      .mockResolvedValueOnce(availablePlugins)
+      .mockResolvedValueOnce(propertyPlugins);
 
     const req = new NextRequest('http://localhost/api/manage/prop-1/plugins');
     const response = await GET(req, { params: { listingId: 'prop-1' } });
@@ -56,7 +58,7 @@ describe('Manage Plugins API Route', () => {
   });
 
   it('should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 

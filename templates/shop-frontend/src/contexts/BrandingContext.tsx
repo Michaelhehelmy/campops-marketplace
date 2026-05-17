@@ -53,7 +53,8 @@ const buildTimeDefaults: BrandingConfig = {
   website: import.meta.env.VITE_DOMAIN || "",
   domain: import.meta.env.VITE_DOMAIN || "",
   loginButtonLabel:
-    import.meta.env.VITE_APP_LOGIN_LABEL || `Enter ${import.meta.env.VITE_APP_NAME || "SinaiCamps"}`,
+    import.meta.env.VITE_APP_LOGIN_LABEL ||
+    `Enter ${import.meta.env.VITE_APP_NAME || "SinaiCamps"}`,
   // Dynamic Image Constants
   heroMain:
     import.meta.env.VITE_IMG_HERO_MAIN ||

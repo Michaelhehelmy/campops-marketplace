@@ -37,7 +37,7 @@ describe('Manage Rooms API Route', () => {
   });
 
   it('GET should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 
@@ -68,7 +68,7 @@ describe('Manage Rooms API Route', () => {
   });
 
   it('POST should return 404 if property not found', async () => {
-    (db.get as any).mockResolvedValueOnce(null);
+    ((db as any).get as any).mockResolvedValueOnce(null);
 
     const req = new NextRequest('http://localhost/api/manage/prop-1/rooms', {
       method: 'POST',
@@ -83,7 +83,7 @@ describe('Manage Rooms API Route', () => {
   });
 
   it('POST should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 

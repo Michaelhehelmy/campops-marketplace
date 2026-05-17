@@ -20,11 +20,11 @@ flowchart TD
 
 ## The three plans
 
-| Plan                 | Price  | What the owner gets                                                                       | Access URL                               |
-| -------------------- | ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **Basic**            | Free   | Public listing, read-only bookings, edit property details                                 | `yourdomain.com/en/owner/dashboard`        |
-| **Operations Suite** | $49/mo | Full admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports             | `campname.yourdomain.com/admin`            |
-| **White Label**      | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding            | `ownersdomain.com/admin`                   |
+| Plan                 | Price  | What the owner gets                                                            | Access URL                          |
+| -------------------- | ------ | ------------------------------------------------------------------------------ | ----------------------------------- |
+| **Basic**            | Free   | Public listing, read-only bookings, edit property details                      | `yourdomain.com/en/owner/dashboard` |
+| **Operations Suite** | $49/mo | Full admin panel — rooms, POS, KDS, housekeeping, inventory, loyalty, reports  | `campname.yourdomain.com/admin`     |
+| **White Label**      | $99/mo | Everything in Operations Suite + custom domain + managed SSL + custom branding | `ownersdomain.com/admin`            |
 
 ---
 

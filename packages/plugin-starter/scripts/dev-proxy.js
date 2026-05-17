@@ -27,8 +27,8 @@ const ROOT = resolve(__dirname, '..');
 const CAMPOPS_URL = process.env.CAMPOPS_URL ?? 'http://localhost:5000';
 const CAMPOPS_API_KEY = process.env.CAMPOPS_API_KEY ?? '';
 const PLUGIN_NAME =
-  JSON.parse((await import('node:fs')).readFileSync(resolve(ROOT, 'package.json'), 'utf8')).sinaicamps
-    ?.pluginId ?? 'my-plugin';
+  JSON.parse((await import('node:fs')).readFileSync(resolve(ROOT, 'package.json'), 'utf8'))
+    .sinaicamps?.pluginId ?? 'my-plugin';
 
 console.log(`[dev-proxy] Watching ${ROOT}/src for changes…`);
 console.log(`[dev-proxy] Target: ${CAMPOPS_URL}  plugin: ${PLUGIN_NAME}`);

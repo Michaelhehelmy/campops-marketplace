@@ -75,18 +75,22 @@ Full setup guide: **[docs/getting-started.md](docs/getting-started.md)**
 
 ## Documentation
 
-| Document | What it covers |
-|----------|---------------|
-| [docs/index.md](docs/index.md) | **Master index — start here** |
-| [docs/getting-started.md](docs/getting-started.md) | Local development setup |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production server deployment |
-| [docs/cloudflare_config.md](docs/cloudflare_config.md) | Cloudflare DNS, Pages & SSL |
-| [docs/customization.md](docs/customization.md) | Branding, theming & white-labeling |
-| [docs/owner-onboarding.md](docs/owner-onboarding.md) | Property owner registration flow |
-| [docs/plugin-development-guide.md](docs/plugin-development-guide.md) | Building plugins |
-| [docs/plugins/hook-catalog.md](docs/plugins/hook-catalog.md) | All available hooks & payloads |
-| [FRAMEWORK.md](FRAMEWORK.md) | Core framework internals |
-| [TESTING.md](TESTING.md) | Test suite guide |
+| Document                                                                   | What it covers                                         |
+| -------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [docs/index.md](docs/index.md)                                             | **Master index — start here**                          |
+| [docs/getting-started.md](docs/getting-started.md)                         | Local development setup                                |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                   | Production server deployment                           |
+| [docs/cloudflare_config.md](docs/cloudflare_config.md)                     | Cloudflare DNS, Pages & SSL                            |
+| [docs/customization.md](docs/customization.md)                             | Branding, theming & white-labeling                     |
+| [docs/owner-onboarding.md](docs/owner-onboarding.md)                       | Property owner registration flow                       |
+| [docs/plugin-development-guide.md](docs/plugin-development-guide.md)       | Building plugins                                       |
+| [docs/plugins/hook-catalog.md](docs/plugins/hook-catalog.md)               | All available hooks & payloads                         |
+| [FRAMEWORK.md](FRAMEWORK.md)                                               | Core framework internals                               |
+| [TESTING.md](TESTING.md)                                                   | Test suite guide                                       |
+| [docs/TEST_COVERAGE_REPORT.md](docs/TEST_COVERAGE_REPORT.md)               | Full coverage report + security/resilience findings    |
+| [docs/PERFORMANCE_REPORT.md](docs/PERFORMANCE_REPORT.md)                   | Lighthouse + load test results                         |
+| [docs/ACCESSIBILITY_REPORT.md](docs/ACCESSIBILITY_REPORT.md)               | WCAG 2.1 accessibility audit                           |
+| [docs/FRONTEND_FUNCTIONALITY_TEST.md](docs/FRONTEND_FUNCTIONALITY_TEST.md) | Frontend interactive audit — all buttons, forms, links |
 
 ---
 
@@ -102,30 +106,30 @@ Full setup guide: **[docs/getting-started.md](docs/getting-started.md)**
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript |
-| Database | SQLite via `better-sqlite3` (swappable to PostgreSQL) |
-| Auth | Better Auth |
-| Tenant Frontends | React + Vite + shadcn/ui |
-| Styling | Tailwind CSS |
-| Testing | Vitest + Playwright |
-| Deployment | Oracle Cloud VM (backend) + Cloudflare Pages (frontends) |
-| Process Manager | PM2 |
-| Web Server | Nginx (reverse proxy + SSL) |
+| Layer            | Technology                                               |
+| ---------------- | -------------------------------------------------------- |
+| Framework        | Next.js 14 (App Router)                                  |
+| Language         | TypeScript                                               |
+| Database         | SQLite via `better-sqlite3` (swappable to PostgreSQL)    |
+| Auth             | Better Auth                                              |
+| Tenant Frontends | React + Vite + shadcn/ui                                 |
+| Styling          | Tailwind CSS                                             |
+| Testing          | Vitest + Playwright                                      |
+| Deployment       | Oracle Cloud VM (backend) + Cloudflare Pages (frontends) |
+| Process Manager  | PM2                                                      |
+| Web Server       | Nginx (reverse proxy + SSL)                              |
 
 ---
 
 ## Plugin Categories
 
-| Category | Plugins |
-|----------|---------|
-| Operations | `booking`, `housekeeping`, `maintenance` |
-| Revenue | `pos`, `accounting`, `financial-ops` |
-| Guests | `loyalty`, `guest-crm`, `marketing-automation` |
-| Distribution | `siteminder`, `ical`, `ical-import` |
-| HR | `hr-core`, `staff-roster` |
+| Category     | Plugins                                        |
+| ------------ | ---------------------------------------------- |
+| Operations   | `booking`, `housekeeping`, `maintenance`       |
+| Revenue      | `pos`, `accounting`, `financial-ops`           |
+| Guests       | `loyalty`, `guest-crm`, `marketing-automation` |
+| Distribution | `siteminder`, `ical`, `ical-import`            |
+| HR           | `hr-core`, `staff-roster`                      |
 
 ---
 
@@ -137,4 +141,6 @@ npm run format         # auto-format
 npm run check:full     # full CI suite including E2E
 ```
 
-See [TESTING.md](TESTING.md) for the full testing guide (337 tests, Vitest + Playwright).
+See [TESTING.md](TESTING.md) for the full testing guide.  
+**665 Vitest tests** (88 files) + **131 Playwright E2E tests** — all passing. Coverage thresholds met.  
+See [docs/TEST_COVERAGE_REPORT.md](docs/TEST_COVERAGE_REPORT.md) for full coverage breakdown, security findings, and resilience results.

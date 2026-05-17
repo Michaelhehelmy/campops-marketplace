@@ -35,7 +35,7 @@ describe('Master Settings API Route', () => {
   });
 
   it('GET should handle already parsed JSON config', async () => {
-    (db.get as any).mockResolvedValueOnce({
+    ((db as any).get as any).mockResolvedValueOnce({
       config: { platformName: 'Already Parsed' },
     });
 
@@ -48,7 +48,7 @@ describe('Master Settings API Route', () => {
   });
 
   it('GET should return default settings if database throws', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Table does not exist');
     });
 
@@ -74,14 +74,14 @@ describe('Master Settings API Route', () => {
 
     expect(response.status).toBe(200);
     expect(data.ok).toBe(true);
-    expect(db.run).toHaveBeenCalledWith(
+    expect((db as any).run).toHaveBeenCalledWith(
       'marketplace_settings',
       expect.stringContaining('New Name')
     );
   });
 
   it('POST should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 

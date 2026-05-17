@@ -8,11 +8,11 @@
 
 ## Overview
 
-| What | Where it's hosted | Cloudflare role |
-|------|------------------|-----------------|
-| Marketplace backend | Your Linux server | DNS proxy → server |
-| API subdomain | Same server | DNS proxy → server |
-| Tenant shop frontends | Cloudflare Pages | Pages hosting + custom domain |
+| What                  | Where it's hosted | Cloudflare role               |
+| --------------------- | ----------------- | ----------------------------- |
+| Marketplace backend   | Your Linux server | DNS proxy → server            |
+| API subdomain         | Same server       | DNS proxy → server            |
+| Tenant shop frontends | Cloudflare Pages  | Pages hosting + custom domain |
 
 ---
 
@@ -20,16 +20,17 @@
 
 In Cloudflare → your zone (`yourdomain.com`) → **DNS**:
 
-| Type | Name | Content | Proxy |
-|------|------|---------|-------|
-| A | `@` | Your server IP | Proxied (orange) |
-| A | `api` | Your server IP | Proxied (orange) |
+| Type | Name  | Content        | Proxy            |
+| ---- | ----- | -------------- | ---------------- |
+| A    | `@`   | Your server IP | Proxied (orange) |
+| A    | `api` | Your server IP | Proxied (orange) |
 
 ---
 
 ## 2. SSL/TLS for the Marketplace
 
 ### Why standard certbot fails with Cloudflare proxy
+
 When the orange cloud is enabled, Cloudflare intercepts all HTTP traffic before it reaches your server. Let's Encrypt HTTP-01 challenge requests never arrive at the server, so certificate issuance fails.
 
 ### Recommended: Cloudflare Origin Certificate
@@ -55,6 +56,7 @@ When the orange cloud is enabled, Cloudflare intercepts all HTTP traffic before 
 7. Back in Cloudflare SSL/TLS → set encryption mode to **Full (Strict)**
 
 ### Alternative: Let's Encrypt (requires temporarily disabling proxy)
+
 1. DNS → set `@` and `api` records to **DNS only** (grey cloud)
 2. On server: `sudo certbot certonly --nginx -d yourdomain.com -d api.yourdomain.com`
 3. Re-enable proxy → SSL mode → **Full (Strict)**
@@ -65,12 +67,12 @@ When the orange cloud is enabled, Cloudflare intercepts all HTTP traffic before 
 
 After certs are deployed, apply these settings to each zone:
 
-| Setting | Value |
-|---------|-------|
-| SSL/TLS encryption mode | **Full (Strict)** |
-| Always Use HTTPS | **On** |
-| Automatic HTTPS Rewrites | **On** |
-| Minimum TLS Version | TLS 1.2 |
+| Setting                  | Value             |
+| ------------------------ | ----------------- |
+| SSL/TLS encryption mode  | **Full (Strict)** |
+| Always Use HTTPS         | **On**            |
+| Automatic HTTPS Rewrites | **On**            |
+| Minimum TLS Version      | TLS 1.2           |
 
 ---
 
@@ -102,9 +104,9 @@ npx wrangler pages deploy builds/<tenant-slug>/dist \
 
 ### 4.3 DNS records for tenant domain (auto-created by Pages, shown for reference)
 
-| Type | Name | Content | Proxy |
-|------|------|---------|-------|
-| CNAME | `@` | `<project>.pages.dev` | Proxied (orange) |
+| Type  | Name  | Content               | Proxy            |
+| ----- | ----- | --------------------- | ---------------- |
+| CNAME | `@`   | `<project>.pages.dev` | Proxied (orange) |
 | CNAME | `www` | `<project>.pages.dev` | Proxied (orange) |
 
 ---
@@ -115,14 +117,15 @@ For automated CI/CD deployment (`.github/workflows/deploy.yml`):
 
 Go to: repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
 
-| Secret | Description |
-|--------|-------------|
-| `ORACLE_KEY` | Full contents of your SSH private key |
-| `ORACLE_IP` | Your server's public IP address |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with **Cloudflare Pages:Edit** permission |
+| Secret                  | Description                                                         |
+| ----------------------- | ------------------------------------------------------------------- |
+| `ORACLE_KEY`            | Full contents of your SSH private key                               |
+| `ORACLE_IP`             | Your server's public IP address                                     |
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with **Cloudflare Pages:Edit** permission      |
 | `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare Account ID (found in the right sidebar of any zone) |
 
 To create a Cloudflare API token:
+
 1. [Cloudflare dashboard](https://dash.cloudflare.com) → **Profile** → **API Tokens** → **Create Token**
 2. Use the **Edit Cloudflare Workers** template or create a custom token with:
    - Permissions: `Cloudflare Pages:Edit`
@@ -135,6 +138,7 @@ To create a Cloudflare API token:
 The `api.yourdomain.com` server block in `nginx-unified.conf` sends `Cache-Control: no-store` headers to prevent Cloudflare from caching API responses.
 
 If you ever see stale HTML being returned from the API subdomain, purge the cache:
+
 - Cloudflare → your zone → **Caching** → **Configuration** → **Purge Everything**
 
 ---

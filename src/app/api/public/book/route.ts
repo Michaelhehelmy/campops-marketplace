@@ -73,6 +73,38 @@ export async function POST(req: NextRequest) {
         totalPrice
       );
 
+    // Sync with Booking plugin if active
+    try {
+      const tableExists = await db.tableExists('plugin_booking_bookings');
+      if (tableExists) {
+        const pId = property.id.toString();
+        const rId = roomTypeId || 'room-1';
+        const nowSec = Math.floor(Date.now() / 1000);
+        await db.execute(`
+          INSERT OR IGNORE INTO plugin_booking_bookings
+          (id, listing_id, room_id, guest_name, guest_email, check_in, check_out, adults, total_price, currency, status, payment_provider, payment_status, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?, 'pending', ?, ?)
+        `, [
+          reservationId,
+          pId,
+          rId,
+          guestName ?? 'Guest',
+          guestEmail ?? '',
+          checkIn,
+          checkOut,
+          adults,
+          totalPrice,
+          currency,
+          paymentProvider,
+          nowSec,
+          nowSec
+        ]);
+        console.log(`[Public Book] Synced reservation ${reservationId} to plugin_booking_bookings`);
+      }
+    } catch (e: any) {
+      console.warn('[Public Book] Failed to sync to booking plugin:', e.message);
+    }
+
     console.log(
       `[Public Book] Created reservation ${reservationId} for ${guestName} at ${property.name}`
     );

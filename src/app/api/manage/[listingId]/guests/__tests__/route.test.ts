@@ -36,7 +36,7 @@ describe('Manage Guests API Route', () => {
   });
 
   it('should handle anonymous guests', async () => {
-    (db.all as any).mockResolvedValueOnce([
+    ((db as any).all as any).mockResolvedValueOnce([
       {
         id: 'user-2',
         name: null,

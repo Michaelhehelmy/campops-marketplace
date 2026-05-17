@@ -12,11 +12,15 @@ export async function GET(req: NextRequest) {
 
   const hostname = host.split(':')[0];
 
+  // Localhost resolves to the global marketplace, not a specific listing,
+  // to support proper E2E testing of both the marketplace homepage and cross-listing controls.
+  /*
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return NextResponse.json({
       property: { id: '1', name: 'Safari Camp', slug: 'safari-camp', plan: 'pro' },
     });
   }
+  */
 
   const parseSettings = (value: unknown) => {
     if (!value) return {};

@@ -16,3 +16,17 @@ node_modules/
 # TypeScript
 tsconfig.tsbuildinfo
 next-env.d.ts
+
+# Databases and logs
+*.db
+*.db-shm
+*.db-wal
+*.db.backup
+*.db.bak
+error.log
+
+# Testing & Coverage
+coverage/
+e2e/test-results/
+test-results/
+playwright-report/

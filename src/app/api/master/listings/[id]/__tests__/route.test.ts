@@ -54,7 +54,7 @@ describe('Master Listings Detail API Route', () => {
   });
 
   it('should return 404 if listing is not found', async () => {
-    (db.get as any).mockResolvedValueOnce(null);
+    ((db as any).get as any).mockResolvedValueOnce(null);
 
     const req = new NextRequest('http://localhost/api/master/listings/prop-1');
     const response = await GET(req, { params: { id: 'prop-1' } });
@@ -65,7 +65,7 @@ describe('Master Listings Detail API Route', () => {
   });
 
   it('should handle missing plugin associations gracefully', async () => {
-    (db.all as any).mockResolvedValueOnce(null); // return null instead of array
+    ((db as any).all as any).mockResolvedValueOnce(null); // return null instead of array
 
     const req = new NextRequest('http://localhost/api/master/listings/prop-1');
     const response = await GET(req, { params: { id: 'prop-1' } });
@@ -76,7 +76,7 @@ describe('Master Listings Detail API Route', () => {
   });
 
   it('should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 

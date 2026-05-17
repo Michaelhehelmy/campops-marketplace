@@ -19,10 +19,10 @@ Plugins are loaded server-side by the Acacia Camp backend and can:
 
 ## Plugin sources
 
-| Source        | Description                                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Built-in**  | `stripe`, `ical`, `ical-import`, `loyalty`, `siteminder` — shipped with Acacia Camp                                       |
-| **Ecosystem** | Community plugins from [github.com/your-org/sinaicamps-ecosystem](https://github.com/your-org/sinaicamps-ecosystem)             |
+| Source        | Description                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Built-in**  | `stripe`, `ical`, `ical-import`, `loyalty`, `siteminder` — shipped with Acacia Camp                                          |
+| **Ecosystem** | Community plugins from [github.com/your-org/sinaicamps-ecosystem](https://github.com/your-org/sinaicamps-ecosystem)          |
 | **Custom**    | Build your own using the [Plugin SDK](https://github.com/your-org/sinaicamps-ecosystem/blob/main/docs/plugin-development.md) |
 
 ---

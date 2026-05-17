@@ -21,34 +21,37 @@ Cloudflare (DNS + Proxy)
 
 ## Key Variables (fill in your own)
 
-| Variable | Example | Description |
-|----------|---------|-------------|
-| `YOUR_SERVER_IP` | `1.2.3.4` | Public IP of your Linux server |
-| `YOUR_SSH_KEY` | `~/.ssh/id_rsa` | Path to your SSH private key |
-| `YOUR_SSH_USER` | `ubuntu` | SSH user on the server |
-| `YOUR_APP_DIR` | `~/marketplace` | App directory on server |
-| `YOUR_DOMAIN` | `yourdomain.com` | Your marketplace domain |
-| `YOUR_PM2_NAME` | `campops` | PM2 process name |
+| Variable         | Example          | Description                    |
+| ---------------- | ---------------- | ------------------------------ |
+| `YOUR_SERVER_IP` | `1.2.3.4`        | Public IP of your Linux server |
+| `YOUR_SSH_KEY`   | `~/.ssh/id_rsa`  | Path to your SSH private key   |
+| `YOUR_SSH_USER`  | `ubuntu`         | SSH user on the server         |
+| `YOUR_APP_DIR`   | `~/marketplace`  | App directory on server        |
+| `YOUR_DOMAIN`    | `yourdomain.com` | Your marketplace domain        |
+| `YOUR_PM2_NAME`  | `campops`        | PM2 process name               |
 
 ---
 
 ## Phase 1: Server Infrastructure
 
 ### 1.1 Supported Platforms
+
 Any Ubuntu 22.04/24.04 LTS server with a public IP:
+
 - **Oracle Cloud** — free tier: `VM.Standard.A1.Flex` (4 OCPUs, 24GB RAM)
 - **DigitalOcean** — $6/mo Droplet
 - **AWS/GCP/Azure** — any standard VM
 - **Hetzner** — CX11 or better
 
 ### 1.2 Required Open Ports
+
 Open these in your cloud provider's firewall/security group **and** in the server's iptables:
 
-| Port | Purpose |
-|------|---------|
-| 22 | SSH |
-| 80 | HTTP (required for Cloudflare proxy) |
-| 443 | HTTPS |
+| Port | Purpose                              |
+| ---- | ------------------------------------ |
+| 22   | SSH                                  |
+| 80   | HTTP (required for Cloudflare proxy) |
+| 443  | HTTPS                                |
 
 ```bash
 # Ubuntu iptables (run on server)
@@ -146,6 +149,7 @@ ssh -i YOUR_SSH_KEY YOUR_SSH_USER@YOUR_SERVER_IP \
 ```
 
 ### 4.1 Enable PM2 Auto-Start on Reboot (run once on server)
+
 ```bash
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u YOUR_SSH_USER --hp /home/YOUR_SSH_USER
 pm2 save
@@ -158,6 +162,7 @@ pm2 save
 When using Cloudflare proxy (orange cloud), the Let's Encrypt HTTP challenge is intercepted. Use one of these options:
 
 ### Option A — Cloudflare Origin Certificate (recommended — works with proxy enabled)
+
 1. Cloudflare dashboard → your zone → **SSL/TLS** → **Origin Server** → **Create Certificate**
 2. Hostnames: `yourdomain.com`, `*.yourdomain.com` — validity: 15 years
 3. Copy the **Origin Certificate** (PEM) and **Private Key** to the server:
@@ -178,6 +183,7 @@ When using Cloudflare proxy (orange cloud), the Let's Encrypt HTTP challenge is 
 6. Cloudflare SSL/TLS → set mode to **Full (Strict)**
 
 ### Option B — Let's Encrypt (temporarily disable proxy)
+
 1. Cloudflare DNS → set `@` and `api` records to **DNS only** (grey cloud)
 2. On server:
    ```bash
@@ -199,6 +205,7 @@ sudo nginx -t && sudo systemctl reload nginx
 ```
 
 The config handles:
+
 - HTTP → HTTPS redirect
 - `yourdomain.com` → proxy to `localhost:3000`
 - `api.yourdomain.com` → proxy to `localhost:3000` with CORS + no-cache headers
@@ -211,12 +218,12 @@ Push to `main` → `.github/workflows/deploy.yml` auto-deploys.
 
 **Required GitHub Secrets** (repo → Settings → Secrets → Actions):
 
-| Secret | Value |
-|--------|-------|
-| `ORACLE_KEY` | Contents of your SSH private key file |
-| `ORACLE_IP` | Your server's public IP |
-| `CLOUDFLARE_API_TOKEN` | CF API token with Pages:Edit permission |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
+| Secret                  | Value                                   |
+| ----------------------- | --------------------------------------- |
+| `ORACLE_KEY`            | Contents of your SSH private key file   |
+| `ORACLE_IP`             | Your server's public IP                 |
+| `CLOUDFLARE_API_TOKEN`  | CF API token with Pages:Edit permission |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID              |
 
 ---
 
@@ -243,6 +250,7 @@ See [cloudflare_config.md](cloudflare_config.md) for full Cloudflare setup.
 ## Phase 9: Add a New Tenant Property
 
 On the server, run:
+
 ```bash
 cd YOUR_APP_DIR
 node -e "
@@ -262,6 +270,7 @@ console.log('Done');
 ```
 
 Then add `https://mytenantdomain.com` to `TRUSTED_ORIGINS` in `.env.production` and restart:
+
 ```bash
 pm2 restart YOUR_PM2_NAME --update-env
 ```

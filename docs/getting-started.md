@@ -8,11 +8,11 @@ This guide gets the platform running on your local machine in under 10 minutes.
 
 ## Prerequisites
 
-| Requirement | Minimum | Notes |
-|-------------|---------|-------|
-| Node.js | 20 LTS | [nodejs.org](https://nodejs.org) |
-| npm | 10 | Bundled with Node 20 |
-| Git | any | |
+| Requirement | Minimum | Notes                            |
+| ----------- | ------- | -------------------------------- |
+| Node.js     | 20 LTS  | [nodejs.org](https://nodejs.org) |
+| npm         | 10      | Bundled with Node 20             |
+| Git         | any     |                                  |
 
 No database server needed — the app uses SQLite out of the box for local development.
 
@@ -65,16 +65,16 @@ The SQLite database is created automatically on first run with seed data (demo u
 
 ## Step 4 — Explore the platform
 
-| URL | What you see |
-|-----|-------------|
-| `/en` | Public marketplace homepage |
-| `/en/search` | Property search |
-| `/en/login` | Login page |
-| `/en/admin` | Master admin panel (master role required) |
-| `/en/manage/[id]` | Property owner dashboard |
-| `/en/list-your-space` | Owner self-registration |
-| `/api/health` | Health check endpoint |
-| `/api/branding?slug=<slug>` | Tenant branding data |
+| URL                         | What you see                              |
+| --------------------------- | ----------------------------------------- |
+| `/en`                       | Public marketplace homepage               |
+| `/en/search`                | Property search                           |
+| `/en/login`                 | Login page                                |
+| `/en/admin`                 | Master admin panel (master role required) |
+| `/en/manage/[id]`           | Property owner dashboard                  |
+| `/en/list-your-space`       | Owner self-registration                   |
+| `/api/health`               | Health check endpoint                     |
+| `/api/branding?slug=<slug>` | Tenant branding data                      |
 
 ---
 
@@ -103,6 +103,7 @@ bash scripts/build-shop.sh <slug> development http://localhost:3000
 ```
 
 Serve it locally:
+
 ```bash
 cd builds/<slug>/dist && npx serve .
 ```
@@ -112,19 +113,24 @@ cd builds/<slug>/dist && npx serve .
 ## Troubleshooting
 
 **Blank page — redirects to `/en` but nothing loads**
+
 - Check the terminal for Next.js errors
 - Verify `BETTER_AUTH_SECRET` is set
 
 **`Invalid origin` error on login**
+
 - Add `http://localhost:3000` to `TRUSTED_ORIGINS` in `.env.local`
 
 **`Cannot find module 'better-sqlite3'`**
+
 - Run `npm rebuild better-sqlite3` — native module needs to be compiled for your Node version
 
 **Port already in use**
+
 - Set `PORT=3001` in `.env.local` and update `NEXT_PUBLIC_APP_URL` accordingly
 
 **`404` on `/` — expected**
+
 - The middleware always redirects `/` → `/en`. This is correct behaviour.
 
 ---

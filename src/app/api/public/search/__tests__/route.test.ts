@@ -49,11 +49,11 @@ describe('Public Search API Route', () => {
     expect(data.properties).toHaveLength(1);
 
     // Check if query was called with the right param
-    expect(db.all).toHaveBeenCalledWith('%Nairobi%');
+    expect((db as any).all).toHaveBeenCalledWith('%Nairobi%');
   });
 
   it('GET should handle database errors gracefully', async () => {
-    (db.prepare as any).mockImplementationOnce(() => {
+    ((db as any).prepare as any).mockImplementationOnce(() => {
       throw new Error('Database error');
     });
 
@@ -66,7 +66,7 @@ describe('Public Search API Route', () => {
   });
 
   it('GET should handle properties without min price gracefully', async () => {
-    (db.all as any).mockResolvedValueOnce([
+    ((db as any).all as any).mockResolvedValueOnce([
       {
         id: 'prop-2',
         name: 'Basic Camp',

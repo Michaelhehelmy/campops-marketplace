@@ -63,11 +63,11 @@
 
 ### Plugins / Others
 
-| URL                     | Result | Console Errors/Warnings | Notes                                                                     |
-| ----------------------- | ------ | ----------------------- | ------------------------------------------------------------------------- |
+| URL                     | Result | Console Errors/Warnings | Notes                                                                        |
+| ----------------------- | ------ | ----------------------- | ---------------------------------------------------------------------------- |
 | `/en/pwa-preview`       | PASS   | None                    | Correctly redirects to listing and displays "Install SinaiCamps App" banner. |
-| `/manifest.webmanifest` | PASS   | None                    | Generated correctly by `src/app/manifest.ts`.                             |
-| `http://127.0.0.1:3000` | PASS   | None                    | Custom domain logic verified; rewrites to Safari Camp branding.           |
+| `/manifest.webmanifest` | PASS   | None                    | Generated correctly by `src/app/manifest.ts`.                                |
+| `http://127.0.0.1:3000` | PASS   | None                    | Custom domain logic verified; rewrites to Safari Camp branding.              |
 
 ## Fixes Applied
 

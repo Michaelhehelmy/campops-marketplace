@@ -46,10 +46,10 @@ export async function GET(req: NextRequest) {
           p.country AS property_country
         FROM reservations r
         JOIN properties p ON r.property_id = p.id
-        WHERE r.user_id = ?
+        WHERE r.user_id = ? OR r.guest_email = (SELECT email FROM users WHERE id = ?)
         ORDER BY r.check_in DESC`
       )
-      .all(userId)) as any[];
+      .all(userId, userId)) as any[];
 
     return NextResponse.json({
       reservations: reservations.map((r: any) => ({

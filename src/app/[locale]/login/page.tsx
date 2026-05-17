@@ -34,32 +34,37 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
     }
 
     if (data) {
+      // Use window.location.href for reliable redirect after login.
+      // router.push() can race with the session cookie being set,
+      // causing the middleware to bounce back to /login.
       if (next) {
-        router.push(next);
-      } else {
-        const user = data.user as any;
-        const role = user.role;
-
-        if (role === 'master' || role === 'marketplace_master') {
-          router.push(`/${params.locale}/admin`);
-        } else if (role === 'manager' || role === 'staff') {
-          // Fetch property to redirect to specific management page
-          try {
-            const res = await fetch('/api/owner/me');
-            if (res.ok) {
-              const ownerData = await res.json();
-              router.push(`/${params.locale}/manage/${ownerData.property.id}`);
-            } else {
-              router.push(`/${params.locale}/owner/dashboard`);
-            }
-          } catch {
-            router.push(`/${params.locale}/owner/dashboard`);
-          }
-        } else {
-          router.push(`/${params.locale}/guest`);
-        }
+        window.location.href = next;
+        return;
       }
-      router.refresh();
+
+      const user = data.user as any;
+      const role = user.role;
+
+      if (role === 'master' || role === 'marketplace_master') {
+        window.location.href = `/${params.locale}/admin`;
+      } else if (role === 'manager' || role === 'staff') {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          const res = await fetch('/api/owner/me', { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const ownerData = await res.json();
+            window.location.href = `/${params.locale}/manage/${ownerData.property.id}`;
+          } else {
+            window.location.href = `/${params.locale}/owner/dashboard`;
+          }
+        } catch {
+          window.location.href = `/${params.locale}/owner/dashboard`;
+        }
+      } else {
+        window.location.href = `/${params.locale}/guest`;
+      }
     }
   };
 
@@ -170,7 +175,6 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );

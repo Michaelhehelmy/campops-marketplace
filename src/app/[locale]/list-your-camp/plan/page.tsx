@@ -215,7 +215,8 @@ export default function Step3PlanPage() {
                   />
                   <p className="text-xs text-gray-400 mt-1">
                     Point a CNAME record from this domain to{' '}
-                    <code className="bg-gray-100 px-1 rounded">sinaicamps.com</code> after registering.
+                    <code className="bg-gray-100 px-1 rounded">sinaicamps.com</code> after
+                    registering.
                   </p>
                 </div>
               )}

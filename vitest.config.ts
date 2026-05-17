@@ -12,6 +12,7 @@ export default defineConfig({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/.next/**',
       'templates/**',
       'e2e/**',
       'plugins/booking/__tests__/plugin-integration.test.ts',
@@ -19,6 +20,28 @@ export default defineConfig({
     ],
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/lib/**/*.{ts,tsx}', 'src/app/api/**/*.ts'],
+      exclude: [
+        '**/node_modules/**',
+        '**/__tests__/**',
+        '**/dist/**',
+        '**/.next/**',
+        'src/test/**',
+        'src/lib/auth-client.ts',
+        'src/lib/plugins-frontend-init.ts',
+        '**/*.config.*',
+        '**/next-env.d.ts',
+      ],
+      thresholds: {
+        statements: 60,
+        lines: 60,
+        functions: 65,
+        branches: 50,
+      },
     },
   },
 });

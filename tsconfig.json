@@ -19,6 +19,6 @@
       "@sinaicamps/plugin-sdk": ["./packages/plugin-sdk/src/index.ts"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.d.ts"],
   "exclude": ["node_modules", "packages/plugin-starter", "templates", "e2e"]
 }
