@@ -3,7 +3,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Star, Wifi, Car, Utensils, Bed, MapPin, ArrowRight } from 'lucide-react';
+import { Loader2, Star, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 interface FeaturedListing {
@@ -58,15 +58,15 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-600" />
+      <div className="flex justify-center py-24">
+        <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm text-center">
+      <div className="max-w-xl mx-auto my-8 bg-red-50/50 border border-red-200/60 rounded-2xl p-6 text-red-800 text-sm text-center backdrop-blur-md">
         {error}
       </div>
     );
@@ -77,62 +77,81 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
   }
 
   return (
-    <section aria-label="Featured properties" className="py-16 px-4">
+    <section aria-label="Featured properties" className="py-20 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">Featured Stays</h2>
-          <p className="text-lg text-gray-500">Handpicked properties for your next adventure</p>
+        {/* Header */}
+        <div className="text-center mb-16 relative">
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-500 bg-amber-50 px-3.5 py-1.5 rounded-full inline-block mb-3.5">
+            👑 Handpicked Stays
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+            Featured Destinations
+          </h2>
+          <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury standards, and seamless service.
+          </p>
         </div>
 
-        <div role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Listings Grid */}
+        <div role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {listings.map((listing) => (
             <article
               key={listing.id}
-              className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-100"
+              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1.5"
             >
-              {/* Image */}
-              <div className="h-48 bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center relative">
+              {/* Image & Badges */}
+              <div className="h-56 bg-slate-100 overflow-hidden relative shrink-0">
                 {listing.primaryImage ? (
                   <img
                     src={listing.primaryImage}
                     alt={`${listing.name} - ${listing.shortDescription}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                 ) : (
-                  <span className="text-4xl" aria-hidden="true">
-                    🏕️
-                  </span>
+                  <div className="w-full h-full bg-gradient-to-tr from-amber-50 to-amber-100 flex items-center justify-center">
+                    <span className="text-5xl" aria-hidden="true">🏕️</span>
+                  </div>
                 )}
+
+                {/* Direct Booking Discount Badge */}
+                <div className="absolute top-4 left-4 bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>15% DIRECT</span>
+                </div>
+
+                {/* Rating Badge */}
                 {listing.rating && (
                   <div
-                    className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 text-sm font-medium"
+                    className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md text-white rounded-full px-2.5 py-1.5 flex items-center gap-1 text-xs font-bold shadow-md"
                     aria-label={`Rating: ${listing.rating} out of 5`}
                   >
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" aria-hidden="true" />
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
                     {listing.rating}
                   </div>
                 )}
               </div>
 
-              <div className="p-5">
-                <Link href={`/${locale}/stay/${listing.slug}`}>
-                  <h3 className="font-semibold text-gray-900 text-lg mb-2 group-hover:text-brand-600 transition-colors">
+              {/* Card Body */}
+              <div className="p-6 flex flex-col flex-grow">
+                {/* Title */}
+                <Link href={`/${locale}/stay/${listing.slug}`} className="block group/link">
+                  <h3 className="font-extrabold text-slate-900 text-lg mb-2 group-hover/link:text-amber-500 transition-colors line-clamp-1 leading-snug">
                     {listing.name}
                   </h3>
                 </Link>
 
                 {/* Description */}
-                <p className="text-sm text-gray-500 mb-3 line-clamp-2">
+                <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed flex-grow">
                   {listing.shortDescription}
                 </p>
 
-                {/* Amenities preview */}
+                {/* Amenities */}
                 {listing.amenities && listing.amenities.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-4" role="list" aria-label="Amenities">
+                  <div className="flex flex-wrap gap-1.5 mb-6 shrink-0" role="list" aria-label="Amenities">
                     {listing.amenities.slice(0, 3).map((amenity) => (
                       <span
                         key={amenity}
-                        className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5"
+                        className="text-[11px] font-semibold bg-slate-50 text-slate-600 rounded-full px-2.5 py-1 border border-slate-100"
                         role="listitem"
                       >
                         {amenity}
@@ -140,7 +159,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                     ))}
                     {listing.amenities.length > 3 && (
                       <span
-                        className="text-xs text-gray-400"
+                        className="text-[11px] font-semibold text-slate-400 self-center pl-1"
                         aria-label={`Plus ${listing.amenities.length - 3} more amenities`}
                       >
                         +{listing.amenities.length - 3}
@@ -149,22 +168,23 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                   </div>
                 )}
 
-                {/* Price + CTA */}
-                <div className="flex items-end justify-between">
+                {/* Price + CTA Button */}
+                <div className="flex items-end justify-between border-t border-slate-100 pt-5 mt-auto shrink-0">
                   <div>
-                    <p className="text-xs text-gray-400">From</p>
-                    <p className="text-xl font-bold text-gray-900">
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Guaranteed Rate</p>
+                    <p className="text-2xl font-black text-slate-900 leading-none my-1">
                       {formatPrice(listing.pricePerNight)}
                     </p>
-                    <p className="text-xs text-gray-400">/ night</p>
+                    <p className="text-[10px] text-slate-500">/ night + fees</p>
                   </div>
+                  
                   <Link
                     href={`/${locale}/stay/${listing.slug}`}
-                    className="flex items-center gap-1.5 bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors"
+                    className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm transform hover:-translate-y-0.5"
                     aria-label={`View details for ${listing.name}`}
                   >
                     View
-                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </Link>
                 </div>
               </div>
@@ -172,13 +192,14 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        {/* View All CTA */}
+        <div className="text-center mt-16">
           <button
             onClick={() => router.push(`/${locale}/search`)}
-            className="px-8 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-colors"
+            className="px-10 py-4 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 font-extrabold rounded-2xl transition-all duration-300 shadow-lg shadow-slate-900/10 hover:shadow-amber-500/20 transform hover:-translate-y-0.5"
             aria-label="View all properties"
           >
-            View All Properties
+            Explore All Properties
           </button>
         </div>
       </div>
