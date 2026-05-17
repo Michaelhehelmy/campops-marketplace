@@ -14,7 +14,7 @@ import {
   Loader2,
   CheckCircle,
   AlertTriangle,
-  Info
+  Info,
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -22,7 +22,10 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   // Quick Action States
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'info' | 'error';
+  } | null>(null);
   const [runningAction, setRunningAction] = useState<string | null>(null);
   const [noticeModalOpen, setNoticeModalOpen] = useState(false);
   const [noticeText, setNoticeText] = useState('');
@@ -50,7 +53,10 @@ export default function AdminPage() {
     setRunningAction('verify_domains');
     setTimeout(() => {
       setRunningAction(null);
-      showToast('Checked 4 domain clusters: All active domains matched successfully! ✅', 'success');
+      showToast(
+        'Checked 4 domain clusters: All active domains matched successfully! ✅',
+        'success'
+      );
     }, 1500);
   };
 
@@ -83,7 +89,6 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8 p-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 relative">
-      
       {/* Toast Notification */}
       {toast && (
         <div className="fixed top-4 right-4 z-[999] flex items-center gap-3 px-6 py-4 rounded-2xl bg-slate-900 border border-amber-500/30 text-white shadow-2xl animate-in slide-in-from-top-10 duration-300">
@@ -168,7 +173,9 @@ export default function AdminPage() {
         <div className="space-y-6">
           <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-900 shadow-2xl relative overflow-hidden">
             <Zap className="absolute top-[-20px] right-[-20px] h-32 w-32 text-amber-500/5 rotate-12" />
-            <h3 className="text-lg font-black mb-6 text-white relative z-10">Marketplace Actions</h3>
+            <h3 className="text-lg font-black mb-6 text-white relative z-10">
+              Marketplace Actions
+            </h3>
             <div className="space-y-3 relative z-10">
               <ActionButton
                 icon={Globe}
@@ -219,7 +226,11 @@ export default function AdminPage() {
                 disabled={noticeBroadcasting}
                 className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl font-black shadow-xl shadow-amber-500/10 hover:shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
               >
-                {noticeBroadcasting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Send Broadcast'}
+                {noticeBroadcasting ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  'Send Broadcast'
+                )}
               </button>
             </form>
           </div>

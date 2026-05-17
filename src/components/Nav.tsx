@@ -35,7 +35,11 @@ export function Nav({ locale }: { locale: string }) {
         {/* Brand Logo & Name */}
         <a href={`/${locale}`} className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-500/20 group-hover:border-amber-500/40 transition-colors duration-300">
-            <img src="/sinaicamps.png" alt="SinaiCamps Logo" className="h-full w-full object-cover scale-[1.2]" />
+            <img
+              src="/sinaicamps.png"
+              alt="SinaiCamps Logo"
+              className="h-full w-full object-cover scale-[1.2]"
+            />
           </div>
           <span className="text-xl font-black bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
             SinaiCamps

@@ -65,7 +65,10 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
   }
 
   return (
-    <section aria-label="Property categories" className="py-20 px-4 bg-slate-50/50 border-y border-slate-100">
+    <section
+      aria-label="Property categories"
+      className="py-20 px-4 bg-slate-50/50 border-y border-slate-100"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
@@ -76,7 +79,8 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
             Browse by Stay Style
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            From secluded glamping domes to luxury mountain cabins, find the perfect setting matching your preferred adventure style.
+            From secluded glamping domes to luxury mountain cabins, find the perfect setting
+            matching your preferred adventure style.
           </p>
         </div>
 

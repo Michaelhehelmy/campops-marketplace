@@ -86,7 +86,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       .prepare('SELECT id FROM properties WHERE slug = ? AND id != ?')
       .get(slug, id);
     if (existing) {
-      return NextResponse.json({ error: 'Slug already in use by another property' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Slug already in use by another property' },
+        { status: 400 }
+      );
     }
 
     await db
@@ -108,4 +111,3 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

@@ -88,7 +88,8 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
             Featured Destinations
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury standards, and seamless service.
+            Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury
+            standards, and seamless service.
           </p>
         </div>
 
@@ -109,7 +110,9 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-tr from-amber-50 to-amber-100 flex items-center justify-center">
-                    <span className="text-5xl" aria-hidden="true">🏕️</span>
+                    <span className="text-5xl" aria-hidden="true">
+                      🏕️
+                    </span>
                   </div>
                 )}
 
@@ -125,7 +128,10 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                     className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md text-white rounded-full px-2.5 py-1.5 flex items-center gap-1 text-xs font-bold shadow-md"
                     aria-label={`Rating: ${listing.rating} out of 5`}
                   >
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
+                    <Star
+                      className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+                      aria-hidden="true"
+                    />
                     {listing.rating}
                   </div>
                 )}
@@ -147,7 +153,11 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
 
                 {/* Amenities */}
                 {listing.amenities && listing.amenities.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-6 shrink-0" role="list" aria-label="Amenities">
+                  <div
+                    className="flex flex-wrap gap-1.5 mb-6 shrink-0"
+                    role="list"
+                    aria-label="Amenities"
+                  >
                     {listing.amenities.slice(0, 3).map((amenity) => (
                       <span
                         key={amenity}
@@ -171,13 +181,15 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                 {/* Price + CTA Button */}
                 <div className="flex items-end justify-between border-t border-slate-100 pt-5 mt-auto shrink-0">
                   <div>
-                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Guaranteed Rate</p>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                      Guaranteed Rate
+                    </p>
                     <p className="text-2xl font-black text-slate-900 leading-none my-1">
                       {formatPrice(listing.pricePerNight)}
                     </p>
                     <p className="text-[10px] text-slate-500">/ night + fees</p>
                   </div>
-                  
+
                   <Link
                     href={`/${locale}/stay/${listing.slug}`}
                     className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm transform hover:-translate-y-0.5"

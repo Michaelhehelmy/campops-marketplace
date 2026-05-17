@@ -54,7 +54,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
         {/* Persuasive Subtext */}
         <p className="text-base sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Unlock hand-selected eco-resorts, luxury glamping retreats, and private wilderness lodges. 
+          Unlock hand-selected eco-resorts, luxury glamping retreats, and private wilderness lodges.
           Your next unforgettable adventure starts here.
         </p>
 
@@ -62,7 +62,12 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
         <div className="max-w-4xl mx-auto mb-8 bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/25 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-zinc-300">
           <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
           <p className="text-sm font-medium text-center sm:text-left">
-            <span className="text-amber-300 font-bold">Direct Booking Bonus:</span> Reserve today and unlock <span className="underline decoration-amber-400 decoration-2 font-extrabold text-white">15% Off</span>, complimentary welcome drinks, and late checkout.
+            <span className="text-amber-300 font-bold">Direct Booking Bonus:</span> Reserve today
+            and unlock{' '}
+            <span className="underline decoration-amber-400 decoration-2 font-extrabold text-white">
+              15% Off
+            </span>
+            , complimentary welcome drinks, and late checkout.
           </p>
         </div>
 
@@ -75,11 +80,17 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-left">
             {/* Destination */}
             <div className="space-y-1.5">
-              <label htmlFor="destination" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+              <label
+                htmlFor="destination"
+                className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+              >
                 Where to?
               </label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5" aria-hidden="true" />
+                <MapPin
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5"
+                  aria-hidden="true"
+                />
                 <input
                   id="destination"
                   type="text"
@@ -93,11 +104,17 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Check-In */}
             <div className="space-y-1.5">
-              <label htmlFor="check-in" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+              <label
+                htmlFor="check-in"
+                className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+              >
                 Check In
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5" aria-hidden="true" />
+                <Calendar
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5"
+                  aria-hidden="true"
+                />
                 <input
                   id="check-in"
                   type="date"
@@ -110,11 +127,17 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Check-Out */}
             <div className="space-y-1.5">
-              <label htmlFor="check-out" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+              <label
+                htmlFor="check-out"
+                className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+              >
                 Check Out
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5" aria-hidden="true" />
+                <Calendar
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5"
+                  aria-hidden="true"
+                />
                 <input
                   id="check-out"
                   type="date"
@@ -127,11 +150,17 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Guests */}
             <div className="space-y-1.5">
-              <label htmlFor="guests" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+              <label
+                htmlFor="guests"
+                className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+              >
                 Guests
               </label>
               <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5" aria-hidden="true" />
+                <Users
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/80 w-5 h-5"
+                  aria-hidden="true"
+                />
                 <select
                   id="guests"
                   value={guests}
@@ -149,7 +178,9 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
           </div>
 
           <div className="mt-6 flex flex-col sm:flex-row justify-end items-center gap-4">
-            <span className="text-xs text-zinc-500 font-medium">⚡ Real-time availability & secure checkout</span>
+            <span className="text-xs text-zinc-500 font-medium">
+              ⚡ Real-time availability & secure checkout
+            </span>
             <button
               type="submit"
               className="w-full sm:w-auto px-10 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0"

@@ -94,7 +94,10 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
             <div className="space-y-4">
               {/* Email field */}
               <div className="space-y-1.5">
-                <label htmlFor="email" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+                <label
+                  htmlFor="email"
+                  className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -118,7 +121,10 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
 
               {/* Password field */}
               <div className="space-y-1.5">
-                <label htmlFor="password" className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1">
+                <label
+                  htmlFor="password"
+                  className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
+                >
                   Password
                 </label>
                 <div className="relative">

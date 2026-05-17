@@ -20,7 +20,7 @@ import {
   Key,
   CheckCircle,
   AlertTriangle,
-  Info
+  Info,
 } from 'lucide-react';
 
 export default function ListingDetailsPage() {
@@ -46,7 +46,10 @@ export default function ListingDetailsPage() {
   const [updating, setUpdating] = useState(false);
 
   // Quick Actions State
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'info' | 'error';
+  } | null>(null);
   const [activeQuickAction, setActiveQuickAction] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [permissions, setPermissions] = useState<{ role: string; email: string }[]>([]);
@@ -174,7 +177,7 @@ export default function ListingDetailsPage() {
       `[${new Date().toISOString()}] SUCCESS: Verified tenant resolution for subdomain cluster: ${shop?.slug}.sinaicamps.com`,
       `[${new Date().toISOString()}] DEBUG: Drizzle connection acquired: successfully scanned ${shop?.plugins?.length || 0} active plugins`,
       `[${new Date().toISOString()}] WARNING: Master delegation bypass used by user 'master-admin'`,
-      `[${new Date().toISOString()}] SUCCESS: System state 100% operational (Plan: ${shop?.plan})`
+      `[${new Date().toISOString()}] SUCCESS: System state 100% operational (Plan: ${shop?.plan})`,
     ]);
   };
 
@@ -217,7 +220,6 @@ export default function ListingDetailsPage() {
 
   return (
     <div className="space-y-8 p-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 relative">
-      
       {/* Toast Alert */}
       {toast && (
         <div className="fixed top-4 right-4 z-[999] flex items-center gap-3 px-6 py-4 rounded-2xl bg-slate-900 border border-amber-500/30 text-white shadow-2xl animate-in slide-in-from-top-10 duration-300">
@@ -332,7 +334,9 @@ export default function ListingDetailsPage() {
                   <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mb-1">
                     Email Address
                   </div>
-                  <div className="font-bold text-zinc-200">{shop.owner_email || 'Not provided'}</div>
+                  <div className="font-bold text-zinc-200">
+                    {shop.owner_email || 'Not provided'}
+                  </div>
                 </div>
                 <div>
                   <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mb-1">
@@ -460,9 +464,14 @@ export default function ListingDetailsPage() {
             </div>
             <div className="space-y-4">
               {permissions.map((perm, idx) => (
-                <div key={idx} className="p-4 bg-slate-900 border border-slate-850 rounded-2xl flex items-center justify-between">
+                <div
+                  key={idx}
+                  className="p-4 bg-slate-900 border border-slate-850 rounded-2xl flex items-center justify-between"
+                >
                   <div>
-                    <div className="text-xs font-black uppercase text-amber-400 tracking-wider">{perm.role}</div>
+                    <div className="text-xs font-black uppercase text-amber-400 tracking-wider">
+                      {perm.role}
+                    </div>
                     <div className="text-sm font-bold text-zinc-200 mt-1">{perm.email}</div>
                   </div>
                   <div className="h-8 px-3 rounded bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] font-black uppercase tracking-widest flex items-center">
@@ -491,7 +500,9 @@ export default function ListingDetailsPage() {
             </div>
             <div className="font-mono text-xs bg-slate-900 border border-slate-850 text-emerald-400 p-6 rounded-2xl space-y-2.5 max-h-96 overflow-y-auto">
               {logs.map((log, idx) => (
-                <div key={idx} className="whitespace-pre-wrap">{log}</div>
+                <div key={idx} className="whitespace-pre-wrap">
+                  {log}
+                </div>
               ))}
             </div>
           </div>
@@ -587,7 +598,10 @@ export default function ListingDetailsPage() {
                   onChange={(e) => setEditForm({ ...editForm, isActive: e.target.checked })}
                   className="h-5 w-5 rounded bg-slate-900 border-slate-800 text-amber-500 accent-amber-500 cursor-pointer"
                 />
-                <label htmlFor="active-toggle" className="font-bold text-sm text-zinc-300 cursor-pointer">
+                <label
+                  htmlFor="active-toggle"
+                  className="font-bold text-sm text-zinc-300 cursor-pointer"
+                >
                   Listing Active & Visible on Marketplace
                 </label>
               </div>
