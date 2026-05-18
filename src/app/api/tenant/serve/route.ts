@@ -19,9 +19,79 @@ const MIME_TYPES: Record<string, string> = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+function serveFile(
+  buildsPath: string,
+  rawPath: string,
+  resolvedProperty: { id: string }
+): NextResponse | null {
+  const cleanPathname = rawPath.split('?')[0];
+  let relativePath = cleanPathname;
+  const localeMatch = cleanPathname.match(/^\/([a-z]{2})(?:\/|$)/);
+  if (localeMatch) {
+    relativePath = cleanPathname.replace(/^\/[a-z]{2}/, '') || '/';
+  }
+  if (relativePath === '/') {
+    relativePath = '/index.html';
+  }
+  const filePath = path.join(buildsPath, relativePath);
+  let resolvedPath = path.resolve(filePath);
+  if (!resolvedPath.startsWith(buildsPath)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+  const hasExtension = path.extname(cleanPathname) !== '';
+  let fileExists = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile();
+  if (!fileExists) {
+    if (hasExtension) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+    resolvedPath = path.resolve(path.join(buildsPath, 'index.html'));
+    fileExists = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile();
+    if (!fileExists) {
+      return NextResponse.json({ error: 'index.html template not found' }, { status: 404 });
+    }
+  }
+  const ext = path.extname(resolvedPath).toLowerCase();
+  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+  if (ext === '.html') {
+    let html = fs.readFileSync(resolvedPath, 'utf-8');
+    html = html.replace(
+      /<meta id="x-tenant-property-id" name="x-tenant-property-id" content=".*?" \/>|<meta id="x-tenant-property-id" name="x-tenant-property-id" content="" \/>/g,
+      `<meta id="x-tenant-property-id" name="x-tenant-property-id" content="${resolvedProperty.id}" />`
+    );
+    return new NextResponse(html, {
+      headers: {
+        'Content-Type': contentType,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      },
+    });
+  }
+  const fileBuffer = fs.readFileSync(resolvedPath);
+  return new NextResponse(fileBuffer, {
+    headers: {
+      'Content-Type': contentType,
+      'Cache-Control':
+        ext === '.js' || ext === '.css'
+          ? 'public, max-age=31536000, immutable'
+          : 'public, max-age=86400',
+    },
+  });
+}
+
 export async function GET(req: NextRequest) {
-  const host = req.nextUrl.searchParams.get('host')?.toLowerCase().trim();
-  const rawPath = req.nextUrl.searchParams.get('path') || '/';
+  // Headers set by middleware take priority (rewrite may not preserve query params)
+  const url = new URL(req.url);
+  const host = (
+    req.headers.get('x-tenant-host') ||
+    req.nextUrl.searchParams.get('host') ||
+    url.searchParams.get('host')
+  )
+    ?.toLowerCase()
+    .trim();
+  const rawPath =
+    req.headers.get('x-tenant-path') ||
+    req.nextUrl.searchParams.get('path') ||
+    url.searchParams.get('path') ||
+    '/';
   const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
   if (!host) {
@@ -32,6 +102,22 @@ export async function GET(req: NextRequest) {
 
   try {
     // 1. Resolve Tenant Domain
+    // Local dev shortcut: 127.0.0.1 always resolves to Acacia Camp (ultimate tier demo)
+    if (hostname === '127.0.0.1') {
+      const localProperty = (await db
+        .prepare(
+          `SELECT id, slug, plan, custom_domain, domain_verified, settings FROM properties WHERE id = '3' AND is_active = true LIMIT 1`
+        )
+        .get()) as any;
+      if (localProperty) {
+        const tenantSlug = localProperty.slug;
+        const localBuildsPath = path.join(process.cwd(), 'builds', tenantSlug, 'dist');
+        if (fs.existsSync(localBuildsPath)) {
+          return serveFile(localBuildsPath, rawPath, localProperty);
+        }
+      }
+    }
+
     // Custom Domain Match
     let property = (await db
       .prepare(
@@ -68,10 +154,7 @@ export async function GET(req: NextRequest) {
       const jsonVerified = [true, 1, '1', 'true'].includes(settings.customDomainVerified as any);
       const verified = Boolean(legacyVerified || jsonVerified || isLocal);
       if (!verified) {
-        return NextResponse.json(
-          { error: 'Domain not yet verified' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'Domain not yet verified' }, { status: 404 });
       }
     }
 
@@ -103,80 +186,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Branded template build not found' }, { status: 404 });
     }
 
-    // 2. Parse and Sanitize Target Path
-    // Clean query parameters and resolve path safely
-    const cleanPathname = rawPath.split('?')[0];
-    
-    // Strip locale prefix if present (e.g. /en/search -> /search)
-    let relativePath = cleanPathname;
-    const localeMatch = cleanPathname.match(/^\/([a-z]{2})(?:\/|$)/);
-    if (localeMatch) {
-      relativePath = cleanPathname.replace(/^\/[a-z]{2}/, '') || '/';
-    }
-
-    if (relativePath === '/') {
-      relativePath = '/index.html';
-    }
-
-    let filePath = path.join(buildsPath, relativePath);
-    let resolvedPath = path.resolve(filePath);
-
-    // Prevent directory traversal
-    if (!resolvedPath.startsWith(buildsPath)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    const hasExtension = path.extname(cleanPathname) !== '';
-
-    // Check if physical file exists
-    let fileExists = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile();
-
-    // SPA Routing Fallback Logic:
-    // If the file is not found and has no extension, we serve index.html (client-side routing fallback)
-    if (!fileExists) {
-      if (hasExtension) {
-        return NextResponse.json({ error: 'File not found' }, { status: 404 });
-      }
-      // Page route fallback to index.html
-      resolvedPath = path.resolve(path.join(buildsPath, 'index.html'));
-      fileExists = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile();
-      if (!fileExists) {
-        return NextResponse.json({ error: 'index.html template not found' }, { status: 404 });
-      }
-    }
-
-    // 3. Serve File with Correct Content-Type & Context Injection
-    const ext = path.extname(resolvedPath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
-    // Inject tenant id for index.html
-    if (ext === '.html') {
-      let html = fs.readFileSync(resolvedPath, 'utf-8');
-      
-      // Injects meta tag context for PWA/Bootstrap bootstrap code
-      html = html.replace(
-        /<meta id="x-tenant-property-id" name="x-tenant-property-id" content=".*?" \/>|<meta id="x-tenant-property-id" name="x-tenant-property-id" content="" \/>/g,
-        `<meta id="x-tenant-property-id" name="x-tenant-property-id" content="${resolvedProperty.id}" />`
-      );
-
-      return new NextResponse(html, {
-        headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'no-store, no-cache, must-revalidate',
-        },
-      });
-    }
-
-    // Stream other files
-    const fileBuffer = fs.readFileSync(resolvedPath);
-    return new NextResponse(fileBuffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': ext === '.js' || ext === '.css' 
-          ? 'public, max-age=31536000, immutable' 
-          : 'public, max-age=86400',
-      },
-    });
+    return serveFile(buildsPath, rawPath, resolvedProperty);
   } catch (err: any) {
     logger.error('[Serve Route] Error serving custom domain asset:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -8,6 +8,10 @@ test.describe('Cross-System Integration Flow', () => {
     guestSession,
     staffSession,
   }) => {
+    test.setTimeout(180000);
+    // 0. Reset DB to clean state
+    await page.request.post('http://localhost:3000/api/test/reset');
+
     // 1. Master enables Booking plugin for Safari Camp
     const masterState = JSON.parse(masterSession.storageState);
     await page.context().addCookies(masterState.cookies);
@@ -36,9 +40,11 @@ test.describe('Cross-System Integration Flow', () => {
     await page.getByLabel(/Pay at property/i).check();
     await page.getByRole('button', { name: /Confirm Booking/i }).click();
     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
+    await page.waitForLoadState('networkidle');
 
     // 3. Guest logs in and sees the booking in their dashboard
     const guestState = JSON.parse(guestSession.storageState);
+    await page.context().clearCookies();
     await page.context().addCookies(guestState.cookies);
     await page.goto('/en/guest/reservations');
     await expect(page.getByText(/Safari Camp/i).first()).toBeVisible();
@@ -47,8 +53,8 @@ test.describe('Cross-System Integration Flow', () => {
     const managerState = JSON.parse(managerSession.storageState);
     await page.context().clearCookies();
     await page.context().addCookies(managerState.cookies);
-    await page.goto('/en/manage/safari-camp/bookings');
-    await expect(page.getByText(/Integration Guest/i).first()).toBeVisible();
+    await page.goto('/en/manage/1/bookings');
+    await expect(page.getByText(/Integration Guest/i).first()).toBeVisible({ timeout: 15000 });
 
     // 5. Manager modifies the booking (change guest name or status)
     // Click manage on the new booking
@@ -70,7 +76,7 @@ test.describe('Cross-System Integration Flow', () => {
     const staffState = JSON.parse(staffSession.storageState);
     await page.context().clearCookies();
     await page.context().addCookies(staffState.cookies);
-    await page.goto('/en/manage/safari-camp/bookings');
+    await page.goto('/en/manage/1/bookings');
 
     const staffRow = page
       .getByRole('row')

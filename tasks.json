@@ -1,0 +1,757 @@
+{
+  "version": "1.0",
+  "project": "campops-marketplace-blueprint",
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Pre-Work & Test Harness",
+      "status": "complete",
+      "tasks": [
+        {
+          "id": "0.1",
+          "description": "Run npm run check:full and confirm all 665 unit + 131 E2E tests pass. Record baseline in docs/TEST_BASELINE.md.",
+          "status": "complete",
+          "blocked_by": [],
+          "files_changed": [
+            "docs/TEST_BASELINE.md",
+            "src/app/api/auth/redirect-check/route.ts",
+            "e2e/tests/ultimate-redirect.spec.ts",
+            "e2e/tests/audit/frontend-functionality.spec.ts",
+            "e2e/tests/integration.spec.ts",
+            "e2e/tests/cross-system-integration.spec.ts"
+          ],
+          "notes": "Fixed 3 pre-existing flaky tests: (1) ultimate-redirect using FORCE_LOCAL_REDIRECT env var instead of auto-detection, (2) frontend-functionality test.setTimeout(120000) + waitForTimeout 2000→500ms, (3) integration tests using /manage/safari-camp slug (invalid) replaced with /manage/1. Baseline: 833 unit tests + 137 E2E = 970 total."
+        },
+        {
+          "id": "0.2",
+          "description": "Create schema snapshot in docs/schema_snapshot_YYYYMMDD.sql as rollback reference.",
+          "status": "complete",
+          "blocked_by": [],
+          "files_changed": ["docs/schema_snapshot_20260518.sql"]
+        },
+        {
+          "id": "0.3",
+          "description": "Verify existing functionality works. Manual smoke test of critical flows documented.",
+          "status": "complete",
+          "blocked_by": [],
+          "files_changed": [],
+          "notes": "Verified via E2E: registration flow (list-your-camp), listing display (stay/safari-camp), management dashboard (manage/1), plugin lifecycle, cross-system integration. All 137 E2E pass from clean run."
+        },
+        {
+          "id": "0.4",
+          "description": "Confirm tasks.json + BLUEPRINT.md committed, tasks.json correctly structured (67 tasks with id, description, status, blocked_by).",
+          "status": "complete",
+          "blocked_by": [],
+          "files_changed": ["tasks.json", "BLUEPRINT.md"]
+        },
+        {
+          "id": "0.5",
+          "description": "Confirm working dataset. Document all existing table names.",
+          "status": "complete",
+          "blocked_by": [],
+          "files_changed": ["docs/schema_snapshot_20260518.sql", "docs/TEST_BASELINE.md"]
+        }
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Core Schema: Posts, Postmeta, Options",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "1.1",
+          "description": "Create src/db/migrations/001_core_posts.sql with sites, posts, postmeta, options tables and indexes.",
+          "status": "pending",
+          "blocked_by": ["0.1"],
+          "files_changed": []
+        },
+        {
+          "id": "1.2",
+          "description": "Create src/db/migrations/002_themes_registry.sql with available_themes table.",
+          "status": "pending",
+          "blocked_by": ["0.1"],
+          "files_changed": []
+        },
+        {
+          "id": "1.3",
+          "description": "Write migration runner src/lib/runMigrations.ts. Reads *.sql from src/db/migrations/ ordered by filename. Tracks applied migrations in schema_migrations table. Called on app bootstrap in src/lib/db.ts.",
+          "status": "pending",
+          "blocked_by": ["1.1", "1.2"],
+          "files_changed": []
+        },
+        {
+          "id": "1.4",
+          "description": "Add Drizzle schema symbols in src/db/schema.ts for sites, posts, postmeta, options, available_themes.",
+          "status": "pending",
+          "blocked_by": ["1.1", "1.2"],
+          "files_changed": []
+        },
+        {
+          "id": "1.5",
+          "description": "Write unit tests src/lib/__tests__/core-schema.test.ts: insert site/post/postmeta/option, assert UNIQUE constraints and CASCADE deletes.",
+          "status": "pending",
+          "blocked_by": ["1.3", "1.4"],
+          "files_changed": []
+        },
+        {
+          "id": "1.6",
+          "description": "Write data migration script scripts/migrate-properties-to-sites.ts. Copies properties rows to sites, normalising plan values (subdomain→premium, custom_domain/ultimate→ultimate). Idempotent upsert.",
+          "status": "pending",
+          "blocked_by": ["1.4"],
+          "files_changed": []
+        },
+        {
+          "id": "1.7",
+          "description": "Run migrations on dev DB. Verify npm run test:all still passes.",
+          "status": "pending",
+          "blocked_by": ["1.5", "1.6"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "PostQuery: The Universal Data Layer",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "2.1",
+          "description": "Create src/lib/PostQuery.ts with static query(args) method. Supports siteId, postType, status, postSlug, authorId, parentId, meta[], search, orderBy, order, limit, offset. Returns Post[] with meta map. Always scopes by site_id.",
+          "status": "pending",
+          "blocked_by": ["1.7"],
+          "files_changed": []
+        },
+        {
+          "id": "2.2",
+          "description": "Create src/lib/PostRepository.ts: createPost, updatePost, deletePost (trash), getMeta, setMeta (upsert), deleteMeta, getAllMeta.",
+          "status": "pending",
+          "blocked_by": ["1.7"],
+          "files_changed": []
+        },
+        {
+          "id": "2.3",
+          "description": "Create src/lib/OptionsRepository.ts: getOption, setOption (upsert), deleteOption, getAutoloadOptions.",
+          "status": "pending",
+          "blocked_by": ["1.7"],
+          "files_changed": []
+        },
+        {
+          "id": "2.4",
+          "description": "Write unit tests src/lib/__tests__/post-query.test.ts: query by type, meta key/value, compare <=, cross-site isolation, getAllMeta completeness, setMeta upsert.",
+          "status": "pending",
+          "blocked_by": ["2.1", "2.2"],
+          "files_changed": []
+        },
+        {
+          "id": "2.5",
+          "description": "Write unit tests src/lib/__tests__/options-repository.test.ts: set/get/delete cycle, default value, cross-site isolation.",
+          "status": "pending",
+          "blocked_by": ["2.3"],
+          "files_changed": []
+        },
+        {
+          "id": "2.6",
+          "description": "Verify npm run test:all still passes after adding new tests.",
+          "status": "pending",
+          "blocked_by": ["2.4", "2.5"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Hooks Engine Upgrade",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "3.1",
+          "description": "Extend src/lib/hooks.ts: add doAction(), applyFilters(), priority parameter to register(). Keep existing API as backward-compat shim.",
+          "status": "pending",
+          "blocked_by": ["2.6"],
+          "files_changed": []
+        },
+        {
+          "id": "3.2",
+          "description": "Create src/lib/SiteHookManager.ts. SiteHookManager.forSite(siteId) returns instance with only hooks from plugins active for that site.",
+          "status": "pending",
+          "blocked_by": ["3.1"],
+          "files_changed": []
+        },
+        {
+          "id": "3.3",
+          "description": "Add core action hooks: core:request:bootstrap, core:site:resolved, core:post:before_save, core:post:after_save, core:post:before_delete, core:option:get, core:option:set, core:theme:loaded. Fire from relevant code paths.",
+          "status": "pending",
+          "blocked_by": ["3.1"],
+          "files_changed": []
+        },
+        {
+          "id": "3.4",
+          "description": "Update PluginAPI.ts to expose doAction and applyFilters at top level. Mark hooks.execute as deprecated.",
+          "status": "pending",
+          "blocked_by": ["3.1"],
+          "files_changed": []
+        },
+        {
+          "id": "3.5",
+          "description": "Write unit tests src/lib/__tests__/hooks-engine.test.ts: doAction fires all handlers, applyFilters waterfall, priority ordering, site-scoped isolation.",
+          "status": "pending",
+          "blocked_by": ["3.2"],
+          "files_changed": []
+        },
+        {
+          "id": "3.6",
+          "description": "Verify all existing hook tests still pass. Run npm run test:all.",
+          "status": "pending",
+          "blocked_by": ["3.5"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Theme System",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "4.1",
+          "description": "Create themes/camp-classic/ by refactoring templates/shop-frontend/. Add theme.json per contract. Remove all hardcoded field names from theme components; replace with useMeta() hook calls. Verify tsc --noEmit passes.",
+          "status": "pending",
+          "blocked_by": ["3.6"],
+          "files_changed": []
+        },
+        {
+          "id": "4.2",
+          "description": "Create src/lib/ThemeLoader.ts: load(themeId), resolveTemplate(themeId, postType, context), getWidgetAreas(themeId), getCustomFields(themeId). Fires core:theme:loaded action.",
+          "status": "pending",
+          "blocked_by": ["4.1"],
+          "files_changed": []
+        },
+        {
+          "id": "4.3",
+          "description": "Create src/lib/ThemeRegistry.ts: reads themes/ dirs on startup, registers to available_themes DB table, getForSite(siteId), activate(siteId, themeId).",
+          "status": "pending",
+          "blocked_by": ["4.2"],
+          "files_changed": []
+        },
+        {
+          "id": "4.4",
+          "description": "Create src/hooks/useMeta.ts React hook: useMeta(postId, key) and useAllMeta(postId). Used by theme templates.",
+          "status": "pending",
+          "blocked_by": ["2.2"],
+          "files_changed": []
+        },
+        {
+          "id": "4.5",
+          "description": "Create src/app/api/theme/route.ts: GET /api/theme?siteId= and GET /api/theme/templates?siteId=&postType=&context=.",
+          "status": "pending",
+          "blocked_by": ["4.3"],
+          "files_changed": []
+        },
+        {
+          "id": "4.6",
+          "description": "Update src/app/api/tenant/serve/route.ts to use ThemeLoader instead of hardcoded builds/<slug>/dist/ path. Keep builds/ fallback for backward-compat.",
+          "status": "pending",
+          "blocked_by": ["4.2"],
+          "files_changed": []
+        },
+        {
+          "id": "4.7",
+          "description": "Add theme picker to list-your-camp/branding registration step. Fetch themes from GET /api/themes. Store theme_id in sessionStorage. Pass to POST /api/owner/register.",
+          "status": "pending",
+          "blocked_by": ["4.5"],
+          "files_changed": []
+        },
+        {
+          "id": "4.8",
+          "description": "Create src/app/api/themes/route.ts: GET /api/themes returns list of active themes with name, description, screenshot.",
+          "status": "pending",
+          "blocked_by": ["4.3"],
+          "files_changed": []
+        },
+        {
+          "id": "4.9",
+          "description": "Write unit tests src/lib/__tests__/theme-loader.test.ts: template hierarchy resolution, fallback chain, getCustomFields merge.",
+          "status": "pending",
+          "blocked_by": ["4.2"],
+          "files_changed": []
+        },
+        {
+          "id": "4.10",
+          "description": "Write E2E test: visit tenant subdomain, assert HTML served by correct theme template (data-theme attribute or title).",
+          "status": "pending",
+          "blocked_by": ["4.6"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Request Context & Site Bootstrap",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "5.1",
+          "description": "Create src/lib/RequestContext.ts with RequestContext interface (siteId, site, theme, activePlugins, autoloadOptions, hooks, isMainDomain, plan). bootstrap(siteId) and current() via AsyncLocalStorage.",
+          "status": "pending",
+          "blocked_by": ["4.3", "3.2"],
+          "files_changed": []
+        },
+        {
+          "id": "5.2",
+          "description": "Update src/middleware.ts: call RequestContext.bootstrap(siteId) after tenant resolution. Serialise safe fields as request headers. Fire core:request:bootstrap and core:site:resolved actions.",
+          "status": "pending",
+          "blocked_by": ["5.1"],
+          "files_changed": []
+        },
+        {
+          "id": "5.3",
+          "description": "Create src/lib/SiteBootstrap.ts: loadActivePlugins(siteId) and loadAutoloadOptions(siteId). Called by RequestContext.bootstrap.",
+          "status": "pending",
+          "blocked_by": ["5.1"],
+          "files_changed": []
+        },
+        {
+          "id": "5.4",
+          "description": "Create src/lib/getContext.ts helper that wraps RequestContext.current() and throws typed error if called outside request scope.",
+          "status": "pending",
+          "blocked_by": ["5.1"],
+          "files_changed": []
+        },
+        {
+          "id": "5.5",
+          "description": "Write unit tests src/lib/__tests__/request-context.test.ts: bootstrap returns correct data, current() returns null outside scope, two concurrent bootstraps do not bleed.",
+          "status": "pending",
+          "blocked_by": ["5.3"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Plugin System Upgrade",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "6.1",
+          "description": "Create migration 003_plugins_v2.sql: add campops_version, post_types, plan_requirement, zip_url, review_status columns to available_plugins.",
+          "status": "pending",
+          "blocked_by": ["5.5"],
+          "files_changed": []
+        },
+        {
+          "id": "6.2",
+          "description": "Create migration 004_site_plugins.sql: add activated_at, activated_by, version columns to property_plugins.",
+          "status": "pending",
+          "blocked_by": ["5.5"],
+          "files_changed": []
+        },
+        {
+          "id": "6.3",
+          "description": "Create src/lib/PluginLoader.ts: init(siteId), activate(siteId, pluginId), deactivate(siteId, pluginId). Respects plan_requirement. Calls onActivate/onDeactivate hooks.",
+          "status": "pending",
+          "blocked_by": ["6.1", "6.2"],
+          "files_changed": []
+        },
+        {
+          "id": "6.4",
+          "description": "Update PluginAPI.ts: pass RequestContext into makePluginAPI, add api.registerPostType(definition) which fires core:post_type:registered action.",
+          "status": "pending",
+          "blocked_by": ["5.1", "6.3"],
+          "files_changed": []
+        },
+        {
+          "id": "6.5",
+          "description": "Create src/app/api/plugins/store/route.ts: GET returns approved plugins filtered by site plan. POST /install activates plugin via PluginLoader.activate.",
+          "status": "pending",
+          "blocked_by": ["6.3"],
+          "files_changed": []
+        },
+        {
+          "id": "6.6",
+          "description": "Build Plugin Store UI at src/app/[locale]/manage/[listingId]/plugins/page.tsx: installed vs available, install/uninstall, plan badges, category filter.",
+          "status": "pending",
+          "blocked_by": ["6.5"],
+          "files_changed": []
+        },
+        {
+          "id": "6.7",
+          "description": "Enforce plan-based plugin access in PluginLoader.activate. Throw PlanRequirementError if site.plan < plugin.plan_requirement.",
+          "status": "pending",
+          "blocked_by": ["6.3"],
+          "files_changed": []
+        },
+        {
+          "id": "6.8",
+          "description": "Write unit tests src/lib/__tests__/plugin-loader.test.ts: activate fires onActivate, deactivate fires onDeactivate, plan enforcement, two-site isolation.",
+          "status": "pending",
+          "blocked_by": ["6.7"],
+          "files_changed": []
+        },
+        {
+          "id": "6.9",
+          "description": "Verify all existing plugin tests still pass.",
+          "status": "pending",
+          "blocked_by": ["6.8"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "name": "Normalised Tier System & Upgrade Flow",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "7.1",
+          "description": "Create migration 005_normalise_plans.sql: UPDATE properties and sites to map subdomain→premium, custom_domain→ultimate.",
+          "status": "pending",
+          "blocked_by": ["6.9"],
+          "files_changed": []
+        },
+        {
+          "id": "7.2",
+          "description": "Update all code comparing plan === 'subdomain' or plan === 'custom_domain' to use normalised names. Files: middleware.ts, auth/redirect-check, owner/register, list-your-camp/plan, tenant/serve.",
+          "status": "pending",
+          "blocked_by": ["7.1"],
+          "files_changed": []
+        },
+        {
+          "id": "7.3",
+          "description": "Create src/lib/PlanGate.ts: check(site, requiredPlan), canUsePlugin(site, plugin), canUseTheme(site, theme). Plan order: basic < premium < ultimate.",
+          "status": "pending",
+          "blocked_by": ["7.1"],
+          "files_changed": []
+        },
+        {
+          "id": "7.4",
+          "description": "Create src/app/api/owner/upgrade/route.ts: POST body {siteId, newPlan, subdomain?, customDomain?}. Validates upgrade direction. Provisions subdomain/domain fields. Fires core:site:plan_upgraded action.",
+          "status": "pending",
+          "blocked_by": ["7.3"],
+          "files_changed": []
+        },
+        {
+          "id": "7.5",
+          "description": "Build upgrade UI in src/app/[locale]/owner/property/page.tsx: current plan badge, upgrade buttons with subdomain/domain fields, calls POST /api/owner/upgrade.",
+          "status": "pending",
+          "blocked_by": ["7.4"],
+          "files_changed": []
+        },
+        {
+          "id": "7.6",
+          "description": "Update registration wizard plan page to use basic/premium/ultimate as plan IDs. Remove subdomain and custom_domain as plan IDs.",
+          "status": "pending",
+          "blocked_by": ["7.2"],
+          "files_changed": []
+        },
+        {
+          "id": "7.7",
+          "description": "Write unit tests src/lib/__tests__/plan-gate.test.ts: check(basicSite, premium)→false, check(ultimateSite, basic)→true, ultimate-required plugin blocked for premium.",
+          "status": "pending",
+          "blocked_by": ["7.3"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "name": "Dynamic Build & Zero-Rebuild Branding",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "8.1",
+          "description": "Create src/app/api/manifest.webmanifest/route.ts: dynamic JSON manifest built from site branding options. Applies applyFilters('core:manifest:build', manifest, {siteId}).",
+          "status": "pending",
+          "blocked_by": ["7.7"],
+          "files_changed": []
+        },
+        {
+          "id": "8.2",
+          "description": "Update src/app/api/tenant/serve/route.ts to inject <style> block with CSS variables (--color-primary, --color-accent, --font-heading) from site branding options into served index.html.",
+          "status": "pending",
+          "blocked_by": ["7.7"],
+          "files_changed": []
+        },
+        {
+          "id": "8.3",
+          "description": "Create src/app/api/media/[siteId]/[key]/route.ts: redirects to media URL stored in options(siteId, 'media:<key>'). Used for logo, hero_image, favicon.",
+          "status": "pending",
+          "blocked_by": ["7.7"],
+          "files_changed": []
+        },
+        {
+          "id": "8.4",
+          "description": "Register hook listener on core:site:plan_upgraded in src/lib/listeners/buildListener.ts. For ultimate upgrades: writes BUILD_REQUIRED event to build_queue table.",
+          "status": "pending",
+          "blocked_by": ["8.5"],
+          "files_changed": []
+        },
+        {
+          "id": "8.5",
+          "description": "Create migration 006_build_queue.sql with build_queue table (id, site_id, status, triggered_by, created_at, started_at, finished_at, error).",
+          "status": "pending",
+          "blocked_by": ["7.7"],
+          "files_changed": []
+        },
+        {
+          "id": "8.6",
+          "description": "Create src/app/api/admin/build-queue/route.ts: GET lists queue (master admin only), POST triggers build for a site.",
+          "status": "pending",
+          "blocked_by": ["8.5"],
+          "files_changed": []
+        },
+        {
+          "id": "8.7",
+          "description": "Update BrandingContext.tsx in themes/camp-classic to fetch branding from GET /api/branding?siteId= and remove VITE_* fallbacks except as last resort.",
+          "status": "pending",
+          "blocked_by": ["4.1"],
+          "files_changed": []
+        },
+        {
+          "id": "8.8",
+          "description": "Write tests for core:manifest:build filter hook and CSS injection logic in serve route.",
+          "status": "pending",
+          "blocked_by": ["8.1", "8.2"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "name": "Central Marketplace Aggregation",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "9.1",
+          "description": "Add PostQuery.globalQuery(args) that queries across all active sites (no siteId filter). Requires postType. Applies applyFilters('core:global_query:args', args) before executing.",
+          "status": "pending",
+          "blocked_by": ["8.8"],
+          "files_changed": []
+        },
+        {
+          "id": "9.2",
+          "description": "Refactor src/app/api/public/featured-listings/route.ts to use PostQuery.globalQuery instead of raw SQL against properties.",
+          "status": "pending",
+          "blocked_by": ["9.1"],
+          "files_changed": []
+        },
+        {
+          "id": "9.3",
+          "description": "Refactor src/app/api/public/search/route.ts to use PostQuery.globalQuery.",
+          "status": "pending",
+          "blocked_by": ["9.1"],
+          "files_changed": []
+        },
+        {
+          "id": "9.4",
+          "description": "Refactor src/app/[locale]/page.tsx FeaturedListings component to receive data from PostQuery.globalQuery as server component prop.",
+          "status": "pending",
+          "blocked_by": ["9.2"],
+          "files_changed": []
+        },
+        {
+          "id": "9.5",
+          "description": "Create src/app/api/public/listings/route.ts: GET with type, status, limit, meta[] query params. Fires applyFilters('core:public_listings:query', args).",
+          "status": "pending",
+          "blocked_by": ["9.1"],
+          "files_changed": []
+        },
+        {
+          "id": "9.6",
+          "description": "Refactor basic-tier listing detail page (/stay/<slug>) to load data from PostQuery by site.slug→siteId→PostQuery.",
+          "status": "pending",
+          "blocked_by": ["9.1"],
+          "files_changed": []
+        },
+        {
+          "id": "9.7",
+          "description": "Write integration tests for cross-site isolation: global query returns posts from all sites; site-scoped query never returns posts from other sites.",
+          "status": "pending",
+          "blocked_by": ["9.5"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-10",
+      "name": "Admin Dashboard (Per-Tenant, Plugin-Extensible)",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "10.1",
+          "description": "Refactor manage/[listingId]/layout.tsx: remove hardcoded nav links and Lucide icon list. Replace with dynamic menuItems from GET /api/plugins/ui-registry?siteId=.",
+          "status": "pending",
+          "blocked_by": ["9.7"],
+          "files_changed": []
+        },
+        {
+          "id": "10.2",
+          "description": "Create generic DashboardPage component reading PluginShell slots for dashboard.top, dashboard.main, dashboard.sidebar. Falls back to empty state if no plugins active.",
+          "status": "pending",
+          "blocked_by": ["10.1"],
+          "files_changed": []
+        },
+        {
+          "id": "10.3",
+          "description": "Create src/app/[locale]/manage/[listingId]/posts/[postType]/page.tsx: generic list page for any plugin-registered post type. Fetches via GET /api/site/posts.",
+          "status": "pending",
+          "blocked_by": ["10.2"],
+          "files_changed": []
+        },
+        {
+          "id": "10.4",
+          "description": "Create src/app/[locale]/manage/[listingId]/posts/[postType]/[postId]/page.tsx: generic post editor. Loads post + all meta. Renders form fields from registered meta definitions. Applies applyFilters('core:post_editor:fields', fields). Save calls PUT /api/site/posts/[postId].",
+          "status": "pending",
+          "blocked_by": ["10.3"],
+          "files_changed": []
+        },
+        {
+          "id": "10.5",
+          "description": "Create src/app/api/site/posts/route.ts: GET (PostQuery), POST (PostRepository.createPost + core:post:after_save action).",
+          "status": "pending",
+          "blocked_by": ["2.1", "2.2"],
+          "files_changed": []
+        },
+        {
+          "id": "10.6",
+          "description": "Create src/app/api/site/posts/[postId]/route.ts: GET (post + all meta), PUT (update post + upsert meta), DELETE (trash).",
+          "status": "pending",
+          "blocked_by": ["10.5"],
+          "files_changed": []
+        },
+        {
+          "id": "10.7",
+          "description": "Create src/app/api/site/options/route.ts: GET with keys[] param, PUT for batch upsert.",
+          "status": "pending",
+          "blocked_by": ["2.3"],
+          "files_changed": []
+        },
+        {
+          "id": "10.8",
+          "description": "Write E2E tests: log in as site owner, visit manage dashboard, create post of plugin-registered type, edit post and save meta field, verify value persists on reload.",
+          "status": "pending",
+          "blocked_by": ["10.6"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-11",
+      "name": "External Plugin Submission & Review",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "11.1",
+          "description": "Create migration 007_plugin_submissions.sql with plugin_submissions table (id, plugin_id, submitted_by, version, zip_url, manifest, review_notes, status, reviewed_by, submitted_at, reviewed_at).",
+          "status": "pending",
+          "blocked_by": ["10.8"],
+          "files_changed": []
+        },
+        {
+          "id": "11.2",
+          "description": "Create src/app/api/plugins/submit/route.ts: POST accepts {pluginId, version, manifest, zipUrl}. Inserts into plugin_submissions. Fires core:plugin:submitted action.",
+          "status": "pending",
+          "blocked_by": ["11.1"],
+          "files_changed": []
+        },
+        {
+          "id": "11.3",
+          "description": "Create src/app/api/admin/plugins/submissions/route.ts (master admin only): GET list pending, PATCH approve/reject. On approval: upsert to available_plugins with review_status=approved.",
+          "status": "pending",
+          "blocked_by": ["11.2"],
+          "files_changed": []
+        },
+        {
+          "id": "11.4",
+          "description": "Build submission review UI at src/app/[locale]/admin/plugins/page.tsx.",
+          "status": "pending",
+          "blocked_by": ["11.3"],
+          "files_changed": []
+        },
+        {
+          "id": "11.5",
+          "description": "Write unit tests for plugin submission state machine: pending→approved, pending→rejected, duplicate submission handling.",
+          "status": "pending",
+          "blocked_by": ["11.3"],
+          "files_changed": []
+        }
+      ]
+    },
+    {
+      "id": "phase-12",
+      "name": "Production Hardening",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "12.1",
+          "description": "Add server-side auth check to every src/app/api/site/* and src/app/api/manage/* route. Verify GET /api/site/posts without session returns 401.",
+          "status": "pending",
+          "blocked_by": ["11.5"],
+          "files_changed": []
+        },
+        {
+          "id": "12.2",
+          "description": "Add CORS headers to manage/ and master/ API routes via next.config.mjs headers or middleware layer.",
+          "status": "pending",
+          "blocked_by": ["12.1"],
+          "files_changed": []
+        },
+        {
+          "id": "12.3",
+          "description": "Extend apiRateLimiter from /api/p/* to cover /api/site/* and /api/public/* endpoints.",
+          "status": "pending",
+          "blocked_by": ["12.1"],
+          "files_changed": []
+        },
+        {
+          "id": "12.4",
+          "description": "Confirm all PostQueryArgs values are passed as SQLite bound parameters (no string interpolation). Add a fuzz test.",
+          "status": "pending",
+          "blocked_by": ["2.1"],
+          "files_changed": []
+        },
+        {
+          "id": "12.5",
+          "description": "Audit all 18 existing plugins for db.execute calls that do not respect site_id scoping. Document findings.",
+          "status": "pending",
+          "blocked_by": ["12.1"],
+          "files_changed": []
+        },
+        {
+          "id": "12.6",
+          "description": "Profile three most common queries against posts + postmeta. Add composite indexes if needed (e.g. site_id, post_type, post_status).",
+          "status": "pending",
+          "blocked_by": ["9.7"],
+          "files_changed": []
+        },
+        {
+          "id": "12.7",
+          "description": "For each migration 00N_*.sql create a corresponding 00N_*.rollback.sql.",
+          "status": "pending",
+          "blocked_by": ["11.1"],
+          "files_changed": []
+        },
+        {
+          "id": "12.8",
+          "description": "Test all new migrations and queries against PostgreSQL (production target). Fix SQLite-isms: unixepoch()→EXTRACT(EPOCH FROM NOW()), etc.",
+          "status": "pending",
+          "blocked_by": ["12.7"],
+          "files_changed": []
+        },
+        {
+          "id": "12.9",
+          "description": "Update docs/TEST_COVERAGE_REPORT.md with new coverage baseline.",
+          "status": "pending",
+          "blocked_by": ["12.8"],
+          "files_changed": []
+        },
+        {
+          "id": "12.10",
+          "description": "Run npm run check:full — all checks green.",
+          "status": "pending",
+          "blocked_by": ["12.9"],
+          "files_changed": []
+        }
+      ]
+    }
+  ]
+}

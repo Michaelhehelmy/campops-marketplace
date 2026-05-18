@@ -440,7 +440,7 @@ class DrizzleDatabaseWrapper {
           },
           {
             id: 'manager-user-1',
-            email: 'manager@sinaicamps.com',
+            email: 'safari@sinaicamps.com',
             role: 'manager',
             name: 'Property Manager',
           },
@@ -453,7 +453,7 @@ class DrizzleDatabaseWrapper {
             name: 'Integration Guest',
           },
           { id: 'master-user-2', email: 'admin@sinaicamps.com', role: 'master', name: 'Demo Admin' },
-          { id: 'admin-acacia', email: 'admin@acaciacamp.com', role: 'manager', name: 'Acacia Admin' },
+          { id: 'admin-acacia', email: 'acacia@acaciacamp.com', role: 'manager', name: 'Acacia Admin' },
         ];
 
 

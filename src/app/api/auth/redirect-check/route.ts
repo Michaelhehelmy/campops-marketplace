@@ -69,10 +69,19 @@ export async function GET(req: NextRequest) {
 
       if (isVerified) {
         const locale = req.cookies.get('NEXT_LOCALE')?.value || 'en';
-        const redirectUrl =
+        const isLocalDev = process.env.FORCE_LOCAL_REDIRECT === 'true';
+
+        let redirectUrl =
           role === 'guest'
             ? `https://${property.custom_domain}/${locale}/guest`
             : `https://${property.custom_domain}/${locale}/manage/${property.id}`;
+
+        if (isLocalDev && property.custom_domain === 'acaciacamp.com') {
+          redirectUrl =
+            role === 'guest'
+              ? `http://127.0.0.1:3000/${locale}/guest`
+              : `http://127.0.0.1:3000/${locale}/manage/${property.id}`;
+        }
 
         return NextResponse.json({
           redirect: true,

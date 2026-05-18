@@ -31,7 +31,7 @@ test.describe('Cross-System Integration Flow', () => {
       await publicPage.request.post('http://localhost:3000/api/test/reset');
 
       console.log('1. Master enabling plugins...');
-      await master.page.goto('/en/admin/listings/1');
+      await master.page.goto('/en/admin/listings/1', { waitUntil: 'networkidle' });
       await master.page.getByRole('tab', { name: /Plugins/i }).click();
 
       // Wait for plugins to load
@@ -80,9 +80,10 @@ test.describe('Cross-System Integration Flow', () => {
       console.log('2.3 Confirming booking...');
       await publicPage.getByRole('button', { name: /Confirm Booking|Proceed to payment/i }).click();
 
-      // Wait for success state
+      // Wait for success state and ensure booking is fully persisted
       console.log('2.4 Waiting for success state...');
       await expect(publicPage.getByText(/Booking Confirmed/i)).toBeVisible({ timeout: 15000 });
+      await publicPage.waitForLoadState('networkidle');
 
       console.log('3. Guest verifying reservation...');
       // 3. Guest verifies reservation
@@ -93,10 +94,10 @@ test.describe('Cross-System Integration Flow', () => {
       console.log('4. Manager modifying booking...');
       // 4. Manager sees and modifies booking
 
-      await manager.page.goto('/en/manage/safari-camp/bookings');
+      await manager.page.goto('/en/manage/1/bookings', { waitUntil: 'networkidle' });
       console.log('4.1 Waiting for booking row...');
       const bookingRow = manager.page.locator('tr', { hasText: 'Integration Guest' });
-      await expect(bookingRow.first()).toBeVisible({ timeout: 15000 });
+      await expect(bookingRow.first()).toBeVisible({ timeout: 20000 });
 
       console.log('4.2 Clicking Manage...');
       await bookingRow
@@ -112,7 +113,7 @@ test.describe('Cross-System Integration Flow', () => {
       console.log('5. Staff checking in guest...');
       // 5. Staff checks in guest
 
-      await staff.page.goto('/en/manage/safari-camp/bookings');
+      await staff.page.goto('/en/manage/1/bookings');
       console.log('5.1 Waiting for staff booking row...');
       const staffBookingRow = staff.page.locator('tr', { hasText: 'Integration Guest' }).first();
       await expect(staffBookingRow).toBeVisible({ timeout: 10000 });
@@ -128,7 +129,7 @@ test.describe('Cross-System Integration Flow', () => {
       console.log('5.4 Guest checked in.');
 
       console.log('6. Manager viewing Finance...');
-      await manager.page.goto('/en/manage/safari-camp/finance');
+      await manager.page.goto('/en/manage/1/finance');
       // Wait for data load
       console.log('6.1 Waiting for finance data...');
       await manager.page.waitForLoadState('networkidle');

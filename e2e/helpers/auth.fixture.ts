@@ -68,7 +68,7 @@ export const test = base.extend<{
   },
 
   managerSession: async ({ request }, use) => {
-    const storageState = await getStorageState(request, 'manager@sinaicamps.com');
+    const storageState = await getStorageState(request, 'safari@sinaicamps.com');
     await use({ storageState: JSON.stringify(storageState) });
   },
 

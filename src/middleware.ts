@@ -23,11 +23,7 @@ export async function middleware(req: NextRequest) {
   const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
   // 1. Immediately bypass internal Next.js static asset and API paths
-  if (
-    pathname.startsWith('/_next/') ||
-    pathname === '/api' ||
-    pathname.startsWith('/api/')
-  ) {
+  if (pathname.startsWith('/_next/') || pathname === '/api' || pathname.startsWith('/api/')) {
     return NextResponse.next();
   }
 
@@ -66,10 +62,15 @@ export async function middleware(req: NextRequest) {
 
   // 2. If it is a verified custom domain, rewrite all non-API paths directly to the template serve endpoint
   if (tenantPropertyId && isCustomDomain) {
-    const rewriteUrl = new URL(`/api/tenant/serve`, req.url);
+    const rewriteUrl = req.nextUrl.clone();
+    rewriteUrl.pathname = '/api/tenant/serve';
+    rewriteUrl.search = '';
     rewriteUrl.searchParams.set('host', cleanHostname);
     rewriteUrl.searchParams.set('path', pathname + req.nextUrl.search);
-    return NextResponse.rewrite(rewriteUrl);
+    const headers = new Headers(req.headers);
+    headers.set('x-tenant-host', cleanHostname);
+    headers.set('x-tenant-path', pathname + req.nextUrl.search);
+    return NextResponse.rewrite(rewriteUrl, { request: { headers } });
   }
 
   const localeMatch = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
@@ -239,7 +240,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image).*)'],
 };

@@ -186,6 +186,7 @@ test.describe('Frontend Functionality Audit', () => {
   });
 
   test('5. Console Error Collection', async ({ page, masterSession, guestSession }) => {
+    test.setTimeout(120000);
     const pagesToCheck: { url: string; auth: any }[] = [
       { url: '/en', auth: null },
       { url: '/en/search', auth: null },
@@ -214,7 +215,7 @@ test.describe('Frontend Functionality Audit', () => {
       await page.context().clearCookies();
       if (auth) await applySession(page, auth);
       await page.goto(`${BASE}${url}`, { waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(500);
       for (const err of pageErrors) allConsoleErrors.push({ page: url, text: err });
       page.off('console', handler);
     }

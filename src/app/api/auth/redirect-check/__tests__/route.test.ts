@@ -44,7 +44,7 @@ describe('Redirect Check API Route', () => {
   it('returns redirect: true for managers of ultimate-tier properties with verified custom domains', async () => {
     // 1. Mock session as manager user
     mockGetSession.mockResolvedValue({
-      user: { id: 'admin-acacia', role: 'manager', email: 'admin@acaciacamp.com' },
+      user: { id: 'admin-acacia', role: 'manager', email: 'acacia@acaciacamp.com' },
     });
 
     // 2. Make request
@@ -58,9 +58,9 @@ describe('Redirect Check API Route', () => {
   });
 
   it('returns redirect: false for managers of properties on basic plans', async () => {
-    // manager@sinaicamps.com / manager-user-1 is manager for property ID 1 (Safari Camp) which is plan = 'premium', custom_domain = ''
+    // safari@sinaicamps.com / manager-user-1 is manager for property ID 1 (Safari Camp) which is plan = 'premium', custom_domain = ''
     mockGetSession.mockResolvedValue({
-      user: { id: 'manager-user-1', role: 'manager', email: 'manager@sinaicamps.com' },
+      user: { id: 'manager-user-1', role: 'manager', email: 'safari@sinaicamps.com' },
     });
 
     const req = new NextRequest('http://localhost/api/auth/redirect-check');
