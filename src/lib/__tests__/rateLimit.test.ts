@@ -80,4 +80,14 @@ describe('RateLimiter', () => {
       expect((err as RateLimitError).details).toHaveProperty('retryAfter');
     }
   });
+
+  it('should support starting and stopping periodic cleanup intervals', () => {
+    limiter.startCleanup(10);
+    // Double calling startCleanup should return early
+    limiter.startCleanup(10);
+    expect((limiter as any).cleanupInterval).toBeDefined();
+
+    limiter.stopCleanup();
+    expect((limiter as any).cleanupInterval).toBeNull();
+  });
 });

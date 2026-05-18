@@ -1,4 +1,29 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+const pgPath = require.resolve('pg');
+require.cache[pgPath] = {
+  id: pgPath,
+  filename: pgPath,
+  loaded: true,
+  exports: {
+    Pool: vi.fn().mockImplementation(function () {
+      return {
+        query: vi.fn().mockResolvedValue({
+          rows: [{ id: '1', display_name: 'Postgres Property', exists: true }],
+          rowCount: 1,
+        }),
+        connect: vi.fn().mockResolvedValue({
+          query: vi.fn().mockResolvedValue({
+            rows: [{ id: '1', display_name: 'Postgres Property', exists: true }],
+            rowCount: 1,
+          }),
+          release: vi.fn(),
+        }),
+      };
+    }),
+  },
+} as any;
+
 import { db } from '../db';
 
 describe('Database Coverage Tests', () => {
@@ -307,5 +332,41 @@ describe('Database Coverage Tests', () => {
   it('queryOne with FALLBACK_TEST triggers fallback path', async () => {
     const result = await db.queryOne('FALLBACK_TEST SELECT * FROM test WHERE id = $1', [1]);
     expect(result === null || typeof result === 'object').toBe(true);
+  });
+
+  it('handles PostgreSQL query paths', async () => {
+    vi.resetModules();
+    process.env.DATABASE_URL = 'postgres://localhost/test';
+
+    const { db: pgDb } = await import('../db');
+
+    const stmt = pgDb.prepare('SELECT * FROM properties WHERE id = $1');
+    const allRes = await stmt.all('prop-1');
+    expect(allRes[0].displayName).toBe('Postgres Property');
+
+    const getRes = await stmt.get('prop-1');
+    expect(getRes.displayName).toBe('Postgres Property');
+
+    const runRes = await stmt.run('prop-1');
+    expect(runRes.changes).toBe(1);
+
+    const execRes = await pgDb.exec('UPDATE properties SET name = $1', ['prop']);
+    expect(execRes).toBeDefined();
+
+    const exists = await pgDb.tableExists('properties');
+    expect(exists).toBe(true);
+
+    await pgDb.createTable('pg_table', 'id SERIAL PRIMARY KEY');
+    await pgDb.dropTable('pg_table');
+
+    // Test PostgreSQL transaction path
+    const txResult = await pgDb.transaction(async (tx) => {
+      return { committed: true };
+    });
+    expect(txResult).toEqual({ committed: true });
+
+    // Clean up
+    delete process.env.DATABASE_URL;
+    vi.resetModules();
   });
 });

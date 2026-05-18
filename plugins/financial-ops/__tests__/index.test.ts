@@ -106,6 +106,45 @@ describe('Financial Ops Plugin', () => {
     );
   });
 
+  it('GET /api/p/finance/commissions works for master and filters by listing_id', async () => {
+    const api = buildMockApi('master');
+    await init(api as any);
+
+    const handler = api._internal.routes.get('/api/p/finance/commissions')!.GET;
+    const res = await handler(makeRequest('/api/p/finance/commissions?listing_id=listing-123'));
+
+    expect(res.status).toBe(200);
+    expect(api._internal.mockQuery).toHaveBeenCalledWith(
+      expect.stringContaining('WHERE listing_id = ?'),
+      ['listing-123']
+    );
+  });
+
+  it('GET /api/p/finance/commissions returns 400 for staff if x-tenant-id header is missing', async () => {
+    const api = buildMockApi('staff');
+    await init(api as any);
+
+    const handler = api._internal.routes.get('/api/p/finance/commissions')!.GET;
+    const res = await handler(makeRequest('/api/p/finance/commissions'));
+
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('Tenant ID required');
+  });
+
+  it('GET /api/p/finance/commissions returns 500 on database error', async () => {
+    const api = buildMockApi('master');
+    api.db.query = vi.fn().mockRejectedValue(new Error('DB failure'));
+    await init(api as any);
+
+    const handler = api._internal.routes.get('/api/p/finance/commissions')!.GET;
+    const res = await handler(makeRequest('/api/p/finance/commissions'));
+
+    expect(res.status).toBe(500);
+    const data = await res.json();
+    expect(data.error).toBe('DB failure');
+  });
+
   it('GET /api/p/finance/commissions denies guests', async () => {
     const api = buildMockApi('guest');
     await init(api as any);

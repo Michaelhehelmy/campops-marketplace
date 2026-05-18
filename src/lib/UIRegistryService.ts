@@ -142,7 +142,7 @@ export class UIRegistryService {
         propertyId ? [propertyId] : []
       );
       return rows.map((r: any) => {
-        const config = JSON.parse(r.config || '{}');
+        const config = typeof r.config === 'string' ? JSON.parse(r.config || '{}') : r.config || {};
         return {
           id: config.id || r.component_id,
           pluginId: r.plugin_id,
@@ -167,7 +167,7 @@ export class UIRegistryService {
         propertyId ? [propertyId] : []
       );
       return rows.map((r: any) => {
-        const config = JSON.parse(r.config || '{}');
+        const config = typeof r.config === 'string' ? JSON.parse(r.config || '{}') : r.config || {};
         return {
           id: config.id || r.component_id,
           pluginId: r.plugin_id,
@@ -192,7 +192,7 @@ export class UIRegistryService {
         propertyId ? [propertyId] : []
       );
       return rows.map((r: any) => {
-        const config = JSON.parse(r.config || '{}');
+        const config = typeof r.config === 'string' ? JSON.parse(r.config || '{}') : r.config || {};
         return {
           id: config.id || r.component_id,
           pluginId: r.plugin_id,

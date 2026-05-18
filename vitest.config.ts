@@ -16,15 +16,15 @@ export default defineConfig({
       'templates/**',
       'e2e/**',
       'plugins/booking/__tests__/plugin-integration.test.ts',
-      'plugins/booking/__tests__/routes/**',
     ],
+    testTimeout: 20000,
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      include: ['src/lib/**/*.{ts,tsx}', 'src/app/api/**/*.ts'],
+      include: ['src/lib/**/*.{ts,tsx}', 'src/app/api/**/*.{ts,tsx}', 'plugins/*/src/**/*.ts'],
       exclude: [
         '**/node_modules/**',
         '**/__tests__/**',

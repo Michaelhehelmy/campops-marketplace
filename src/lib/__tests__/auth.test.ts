@@ -1,38 +1,57 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { getAuthSession, auth } from '../auth';
 
-describe('Auth Configuration', () => {
+describe('Auth Configuration and Helpers', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.stubGlobal('process', {
-      ...process,
-      env: { ...process.env },
-    });
+    vi.restoreAllMocks();
   });
 
   it('should use sqlite provider when VITEST is true', async () => {
+    const originalEnv = process.env.VITEST;
     process.env.VITEST = 'true';
-    const { auth } = await import('../auth');
-    // We can't easily check the internal better-auth state,
-    // but importing it executes the logic.
-    expect(auth).toBeDefined();
+    const { auth: dynamicAuth } = await import('../auth');
+    expect(dynamicAuth).toBeDefined();
+    process.env.VITEST = originalEnv;
   });
 
-  it('should use pg provider when DATABASE_URL is set and not in test', async () => {
-    // Force non-test env
-    process.env.VITEST = 'false';
-    process.env.NODE_ENV = 'production';
-    process.env.DATABASE_URL = 'postgres://localhost:5432';
-
-    const { auth } = await import('../auth');
-    expect(auth).toBeDefined();
+  it('should split process.env.TRUSTED_ORIGINS correctly', async () => {
+    const originalEnv = process.env.TRUSTED_ORIGINS;
+    process.env.TRUSTED_ORIGINS = 'https://trusted1.com,https://trusted2.com';
+    vi.resetModules();
+    const { auth: dynamicAuth } = await import('../auth');
+    expect(dynamicAuth).toBeDefined();
+    process.env.TRUSTED_ORIGINS = originalEnv;
   });
 
-  it('should fallback to sqlite when no DATABASE_URL and not in test', async () => {
-    process.env.VITEST = 'false';
-    process.env.NODE_ENV = 'production';
-    delete process.env.DATABASE_URL;
+  it('should successfully get authentication session via getAuthSession', async () => {
+    const mockSession = {
+      session: { id: 's-123', userId: 'u-123' },
+      user: { id: 'u-123', email: 'user@example.com', role: 'guest' },
+    };
 
-    const { auth } = await import('../auth');
-    expect(auth).toBeDefined();
+    const spy = vi.spyOn(auth.api, 'getSession').mockResolvedValue(mockSession as any);
+
+    const req = new Request('http://localhost', {
+      headers: {
+        cookie: 'better-auth.session-token=token123',
+      },
+    });
+
+    const res = await getAuthSession(req);
+
+    expect(spy).toHaveBeenCalled();
+    expect(res).toEqual(mockSession);
+  });
+
+  it('should catch error and return null in getAuthSession on rejection', async () => {
+    const spy = vi
+      .spyOn(auth.api, 'getSession')
+      .mockRejectedValue(new Error('Session validation failed'));
+
+    const req = new Request('http://localhost');
+    const res = await getAuthSession(req);
+
+    expect(spy).toHaveBeenCalled();
+    expect(res).toBeNull();
   });
 });

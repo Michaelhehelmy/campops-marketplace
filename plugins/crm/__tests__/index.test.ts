@@ -83,4 +83,154 @@ describe('CRM Plugin', () => {
       'Guest A',
     ]);
   });
+
+  describe('GET route handler', () => {
+    it('returns 401 if unauthorized', async () => {
+      let routeHandler: any;
+      const mockApi = {
+        logger: { info: vi.fn() },
+        db: { createTable: vi.fn().mockResolvedValue(undefined) },
+        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+        registerHook: vi.fn(),
+        registerRoute: (path: string, handlers: any) => {
+          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+        },
+        auth: { getSession: vi.fn().mockResolvedValue(null) },
+      };
+
+      await init(mockApi as any);
+      const req = makeRequest('/api/p/crm/activities');
+      const res = await routeHandler(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(401);
+      expect(data.error).toBe('Unauthorized');
+    });
+
+    it('returns guest activities if role is guest', async () => {
+      let routeHandler: any;
+      const mockQuery = vi.fn().mockResolvedValue([{ id: 1, guest_email: 'john@example.com' }]);
+      const mockApi = {
+        logger: { info: vi.fn() },
+        db: {
+          createTable: vi.fn().mockResolvedValue(undefined),
+          query: mockQuery,
+        },
+        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+        registerHook: vi.fn(),
+        registerRoute: (path: string, handlers: any) => {
+          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+        },
+        auth: {
+          getSession: vi
+            .fn()
+            .mockResolvedValue({ user: { role: 'guest', email: 'john@example.com' } }),
+        },
+      };
+
+      await init(mockApi as any);
+      const req = makeRequest('/api/p/crm/activities');
+      const res = await routeHandler(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data.activities).toHaveLength(1);
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('WHERE guest_email = ?'), [
+        'john@example.com',
+      ]);
+    });
+
+    it('returns requested guest activities if role is manager and guest_email is provided', async () => {
+      let routeHandler: any;
+      const mockQuery = vi.fn().mockResolvedValue([]);
+      const mockApi = {
+        logger: { info: vi.fn() },
+        db: {
+          createTable: vi.fn().mockResolvedValue(undefined),
+          query: mockQuery,
+        },
+        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+        registerHook: vi.fn(),
+        registerRoute: (path: string, handlers: any) => {
+          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+        },
+        auth: {
+          getSession: vi
+            .fn()
+            .mockResolvedValue({ user: { role: 'manager', email: 'manager@example.com' } }),
+        },
+      };
+
+      await init(mockApi as any);
+      const req = makeRequest('/api/p/crm/activities?guest_email=john@example.com');
+      const res = await routeHandler(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('WHERE guest_email = ?'), [
+        'john@example.com',
+      ]);
+    });
+
+    it('returns all activities if role is manager and no guest_email is provided', async () => {
+      let routeHandler: any;
+      const mockQuery = vi.fn().mockResolvedValue([]);
+      const mockApi = {
+        logger: { info: vi.fn() },
+        db: {
+          createTable: vi.fn().mockResolvedValue(undefined),
+          query: mockQuery,
+        },
+        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+        registerHook: vi.fn(),
+        registerRoute: (path: string, handlers: any) => {
+          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+        },
+        auth: {
+          getSession: vi
+            .fn()
+            .mockResolvedValue({ user: { role: 'manager', email: 'manager@example.com' } }),
+        },
+      };
+
+      await init(mockApi as any);
+      const req = makeRequest('/api/p/crm/activities');
+      const res = await routeHandler(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(mockQuery).toHaveBeenCalledWith(
+        'SELECT * FROM plugin_crm_activities ORDER BY created_at DESC'
+      );
+    });
+
+    it('returns 500 on database query failure', async () => {
+      let routeHandler: any;
+      const mockApi = {
+        logger: { info: vi.fn() },
+        db: {
+          createTable: vi.fn().mockResolvedValue(undefined),
+          query: vi.fn().mockRejectedValue(new Error('Query failed')),
+        },
+        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+        registerHook: vi.fn(),
+        registerRoute: (path: string, handlers: any) => {
+          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+        },
+        auth: {
+          getSession: vi
+            .fn()
+            .mockResolvedValue({ user: { role: 'manager', email: 'manager@example.com' } }),
+        },
+      };
+
+      await init(mockApi as any);
+      const req = makeRequest('/api/p/crm/activities');
+      const res = await routeHandler(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(500);
+      expect(data.error).toBe('Query failed');
+    });
+  });
 });

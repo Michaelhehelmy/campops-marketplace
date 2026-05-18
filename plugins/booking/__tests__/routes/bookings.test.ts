@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { GET, POST } from '../route';
+import { GET, POST } from '@/app/api/manage/[listingId]/bookings/route';
 import { db, clearMockStore } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
@@ -18,7 +18,20 @@ describe('GET /api/manage/:listingId/bookings', () => {
   });
 
   it('should return bookings for a property', async () => {
-    const mockBookings = [
+    const mockDbBookings = [
+      {
+        id: 'res-1',
+        check_in: '2025-06-15',
+        check_out: '2025-06-20',
+        guest_count: 2,
+        total_price: 1250,
+        status: 'confirmed',
+        guest_name: 'Guest User',
+        guest_email: 'guest@example.com',
+      },
+    ];
+
+    const expectedBookings = [
       {
         id: 'res-1',
         checkIn: '2025-06-15',
@@ -26,13 +39,15 @@ describe('GET /api/manage/:listingId/bookings', () => {
         guestCount: 2,
         totalPrice: 1250,
         status: 'confirmed',
-        guest_name: 'Guest User',
-        guest_email: 'guest@example.com',
+        guestEmail: 'guest@example.com',
+        guestName: 'Guest User',
+        notes: undefined,
+        createdAt: undefined,
       },
     ];
 
     (db.prepare as any).mockReturnValue({
-      all: vi.fn().mockResolvedValue(mockBookings),
+      all: vi.fn().mockResolvedValue(mockDbBookings),
       get: vi.fn().mockResolvedValue({ count: 1 }),
     });
 
@@ -41,7 +56,7 @@ describe('GET /api/manage/:listingId/bookings', () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.bookings).toEqual(mockBookings);
+    expect(data.bookings).toEqual(expectedBookings);
     expect(data.total).toBe(1);
   });
 
@@ -75,7 +90,20 @@ describe('GET /api/manage/:listingId/bookings', () => {
   });
 
   it('should filter bookings by status', async () => {
-    const mockBookings = [
+    const mockDbBookings = [
+      {
+        id: 'res-1',
+        check_in: '2025-06-15',
+        check_out: '2025-06-20',
+        guest_count: 2,
+        total_price: 1250,
+        status: 'confirmed',
+        guest_name: 'Guest User',
+        guest_email: 'guest@example.com',
+      },
+    ];
+
+    const expectedBookings = [
       {
         id: 'res-1',
         checkIn: '2025-06-15',
@@ -83,13 +111,15 @@ describe('GET /api/manage/:listingId/bookings', () => {
         guestCount: 2,
         totalPrice: 1250,
         status: 'confirmed',
-        guest_name: 'Guest User',
-        guest_email: 'guest@example.com',
+        guestEmail: 'guest@example.com',
+        guestName: 'Guest User',
+        notes: undefined,
+        createdAt: undefined,
       },
     ];
 
     (db.prepare as any).mockReturnValue({
-      all: vi.fn().mockResolvedValue(mockBookings),
+      all: vi.fn().mockResolvedValue(mockDbBookings),
       get: vi.fn().mockResolvedValue({ count: 1 }),
     });
 
@@ -100,7 +130,7 @@ describe('GET /api/manage/:listingId/bookings', () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.bookings).toEqual(mockBookings);
+    expect(data.bookings).toEqual(expectedBookings);
   });
 
   it('should handle custom limit and skip parameters', async () => {

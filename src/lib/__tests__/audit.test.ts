@@ -97,4 +97,24 @@ describe('AuditService', () => {
     expect(entry!.details).toBeUndefined();
     expect(entry!.propertyId).toBeNull();
   });
+
+  it('should log an error if writeEntry fails', async () => {
+    const { logger } = await import('../logger');
+    const errorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
+    const executeSpy = vi.spyOn(db, 'execute').mockRejectedValue(new Error('DB write failed'));
+
+    AuditService.log({
+      userId: 'admin-1',
+      action: 'fail',
+      resource: 'test',
+    });
+
+    // Wait for async write
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(errorSpy).toHaveBeenCalledWith('Failed to write audit entry:', expect.any(Error));
+
+    errorSpy.mockRestore();
+    executeSpy.mockRestore();
+  });
 });
