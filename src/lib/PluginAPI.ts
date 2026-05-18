@@ -177,7 +177,7 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
 
     services: {
       payment: {
-        initiatePayment: async () => ({ paymentUrl: 'https://mock-payment.com' }),
+        initiatePayment: async () => ({ paymentUrl: process.env.PAYMENT_URL || 'https://mock-payment.com' }),
       },
       tax: {
         calculateTaxes: async (amount) => ({ taxes: [], totalTax: 0 }),

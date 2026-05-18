@@ -39,6 +39,20 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
         return;
       }
 
+      // Check for ultimate-tier custom domain redirects first
+      try {
+        const redirectRes = await fetch('/api/auth/redirect-check');
+        if (redirectRes.ok) {
+          const redirectData = await redirectRes.json();
+          if (redirectData.redirect && redirectData.url) {
+            window.location.href = redirectData.url;
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Redirection check failed:', err);
+      }
+
       const user = data.user as any;
       const role = user.role;
 

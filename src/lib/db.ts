@@ -428,55 +428,62 @@ class DrizzleDatabaseWrapper {
       // Pre-computed scrypt hash for 'password123' used by Better Auth
       const hashedPassword =
         'e8c2be85ca9fe13f47c6ef1de40ac92d:4a8432eb6e15066427f96f1f9a3ca66fa19037c985f5cd3a5a46a73226d2f59f09ca5d4398b52918403865dd9f5ce4f254bddfbf16afc92517dbf50115f9799c';
-      const testUsers = [
-        {
-          id: 'master-admin',
-          email: 'master@sinaicamps.com',
-          role: 'master',
-          name: 'Master Admin',
-        },
-        {
-          id: 'manager-user-1',
-          email: 'manager@sinaicamps.com',
-          role: 'manager',
-          name: 'Property Manager',
-        },
-        { id: 'staff-user-1', email: 'staff@sinaicamps.com', role: 'staff', name: 'Staff Member' },
-        { id: 'guest-user-1', email: 'guest@sinaicamps.com', role: 'guest', name: 'John Guest' },
-        {
-          id: 'integration-guest-1',
-          email: 'integration@sinaicamps.com',
-          role: 'guest',
-          name: 'Integration Guest',
-        },
-        { id: 'master-user-2', email: 'admin@sinaicamps.com', role: 'master', name: 'Demo Admin' },
-      ];
 
-      for (const user of testUsers) {
-        getSqlite()
-          .prepare(
-            'INSERT OR IGNORE INTO users (id, email, password, role, name, email_verified, is_verified) VALUES (?, ?, ?, ?, ?, 1, 1)'
-          )
-          .run(user.id, user.email, hashedPassword, user.role, user.name);
+      const isProd = process.env.NODE_ENV === 'production';
+      if (!isProd || process.env.SEED_TEST_USERS === 'true') {
+        const testUsers = [
+          {
+            id: 'master-admin',
+            email: 'master@sinaicamps.com',
+            role: 'master',
+            name: 'Master Admin',
+          },
+          {
+            id: 'manager-user-1',
+            email: 'manager@sinaicamps.com',
+            role: 'manager',
+            name: 'Property Manager',
+          },
+          { id: 'staff-user-1', email: 'staff@sinaicamps.com', role: 'staff', name: 'Staff Member' },
+          { id: 'guest-user-1', email: 'guest@sinaicamps.com', role: 'guest', name: 'John Guest' },
+          {
+            id: 'integration-guest-1',
+            email: 'integration@sinaicamps.com',
+            role: 'guest',
+            name: 'Integration Guest',
+          },
+          { id: 'master-user-2', email: 'admin@sinaicamps.com', role: 'master', name: 'Demo Admin' },
+          { id: 'admin-acacia', email: 'admin@acaciacamp.com', role: 'manager', name: 'Acacia Admin' },
+        ];
 
-        getSqlite()
-          .prepare(
-            'INSERT OR IGNORE INTO accounts (id, user_id, account_id, provider_id, password) VALUES (?, ?, ?, ?, ?)'
-          )
-          .run(`${user.id}-account`, user.id, user.id, 'credential', hashedPassword);
 
-        const rbacRole = user.role === 'master' ? 'marketplace_master' : `marketplace_${user.role}`;
-        getSqlite()
-          .prepare('INSERT OR IGNORE INTO user_roles (id, user_id, role) VALUES (?, ?, ?)')
-          .run(`${user.id}-role`, user.id, rbacRole);
+        for (const user of testUsers) {
+          getSqlite()
+            .prepare(
+              'INSERT OR IGNORE INTO users (id, email, password, role, name, email_verified, is_verified) VALUES (?, ?, ?, ?, ?, 1, 1)'
+            )
+            .run(user.id, user.email, hashedPassword, user.role, user.name);
 
-        // Seed Profile
-        getSqlite()
-          .prepare(
-            'INSERT OR IGNORE INTO profiles (id, user_id, full_name, phone) VALUES (?, ?, ?, ?)'
-          )
-          .run(`${user.id}-profile`, user.id, user.name, '+1234567890');
+          getSqlite()
+            .prepare(
+              'INSERT OR IGNORE INTO accounts (id, user_id, account_id, provider_id, password) VALUES (?, ?, ?, ?, ?)'
+            )
+            .run(`${user.id}-account`, user.id, user.id, 'credential', hashedPassword);
+
+          const rbacRole = user.role === 'master' ? 'marketplace_master' : `marketplace_${user.role}`;
+          getSqlite()
+            .prepare('INSERT OR IGNORE INTO user_roles (id, user_id, role) VALUES (?, ?, ?)')
+            .run(`${user.id}-role`, user.id, rbacRole);
+
+          // Seed Profile
+          getSqlite()
+            .prepare(
+              'INSERT OR IGNORE INTO profiles (id, user_id, full_name, phone) VALUES (?, ?, ?, ?)'
+            )
+            .run(`${user.id}-profile`, user.id, user.name, '+1234567890');
+        }
       }
+
 
       // Seed room types (booking plugin domain — kept for test backward-compat)
       // New verticals should seed their own tables inside their plugin init().
@@ -515,7 +522,7 @@ class DrizzleDatabaseWrapper {
           .run(rt.id, rt.property_id, rt.name, rt.description, rt.base_price_cents, rt.capacity);
       }
 
-      // Seed tenants (marketplace example: Safari Camp, Mountain Lodge)
+      // Seed tenants (marketplace example: Safari Camp, Mountain Lodge, Acacia Camp)
       // NOTE: these are example tenant records for the bundled marketplace
       // application.  The core framework is tenant-agnostic; these rows exist
       // only so that existing integration/e2e tests continue to pass.
@@ -526,6 +533,9 @@ class DrizzleDatabaseWrapper {
           name: 'Safari Camp',
           city: 'Maasai Mara',
           owner: 'manager-user-1',
+          plan: 'premium',
+          custom_domain: '',
+          domain_verified: 0,
         },
         {
           id: '2',
@@ -533,14 +543,37 @@ class DrizzleDatabaseWrapper {
           name: 'Mountain Lodge',
           city: 'Rocky Mountains',
           owner: 'master-user-2',
+          plan: 'basic',
+          custom_domain: '',
+          domain_verified: 0,
+        },
+        {
+          id: '3',
+          slug: 'acacia',
+          name: 'Acacia Camp',
+          city: 'Dahab',
+          owner: 'admin-acacia',
+          plan: 'ultimate',
+          custom_domain: 'acaciacamp.com',
+          domain_verified: 1,
         },
       ];
       for (const p of properties) {
         getSqlite()
           .prepare(
-            'INSERT OR REPLACE INTO properties (id, slug, name, city, owner_id, is_active, domain_verified) VALUES (?, ?, ?, ?, ?, 1, 1)'
+            'INSERT OR REPLACE INTO properties (id, slug, name, city, owner_id, is_active, domain_verified, plan, custom_domain, settings) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?)'
           )
-          .run(p.id, p.slug, p.name, p.city, p.owner);
+          .run(
+            p.id,
+            p.slug,
+            p.name,
+            p.city,
+            p.owner,
+            p.domain_verified ?? 1,
+            p.plan ?? 'basic',
+            p.custom_domain ?? '',
+            JSON.stringify({ customDomain: p.custom_domain || '', customDomainVerified: !!p.custom_domain })
+          );
       }
 
       // Seed Property Staff (for access control)
@@ -548,6 +581,7 @@ class DrizzleDatabaseWrapper {
         { id: 'ps-1', property_id: '1', user_id: 'manager-user-1', role: 'manager' },
         { id: 'ps-2', property_id: '1', user_id: 'staff-user-1', role: 'staff' },
         { id: 'ps-3', property_id: '2', user_id: 'master-user-2', role: 'manager' },
+        { id: 'ps-acacia-admin', property_id: '3', user_id: 'admin-acacia', role: 'manager' },
       ];
       for (const s of staffMembers) {
         getSqlite()
@@ -556,6 +590,7 @@ class DrizzleDatabaseWrapper {
           )
           .run(s.id, s.property_id, s.user_id, s.role);
       }
+
 
       getSqlite()
         .prepare(

@@ -51,8 +51,7 @@ describe('middleware tenant rewrites', () => {
 
     const res = await middleware(req);
 
-    expect(res.headers.get('x-middleware-rewrite')).toContain('/en/stay/safari-camp');
-    expect(res.headers.get('x-tenant-slug')).toBe('safari-camp');
+    expect(res.headers.get('x-middleware-rewrite')).toContain('/api/tenant/serve');
   });
 
   it('redirects unauthenticated manage requests to login', async () => {

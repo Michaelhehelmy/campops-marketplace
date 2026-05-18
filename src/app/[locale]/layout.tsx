@@ -3,6 +3,11 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n/request';
+import { headers } from 'next/headers';
+import { db } from '@/lib/db';
+import { Nav } from '@/components/Nav';
+import { ShopfrontNav } from '@/components/ShopfrontNav';
+import { ShopfrontFooter } from '@/components/ShopfrontFooter';
 
 export const metadata: Metadata = {
   title: { default: 'SinaiCamps Marketplace', template: '%s | SinaiCamps' },
@@ -18,7 +23,72 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-import { Nav } from '@/components/Nav';
+const parseJSON = (val: any) => {
+  if (!val) return {};
+  if (typeof val === 'string') {
+    try {
+      return JSON.parse(val || '{}');
+    } catch {
+      return {};
+    }
+  }
+  return val;
+};
+
+async function getTenantForHost(host: string) {
+  if (!host) return null;
+  const cleanHostname = host.split(':')[0].toLowerCase();
+  const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
+
+  try {
+    // 1. Custom Domain Match
+    let property = (await db
+      .prepare(
+        `
+        SELECT id, slug, name, city, country, branding, settings, plan, custom_domain, domain_verified
+        FROM properties
+        WHERE is_active = true
+          AND (
+            custom_domain = ?
+            OR COALESCE(json_extract(CASE WHEN json_valid(settings) THEN settings ELSE '{}' END, '$.customDomain'), '') = ?
+          )
+        LIMIT 1
+      `
+      )
+      .get(cleanHostname, cleanHostname)) as any;
+
+    // 2. Subdomain Match
+    if (!property && cleanHostname.endsWith(`.${BASE_DOMAIN}`)) {
+      const sub = cleanHostname.slice(0, -(BASE_DOMAIN.length + 1));
+      property = (await db
+        .prepare(
+          `
+          SELECT id, slug, name, city, country, branding, settings, plan, custom_domain, domain_verified
+          FROM properties
+          WHERE is_active = true AND subdomain = ?
+          LIMIT 1
+        `
+        )
+        .get(sub)) as any;
+    }
+
+    if (property) {
+      return {
+        id: property.id,
+        slug: property.slug,
+        name: property.name,
+        city: property.city,
+        country: property.country,
+        plan: property.plan,
+        branding: parseJSON(property.branding),
+        settings: parseJSON(property.settings),
+      };
+    }
+  } catch (err) {
+    console.error('[Layout Tenant Resolution] Error:', err);
+  }
+  return null;
+}
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = params;
@@ -26,6 +96,32 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!locales.includes(locale as Locale)) notFound();
 
   const messages = await getMessages();
+  const headerList = headers();
+  const host = headerList.get('x-forwarded-host') || headerList.get('host') || '';
+  const tenant = await getTenantForHost(host);
+
+  if (tenant) {
+    const colors = tenant.branding?.colors || {
+      primary: '#0f172a',
+      secondary: '#3b82f6',
+      accent: '#10b981',
+    };
+
+    return (
+      <NextIntlClientProvider messages={messages}>
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --tenant-primary: ${colors.primary || '#0f172a'};
+            --tenant-secondary: ${colors.secondary || '#3b82f6'};
+            --tenant-accent: ${colors.accent || '#10b981'};
+          }
+        `}} />
+        <ShopfrontNav locale={locale} tenant={tenant} />
+        <main className="min-h-[calc(100vh-64px)]">{children}</main>
+        <ShopfrontFooter tenant={tenant} />
+      </NextIntlClientProvider>
+    );
+  }
 
   return (
     <NextIntlClientProvider messages={messages}>

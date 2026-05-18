@@ -9,7 +9,6 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'always',
 });
 
-const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL !== ''
     ? process.env.NEXT_PUBLIC_API_URL
@@ -21,6 +20,17 @@ const LISTING_ACCESS_REQUIRED = ['/manage'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
+
+  // 1. Immediately bypass internal Next.js static asset and API paths
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname === '/api' ||
+    pathname.startsWith('/api/')
+  ) {
+    return NextResponse.next();
+  }
+
   const hostname = req.headers.get('x-forwarded-host') ?? req.nextUrl.hostname;
   const cleanHostname = hostname.split(':')[0].toLowerCase();
 
@@ -54,6 +64,14 @@ export async function middleware(req: NextRequest) {
     } catch {}
   }
 
+  // 2. If it is a verified custom domain, rewrite all non-API paths directly to the template serve endpoint
+  if (tenantPropertyId && isCustomDomain) {
+    const rewriteUrl = new URL(`/api/tenant/serve`, req.url);
+    rewriteUrl.searchParams.set('host', cleanHostname);
+    rewriteUrl.searchParams.set('path', pathname + req.nextUrl.search);
+    return NextResponse.rewrite(rewriteUrl);
+  }
+
   const localeMatch = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
   const barePath = localeMatch ? pathname.replace(/^\/[a-z]{2}/, '') || '/' : pathname;
   const locale = localeMatch?.[1] ?? 'en';
@@ -69,6 +87,27 @@ export async function middleware(req: NextRequest) {
     const loginUrl = new URL(`/${locale}/login`, req.url);
     loginUrl.searchParams.set('next', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Backup: Redirect ultimate-tier users accessing central dashboards on main domain
+  const isMainDomain = cleanHostname === BASE_DOMAIN || cleanHostname === `www.${BASE_DOMAIN}`;
+  if (needsAuth && token && isMainDomain) {
+    try {
+      const redirectRes = await fetch(`${API_URL}/api/auth/redirect-check`, {
+        headers: {
+          Cookie: `better-auth.session_token=${token}; better-auth.session-token=${token}; sinaicamps_token=${token}; sinaicamps_role=${req.cookies.get('sinaicamps_role')?.value || ''}`,
+        },
+      });
+      if (redirectRes.ok) {
+        const redirectData = await redirectRes.json();
+        if (redirectData.redirect && redirectData.url) {
+          logger.info(`Middleware redirecting ultimate user to custom domain: ${redirectData.url}`);
+          return NextResponse.redirect(new URL(redirectData.url, req.url));
+        }
+      }
+    } catch (err) {
+      logger.error('Middleware redirect check failed:', err);
+    }
   }
 
   const isPremiumRoute = PREMIUM_ONLY.some((p) => barePath.startsWith(p));
@@ -201,6 +240,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image).*)',
   ],
 };
