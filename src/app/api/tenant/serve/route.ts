@@ -2,8 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, getSqlite } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { ThemeRegistry } from '@/lib/ThemeRegistry';
+import { buildCssVarsForTest as buildCssVars } from './cssVarsHelper';
 import path from 'path';
 import fs from 'fs';
+
+interface TenantRow {
+  id: string;
+  slug: string;
+  plan: string;
+  subdomain?: string | null;
+  custom_domain?: string | null;
+  domain_verified?: number | boolean | null;
+  settings?: string | null;
+}
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -23,7 +34,7 @@ const MIME_TYPES: Record<string, string> = {
 function serveFile(
   buildsPath: string,
   rawPath: string,
-  resolvedProperty: { id: string }
+  resolvedProperty: { id: string; settings?: string | null }
 ): NextResponse | null {
   const cleanPathname = rawPath.split('?')[0];
   let relativePath = cleanPathname;
@@ -59,6 +70,10 @@ function serveFile(
       /<meta id="x-tenant-property-id" name="x-tenant-property-id" content=".*?" \/>|<meta id="x-tenant-property-id" name="x-tenant-property-id" content="" \/>/g,
       `<meta id="x-tenant-property-id" name="x-tenant-property-id" content="${resolvedProperty.id}" />`
     );
+    const cssVars = buildCssVars(resolvedProperty);
+    if (cssVars) {
+      html = html.replace('<head>', `<head>\n<style id="tenant-vars">${cssVars}</style>`);
+    }
     return new NextResponse(html, {
       headers: {
         'Content-Type': contentType,
@@ -133,7 +148,7 @@ export async function GET(req: NextRequest) {
       LIMIT 1
     `
       )
-      .get(hostname, hostname)) as any;
+      .get(hostname, hostname)) as TenantRow | undefined;
 
     const parseSettings = (value: unknown) => {
       if (!value) return {};
@@ -151,7 +166,8 @@ export async function GET(req: NextRequest) {
       const settings = parseSettings(property.settings);
       const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
       const legacyVerified =
-        property.custom_domain === hostname && ![false, 0, '0'].includes(property.domain_verified);
+        property.custom_domain === hostname &&
+        ![false, 0, '0'].includes(property.domain_verified ?? false);
       const jsonVerified = [true, 1, '1', 'true'].includes(settings.customDomainVerified as any);
       const verified = Boolean(legacyVerified || jsonVerified || isLocal);
       if (!verified) {
@@ -172,7 +188,7 @@ export async function GET(req: NextRequest) {
         LIMIT 1
       `
         )
-        .get(sub)) as any;
+        .get(sub)) as TenantRow | undefined;
     }
 
     if (!resolvedProperty) {
