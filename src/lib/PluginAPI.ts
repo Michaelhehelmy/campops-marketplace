@@ -8,7 +8,8 @@ import {
   HookContext,
   Logger,
 } from '../../packages/plugin-sdk/src/types';
-import { hookManager } from './hooks';
+import { hookManager, doAction, Hooks } from './hooks';
+import { RequestContext } from './RequestContext';
 import { getAuthSession } from './auth';
 import { Logger as StructuredLogger } from './logger';
 import { UIRegistryService } from './UIRegistryService';
@@ -253,6 +254,21 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
         // Handler is a single function, default to POST
         pluginRouteRegistry.register(pluginId, path, 'POST', handler);
       }
+    },
+
+    requestContext: () => RequestContext.current(),
+
+    registerPostType: async (definition: {
+      name: string;
+      label: string;
+      labelPlural: string;
+      icon?: string;
+      supports?: string[];
+    }) => {
+      const ctx = RequestContext.current();
+      const siteId = ctx?.siteId ?? propertyId ?? 'unknown';
+      await doAction(Hooks.CORE_POST_TYPE_REGISTERED, { siteId, pluginId, postType: definition });
+      pluginLogger.info(`[registerPostType] Registered post type: ${definition.name}`);
     },
 
     ui: {

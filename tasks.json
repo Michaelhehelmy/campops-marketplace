@@ -335,68 +335,68 @@
     {
       "id": "phase-6",
       "name": "Plugin System Upgrade",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "6.1",
           "description": "Create migration 003_plugins_v2.sql: add campops_version, post_types, plan_requirement, zip_url, review_status columns to available_plugins.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["5.5"],
           "files_changed": []
         },
         {
           "id": "6.2",
           "description": "Create migration 004_site_plugins.sql: add activated_at, activated_by, version columns to property_plugins.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["5.5"],
           "files_changed": []
         },
         {
           "id": "6.3",
           "description": "Create src/lib/PluginLoader.ts: init(siteId), activate(siteId, pluginId), deactivate(siteId, pluginId). Respects plan_requirement. Calls onActivate/onDeactivate hooks.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.1", "6.2"],
           "files_changed": []
         },
         {
           "id": "6.4",
           "description": "Update PluginAPI.ts: pass RequestContext into makePluginAPI, add api.registerPostType(definition) which fires core:post_type:registered action.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["5.1", "6.3"],
           "files_changed": []
         },
         {
           "id": "6.5",
           "description": "Create src/app/api/plugins/store/route.ts: GET returns approved plugins filtered by site plan. POST /install activates plugin via PluginLoader.activate.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.3"],
           "files_changed": []
         },
         {
           "id": "6.6",
           "description": "Build Plugin Store UI at src/app/[locale]/manage/[listingId]/plugins/page.tsx: installed vs available, install/uninstall, plan badges, category filter.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.5"],
           "files_changed": []
         },
         {
           "id": "6.7",
           "description": "Enforce plan-based plugin access in PluginLoader.activate. Throw PlanRequirementError if site.plan < plugin.plan_requirement.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.3"],
           "files_changed": []
         },
         {
           "id": "6.8",
           "description": "Write unit tests src/lib/__tests__/plugin-loader.test.ts: activate fires onActivate, deactivate fires onDeactivate, plan enforcement, two-site isolation.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.7"],
           "files_changed": []
         },
         {
           "id": "6.9",
           "description": "Verify all existing plugin tests still pass.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.8"],
           "files_changed": []
         }

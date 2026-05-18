@@ -36,6 +36,12 @@ export const Hooks = {
   CORE_OPTION_SET: 'core:option:set',
   /** Action: fired after a theme is loaded for a site. Payload: { siteId, themeId }. */
   CORE_THEME_LOADED: 'core:theme:loaded',
+  /** Action: fired when a plugin registers a post type. Payload: { siteId, pluginId, postType }. */
+  CORE_POST_TYPE_REGISTERED: 'core:post_type:registered',
+  /** Action: fired after a plugin is activated for a site. Payload: { siteId, pluginId, version }. */
+  CORE_PLUGIN_ACTIVATED: 'core:plugin:activated',
+  /** Action: fired after a plugin is deactivated for a site. Payload: { siteId, pluginId }. */
+  CORE_PLUGIN_DEACTIVATED: 'core:plugin:deactivated',
 
   // ── Backward-compat aliases (deprecated — will be removed in v3) ──────────
   /** @deprecated Use ENTITY_DEPARTED */

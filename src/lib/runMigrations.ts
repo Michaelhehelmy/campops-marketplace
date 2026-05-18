@@ -61,7 +61,40 @@ export function runMigrations(
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
 
     try {
-      sqliteDb.exec(sql);
+      // Migrations containing ALTER TABLE need per-statement execution so that
+      // "duplicate column name" errors can be caught and skipped gracefully.
+      // All other migrations are executed atomically via exec() for safety.
+      const needsPerStatement = /ALTER\s+TABLE/i.test(sql);
+
+      if (needsPerStatement) {
+        // Strip full-line comments, then split on semicolons.
+        const stripped = sql
+          .split('\n')
+          .filter((line) => !line.trim().startsWith('--'))
+          .join('\n');
+
+        const statements = stripped
+          .split(';')
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+
+        for (const stmt of statements) {
+          try {
+            sqliteDb.exec(stmt + ';');
+          } catch (stmtErr: any) {
+            const msg: string = stmtErr.message ?? '';
+            // ALTER TABLE ADD COLUMN fails if column already exists — safe to ignore.
+            if (msg.includes('duplicate column name') || msg.includes('already exists')) {
+              logger.info(`[runMigrations] Skipping duplicate column in ${version}: ${msg}`);
+            } else {
+              throw stmtErr;
+            }
+          }
+        }
+      } else {
+        sqliteDb.exec(sql);
+      }
+
       sqliteDb.prepare('INSERT INTO schema_migrations (version) VALUES (?)').run(version);
       logger.info(`[runMigrations] Applied: ${version}`);
       results.push({ version, applied: true, skipped: false });

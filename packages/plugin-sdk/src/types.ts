@@ -265,6 +265,27 @@ export interface PluginAPI {
   // Register a Hono router at the given path
   registerRoute(path: string, router: any): void;
 
+  // Phase 6: Custom post type registration — fires core:post_type:registered action.
+  registerPostType(definition: {
+    name: string;
+    label: string;
+    labelPlural: string;
+    icon?: string;
+    supports?: string[];
+  }): Promise<void>;
+
+  // Phase 5: Access the current request context (null outside request scope).
+  // Returns a plain object with the same shape as RequestContextData.
+  requestContext(): {
+    siteId: string;
+    siteSlug: string | null;
+    plan: string;
+    theme: Record<string, any> | null;
+    activePlugins: string[];
+    autoloadOptions: Map<string, string | null>;
+    isMainDomain: boolean;
+  } | null;
+
   // UI injection (admin panel slots)
   ui: {
     /** Register a component for a specific slot. Alias for addSlotComponent. */
