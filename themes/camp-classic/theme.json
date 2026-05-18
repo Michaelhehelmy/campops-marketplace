@@ -1,0 +1,37 @@
+{
+  "id": "camp-classic",
+  "name": "camp-classic",
+  "displayName": "Camp Classic",
+  "description": "The default CampOps theme. Clean, responsive, optimised for outdoor hospitality businesses.",
+  "version": "1.0.0",
+  "author": "CampOps",
+  "screenshot": "/themes/camp-classic/screenshot.png",
+  "planRequirement": "basic",
+  "templateHierarchy": {
+    "listing": ["listing-single", "single", "default"],
+    "booking": ["booking-single", "single", "default"],
+    "room": ["room-single", "single", "default"],
+    "page": ["page-single", "single", "default"],
+    "archive": ["archive", "default"]
+  },
+  "widgetAreas": [
+    { "id": "header", "label": "Header" },
+    { "id": "footer", "label": "Footer" },
+    { "id": "sidebar", "label": "Sidebar" }
+  ],
+  "customFields": [
+    { "key": "price_per_night", "label": "Price per night", "type": "number" },
+    { "key": "capacity", "label": "Capacity (guests)", "type": "number" },
+    { "key": "amenities", "label": "Amenities", "type": "json" },
+    { "key": "primary_image", "label": "Primary image URL", "type": "text" },
+    { "key": "gallery", "label": "Gallery (JSON array of URLs)", "type": "json" },
+    { "key": "check_in_time", "label": "Check-in time", "type": "text" },
+    { "key": "check_out_time", "label": "Check-out time", "type": "text" }
+  ],
+  "supports": {
+    "customColors": true,
+    "customFonts": false,
+    "widgetAreas": true,
+    "postFormats": false
+  }
+}

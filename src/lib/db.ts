@@ -47,7 +47,7 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
 
 let isSeeded = false;
 
-function getSqlite(): Database.Database {
+export function getSqlite(): Database.Database {
   return sqliteDb!;
 }
 
