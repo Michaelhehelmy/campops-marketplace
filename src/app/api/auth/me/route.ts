@@ -1,30 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 /**
  * GET /api/auth/me
  * Custom backward-compatibility endpoint for multi-tenant Vite/PWA custom shopfronts.
- * Extracts the session user context based on Bearer token or session cookies.
+ * Direct database-backed session token validation.
  */
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: req.headers,
-    });
-
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 1. Extract token from Authorization header or Cookies
+    let token = '';
+    const authHeader = req.headers.get('Authorization');
+    if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+      token = authHeader.substring(7).trim();
     }
 
-    const { user } = session;
+    if (!token) {
+      token =
+        req.cookies.get('better-auth.session_token')?.value ||
+        req.cookies.get('better-auth.session-token')?.value ||
+        req.cookies.get('sinaicamps_token')?.value ||
+        '';
+    }
 
-    // Fetch role and permissions from user_roles table
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Unauthorized', message: 'No session token provided' },
+        { status: 401 }
+      );
+    }
+
+    // 2. Fetch session from database
+    const sessionRecord = await db
+      .prepare('SELECT user_id, expires_at FROM sessions WHERE token = ?')
+      .get(token);
+
+    if (!sessionRecord) {
+      return NextResponse.json(
+        { error: 'Unauthorized', message: 'Invalid session' },
+        { status: 401 }
+      );
+    }
+
+    // Check expiration
+    if (new Date(sessionRecord.expires_at).getTime() < Date.now()) {
+      return NextResponse.json(
+        { error: 'Unauthorized', message: 'Session expired' },
+        { status: 401 }
+      );
+    }
+
+    const userId = sessionRecord.user_id;
+
+    // 3. Fetch user details from database
+    const userRecord = await db
+      .prepare('SELECT id, email, name, image, role FROM users WHERE id = ?')
+      .get(userId);
+
+    if (!userRecord) {
+      return NextResponse.json(
+        { error: 'Unauthorized', message: 'User not found' },
+        { status: 401 }
+      );
+    }
+
+    // 4. Fetch role and permissions from user_roles table
     const userRoleRecord = await db
       .prepare('SELECT role, permissions FROM user_roles WHERE user_id = ?')
-      .get(user.id);
+      .get(userId);
 
-    const role = userRoleRecord?.role || (user as any).role || 'guest';
+    const role = userRoleRecord?.role || userRecord.role || 'guest';
     let permissions = [];
     if (userRoleRecord?.permissions) {
       try {
@@ -37,20 +82,20 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Fetch tenant/listing associations from property_staff
+    // 5. Fetch tenant/listing associations from property_staff
     const staffRecords = await db
       .prepare('SELECT property_id FROM property_staff WHERE user_id = ?')
-      .all(user.id);
+      .all(userId);
 
     const listing_ids = staffRecords.map((r: any) => r.property_id);
 
     return NextResponse.json({
-      token: session.session.token,
+      token,
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
+        id: userRecord.id,
+        email: userRecord.email,
+        name: userRecord.name,
+        image: userRecord.image,
       },
       role,
       permissions,

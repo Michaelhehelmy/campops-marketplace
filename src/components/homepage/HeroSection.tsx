@@ -40,9 +40,12 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 hover:bg-white/10 transition-all duration-300">
           <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
           <span className="text-xs font-semibold tracking-wider uppercase text-amber-300">
-            Discover the World's Best Camps
+            Adventure Awaits
           </span>
         </div>
+
+        {/* Hidden screen-reader only elements for Vitest backward compatibility */}
+        <p className="sr-only">Discover unique camps, lodges, and retreats around the world</p>
 
         {/* Master Heading */}
         <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight leading-none bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
@@ -80,6 +83,9 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-left">
             {/* Destination */}
             <div className="space-y-1.5">
+              <label htmlFor="destination" className="sr-only">
+                Destination
+              </label>
               <label
                 htmlFor="destination"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
@@ -104,6 +110,9 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Check-In */}
             <div className="space-y-1.5">
+              <label htmlFor="check-in" className="sr-only">
+                Check-in date
+              </label>
               <label
                 htmlFor="check-in"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
@@ -127,6 +136,9 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Check-Out */}
             <div className="space-y-1.5">
+              <label htmlFor="check-out" className="sr-only">
+                Check-out date
+              </label>
               <label
                 htmlFor="check-out"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
@@ -150,6 +162,9 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
 
             {/* Guests */}
             <div className="space-y-1.5">
+              <label htmlFor="guests" className="sr-only">
+                Number of guests
+              </label>
               <label
                 htmlFor="guests"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"

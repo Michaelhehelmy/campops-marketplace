@@ -121,6 +121,25 @@ describe('Custom Auth Endpoints', () => {
       });
 
       mockPrepare.mockImplementation((sql: string) => {
+        if (sql.includes('sessions')) {
+          return {
+            get: () => ({
+              user_id: 'u-2',
+              expires_at: new Date(Date.now() + 3600 * 1000).toISOString(),
+            }),
+          };
+        }
+        if (sql.includes('users')) {
+          return {
+            get: () => ({
+              id: 'u-2',
+              email: 'me@example.com',
+              name: 'Me',
+              image: null,
+              role: 'staff',
+            }),
+          };
+        }
         if (sql.includes('user_roles')) {
           return {
             get: () => ({

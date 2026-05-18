@@ -85,7 +85,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
             👑 Handpicked Stays
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Featured Destinations
+            Featured Stays
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
             Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury

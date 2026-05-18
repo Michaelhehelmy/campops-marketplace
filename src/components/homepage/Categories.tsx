@@ -76,7 +76,7 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
             🔍 Curated Collections
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Browse by Stay Style
+            Browse by Category
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
             From secluded glamping domes to luxury mountain cabins, find the perfect setting
@@ -107,7 +107,7 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
                 {category.name}
               </h3>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                {category.count} stays
+                {category.count} properties
               </span>
             </button>
           ))}
