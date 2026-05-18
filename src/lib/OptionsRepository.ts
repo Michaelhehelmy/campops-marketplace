@@ -21,7 +21,9 @@ export class OptionsRepository {
 
     if (existing) {
       this.db
-        .prepare('UPDATE options SET option_value = ?, autoload = ? WHERE site_id = ? AND option_name = ?')
+        .prepare(
+          'UPDATE options SET option_value = ?, autoload = ? WHERE site_id = ? AND option_name = ?'
+        )
         .run(value, autoload ? 1 : 0, siteId, name);
     } else {
       this.db

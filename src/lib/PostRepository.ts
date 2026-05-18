@@ -76,13 +76,34 @@ export class PostRepository {
     const values: (string | number | null)[] = [];
     const now = Math.floor(Date.now() / 1000);
 
-    if (input.postTitle !== undefined) { fields.push('post_title = ?'); values.push(input.postTitle); }
-    if (input.postContent !== undefined) { fields.push('post_content = ?'); values.push(input.postContent); }
-    if (input.postSlug !== undefined) { fields.push('post_slug = ?'); values.push(input.postSlug); }
-    if (input.postStatus !== undefined) { fields.push('post_status = ?'); values.push(input.postStatus); }
-    if (input.authorId !== undefined) { fields.push('author_id = ?'); values.push(input.authorId); }
-    if ('parentId' in input) { fields.push('parent_id = ?'); values.push(input.parentId ?? null); }
-    if (input.menuOrder !== undefined) { fields.push('menu_order = ?'); values.push(input.menuOrder); }
+    if (input.postTitle !== undefined) {
+      fields.push('post_title = ?');
+      values.push(input.postTitle);
+    }
+    if (input.postContent !== undefined) {
+      fields.push('post_content = ?');
+      values.push(input.postContent);
+    }
+    if (input.postSlug !== undefined) {
+      fields.push('post_slug = ?');
+      values.push(input.postSlug);
+    }
+    if (input.postStatus !== undefined) {
+      fields.push('post_status = ?');
+      values.push(input.postStatus);
+    }
+    if (input.authorId !== undefined) {
+      fields.push('author_id = ?');
+      values.push(input.authorId);
+    }
+    if ('parentId' in input) {
+      fields.push('parent_id = ?');
+      values.push(input.parentId ?? null);
+    }
+    if (input.menuOrder !== undefined) {
+      fields.push('menu_order = ?');
+      values.push(input.menuOrder);
+    }
 
     if (fields.length === 0) return this.getById(id);
 
@@ -96,7 +117,9 @@ export class PostRepository {
   /** Soft-delete: sets post_status to 'trash'. */
   trashPost(id: string): void {
     const now = Math.floor(Date.now() / 1000);
-    this.db.prepare('UPDATE posts SET post_status = ?, updated_at = ? WHERE id = ?').run('trash', now, id);
+    this.db
+      .prepare('UPDATE posts SET post_status = ?, updated_at = ? WHERE id = ?')
+      .run('trash', now, id);
   }
 
   /** Hard-delete. Cascades to postmeta via FK. */

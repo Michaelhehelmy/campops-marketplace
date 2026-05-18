@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import path from 'path';
 import fs from 'fs';
 import { logger } from './logger';
+import { runMigrations } from './runMigrations';
 
 // Environment-aware DB initialisation
 const isTest = process.env.NODE_ENV === 'test';
@@ -40,7 +41,6 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
   getSqlite().pragma('synchronous = NORMAL');
   drizzle = drizzleSqlite(getSqlite(), { schema });
   if (dbFile !== ':memory:') {
-    const { runMigrations } = require('./runMigrations');
     runMigrations(getSqlite());
   }
 }
@@ -448,7 +448,12 @@ class DrizzleDatabaseWrapper {
             role: 'manager',
             name: 'Property Manager',
           },
-          { id: 'staff-user-1', email: 'staff@sinaicamps.com', role: 'staff', name: 'Staff Member' },
+          {
+            id: 'staff-user-1',
+            email: 'staff@sinaicamps.com',
+            role: 'staff',
+            name: 'Staff Member',
+          },
           { id: 'guest-user-1', email: 'guest@sinaicamps.com', role: 'guest', name: 'John Guest' },
           {
             id: 'integration-guest-1',
@@ -456,10 +461,19 @@ class DrizzleDatabaseWrapper {
             role: 'guest',
             name: 'Integration Guest',
           },
-          { id: 'master-user-2', email: 'admin@sinaicamps.com', role: 'master', name: 'Demo Admin' },
-          { id: 'admin-acacia', email: 'acacia@acaciacamp.com', role: 'manager', name: 'Acacia Admin' },
+          {
+            id: 'master-user-2',
+            email: 'admin@sinaicamps.com',
+            role: 'master',
+            name: 'Demo Admin',
+          },
+          {
+            id: 'admin-acacia',
+            email: 'acacia@acaciacamp.com',
+            role: 'manager',
+            name: 'Acacia Admin',
+          },
         ];
-
 
         for (const user of testUsers) {
           getSqlite()
@@ -474,7 +488,8 @@ class DrizzleDatabaseWrapper {
             )
             .run(`${user.id}-account`, user.id, user.id, 'credential', hashedPassword);
 
-          const rbacRole = user.role === 'master' ? 'marketplace_master' : `marketplace_${user.role}`;
+          const rbacRole =
+            user.role === 'master' ? 'marketplace_master' : `marketplace_${user.role}`;
           getSqlite()
             .prepare('INSERT OR IGNORE INTO user_roles (id, user_id, role) VALUES (?, ?, ?)')
             .run(`${user.id}-role`, user.id, rbacRole);
@@ -487,7 +502,6 @@ class DrizzleDatabaseWrapper {
             .run(`${user.id}-profile`, user.id, user.name, '+1234567890');
         }
       }
-
 
       // Seed room types (booking plugin domain — kept for test backward-compat)
       // New verticals should seed their own tables inside their plugin init().
@@ -576,7 +590,10 @@ class DrizzleDatabaseWrapper {
             p.domain_verified ?? 1,
             p.plan ?? 'basic',
             p.custom_domain ?? '',
-            JSON.stringify({ customDomain: p.custom_domain || '', customDomainVerified: !!p.custom_domain })
+            JSON.stringify({
+              customDomain: p.custom_domain || '',
+              customDomainVerified: !!p.custom_domain,
+            })
           );
       }
 
@@ -594,7 +611,6 @@ class DrizzleDatabaseWrapper {
           )
           .run(s.id, s.property_id, s.user_id, s.role);
       }
-
 
       getSqlite()
         .prepare(

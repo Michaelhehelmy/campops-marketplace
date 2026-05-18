@@ -65,10 +65,7 @@ describe('runMigrations', () => {
   });
 
   it('stops at first failing migration and records the error', () => {
-    fs.writeFileSync(
-      path.join(tmpDir, '001_bad.sql'),
-      'THIS IS NOT VALID SQL !!!;'
-    );
+    fs.writeFileSync(path.join(tmpDir, '001_bad.sql'), 'THIS IS NOT VALID SQL !!!;');
     fs.writeFileSync(
       path.join(tmpDir, '002_good.sql'),
       'CREATE TABLE good (id INTEGER PRIMARY KEY);'
@@ -93,10 +90,7 @@ describe('runMigrations', () => {
       path.join(tmpDir, '001_create_foo.sql'),
       'CREATE TABLE foo (id INTEGER PRIMARY KEY);'
     );
-    fs.writeFileSync(
-      path.join(tmpDir, '001_create_foo.rollback.sql'),
-      'DROP TABLE foo;'
-    );
+    fs.writeFileSync(path.join(tmpDir, '001_create_foo.rollback.sql'), 'DROP TABLE foo;');
     const results = runMigrations(db, tmpDir);
 
     expect(results).toHaveLength(1);

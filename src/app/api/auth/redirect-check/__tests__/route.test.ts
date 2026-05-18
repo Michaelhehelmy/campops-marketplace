@@ -73,10 +73,12 @@ describe('Redirect Check API Route', () => {
 
   it('returns redirect: true for guests who have a reservation at an ultimate-tier property', async () => {
     // 1. Add reservation for this guest email to link them to property ID 3 (Acacia Camp)
-    db.prepare(`
+    db.prepare(
+      `
       INSERT INTO reservations (id, user_id, property_id, guest_name, guest_email, status, check_in, check_out, total_price)
       VALUES ('res-acacia-guest', 'guest-user-1', '3', 'John Guest', 'guest@acaciacamp.com', 'confirmed', '2026-06-01', '2026-06-05', 500)
-    `).run();
+    `
+    ).run();
 
     // 2. Mock session as guest
     mockGetSession.mockResolvedValue({

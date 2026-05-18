@@ -14,11 +14,15 @@ function freshDb(): Database.Database {
 
 describe('Core schema — sites', () => {
   let db: Database.Database;
-  beforeEach(() => { db = freshDb(); });
+  beforeEach(() => {
+    db = freshDb();
+  });
   afterEach(() => db.close());
 
   it('inserts a site and reads it back', () => {
-    db.prepare("INSERT INTO sites (id, slug, name) VALUES ('s1', 'camp-alpha', 'Camp Alpha')").run();
+    db.prepare(
+      "INSERT INTO sites (id, slug, name) VALUES ('s1', 'camp-alpha', 'Camp Alpha')"
+    ).run();
     const row = db.prepare("SELECT * FROM sites WHERE id='s1'").get() as any;
     expect(row.slug).toBe('camp-alpha');
     expect(row.plan).toBe('basic');
@@ -37,7 +41,9 @@ describe('Core schema — posts', () => {
   let db: Database.Database;
   beforeEach(() => {
     db = freshDb();
-    db.prepare("INSERT INTO sites (id, slug, name) VALUES ('s1', 'camp-alpha', 'Camp Alpha')").run();
+    db.prepare(
+      "INSERT INTO sites (id, slug, name) VALUES ('s1', 'camp-alpha', 'Camp Alpha')"
+    ).run();
   });
   afterEach(() => db.close());
 
@@ -55,9 +61,11 @@ describe('Core schema — posts', () => {
       "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p1','s1','listing','my-tent','A')"
     ).run();
     expect(() =>
-      db.prepare(
-        "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p2','s1','listing','my-tent','B')"
-      ).run()
+      db
+        .prepare(
+          "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p2','s1','listing','my-tent','B')"
+        )
+        .run()
     ).toThrow(/UNIQUE/i);
   });
 
@@ -66,9 +74,11 @@ describe('Core schema — posts', () => {
       "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p1','s1','listing','shared','A')"
     ).run();
     expect(() =>
-      db.prepare(
-        "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p2','s1','booking','shared','B')"
-      ).run()
+      db
+        .prepare(
+          "INSERT INTO posts (id, site_id, post_type, post_slug, post_title) VALUES ('p2','s1','booking','shared','B')"
+        )
+        .run()
     ).not.toThrow();
   });
 
@@ -94,8 +104,12 @@ describe('Core schema — postmeta', () => {
   afterEach(() => db.close());
 
   it('inserts and reads meta', () => {
-    db.prepare("INSERT INTO postmeta (post_id, meta_key, meta_value) VALUES ('p1','price','150')").run();
-    const row = db.prepare("SELECT meta_value FROM postmeta WHERE post_id='p1' AND meta_key='price'").get() as any;
+    db.prepare(
+      "INSERT INTO postmeta (post_id, meta_key, meta_value) VALUES ('p1','price','150')"
+    ).run();
+    const row = db
+      .prepare("SELECT meta_value FROM postmeta WHERE post_id='p1' AND meta_key='price'")
+      .get() as any;
     expect(row.meta_value).toBe('150');
   });
 
@@ -109,28 +123,42 @@ describe('Core schema — postmeta', () => {
 
 describe('Core schema — options', () => {
   let db: Database.Database;
-  beforeEach(() => { db = freshDb(); });
+  beforeEach(() => {
+    db = freshDb();
+  });
   afterEach(() => db.close());
 
   it('inserts an option and reads it back', () => {
     db.prepare(
       "INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','active_theme','camp-classic')"
     ).run();
-    const row = db.prepare("SELECT option_value FROM options WHERE site_id='s1' AND option_name='active_theme'").get() as any;
+    const row = db
+      .prepare("SELECT option_value FROM options WHERE site_id='s1' AND option_name='active_theme'")
+      .get() as any;
     expect(row.option_value).toBe('camp-classic');
   });
 
   it('enforces UNIQUE(site_id, option_name)', () => {
-    db.prepare("INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','k','v1')").run();
+    db.prepare(
+      "INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','k','v1')"
+    ).run();
     expect(() =>
-      db.prepare("INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','k','v2')").run()
+      db
+        .prepare("INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','k','v2')")
+        .run()
     ).toThrow(/UNIQUE/i);
   });
 
   it('allows same option_name for different sites', () => {
-    db.prepare("INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','theme','a')").run();
+    db.prepare(
+      "INSERT INTO options (site_id, option_name, option_value) VALUES ('s1','theme','a')"
+    ).run();
     expect(() =>
-      db.prepare("INSERT INTO options (site_id, option_name, option_value) VALUES ('s2','theme','b')").run()
+      db
+        .prepare(
+          "INSERT INTO options (site_id, option_name, option_value) VALUES ('s2','theme','b')"
+        )
+        .run()
     ).not.toThrow();
   });
 });

@@ -109,13 +109,17 @@ export default async function LocaleLayout({ children, params }: Props) {
 
     return (
       <NextIntlClientProvider messages={messages}>
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           :root {
             --tenant-primary: ${colors.primary || '#0f172a'};
             --tenant-secondary: ${colors.secondary || '#3b82f6'};
             --tenant-accent: ${colors.accent || '#10b981'};
           }
-        `}} />
+        `,
+          }}
+        />
         <ShopfrontNav locale={locale} tenant={tenant} />
         <main className="min-h-[calc(100vh-64px)]">{children}</main>
         <ShopfrontFooter tenant={tenant} />

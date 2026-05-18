@@ -8,11 +8,11 @@
 
 ## Unit / Integration (Vitest)
 
-| Metric | Count |
-|---|---|
-| Test files | 108 passed, 5 skipped (113 total) |
-| Tests | 833 passed, 11 skipped (844 total) |
-| Duration | ~28s |
+| Metric     | Count                              |
+| ---------- | ---------------------------------- |
+| Test files | 108 passed, 5 skipped (113 total)  |
+| Tests      | 833 passed, 11 skipped (844 total) |
+| Duration   | ~28s                               |
 
 Run command: `npm run test:all`
 
@@ -20,9 +20,9 @@ Run command: `npm run test:all`
 
 ## E2E (Playwright)
 
-| Metric | Count |
-|---|---|
-| Tests | 137 passed, 0 failed |
+| Metric   | Count                            |
+| -------- | -------------------------------- |
+| Tests    | 137 passed, 0 failed             |
 | Duration | ~8–10 min (sequential, 1 worker) |
 
 Run command: `npx playwright test --reporter=list`
@@ -49,12 +49,12 @@ Run command: `npx playwright test --reporter=list`
 
 From last recorded coverage run (2026-05-17):
 
-| Metric | Value |
-|---|---|
+| Metric     | Value |
+| ---------- | ----- |
 | Statements | 60.2% |
-| Lines | 60.2% |
-| Functions | 73.1% |
-| Branches | 55.3% |
+| Lines      | 60.2% |
+| Functions  | 73.1% |
+| Branches   | 55.3% |
 
 ---
 
@@ -63,6 +63,7 @@ From last recorded coverage run (2026-05-17):
 See `docs/schema_snapshot_20260518.sql` for the full SQLite schema dump.
 
 **Core tables:**
+
 - `users`, `sessions`, `accounts`, `verifications` — Better Auth
 - `user_roles` — RBAC
 - `properties` — tenants (to be supplemented by `sites` in Phase 1)
@@ -72,6 +73,7 @@ See `docs/schema_snapshot_20260518.sql` for the full SQLite schema dump.
 - `profiles` — user profiles
 
 **Domain tables (created by plugins at runtime):**
+
 - `plugin_booking_rooms`, `plugin_booking_bookings`, `plugin_booking_room_availability`
 - `plugin_crm_activities`
 - `plugin_financial_ops_commissions`

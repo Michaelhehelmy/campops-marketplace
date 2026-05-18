@@ -37,8 +37,18 @@ describe('PostQuery', () => {
   });
 
   it('filters by status', async () => {
-    await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Draft', postStatus: 'draft' });
-    await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Live', postStatus: 'publish' });
+    await repo.createPost({
+      siteId: 's1',
+      postType: 'listing',
+      postTitle: 'Draft',
+      postStatus: 'draft',
+    });
+    await repo.createPost({
+      siteId: 's1',
+      postType: 'listing',
+      postTitle: 'Live',
+      postStatus: 'publish',
+    });
 
     const drafts = q.query({ siteId: 's1', status: 'draft' });
     expect(drafts).toHaveLength(1);
@@ -55,8 +65,18 @@ describe('PostQuery', () => {
   });
 
   it('filters by meta key/value', async () => {
-    const p1 = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { price: '100' } });
-    await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'B', meta: { price: '200' } });
+    const p1 = await repo.createPost({
+      siteId: 's1',
+      postType: 'listing',
+      postTitle: 'A',
+      meta: { price: '100' },
+    });
+    await repo.createPost({
+      siteId: 's1',
+      postType: 'listing',
+      postTitle: 'B',
+      meta: { price: '200' },
+    });
 
     const results = q.query({ siteId: 's1', meta: [{ key: 'price', value: '100' }] });
     expect(results).toHaveLength(1);
@@ -84,7 +104,12 @@ describe('PostQuery', () => {
   });
 
   it('includes meta map by default', async () => {
-    await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { capacity: '4' } });
+    await repo.createPost({
+      siteId: 's1',
+      postType: 'listing',
+      postTitle: 'A',
+      meta: { capacity: '4' },
+    });
     const [post] = q.query({ siteId: 's1' });
     expect(post.meta['capacity']).toBe('4');
   });

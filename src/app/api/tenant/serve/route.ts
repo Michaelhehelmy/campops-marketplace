@@ -183,17 +183,22 @@ export async function GET(req: NextRequest) {
     const buildsPath = path.join(process.cwd(), 'builds', tenantSlug, 'dist');
 
     if (!fs.existsSync(buildsPath)) {
-      logger.info(`[Serve Route] No pre-built dist for ${tenantSlug} — checking ThemeLoader fallback`);
+      logger.info(
+        `[Serve Route] No pre-built dist for ${tenantSlug} — checking ThemeLoader fallback`
+      );
       try {
         const sqliteDb = getSqlite();
         const theme = ThemeRegistry.getForSite(sqliteDb, resolvedProperty.id);
         if (theme) {
-          return NextResponse.json({
-            themeId: theme.id,
-            themeName: theme.displayName,
-            siteId: resolvedProperty.id,
-            message: 'SSR theme active — serve via Next.js routes',
-          }, { status: 200 });
+          return NextResponse.json(
+            {
+              themeId: theme.id,
+              themeName: theme.displayName,
+              siteId: resolvedProperty.id,
+              message: 'SSR theme active — serve via Next.js routes',
+            },
+            { status: 200 }
+          );
         }
       } catch {
         // ignore — fall through to 404

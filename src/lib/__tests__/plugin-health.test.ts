@@ -12,7 +12,7 @@ describe('Plugin Health & Audit Suite', () => {
 
     // 2. Query available plugins
     const rows = await db.query('SELECT * FROM available_plugins');
-    
+
     // Assert 26 plugins are registered (24 from disk, 2 additional catalog stubs)
     expect(rows.length).toBe(26);
 

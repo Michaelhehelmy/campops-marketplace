@@ -55,7 +55,8 @@ export class ThemeRegistry {
       const themePath = path.join(ThemeRegistry.themesRoot, dir);
 
       try {
-        db.prepare(`
+        db.prepare(
+          `
           INSERT INTO available_themes
             (id, name, display_name, description, version, author, screenshot_url, theme_path, plan_requirement, is_active, manifest)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
@@ -69,7 +70,8 @@ export class ThemeRegistry {
             plan_requirement = excluded.plan_requirement,
             manifest     = excluded.manifest,
             updated_at   = unixepoch()
-        `).run(
+        `
+        ).run(
           manifest.id,
           manifest.name,
           manifest.displayName,

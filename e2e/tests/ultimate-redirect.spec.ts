@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 
 test.describe('Ultimate-Tier Custom Domain Redirect E2E', () => {
-  test('redirects acacia@acaciacamp.com to acaciacamp.com custom domain after successful login', async ({ page }) => {
+  test('redirects acacia@acaciacamp.com to acaciacamp.com custom domain after successful login', async ({
+    page,
+  }) => {
     // 1. Setup request interception to mock the external custom domain destination
     await page.route('https://acaciacamp.com/**', (route) => {
       route.fulfill({

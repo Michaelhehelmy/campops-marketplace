@@ -2,7 +2,17 @@
 
 import { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
-import { LayoutDashboard, LogOut, Menu, X, Tent, Calendar, Mail, Home, BedDouble } from 'lucide-react';
+import {
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  X,
+  Tent,
+  Calendar,
+  Mail,
+  Home,
+  BedDouble,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface Props {
@@ -44,10 +54,10 @@ export function ShopfrontNav({ locale, tenant }: Props) {
   const logoUrl = tenant.branding?.logo?.url;
 
   return (
-    <nav 
+    <nav
       className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-900/80 shadow-lg"
       style={{
-        borderBottomColor: `${colors.secondary}20`
+        borderBottomColor: `${colors.secondary}20`,
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -62,23 +72,23 @@ export function ShopfrontNav({ locale, tenant }: Props) {
               />
             </div>
           ) : (
-            <div 
+            <div
               className="w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-300"
               style={{
                 borderColor: `${colors.secondary}40`,
                 backgroundColor: `${colors.primary}80`,
               }}
             >
-              <Tent 
+              <Tent
                 className="w-5 h-5 transition-transform group-hover:scale-110"
                 style={{ color: colors.secondary || '#3b82f6' }}
               />
             </div>
           )}
-          <span 
+          <span
             className="text-xl font-black bg-gradient-to-r bg-clip-text text-transparent group-hover:opacity-90 transition-opacity"
             style={{
-              backgroundImage: `linear-gradient(to right, ${colors.secondary || '#3b82f6'}, ${colors.accent || '#10b981'})`
+              backgroundImage: `linear-gradient(to right, ${colors.secondary || '#3b82f6'}, ${colors.accent || '#10b981'})`,
             }}
           >
             {tenant.name}
@@ -136,7 +146,7 @@ export function ShopfrontNav({ locale, tenant }: Props) {
                       <p className="text-xs font-black text-white leading-none">
                         {session.user.name}
                       </p>
-                      <p 
+                      <p
                         className="text-[9px] font-bold uppercase tracking-widest mt-1"
                         style={{ color: colors.secondary }}
                       >
@@ -235,7 +245,7 @@ export function ShopfrontNav({ locale, tenant }: Props) {
                     </div>
                     <div>
                       <p className="text-sm font-black text-white">{session.user.name}</p>
-                      <p 
+                      <p
                         className="text-[9px] font-bold uppercase tracking-widest mt-0.5"
                         style={{ color: colors.secondary }}
                       >

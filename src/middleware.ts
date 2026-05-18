@@ -236,6 +236,17 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // RequestContext bootstrap headers — read by withRequestContext() in route handlers.
+  // x-site-id is set for all resolved tenants; x-main-domain flags non-tenant requests.
+  if (tenantPropertyId) {
+    next.headers.set('x-site-id', tenantPropertyId);
+    next.headers.set('x-site-slug', tenantSlug ?? '');
+    next.headers.set('x-site-plan', tenantPlan ?? 'basic');
+    next.headers.set('x-main-domain', '0');
+  } else if (isMainDomain) {
+    next.headers.set('x-main-domain', '1');
+  }
+
   return next;
 }
 

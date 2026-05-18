@@ -1,4 +1,5 @@
 # CampOps Marketplace — Architecture Blueprint
+
 ## "WordPress for Rental Marketplaces"
 
 > **Master implementation plan.** Each task has a checkbox. The agent checks them off as
@@ -67,40 +68,44 @@
 ---
 
 ## Phase 0 — Pre-Work & Test Harness
+
 > **Goal**: Ensure the project is green and has a migration safety net before any schema
 > changes. No new features.
 
 - [ ] **0.1** Run `npm run check:full` and confirm all 665 unit + 131 E2E tests pass.
-  Record baseline in `docs/TEST_BASELINE.md`.
+      Record baseline in `docs/TEST_BASELINE.md`.
 - [ ] **0.2** Add a `scripts/db-snapshot.sh` script that dumps the live SQLite DB to
-  `backups/YYYYMMDD-pre-migration.db`. Run it.
+      `backups/YYYYMMDD-pre-migration.db`. Run it.
 - [ ] **0.3** Rename the current `BLUEPRINT.md` convention marker in `package.json` scripts:
-  add `"blueprint:check": "echo 'Blueprint tracking active'"`.
+      add `"blueprint:check": "echo 'Blueprint tracking active'"`.
 - [ ] **0.4** Create `tasks.json` at repo root (see Appendix A for schema). Populate it with
-  every task in this document. This is the machine-readable progress tracker.
+      every task in this document. This is the machine-readable progress tracker.
 - [ ] **0.5** Confirm `campops.db` has a complete working dataset; document all existing
-  table names in `docs/SCHEMA_CURRENT.md`.
+      table names in `docs/SCHEMA_CURRENT.md`.
 
 ---
 
 ## Phase 1 — Core Schema: Posts, Postmeta, Options
+
 > **Goal**: Introduce the three universal tables alongside existing tables (zero breakage).
 > Existing `properties` table stays untouched; new tables live beside it.
 
 ### Design Decision: EAV vs. JSONB
+
 The `postmeta` table uses the classic Entity-Attribute-Value pattern (same as WordPress's
 `wp_postmeta`). **Trade-offs:**
 
-| Approach | Pros | Cons |
-|---|---|---|
-| EAV (`postmeta`) | Infinitely extensible, no schema migrations per plugin | Queries join heavy; full-text search harder |
-| JSONB blob on `posts` | Single query, native Postgres operators | Schema-less queries need GIN indexes; harder for plugins to add typed fields |
-| Hybrid (EAV + computed JSONB) | Best query perf, still extensible | Extra complexity, keep in sync |
+| Approach                      | Pros                                                   | Cons                                                                         |
+| ----------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| EAV (`postmeta`)              | Infinitely extensible, no schema migrations per plugin | Queries join heavy; full-text search harder                                  |
+| JSONB blob on `posts`         | Single query, native Postgres operators                | Schema-less queries need GIN indexes; harder for plugins to add typed fields |
+| Hybrid (EAV + computed JSONB) | Best query perf, still extensible                      | Extra complexity, keep in sync                                               |
 
 **Decision**: Start with pure EAV matching WordPress. In Phase 4 add a `computed_meta` JSONB
 column on `posts` for hot fields (price, location). Keep the EAV as the authoritative store.
 
 ### Design Decision: `posts` table primary key
+
 Use `TEXT` UUID, not auto-increment integer, to allow distributed inserts and deterministic
 seeding. WordPress uses integer IDs but that creates cross-site ID collisions in multisite —
 UUID avoids this from day one.
@@ -195,8 +200,8 @@ CREATE TABLE IF NOT EXISTS available_themes (
   - Exports `runMigrations()` called on app bootstrap in `src/lib/db.ts`.
 
 - [ ] **1.4** Add Drizzle schema symbols in `src/db/schema.ts` for `sites`, `posts`,
-  `postmeta`, `options`, `available_themes`. Use `posts` as the symbol (not `listings`) to
-  keep generic framing.
+      `postmeta`, `options`, `available_themes`. Use `posts` as the symbol (not `listings`) to
+      keep generic framing.
 
 - [ ] **1.5** Write unit tests in `src/lib/__tests__/core-schema.test.ts`:
   - Insert a site, a post, two postmeta rows, one option.
@@ -204,19 +209,21 @@ CREATE TABLE IF NOT EXISTS available_themes (
   - Assert `ON DELETE CASCADE` from site → posts → postmeta.
 
 - [ ] **1.6** Write a one-time data migration script `scripts/migrate-properties-to-sites.ts`
-  that copies every row in `properties` into `sites` (mapping `plan` values:
-  `subdomain` → `premium`, `custom_domain`/`ultimate` → `ultimate`). Does NOT delete
-  the `properties` table. Safe to re-run (upsert on `slug`).
+      that copies every row in `properties` into `sites` (mapping `plan` values:
+      `subdomain` → `premium`, `custom_domain`/`ultimate` → `ultimate`). Does NOT delete
+      the `properties` table. Safe to re-run (upsert on `slug`).
 
 - [ ] **1.7** Run migrations on dev DB. Verify `npm run test:all` still passes.
 
 ---
 
 ## Phase 2 — PostQuery: The Universal Data Layer
+
 > **Goal**: Build the `PostQuery` class — the equivalent of WordPress's `WP_Query`. Every
 > read of content anywhere in the app goes through this, never raw SQL.
 
 ### Design Decision: PostQuery API shape
+
 Model it after WP_Query's argument bag, not SQL:
 
 ```typescript
@@ -282,12 +289,15 @@ This hides the EAV join complexity from all callers.
 ---
 
 ## Phase 3 — Hooks Engine Upgrade
+
 > **Goal**: Promote the current Tapable-based `HookManager` to a full WordPress-style
 > `do_action` / `apply_filters` dual-track engine with priorities, and make it
 > site-scoped so plugins can register handlers only for their tenant.
 
 ### Design Decision: Actions vs. Filters
+
 WordPress makes a hard distinction:
+
 - **Actions** — side effects (`do_action`). Return value ignored.
 - **Filters** — data transformation (`apply_filters`). Each handler receives and must
   return the value.
@@ -297,7 +307,9 @@ The current `HookManager` is filters-only (pipeline). We add an explicit `doActi
 priority queue for actions. No new dependencies.
 
 ### Design Decision: Site-scoped hooks
+
 A plugin activated for site A should only respond to hooks fired for site A. Two options:
+
 1. Include `siteId` in the hook name: `booking:created:site-uuid` — simple but verbose.
 2. Include `siteId` in the data payload and let handlers filter themselves — current
    approach; leaks cross-tenant data.
@@ -328,19 +340,19 @@ hooks (platform-level) continue to use the global `hookManager`.
 
 - [ ] **3.3** Add core action hooks — fire these from the relevant code paths:
 
-| Hook name | Type | When |
-|---|---|---|
-| `core:request:bootstrap` | action | Start of every middleware run |
-| `core:site:resolved` | action | After tenant resolution succeeds |
-| `core:post:before_save` | filter | Before `PostRepository.createPost/updatePost` |
-| `core:post:after_save` | action | After post saved |
-| `core:post:before_delete` | filter | Before trash |
-| `core:option:get` | filter | `OptionsRepository.getOption` return value |
-| `core:option:set` | action | After option saved |
-| `core:theme:loaded` | action | After theme manifest parsed |
+| Hook name                 | Type   | When                                          |
+| ------------------------- | ------ | --------------------------------------------- |
+| `core:request:bootstrap`  | action | Start of every middleware run                 |
+| `core:site:resolved`      | action | After tenant resolution succeeds              |
+| `core:post:before_save`   | filter | Before `PostRepository.createPost/updatePost` |
+| `core:post:after_save`    | action | After post saved                              |
+| `core:post:before_delete` | filter | Before trash                                  |
+| `core:option:get`         | filter | `OptionsRepository.getOption` return value    |
+| `core:option:set`         | action | After option saved                            |
+| `core:theme:loaded`       | action | After theme manifest parsed                   |
 
 - [ ] **3.4** Update `PluginAPI.ts` to expose `doAction` and `applyFilters` at the top level
-  alongside the existing `hooks.*` API. Mark `hooks.execute` as deprecated.
+      alongside the existing `hooks.*` API. Mark `hooks.execute` as deprecated.
 
 - [ ] **3.5** Write unit tests `src/lib/__tests__/hooks-engine.test.ts`:
   - `doAction` fires all handlers; return value not propagated.
@@ -353,17 +365,19 @@ hooks (platform-level) continue to use the global `hookManager`.
 ---
 
 ## Phase 4 — Theme System
+
 > **Goal**: Define the theme contract, implement a theme loader that reads `theme.json`,
 > and serve theme assets dynamically (no rebuild per tenant).
 
 ### Design Decision: Theme rendering strategy
+
 Two approaches for serving the shopfront:
 
-| Option | Description | Pros | Cons |
-|---|---|---|---|
-| **A: Static Vite build per theme** (current) | Each theme is a pre-built SPA | Fast CDN delivery | Rebuild needed; not truly dynamic |
-| **B: Server-rendered theme** | Theme is a Next.js page tree | Fully dynamic, SSR, no rebuild | More complex; themes need to follow Next.js conventions |
-| **C: Hybrid** | Theme is a React component tree loaded at runtime via remote module federation | Zero rebuild, dynamic | Complex bundling; security implications |
+| Option                                       | Description                                                                    | Pros                           | Cons                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------- |
+| **A: Static Vite build per theme** (current) | Each theme is a pre-built SPA                                                  | Fast CDN delivery              | Rebuild needed; not truly dynamic                       |
+| **B: Server-rendered theme**                 | Theme is a Next.js page tree                                                   | Fully dynamic, SSR, no rebuild | More complex; themes need to follow Next.js conventions |
+| **C: Hybrid**                                | Theme is a React component tree loaded at runtime via remote module federation | Zero rebuild, dynamic          | Complex bundling; security implications                 |
 
 **Decision**: **Option B** for Phase 4 — themes become a Next.js "theme page tree" mounted
 under the tenant's domain. A theme is a folder in `themes/` with React components following
@@ -381,26 +395,26 @@ goal.
   "author": "CampOps",
   "description": "Classic campsite shopfront with booking widget",
   "supports": {
-    "post_types": ["listing"],       // Which post types this theme knows how to display
-    "features": ["dark-mode", "pwa"] // Optional feature flags
+    "post_types": ["listing"], // Which post types this theme knows how to display
+    "features": ["dark-mode", "pwa"], // Optional feature flags
   },
-  "entry": "index.tsx",             // Theme root component
+  "entry": "index.tsx", // Theme root component
   "template_hierarchy": {
     "listing": "templates/single-listing.tsx",
     "archive": "templates/archive.tsx",
     "page": "templates/page.tsx",
-    "404": "templates/not-found.tsx"
+    "404": "templates/not-found.tsx",
   },
   "widget_areas": [
     { "id": "sidebar", "label": "Sidebar" },
-    { "id": "footer", "label": "Footer" }
+    { "id": "footer", "label": "Footer" },
   ],
   "custom_fields": [
     // Fields this theme knows how to render (plugins can add more via hooks)
     { "key": "hero_image", "type": "image", "label": "Hero Image" },
-    { "key": "short_description", "type": "text", "label": "Tagline" }
+    { "key": "short_description", "type": "text", "label": "Tagline" },
   ],
-  "plugin_dependencies": []         // Plugins that must be active for full theme function
+  "plugin_dependencies": [], // Plugins that must be active for full theme function
 }
 ```
 
@@ -415,6 +429,7 @@ themes/<theme>/templates/index.tsx            ← fallback
 ```
 
 For the archive (listing index):
+
 ```
 themes/<theme>/templates/archive-listing.tsx
 themes/<theme>/templates/archive.tsx
@@ -424,7 +439,7 @@ themes/<theme>/templates/index.tsx
 ### Tasks
 
 - [ ] **4.1** Create `themes/camp-classic/` as the first theme, refactored from
-  `templates/shop-frontend/`. This is a **structural rename + contract enforcement**:
+      `templates/shop-frontend/`. This is a **structural rename + contract enforcement**:
   - Copy `templates/shop-frontend/src` → `themes/camp-classic/src`.
   - Add `themes/camp-classic/theme.json` (filled per the contract above).
   - Remove all hardcoded field names (`price_per_night`, `amenities`, etc.) from theme
@@ -460,8 +475,8 @@ themes/<theme>/templates/index.tsx
     path.
 
 - [ ] **4.6** Update `src/app/api/tenant/serve/route.ts` to use `ThemeLoader` instead of
-  hardcoded `builds/<slug>/dist/` path. For `ultimate` plan sites it still serves the
-  pre-built SPA from `builds/` as a fallback if theme is `shop-frontend` (backward-compat).
+      hardcoded `builds/<slug>/dist/` path. For `ultimate` plan sites it still serves the
+      pre-built SPA from `builds/` as a fallback if theme is `shop-frontend` (backward-compat).
 
 - [ ] **4.7** Add theme picker to the registration wizard step 2 (`list-your-camp/branding`):
   - Fetch available themes from `GET /api/themes`.
@@ -478,17 +493,20 @@ themes/<theme>/templates/index.tsx
   - `getCustomFields` returns merged array from `theme.json`.
 
 - [ ] **4.10** Write E2E test: visit a tenant subdomain → receives HTML served by the
-  correct theme template (assert title or a theme-specific `data-theme` attribute).
+      correct theme template (assert title or a theme-specific `data-theme` attribute).
 
 ---
 
 ## Phase 5 — Request Context & Site Bootstrap
+
 > **Goal**: Introduce a `RequestContext` object that every API route and server component
 > receives, analogous to WordPress's global `$wp` + `$wpdb`. It carries `siteId`,
 > `themeManifest`, `activePlugins`, `autoloadOptions`, and the site-scoped hook manager.
 
 ### Design Decision: How to pass RequestContext through Next.js App Router
+
 Options:
+
 1. `AsyncLocalStorage` (Node.js) — set at middleware, read anywhere in the request.
 2. Pass as a React context from layout.tsx via server-side fetch.
 3. Re-derive from headers in each route (current implicit approach).
@@ -514,10 +532,10 @@ export interface RequestContext {
 }
 ```
 
-  - `RequestContext.bootstrap(siteId: string): Promise<RequestContext>` — loads site
-    record, theme, active plugins, autoload options in parallel.
-  - Stored in `AsyncLocalStorage` during a request.
-  - `RequestContext.current(): RequestContext | null` — reads from `AsyncLocalStorage`.
+- `RequestContext.bootstrap(siteId: string): Promise<RequestContext>` — loads site
+  record, theme, active plugins, autoload options in parallel.
+- Stored in `AsyncLocalStorage` during a request.
+- `RequestContext.current(): RequestContext | null` — reads from `AsyncLocalStorage`.
 
 - [ ] **5.2** Update `src/middleware.ts`:
   - After tenant resolution, call `RequestContext.bootstrap(siteId)` and store in
@@ -545,16 +563,18 @@ export interface RequestContext {
 ---
 
 ## Phase 6 — Plugin System Upgrade
+
 > **Goal**: Make plugins first-class citizens — external zip packages, per-tenant
 > activation, version manifests, and a marketplace UI for discovery.
 
 ### Design Decision: Plugin loading strategy
-| Strategy | Security | DX |
-|---|---|---|
-| Dynamic `require()` at runtime | Low isolation (same process) | Simple, fast |
-| Worker threads (Node `worker_threads`) | Process isolation | Complex, IPC overhead |
-| VM sandboxing (`node:vm`) | Moderate isolation | Code must be pre-compiled |
-| Sub-process + JSON RPC | Strong isolation | Heavy per-request overhead |
+
+| Strategy                               | Security                     | DX                         |
+| -------------------------------------- | ---------------------------- | -------------------------- |
+| Dynamic `require()` at runtime         | Low isolation (same process) | Simple, fast               |
+| Worker threads (Node `worker_threads`) | Process isolation            | Complex, IPC overhead      |
+| VM sandboxing (`node:vm`)              | Moderate isolation           | Code must be pre-compiled  |
+| Sub-process + JSON RPC                 | Strong isolation             | Heavy per-request overhead |
 
 **Decision**: Keep **in-process dynamic import** for Phase 6. Document this as a known
 security boundary (plugins are admin-reviewed before installation). Add a Phase 8 milestone
@@ -568,33 +588,39 @@ PHP process).
   "id": "booking",
   "name": "Booking Engine",
   "version": "2.0.0",
-  "campops_version": ">=2.0.0",   // semver range for core compatibility
+  "campops_version": ">=2.0.0", // semver range for core compatibility
   "description": "Adds reservation, room types, and payment processing",
   "author": "CampOps Official",
   "entry": "src/index.ts",
   "hooks": ["core:post:after_save", "core:request:bootstrap"],
-  "post_types": [                  // Custom post types this plugin registers
+  "post_types": [
+    // Custom post types this plugin registers
     {
       "id": "room_type",
       "label": "Room Types",
       "meta_fields": [
-        { "key": "capacity",    "type": "number",  "label": "Max Guests" },
-        { "key": "price_night", "type": "currency","label": "Price/Night" },
-        { "key": "bed_type",    "type": "select",  "label": "Bed Type",
-          "options": ["single","double","twin","king"] }
-      ]
-    }
+        { "key": "capacity", "type": "number", "label": "Max Guests" },
+        { "key": "price_night", "type": "currency", "label": "Price/Night" },
+        {
+          "key": "bed_type",
+          "type": "select",
+          "label": "Bed Type",
+          "options": ["single", "double", "twin", "king"],
+        },
+      ],
+    },
   ],
   "ui_slots": ["dashboard.bookings-widget", "listing.booking-form"],
   "routes": ["/bookings", "/availability"],
   "permissions": ["read:posts", "write:posts", "read:options"],
-  "plan_requirement": "premium"    // 'basic' | 'premium' | 'ultimate'
+  "plan_requirement": "premium", // 'basic' | 'premium' | 'ultimate'
 }
 ```
 
 ### Tasks
 
 - [ ] **6.1** Extend `available_plugins` table (migration `003_plugins_v2.sql`):
+
   ```sql
   ALTER TABLE available_plugins ADD COLUMN campops_version TEXT;
   ALTER TABLE available_plugins ADD COLUMN post_types TEXT; -- JSON array
@@ -604,6 +630,7 @@ PHP process).
   ```
 
 - [ ] **6.2** Extend `property_plugins` / `tenantPlugins` (migration `004_site_plugins.sql`):
+
   ```sql
   ALTER TABLE property_plugins ADD COLUMN activated_at INTEGER;
   ALTER TABLE property_plugins ADD COLUMN activated_by TEXT;
@@ -640,7 +667,7 @@ PHP process).
   - Filters by category.
 
 - [ ] **6.7** Enforce plan-based plugin access in `PluginLoader.activate` — throw a typed
-  `PlanRequirementError` if `site.plan` < `plugin.plan_requirement`.
+      `PlanRequirementError` if `site.plan` < `plugin.plan_requirement`.
 
 - [ ] **6.8** Write unit tests `src/lib/__tests__/plugin-loader.test.ts`:
   - Activate a plugin → `onActivate` hook fires.
@@ -653,11 +680,14 @@ PHP process).
 ---
 
 ## Phase 7 — Normalised Tier System & Upgrade Flow
+
 > **Goal**: Normalise plan names to `basic` / `premium` / `ultimate` everywhere and
 > implement the upgrade flow (including automatic subdomain/domain provisioning).
 
 ### Design Decision: Plan enforcement location
+
 Enforce plan limits in three places:
+
 1. `PluginLoader.activate` (already in Phase 6).
 2. `SiteBootstrap.loadActivePlugins` — skip plugins above site plan when loading.
 3. Middleware — keep existing route-blocking for basic plan.
@@ -668,6 +698,7 @@ business rules without schema migrations.
 ### Tasks
 
 - [ ] **7.1** Migration `005_normalise_plans.sql`:
+
   ```sql
   UPDATE properties SET plan = 'premium'  WHERE plan = 'subdomain';
   UPDATE properties SET plan = 'ultimate' WHERE plan = 'custom_domain';
@@ -676,10 +707,10 @@ business rules without schema migrations.
   ```
 
 - [ ] **7.2** Update all code that compares `plan === 'subdomain'` or
-  `plan === 'custom_domain'` to use the new names. Run grep:
-  `grep -r "subdomain\|custom_domain" src/ --include="*.ts" --include="*.tsx"`.
-  Files to update: `middleware.ts`, `auth/redirect-check/route.ts`,
-  `owner/register/route.ts`, `list-your-camp/plan/page.tsx`, `tenant/serve/route.ts`.
+      `plan === 'custom_domain'` to use the new names. Run grep:
+      `grep -r "subdomain\|custom_domain" src/ --include="*.ts" --include="*.tsx"`.
+      Files to update: `middleware.ts`, `auth/redirect-check/route.ts`,
+      `owner/register/route.ts`, `list-your-camp/plan/page.tsx`, `tenant/serve/route.ts`.
 
 - [ ] **7.3** Add `src/lib/PlanGate.ts`:
   - `PlanGate.check(site: SiteRecord, requiredPlan: Plan): boolean`.
@@ -705,7 +736,7 @@ business rules without schema migrations.
   - Calls `POST /api/owner/upgrade`.
 
 - [ ] **7.6** Update the registration wizard plan page to use `basic` / `premium` /
-  `ultimate` as plan ID values (remove `subdomain` and `custom_domain` IDs).
+      `ultimate` as plan ID values (remove `subdomain` and `custom_domain` IDs).
 
 - [ ] **7.7** Write unit tests `src/lib/__tests__/plan-gate.test.ts`:
   - `check(basicSite, 'premium')` → false.
@@ -715,17 +746,21 @@ business rules without schema migrations.
 ---
 
 ## Phase 8 — Dynamic Build & Zero-Rebuild Branding
+
 > **Goal**: Eliminate the need to rebuild the SPA when branding changes. Move branding from
 > build-time env vars to 100% runtime API. Keep the build pipeline as an optional CDN
 > optimisation.
 
 ### Design Decision: CSS Variables vs. full rebuild
+
 Branding changes that can be applied without rebuild:
+
 - Colors → CSS custom properties (`--color-primary`, etc.) injected via `<style>` tag.
 - Fonts → Google Fonts URL swap in `<link>` tag.
 - Logos/images → served via `GET /api/media/<siteId>/<key>` redirect.
 
 Branding changes that currently require rebuild:
+
 - PWA manifest (name, theme_color) — solvable: serve manifest dynamically from
   `GET /api/manifest.webmanifest?siteId=`.
 - Social meta tags (og:image, og:title) — solvable: SSR the `<head>` dynamically.
@@ -742,14 +777,18 @@ as an optional CDN acceleration step, not a requirement.
     add shortcuts or icons.
 
 - [ ] **8.2** Update `src/app/api/tenant/serve/route.ts` to inject a `<style>` block into
-  the served `index.html` with CSS variables from the site's branding options:
+      the served `index.html` with CSS variables from the site's branding options:
+
   ```html
-  <style>:root {
-    --color-primary: {{primary}};
-    --color-accent: {{accent}};
-    --font-heading: "{{headingFont}}", sans-serif;
-  }</style>
+  <style>
+    :root {
+      --color-primary: {{primary}};
+      --color-accent: {{accent}};
+      --font-heading: "{{headingFont}}", sans-serif;
+    }
+  </style>
   ```
+
   No rebuild needed for color/font changes.
 
 - [ ] **8.3** Create `src/app/api/media/[siteId]/[key]/route.ts`:
@@ -757,13 +796,14 @@ as an optional CDN acceleration step, not a requirement.
   - Used for `logo`, `hero_image`, `favicon` — theme uses these opaque URLs.
 
 - [ ] **8.4** Register a hook listener on `core:site:plan_upgraded` (in
-  `src/lib/listeners/buildListener.ts`) that:
+      `src/lib/listeners/buildListener.ts`) that:
   - For `ultimate` plan upgrades: logs a `BUILD_REQUIRED` event to a `build_queue` table
     (created in this phase).
   - Does not call `build-shop.sh` directly — that is triggered by a separate worker or
     CI webhook.
 
 - [ ] **8.5** Create `build_queue` table migration `006_build_queue.sql`:
+
   ```sql
   CREATE TABLE IF NOT EXISTS build_queue (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -782,20 +822,23 @@ as an optional CDN acceleration step, not a requirement.
   - `POST` — trigger a build for a site (writes to `build_queue`).
 
 - [ ] **8.7** Update `BrandingContext.tsx` in `themes/camp-classic` to fetch branding from
-  `GET /api/branding?siteId=` (new param) and remove all `VITE_*` fallbacks except as
-  last resort.
+      `GET /api/branding?siteId=` (new param) and remove all `VITE_*` fallbacks except as
+      last resort.
 
 - [ ] **8.8** Write tests for `core:manifest:build` filter hook and the CSS injection logic.
 
 ---
 
 ## Phase 9 — Central Marketplace Aggregation
+
 > **Goal**: The main `sinaicamps.com` homepage and search queries posts across all `basic`+
 > sites using `PostQuery` with no `siteId` filter (or a list of all site IDs).
 
 ### Design Decision: Cross-site PostQuery
+
 WordPress Multisite has a `switch_to_blog()` pattern that queries one site at a time.
 A marketplace needs global queries. Two approaches:
+
 1. `PostQuery` without `siteId` filter → single DB query across all sites (works because
    all posts are in one `posts` table, scoped by `site_id` column).
 2. Per-site queries merged in application code (fan-out).
@@ -807,27 +850,27 @@ decorated with tenant branding.
 ### Tasks
 
 - [ ] **9.1** Add `PostQuery.globalQuery(args: Omit<PostQueryArgs, 'siteId'>)` — queries
-  across all active sites. Always requires `postType` to prevent runaway queries.
-  Applies `applyFilters('core:global_query:args', args)` before executing.
+      across all active sites. Always requires `postType` to prevent runaway queries.
+      Applies `applyFilters('core:global_query:args', args)` before executing.
 
 - [ ] **9.2** Refactor `src/app/api/public/featured-listings/route.ts` to use
-  `PostQuery.globalQuery({ postType: 'listing', status: 'publish', ... })` instead of
-  raw SQL against `properties`.
+      `PostQuery.globalQuery({ postType: 'listing', status: 'publish', ... })` instead of
+      raw SQL against `properties`.
 
 - [ ] **9.3** Refactor `src/app/api/public/search/route.ts` similarly.
 
 - [ ] **9.4** Refactor `src/app/[locale]/page.tsx` — the `FeaturedListings` component
-  should receive data from `PostQuery.globalQuery` (pass as server component prop).
+      should receive data from `PostQuery.globalQuery` (pass as server component prop).
 
 - [ ] **9.5** Create `src/app/api/public/listings/route.ts` as the canonical public
-  listings endpoint (replacing `featured-listings` and old `properties` endpoints):
+      listings endpoint (replacing `featured-listings` and old `properties` endpoints):
   - `GET /api/public/listings?type=listing&status=publish&limit=20&meta[price_max]=200`
   - Supports meta filters (URL-encoded PostQueryArgs.meta array).
   - Fires `applyFilters('core:public_listings:query', args)`.
 
 - [ ] **9.6** Basic-tier listing detail page (`/stay/<slug>`) should load data from
-  `PostQuery` (by `site.slug` → `siteId` → `PostQuery.query({ siteId, postType: 'listing',
-  post_slug: slug })`).
+      `PostQuery` (by `site.slug` → `siteId` → `PostQuery.query({ siteId, postType: 'listing',
+post_slug: slug })`).
 
 - [ ] **9.7** Write integration tests for cross-site isolation in global queries:
   - Global query returns posts from all sites.
@@ -836,6 +879,7 @@ decorated with tenant branding.
 ---
 
 ## Phase 10 — Admin Dashboard (Per-Tenant, Plugin-Extensible)
+
 > **Goal**: The `/manage/<siteId>/` dashboard is generated from the plugin registry, not
 > hardcoded. Every nav item, widget, and settings tab is contributed by active plugins.
 
@@ -889,12 +933,14 @@ decorated with tenant branding.
 ---
 
 ## Phase 11 — External Plugin Submission & Review
+
 > **Goal**: Allow third-party developers to submit plugins; master admins review and
 > approve them; approved plugins appear in each site's Plugin Store.
 
 ### Tasks
 
 - [ ] **11.1** Migration `007_plugin_submissions.sql`:
+
   ```sql
   CREATE TABLE IF NOT EXISTS plugin_submissions (
     id           TEXT PRIMARY KEY,
@@ -913,7 +959,7 @@ decorated with tenant branding.
 
 - [ ] **11.2** Create `src/app/api/plugins/submit/route.ts`:
   - `POST /api/plugins/submit` — authenticated; accepts `{ pluginId, version, manifest,
-    zipUrl }`. Inserts into `plugin_submissions`. Fires `core:plugin:submitted` action.
+zipUrl }`. Inserts into `plugin_submissions`. Fires `core:plugin:submitted` action.
 
 - [ ] **11.3** Create `src/app/api/admin/plugins/submissions/route.ts` (master admin only):
   - `GET` — list pending submissions.
@@ -927,36 +973,37 @@ decorated with tenant branding.
 ---
 
 ## Phase 12 — Production Hardening
+
 > **Goal**: Security, performance, and observability before public launch.
 
 ### Tasks
 
 - [ ] **12.1** **Auth enforcement on manage routes**: Add server-side auth check to every
-  `src/app/api/site/*` and `src/app/api/manage/*` route (referenced in the pre-existing
-  security audit as a High risk finding). Verify with `GET /api/site/posts` without a
-  session returns 401.
+      `src/app/api/site/*` and `src/app/api/manage/*` route (referenced in the pre-existing
+      security audit as a High risk finding). Verify with `GET /api/site/posts` without a
+      session returns 401.
 
 - [ ] **12.2** **CORS headers**: Add CORS policy to `manage/` and `master/` API routes
-  (Medium risk finding). Use `next.config.mjs` headers or a middleware layer.
+      (Medium risk finding). Use `next.config.mjs` headers or a middleware layer.
 
 - [ ] **12.3** **Rate limiting**: Extend `apiRateLimiter` from `/api/p/*` to cover
-  `/api/site/*` and `/api/public/*` endpoints.
+      `/api/site/*` and `/api/public/*` endpoints.
 
 - [ ] **12.4** **PostQuery injection prevention**: All PostQueryArgs values are passed as
-  SQLite bound parameters, never string-interpolated. Add a fuzz test.
+      SQLite bound parameters, never string-interpolated. Add a fuzz test.
 
 - [ ] **12.5** **Plugin sandbox review**: Audit existing 18 plugins for any `db.execute`
-  calls that do not respect `site_id` scoping. Document findings.
+      calls that do not respect `site_id` scoping. Document findings.
 
 - [ ] **12.6** **Indexes**: Profile the three most common queries against `posts` +
-  `postmeta`. Add composite indexes if needed (e.g., `(site_id, post_type, post_status)`).
+      `postmeta`. Add composite indexes if needed (e.g., `(site_id, post_type, post_status)`).
 
 - [ ] **12.7** **Migration rollback scripts**: For each migration `00N_*.sql`, create a
-  corresponding `00N_*.rollback.sql`.
+      corresponding `00N_*.rollback.sql`.
 
 - [ ] **12.8** **PostgreSQL compatibility**: Test all new migrations and queries against
-  PostgreSQL (the production target per `schema.sql` comments). Fix any SQLite-isms
-  (`unixepoch()` → `EXTRACT(EPOCH FROM NOW())`, etc.).
+      PostgreSQL (the production target per `schema.sql` comments). Fix any SQLite-isms
+      (`unixepoch()` → `EXTRACT(EPOCH FROM NOW())`, etc.).
 
 - [ ] **12.9** Update `docs/TEST_COVERAGE_REPORT.md` with new coverage baseline.
 
@@ -976,19 +1023,19 @@ The file `tasks.json` at repo root tracks machine-readable progress. Create it i
     {
       "id": "phase-0",
       "name": "Pre-Work & Test Harness",
-      "status": "pending",        // "pending" | "in_progress" | "complete"
+      "status": "pending", // "pending" | "in_progress" | "complete"
       "tasks": [
         {
           "id": "0.1",
           "description": "Run npm run check:full and record baseline",
-          "status": "pending",    // "pending" | "in_progress" | "complete" | "blocked"
-          "blocked_by": [],       // task IDs
-          "files_changed": []     // filled in by agent on completion
-        }
+          "status": "pending", // "pending" | "in_progress" | "complete" | "blocked"
+          "blocked_by": [], // task IDs
+          "files_changed": [], // filled in by agent on completion
+        },
         // ... one entry per task in this document
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 }
 ```
 
@@ -996,18 +1043,18 @@ The file `tasks.json` at repo root tracks machine-readable progress. Create it i
 
 ## Appendix B — Design Decisions Summary
 
-| # | Decision | Choice | Rationale |
-|---|---|---|---|
-| B1 | EAV vs JSONB for postmeta | EAV | Matches WordPress; infinitely extensible without schema migrations |
-| B2 | Post primary key type | TEXT UUID | Avoids cross-site ID collisions in multisite |
-| B3 | RequestContext delivery | `AsyncLocalStorage` | Mirrors Next.js internals; no prop drilling |
-| B4 | Actions vs Filters distinction | Both tracks | Actions for side-effects; Filters for transformation |
-| B5 | Site-scoped hooks | Per-site `SiteHookManager` instance | Prevents cross-tenant hook bleed |
-| B6 | Plugin isolation | In-process dynamic import | Simpler; plugins are admin-reviewed |
-| B7 | Theme rendering | Next.js SSR page tree (Option B) | No rebuild; full SSR; single process |
-| B8 | Cross-site queries | Single `posts` table, no `siteId` filter for global | One SQL query; works because table is already multi-tenant |
-| B9 | Plan enforcement | Application layer only (no DB CHECK) | Business rules change without migrations |
-| B10 | Zero-rebuild branding | CSS variables + dynamic manifest API | Colors/fonts change instantly; images via redirect |
+| #   | Decision                       | Choice                                              | Rationale                                                          |
+| --- | ------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------ |
+| B1  | EAV vs JSONB for postmeta      | EAV                                                 | Matches WordPress; infinitely extensible without schema migrations |
+| B2  | Post primary key type          | TEXT UUID                                           | Avoids cross-site ID collisions in multisite                       |
+| B3  | RequestContext delivery        | `AsyncLocalStorage`                                 | Mirrors Next.js internals; no prop drilling                        |
+| B4  | Actions vs Filters distinction | Both tracks                                         | Actions for side-effects; Filters for transformation               |
+| B5  | Site-scoped hooks              | Per-site `SiteHookManager` instance                 | Prevents cross-tenant hook bleed                                   |
+| B6  | Plugin isolation               | In-process dynamic import                           | Simpler; plugins are admin-reviewed                                |
+| B7  | Theme rendering                | Next.js SSR page tree (Option B)                    | No rebuild; full SSR; single process                               |
+| B8  | Cross-site queries             | Single `posts` table, no `siteId` filter for global | One SQL query; works because table is already multi-tenant         |
+| B9  | Plan enforcement               | Application layer only (no DB CHECK)                | Business rules change without migrations                           |
+| B10 | Zero-rebuild branding          | CSS variables + dynamic manifest API                | Colors/fonts change instantly; images via redirect                 |
 
 ---
 

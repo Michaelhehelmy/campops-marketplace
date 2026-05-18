@@ -44,7 +44,9 @@ export async function GET(req: NextRequest) {
     } else {
       // 2. Look up reservations link for guests
       const reservation = (await db
-        .prepare('SELECT property_id FROM reservations WHERE guest_email = ? ORDER BY id DESC LIMIT 1')
+        .prepare(
+          'SELECT property_id FROM reservations WHERE guest_email = ? ORDER BY id DESC LIMIT 1'
+        )
         .get(user.email)) as any;
 
       if (reservation) {

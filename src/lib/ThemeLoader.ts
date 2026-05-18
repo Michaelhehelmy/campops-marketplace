@@ -73,7 +73,11 @@ export class ThemeLoader {
     context?: string
   ): ResolveTemplateResult {
     const manifest = ThemeLoader.load(themeId);
-    const fallback: ResolveTemplateResult = { themeId, templateName: 'default', templatePath: null };
+    const fallback: ResolveTemplateResult = {
+      themeId,
+      templateName: 'default',
+      templatePath: null,
+    };
 
     if (!manifest) return fallback;
 

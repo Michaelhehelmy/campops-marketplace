@@ -62,9 +62,7 @@ export function runMigrations(
 
     try {
       sqliteDb.exec(sql);
-      sqliteDb
-        .prepare('INSERT INTO schema_migrations (version) VALUES (?)')
-        .run(version);
+      sqliteDb.prepare('INSERT INTO schema_migrations (version) VALUES (?)').run(version);
       logger.info(`[runMigrations] Applied: ${version}`);
       results.push({ version, applied: true, skipped: false });
     } catch (err: any) {

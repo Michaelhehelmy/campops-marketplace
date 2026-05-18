@@ -42,7 +42,7 @@ function main() {
   const dbPath =
     dbFlagIdx !== -1
       ? args[dbFlagIdx + 1]
-      : process.env.DATABASE_URL?.replace('file:', '') ?? 'sinaicamps.db';
+      : (process.env.DATABASE_URL?.replace('file:', '') ?? 'sinaicamps.db');
 
   const resolvedPath = path.isAbsolute(dbPath) ? dbPath : path.join(process.cwd(), dbPath);
 

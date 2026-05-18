@@ -8,8 +8,12 @@ afterEach(() => hookManager.clear());
 describe('doAction', () => {
   it('calls all registered handlers', async () => {
     const calls: string[] = [];
-    addAction('test:action', () => { calls.push('a'); });
-    addAction('test:action', () => { calls.push('b'); });
+    addAction('test:action', () => {
+      calls.push('a');
+    });
+    addAction('test:action', () => {
+      calls.push('b');
+    });
     await doAction('test:action', {});
     expect(calls).toContain('a');
     expect(calls).toContain('b');
@@ -39,7 +43,9 @@ describe('applyFilters', () => {
   });
 
   it('works end-to-end with value wrapping convention', async () => {
-    hookManager.register('test:filter:text', async ({ value }: any) => ({ value: value + ' World' }));
+    hookManager.register('test:filter:text', async ({ value }: any) => ({
+      value: value + ' World',
+    }));
     const result = await applyFilters<string>('test:filter:text', 'Hello');
     expect(result).toBe('Hello World');
   });
@@ -48,7 +54,9 @@ describe('applyFilters', () => {
 describe('core Hooks constants', () => {
   it('CORE_POST_AFTER_SAVE fires and receives post payload', async () => {
     const received: any[] = [];
-    addAction(Hooks.CORE_POST_AFTER_SAVE, (post) => { received.push(post); });
+    addAction(Hooks.CORE_POST_AFTER_SAVE, (post) => {
+      received.push(post);
+    });
     await doAction(Hooks.CORE_POST_AFTER_SAVE, { id: 'p1', siteId: 's1', postTitle: 'Tent' });
     expect(received).toHaveLength(1);
     expect(received[0].id).toBe('p1');

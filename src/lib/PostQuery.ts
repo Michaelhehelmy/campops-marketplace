@@ -174,17 +174,10 @@ export class PostQuery {
     return results[0] ?? null;
   }
 
-  count(args: Omit<PostQueryArgs, 'orderBy' | 'order' | 'limit' | 'offset' | 'includeMeta'>): number {
-    const {
-      siteId,
-      postType,
-      status,
-      postSlug,
-      authorId,
-      parentId,
-      meta = [],
-      search,
-    } = args;
+  count(
+    args: Omit<PostQueryArgs, 'orderBy' | 'order' | 'limit' | 'offset' | 'includeMeta'>
+  ): number {
+    const { siteId, postType, status, postSlug, authorId, parentId, meta = [], search } = args;
 
     const conditions: string[] = ['p.site_id = ?'];
     const params: (string | number | null)[] = [siteId];
@@ -199,8 +192,14 @@ export class PostQuery {
       conditions.push(`p.post_status IN (${statuses.map(() => '?').join(',')})`);
       params.push(...statuses);
     }
-    if (postSlug !== undefined) { conditions.push('p.post_slug = ?'); params.push(postSlug); }
-    if (authorId !== undefined) { conditions.push('p.author_id = ?'); params.push(authorId); }
+    if (postSlug !== undefined) {
+      conditions.push('p.post_slug = ?');
+      params.push(postSlug);
+    }
+    if (authorId !== undefined) {
+      conditions.push('p.author_id = ?');
+      params.push(authorId);
+    }
     if (parentId !== undefined) {
       parentId === null
         ? conditions.push('p.parent_id IS NULL')
@@ -226,10 +225,18 @@ export class PostQuery {
 
   private mapRow(
     r: {
-      id: string; site_id: string; post_type: string; post_status: string;
-      post_slug: string | null; post_title: string; post_content: string | null;
-      author_id: string | null; parent_id: string | null;
-      menu_order: number; created_at: number | null; updated_at: number | null;
+      id: string;
+      site_id: string;
+      post_type: string;
+      post_status: string;
+      post_slug: string | null;
+      post_title: string;
+      post_content: string | null;
+      author_id: string | null;
+      parent_id: string | null;
+      menu_order: number;
+      created_at: number | null;
+      updated_at: number | null;
     },
     meta: PostMeta
   ): Post {

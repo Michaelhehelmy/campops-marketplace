@@ -44,8 +44,11 @@ describe('ThemeLoader', () => {
 
   it('load reads and returns a valid theme.json', () => {
     makeThemesDir(tmpDir, 'test-theme', {
-      id: 'test-theme', name: 'test-theme', displayName: 'Test Theme',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'test-theme',
+      name: 'test-theme',
+      displayName: 'Test Theme',
+      version: '1.0.0',
+      planRequirement: 'basic',
     });
 
     const manifest = ThemeLoader.load('test-theme');
@@ -55,15 +58,24 @@ describe('ThemeLoader', () => {
 
   it('load caches the manifest (second call skips disk read)', () => {
     makeThemesDir(tmpDir, 'cached-theme', {
-      id: 'cached-theme', name: 'cached-theme', displayName: 'Cached',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'cached-theme',
+      name: 'cached-theme',
+      displayName: 'Cached',
+      version: '1.0.0',
+      planRequirement: 'basic',
     });
 
     ThemeLoader.load('cached-theme');
     // Overwrite the file — cached version should still be returned
     fs.writeFileSync(
       path.join(tmpDir, 'cached-theme', 'theme.json'),
-      JSON.stringify({ id: 'cached-theme', name: 'cached-theme', displayName: 'Modified', version: '2.0.0', planRequirement: 'basic' })
+      JSON.stringify({
+        id: 'cached-theme',
+        name: 'cached-theme',
+        displayName: 'Modified',
+        version: '2.0.0',
+        planRequirement: 'basic',
+      })
     );
     const manifest = ThemeLoader.load('cached-theme');
     expect(manifest?.displayName).toBe('Cached');
@@ -71,8 +83,11 @@ describe('ThemeLoader', () => {
 
   it('resolveTemplate returns fallback when no templates dir exists', () => {
     makeThemesDir(tmpDir, 'bare-theme', {
-      id: 'bare-theme', name: 'bare-theme', displayName: 'Bare',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'bare-theme',
+      name: 'bare-theme',
+      displayName: 'Bare',
+      version: '1.0.0',
+      planRequirement: 'basic',
       templateHierarchy: { listing: ['listing-single', 'default'] },
     });
 
@@ -83,8 +98,11 @@ describe('ThemeLoader', () => {
 
   it('resolveTemplate finds a matching template file', () => {
     makeThemesDir(tmpDir, 'full-theme', {
-      id: 'full-theme', name: 'full-theme', displayName: 'Full',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'full-theme',
+      name: 'full-theme',
+      displayName: 'Full',
+      version: '1.0.0',
+      planRequirement: 'basic',
       templateHierarchy: { listing: ['listing-single', 'default'] },
     });
     const templatesDir = path.join(tmpDir, 'full-theme', 'templates');
@@ -98,8 +116,11 @@ describe('ThemeLoader', () => {
 
   it('resolveTemplate falls back through hierarchy until found', () => {
     makeThemesDir(tmpDir, 'fallback-theme', {
-      id: 'fallback-theme', name: 'fallback-theme', displayName: 'Fallback',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'fallback-theme',
+      name: 'fallback-theme',
+      displayName: 'Fallback',
+      version: '1.0.0',
+      planRequirement: 'basic',
       templateHierarchy: { listing: ['listing-single', 'single', 'default'] },
     });
     const templatesDir = path.join(tmpDir, 'fallback-theme', 'templates');
@@ -116,8 +137,11 @@ describe('ThemeLoader', () => {
 
   it('getCustomFields returns field definitions from theme.json', () => {
     makeThemesDir(tmpDir, 'cf-theme', {
-      id: 'cf-theme', name: 'cf-theme', displayName: 'CF',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'cf-theme',
+      name: 'cf-theme',
+      displayName: 'CF',
+      version: '1.0.0',
+      planRequirement: 'basic',
       customFields: [{ key: 'price', label: 'Price', type: 'number' }],
     });
 
@@ -152,8 +176,11 @@ describe('ThemeRegistry', () => {
 
   it('register inserts theme into available_themes table', () => {
     makeThemesDir(tmpDir, 'my-theme', {
-      id: 'my-theme', name: 'my-theme', displayName: 'My Theme',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'my-theme',
+      name: 'my-theme',
+      displayName: 'My Theme',
+      version: '1.0.0',
+      planRequirement: 'basic',
     });
 
     const registered = ThemeRegistry.register(db);
@@ -166,21 +193,29 @@ describe('ThemeRegistry', () => {
 
   it('register is idempotent (re-run does not duplicate rows)', () => {
     makeThemesDir(tmpDir, 'idem-theme', {
-      id: 'idem-theme', name: 'idem-theme', displayName: 'Idem',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'idem-theme',
+      name: 'idem-theme',
+      displayName: 'Idem',
+      version: '1.0.0',
+      planRequirement: 'basic',
     });
 
     ThemeRegistry.register(db);
     ThemeRegistry.register(db);
 
-    const count = (db.prepare("SELECT count(*) as c FROM available_themes WHERE id='idem-theme'").get() as any).c;
+    const count = (
+      db.prepare("SELECT count(*) as c FROM available_themes WHERE id='idem-theme'").get() as any
+    ).c;
     expect(count).toBe(1);
   });
 
   it('activate sets active_theme option for the site', () => {
     makeThemesDir(tmpDir, 'act-theme', {
-      id: 'act-theme', name: 'act-theme', displayName: 'Act',
-      version: '1.0.0', planRequirement: 'basic',
+      id: 'act-theme',
+      name: 'act-theme',
+      displayName: 'Act',
+      version: '1.0.0',
+      planRequirement: 'basic',
     });
     ThemeRegistry.register(db);
 
@@ -195,8 +230,20 @@ describe('ThemeRegistry', () => {
   });
 
   it('list returns all active themes', () => {
-    makeThemesDir(tmpDir, 'theme-a', { id: 'theme-a', name: 'theme-a', displayName: 'A', version: '1.0.0', planRequirement: 'basic' });
-    makeThemesDir(tmpDir, 'theme-b', { id: 'theme-b', name: 'theme-b', displayName: 'B', version: '1.0.0', planRequirement: 'premium' });
+    makeThemesDir(tmpDir, 'theme-a', {
+      id: 'theme-a',
+      name: 'theme-a',
+      displayName: 'A',
+      version: '1.0.0',
+      planRequirement: 'basic',
+    });
+    makeThemesDir(tmpDir, 'theme-b', {
+      id: 'theme-b',
+      name: 'theme-b',
+      displayName: 'B',
+      version: '1.0.0',
+      planRequirement: 'premium',
+    });
     ThemeRegistry.register(db);
 
     const themes = ThemeRegistry.list(db);
