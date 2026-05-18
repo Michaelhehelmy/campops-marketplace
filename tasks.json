@@ -163,47 +163,48 @@
     {
       "id": "phase-3",
       "name": "Hooks Engine Upgrade",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "3.1",
           "description": "Extend src/lib/hooks.ts: add doAction(), applyFilters(), priority parameter to register(). Keep existing API as backward-compat shim.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["2.6"],
           "files_changed": []
         },
         {
           "id": "3.2",
           "description": "Create src/lib/SiteHookManager.ts. SiteHookManager.forSite(siteId) returns instance with only hooks from plugins active for that site.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["3.1"],
           "files_changed": []
         },
         {
           "id": "3.3",
           "description": "Add core action hooks: core:request:bootstrap, core:site:resolved, core:post:before_save, core:post:after_save, core:post:before_delete, core:option:get, core:option:set, core:theme:loaded. Fire from relevant code paths.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["3.1"],
           "files_changed": []
         },
         {
           "id": "3.4",
           "description": "Update PluginAPI.ts to expose doAction and applyFilters at top level. Mark hooks.execute as deprecated.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["3.1"],
           "files_changed": []
         },
         {
           "id": "3.5",
           "description": "Write unit tests src/lib/__tests__/hooks-engine.test.ts: doAction fires all handlers, applyFilters waterfall, priority ordering, site-scoped isolation.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["3.2"],
           "files_changed": []
         },
         {
           "id": "3.6",
           "description": "Verify all existing hook tests still pass. Run npm run test:all.",
-          "status": "pending",
+          "status": "complete",
+          "notes": "891 unit tests pass (up from 878).",
           "blocked_by": ["3.5"],
           "files_changed": []
         }
