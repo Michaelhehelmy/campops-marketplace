@@ -167,6 +167,13 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
         hookManager.register(name, handler as any, { priority }),
       registerHook: (name, handler, priority) =>
         hookManager.register(name, handler as any, { priority }),
+      addAction: (name: string, handler: any, priority?: number) =>
+        hookManager.register(name, handler, { priority }),
+      addFilter: (name: string, handler: any, priority?: number) =>
+        hookManager.register(name, handler, { priority }),
+      doAction: (name: string, data?: any) => hookManager.doAction(name, data),
+      applyFilters: <T>(name: string, value: T, context?: any) =>
+        hookManager.applyFilters(name, value, context),
       execute: (name, data, context) =>
         hookManager.execute(name, { ...data, ...context, propertyId }),
       executeHook: (name, data, context) =>

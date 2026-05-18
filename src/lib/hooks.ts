@@ -19,6 +19,24 @@ export const Hooks = {
   /** Generic: a new transaction/order/booking was created. */
   TRANSACTION_CREATED: 'transaction:created',
 
+  // ── Core lifecycle actions (Phase 3) ──────────────────────────────────────
+  /** Fired once per request after site is resolved. Payload: { siteId, plan }. */
+  CORE_REQUEST_BOOTSTRAP: 'core:request:bootstrap',
+  /** Fired after site row is loaded. Payload: site object. */
+  CORE_SITE_RESOLVED: 'core:site:resolved',
+  /** Filter: fired before a post is saved. Can modify the post input. */
+  CORE_POST_BEFORE_SAVE: 'core:post:before_save',
+  /** Action: fired after a post is saved. Payload: Post. */
+  CORE_POST_AFTER_SAVE: 'core:post:after_save',
+  /** Action: fired before a post is deleted. Payload: { id, siteId }. */
+  CORE_POST_BEFORE_DELETE: 'core:post:before_delete',
+  /** Filter: applied when an option is read. Can modify the returned value. */
+  CORE_OPTION_GET: 'core:option:get',
+  /** Action: fired when an option is written. Payload: { siteId, name, value }. */
+  CORE_OPTION_SET: 'core:option:set',
+  /** Action: fired after a theme is loaded for a site. Payload: { siteId, themeId }. */
+  CORE_THEME_LOADED: 'core:theme:loaded',
+
   // ── Backward-compat aliases (deprecated — will be removed in v3) ──────────
   /** @deprecated Use ENTITY_DEPARTED */
   GUEST_CHECKED_OUT: 'entity:departed',
@@ -75,9 +93,30 @@ class HookManager {
    * @param name The name of the hook
    * @param data Initial data
    * @returns Final data after all handlers have executed
+   * @deprecated Prefer doAction() or applyFilters()
    */
   async execute(name: string, data: any) {
     return this.engine.exec(name, data);
+  }
+
+  /**
+   * Fire an action hook — runs all registered handlers but discards return values.
+   * Use this when notifying listeners of an event without expecting them to transform data.
+   */
+  async doAction(name: string, data?: any): Promise<void> {
+    if (!this.hasRegistrations(name)) return;
+    await this.engine.exec(name, data);
+  }
+
+  /**
+   * Apply a filter hook — passes value through each registered handler in sequence.
+   * Each handler receives the (possibly modified) output of the previous handler.
+   * Returns the final transformed value.
+   */
+  async applyFilters<T>(name: string, value: T, context?: any): Promise<T> {
+    if (!this.hasRegistrations(name)) return value;
+    const result = await this.engine.exec(name, { value, context });
+    return (result as any)?.value ?? result ?? value;
   }
 
   /**
@@ -118,7 +157,23 @@ class HookManager {
 
 export const hookManager = new HookManager();
 
-// Backward compatibility exports
+// ── WordPress-style API (Phase 3) ─────────────────────────────────────────
+/** Register a handler for an action hook (fire-and-forget). */
+export const addAction = (name: string, handler: HookHandler, priority?: number) =>
+  hookManager.register(name, handler, { priority });
+
+/** Register a handler for a filter hook (transforms value). */
+export const addFilter = (name: string, handler: HookHandler, priority?: number) =>
+  hookManager.register(name, handler, { priority });
+
+/** Fire an action — runs all handlers, discards return values. */
+export const doAction = (name: string, data?: any) => hookManager.doAction(name, data);
+
+/** Apply a filter — passes value through all handlers in sequence. */
+export const applyFilters = <T>(name: string, value: T, context?: any) =>
+  hookManager.applyFilters(name, value, context);
+
+// ── Backward compatibility exports ────────────────────────────────────────
 export const registerHook = (name: string, handler: HookHandler) =>
   hookManager.register(name, handler);
 export const executeHook = (name: string, data: any) => hookManager.execute(name, data);

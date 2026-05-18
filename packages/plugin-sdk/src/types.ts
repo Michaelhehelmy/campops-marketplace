@@ -209,6 +209,14 @@ export interface PluginAPI {
   hooks: {
     register<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
     registerHook<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
+    /** Phase 3: WordPress-style action registration (fire-and-forget). */
+    addAction(name: string, handler: (data?: any) => void | Promise<void>, priority?: number): () => void;
+    /** Phase 3: WordPress-style filter registration (transforms value). */
+    addFilter(name: string, handler: (data: any) => any | Promise<any>, priority?: number): () => void;
+    /** Phase 3: Fire an action hook (runs handlers, discards return values). */
+    doAction(name: string, data?: any): Promise<void>;
+    /** Phase 3: Apply a filter hook (passes value through all handlers). */
+    applyFilters<T = any>(name: string, value: T, context?: any): Promise<T>;
     execute<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
     executeHook<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
   };

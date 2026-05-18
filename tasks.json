@@ -113,47 +113,48 @@
     {
       "id": "phase-2",
       "name": "PostQuery: The Universal Data Layer",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "2.1",
           "description": "Create src/lib/PostQuery.ts with static query(args) method. Supports siteId, postType, status, postSlug, authorId, parentId, meta[], search, orderBy, order, limit, offset. Returns Post[] with meta map. Always scopes by site_id.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.7"],
           "files_changed": []
         },
         {
           "id": "2.2",
           "description": "Create src/lib/PostRepository.ts: createPost, updatePost, deletePost (trash), getMeta, setMeta (upsert), deleteMeta, getAllMeta.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.7"],
           "files_changed": []
         },
         {
           "id": "2.3",
           "description": "Create src/lib/OptionsRepository.ts: getOption, setOption (upsert), deleteOption, getAutoloadOptions.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.7"],
           "files_changed": []
         },
         {
           "id": "2.4",
           "description": "Write unit tests src/lib/__tests__/post-query.test.ts: query by type, meta key/value, compare <=, cross-site isolation, getAllMeta completeness, setMeta upsert.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["2.1", "2.2"],
           "files_changed": []
         },
         {
           "id": "2.5",
           "description": "Write unit tests src/lib/__tests__/options-repository.test.ts: set/get/delete cycle, default value, cross-site isolation.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["2.3"],
           "files_changed": []
         },
         {
           "id": "2.6",
           "description": "Verify npm run test:all still passes after adding new tests.",
-          "status": "pending",
+          "status": "complete",
+          "notes": "878 tests pass (up from 850).",
           "blocked_by": ["2.4", "2.5"],
           "files_changed": []
         }

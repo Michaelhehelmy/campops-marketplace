@@ -24,8 +24,8 @@ describe('PostRepository', () => {
   });
   afterEach(() => db.close());
 
-  it('createPost inserts and returns the new post', () => {
-    const post = repo.createPost({
+  it('createPost inserts and returns the new post', async () => {
+    const post = await repo.createPost({
       siteId: 's1',
       postType: 'listing',
       postTitle: 'Cosy Tent',
@@ -39,8 +39,8 @@ describe('PostRepository', () => {
     expect(post.meta['capacity']).toBe('2');
   });
 
-  it('updatePost modifies fields', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Old Title' });
+  it('updatePost modifies fields', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Old Title' });
     const updated = repo.updatePost(post.id, { postTitle: 'New Title', postStatus: 'draft' });
     expect(updated?.postTitle).toBe('New Title');
     expect(updated?.postStatus).toBe('draft');
@@ -51,42 +51,42 @@ describe('PostRepository', () => {
     expect(result).toBeNull();
   });
 
-  it('trashPost sets status to trash', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Trash Me' });
+  it('trashPost sets status to trash', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Trash Me' });
     repo.trashPost(post.id);
     const updated = repo.getById(post.id);
     expect(updated?.postStatus).toBe('trash');
   });
 
-  it('deletePost removes post and cascades to meta', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Delete Me', meta: { k: 'v' } });
-    repo.deletePost(post.id);
+  it('deletePost removes post and cascades to meta', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'Delete Me', meta: { k: 'v' } });
+    await repo.deletePost(post.id);
     expect(repo.getById(post.id)).toBeNull();
     expect(repo.getMeta(post.id, 'k')).toBeNull();
   });
 
-  it('getMeta returns null for missing key', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A' });
+  it('getMeta returns null for missing key', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A' });
     expect(repo.getMeta(post.id, 'nonexistent')).toBeNull();
   });
 
-  it('setMeta creates and then updates', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A' });
+  it('setMeta creates and then updates', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A' });
     repo.setMeta(post.id, 'color', 'red');
     expect(repo.getMeta(post.id, 'color')).toBe('red');
     repo.setMeta(post.id, 'color', 'blue');
     expect(repo.getMeta(post.id, 'color')).toBe('blue');
   });
 
-  it('deleteMeta removes a single key', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { a: '1', b: '2' } });
+  it('deleteMeta removes a single key', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { a: '1', b: '2' } });
     repo.deleteMeta(post.id, 'a');
     expect(repo.getMeta(post.id, 'a')).toBeNull();
     expect(repo.getMeta(post.id, 'b')).toBe('2');
   });
 
-  it('getAllMeta returns a map of all meta', () => {
-    const post = repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { x: '1', y: '2' } });
+  it('getAllMeta returns a map of all meta', async () => {
+    const post = await repo.createPost({ siteId: 's1', postType: 'listing', postTitle: 'A', meta: { x: '1', y: '2' } });
     const all = repo.getAllMeta(post.id);
     expect(all).toEqual({ x: '1', y: '2' });
   });

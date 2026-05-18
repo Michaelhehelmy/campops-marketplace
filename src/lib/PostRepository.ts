@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import { randomUUID } from 'crypto';
+import { doAction, applyFilters, Hooks } from './hooks';
 import type { Post, PostMeta } from './PostQuery';
 
 export interface CreatePostInput {
@@ -32,7 +33,9 @@ export interface UpdatePostInput {
 export class PostRepository {
   constructor(private readonly db: Database.Database) {}
 
-  createPost(input: CreatePostInput): Post {
+  async createPost(input: CreatePostInput): Promise<Post> {
+    const filtered = await applyFilters(Hooks.CORE_POST_BEFORE_SAVE, input);
+    const resolved = filtered as CreatePostInput;
     const id = randomUUID();
     const now = Math.floor(Date.now() / 1000);
 
@@ -44,26 +47,28 @@ export class PostRepository {
       )
       .run(
         id,
-        input.siteId,
-        input.postType,
-        input.postTitle ?? '',
-        input.postContent ?? null,
-        input.postSlug ?? null,
-        input.postStatus ?? 'publish',
-        input.authorId ?? null,
-        input.parentId ?? null,
-        input.menuOrder ?? 0,
+        resolved.siteId,
+        resolved.postType,
+        resolved.postTitle ?? '',
+        resolved.postContent ?? null,
+        resolved.postSlug ?? null,
+        resolved.postStatus ?? 'publish',
+        resolved.authorId ?? null,
+        resolved.parentId ?? null,
+        resolved.menuOrder ?? 0,
         now,
         now
       );
 
-    if (input.meta && Object.keys(input.meta).length > 0) {
-      for (const [key, value] of Object.entries(input.meta)) {
+    if (resolved.meta && Object.keys(resolved.meta).length > 0) {
+      for (const [key, value] of Object.entries(resolved.meta)) {
         this.setMeta(id, key, value);
       }
     }
 
-    return this.getById(id)!;
+    const post = this.getById(id)!;
+    await doAction(Hooks.CORE_POST_AFTER_SAVE, post);
+    return post;
   }
 
   updatePost(id: string, input: UpdatePostInput): Post | null {
@@ -95,7 +100,9 @@ export class PostRepository {
   }
 
   /** Hard-delete. Cascades to postmeta via FK. */
-  deletePost(id: string): void {
+  async deletePost(id: string): Promise<void> {
+    const post = this.getById(id);
+    if (post) await doAction(Hooks.CORE_POST_BEFORE_DELETE, { id, siteId: post.siteId });
     this.db.prepare('DELETE FROM posts WHERE id = ?').run(id);
   }
 
