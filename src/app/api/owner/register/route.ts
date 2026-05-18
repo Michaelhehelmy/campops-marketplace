@@ -42,9 +42,12 @@ export async function POST(req: NextRequest) {
 
       // 3. Create Property with branding settings
       const propertyId = uuidv4();
-      const isPremiumPlan = plan === 'subdomain' || plan === 'custom_domain';
+      // Normalise legacy plan IDs that may arrive from old clients
+      const normalisedPlan =
+        plan === 'subdomain' ? 'premium' : plan === 'custom_domain' ? 'ultimate' : plan;
+      const isPremiumPlan = normalisedPlan === 'premium' || normalisedPlan === 'ultimate';
       const resolvedSubdomain = isPremiumPlan ? slug : null;
-      const resolvedCustomDomain = plan === 'custom_domain' ? custom_domain || null : null;
+      const resolvedCustomDomain = normalisedPlan === 'ultimate' ? custom_domain || null : null;
       const settings = {
         branding: branding || {},
         features: {
@@ -76,10 +79,10 @@ export async function POST(req: NextRequest) {
           userId,
           property_name,
           slug,
-          plan,
+          normalisedPlan,
           resolvedSubdomain,
           resolvedCustomDomain,
-          plan === 'custom_domain' ? true : resolvedSubdomain ? true : false,
+          normalisedPlan === 'ultimate' ? true : resolvedSubdomain ? true : false,
           type || 'camp',
           city || '',
           country || '',

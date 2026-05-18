@@ -24,7 +24,7 @@ describe('Manage Domain API', () => {
       .prepare(
         `
       INSERT INTO properties (id, owner_id, name, slug, plan, is_active)
-      VALUES (?, ?, ?, ?, 'subdomain', true)
+      VALUES (?, ?, ?, ?, 'premium', true)
     `
       )
       .run(listingId, ownerId, 'Manage Domain Shop', slug);

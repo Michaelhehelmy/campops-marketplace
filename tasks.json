@@ -405,54 +405,54 @@
     {
       "id": "phase-7",
       "name": "Normalised Tier System & Upgrade Flow",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "7.1",
           "description": "Create migration 005_normalise_plans.sql: UPDATE properties and sites to map subdomain→premium, custom_domain→ultimate.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["6.9"],
           "files_changed": []
         },
         {
           "id": "7.2",
           "description": "Update all code comparing plan === 'subdomain' or plan === 'custom_domain' to use normalised names. Files: middleware.ts, auth/redirect-check, owner/register, list-your-camp/plan, tenant/serve.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.1"],
           "files_changed": []
         },
         {
           "id": "7.3",
           "description": "Create src/lib/PlanGate.ts: check(site, requiredPlan), canUsePlugin(site, plugin), canUseTheme(site, theme). Plan order: basic < premium < ultimate.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.1"],
           "files_changed": []
         },
         {
           "id": "7.4",
           "description": "Create src/app/api/owner/upgrade/route.ts: POST body {siteId, newPlan, subdomain?, customDomain?}. Validates upgrade direction. Provisions subdomain/domain fields. Fires core:site:plan_upgraded action.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.3"],
           "files_changed": []
         },
         {
           "id": "7.5",
           "description": "Build upgrade UI in src/app/[locale]/owner/property/page.tsx: current plan badge, upgrade buttons with subdomain/domain fields, calls POST /api/owner/upgrade.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.4"],
           "files_changed": []
         },
         {
           "id": "7.6",
           "description": "Update registration wizard plan page to use basic/premium/ultimate as plan IDs. Remove subdomain and custom_domain as plan IDs.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.2"],
           "files_changed": []
         },
         {
           "id": "7.7",
           "description": "Write unit tests src/lib/__tests__/plan-gate.test.ts: check(basicSite, premium)→false, check(ultimateSite, basic)→true, ultimate-required plugin blocked for premium.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["7.3"],
           "files_changed": []
         }

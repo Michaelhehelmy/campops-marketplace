@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 interface Plan {
-  id: 'basic' | 'subdomain' | 'custom_domain';
+  id: 'basic' | 'premium' | 'ultimate';
   name: string;
   price: string;
   badge?: string;
@@ -26,7 +26,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: 'subdomain',
+    id: 'premium',
     name: 'Operations Suite',
     price: '$49 / month',
     badge: 'Most Popular',
@@ -42,7 +42,7 @@ const PLANS: Plan[] = [
     note: '14-day free trial, cancel anytime',
   },
   {
-    id: 'custom_domain',
+    id: 'ultimate',
     name: 'White Label',
     price: '$99 / month',
     features: [
@@ -76,7 +76,7 @@ export default function Step3PlanPage() {
       return;
     }
 
-    if (selected === 'custom_domain' && !customDomain.trim()) {
+    if (selected === 'ultimate' && !customDomain.trim()) {
       setError('Please enter your custom domain.');
       return;
     }
@@ -94,11 +94,11 @@ export default function Step3PlanPage() {
             plan: selected,
             branding,
           };
-          if (selected === 'custom_domain') {
+          if (selected === 'ultimate') {
             body.custom_domain = customDomain.trim().toLowerCase();
             body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
           }
-          if (selected === 'subdomain') {
+          if (selected === 'premium') {
             body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
           }
 
@@ -200,7 +200,7 @@ export default function Step3PlanPage() {
               </div>
 
               {/* Custom domain input shown inline */}
-              {plan.id === 'custom_domain' && selected === 'custom_domain' && (
+              {plan.id === 'ultimate' && selected === 'ultimate' && (
                 <div className="mt-4 pt-4 border-t border-brand-200">
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Your custom domain
@@ -224,7 +224,7 @@ export default function Step3PlanPage() {
           ))}
         </div>
 
-        {(selected === 'subdomain' || selected === 'custom_domain') && (
+        {(selected === 'premium' || selected === 'ultimate') && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-5 text-sm text-yellow-800">
             <strong>Payment:</strong> Premium plans require a card. We'll collect payment details on
             the next step via Stripe. Your 14-day trial starts today.
