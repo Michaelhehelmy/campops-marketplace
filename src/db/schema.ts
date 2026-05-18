@@ -163,6 +163,90 @@ export const profiles = sqliteTable('profiles', {
 });
 
 // ---------------------------------------------------------------------------
+// Phase 1 — Core WordPress-like schema
+// ---------------------------------------------------------------------------
+
+/**
+ * sites — one row per tenant in the new core framework.
+ * Mirrors `properties` for backward-compat; use this for all new code.
+ */
+export const sites = sqliteTable('sites', {
+  id: text('id').primaryKey(),
+  slug: text('slug').notNull(),
+  name: text('name').notNull(),
+  plan: text('plan').notNull().default('basic'),
+  subdomain: text('subdomain'),
+  customDomain: text('custom_domain'),
+  domainVerified: integer('domain_verified', { mode: 'boolean' }).default(false),
+  ownerId: text('owner_id'),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  createdAt: integer('created_at', { mode: 'timestamp' }),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }),
+});
+
+/**
+ * posts — universal content object. Every listing, booking, room, etc. is a post.
+ * Domain-specific fields live in postmeta (EAV).
+ */
+export const posts = sqliteTable('posts', {
+  id: text('id').primaryKey(),
+  siteId: text('site_id').notNull(),
+  postType: text('post_type').notNull(),
+  postStatus: text('post_status').notNull().default('publish'),
+  postSlug: text('post_slug'),
+  postTitle: text('post_title').notNull().default(''),
+  postContent: text('post_content'),
+  authorId: text('author_id'),
+  parentId: text('parent_id'),
+  menuOrder: integer('menu_order').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }),
+});
+
+/**
+ * postmeta — key/value attributes for any post.
+ * All domain-specific fields (price, capacity, check_in, etc.) live here.
+ */
+export const postmeta = sqliteTable('postmeta', {
+  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+  postId: text('post_id').notNull(),
+  metaKey: text('meta_key').notNull(),
+  metaValue: text('meta_value'),
+});
+
+/**
+ * options — per-site key/value store (equivalent to WordPress wp_options).
+ * Used for branding tokens, active theme, feature flags, etc.
+ */
+export const options = sqliteTable('options', {
+  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+  siteId: text('site_id').notNull(),
+  optionName: text('option_name').notNull(),
+  optionValue: text('option_value'),
+  autoload: integer('autoload', { mode: 'boolean' }).notNull().default(false),
+});
+
+/**
+ * availableThemes — registry of installed themes.
+ * Active theme per site is stored as options(site_id, 'active_theme').
+ */
+export const availableThemes = sqliteTable('available_themes', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  displayName: text('display_name').notNull(),
+  description: text('description'),
+  version: text('version').notNull().default('1.0.0'),
+  author: text('author'),
+  screenshotUrl: text('screenshot_url'),
+  themePath: text('theme_path').notNull(),
+  planRequirement: text('plan_requirement').notNull().default('basic'),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  manifest: text('manifest'),
+  createdAt: integer('created_at', { mode: 'timestamp' }),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }),
+});
+
+// ---------------------------------------------------------------------------
 // NOTE: The following tables have been REMOVED from the core schema because
 // they encode domain-specific (hospitality / booking) concepts.  They are now
 // owned by their respective plugins:

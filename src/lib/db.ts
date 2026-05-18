@@ -39,6 +39,10 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
   getSqlite().pragma('busy_timeout = 10000');
   getSqlite().pragma('synchronous = NORMAL');
   drizzle = drizzleSqlite(getSqlite(), { schema });
+  if (dbFile !== ':memory:') {
+    const { runMigrations } = require('./runMigrations');
+    runMigrations(getSqlite());
+  }
 }
 
 let isSeeded = false;

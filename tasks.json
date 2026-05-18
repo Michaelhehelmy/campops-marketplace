@@ -56,56 +56,57 @@
     {
       "id": "phase-1",
       "name": "Core Schema: Posts, Postmeta, Options",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "1.1",
           "description": "Create src/db/migrations/001_core_posts.sql with sites, posts, postmeta, options tables and indexes.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["0.1"],
-          "files_changed": []
+          "files_changed": ["src/db/migrations/001_core_posts.sql"]
         },
         {
           "id": "1.2",
           "description": "Create src/db/migrations/002_themes_registry.sql with available_themes table.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["0.1"],
-          "files_changed": []
+          "files_changed": ["src/db/migrations/002_themes_registry.sql"]
         },
         {
           "id": "1.3",
           "description": "Write migration runner src/lib/runMigrations.ts. Reads *.sql from src/db/migrations/ ordered by filename. Tracks applied migrations in schema_migrations table. Called on app bootstrap in src/lib/db.ts.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.1", "1.2"],
-          "files_changed": []
+          "files_changed": ["src/lib/runMigrations.ts", "src/lib/db.ts"]
         },
         {
           "id": "1.4",
           "description": "Add Drizzle schema symbols in src/db/schema.ts for sites, posts, postmeta, options, available_themes.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.1", "1.2"],
-          "files_changed": []
+          "files_changed": ["src/db/schema.ts"]
         },
         {
           "id": "1.5",
           "description": "Write unit tests src/lib/__tests__/core-schema.test.ts: insert site/post/postmeta/option, assert UNIQUE constraints and CASCADE deletes.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.3", "1.4"],
-          "files_changed": []
+          "files_changed": ["src/lib/__tests__/core-schema.test.ts", "src/lib/__tests__/runMigrations.test.ts"]
         },
         {
           "id": "1.6",
           "description": "Write data migration script scripts/migrate-properties-to-sites.ts. Copies properties rows to sites, normalising plan values (subdomain→premium, custom_domain/ultimate→ultimate). Idempotent upsert.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.4"],
-          "files_changed": []
+          "files_changed": ["scripts/migrate-properties-to-sites.ts"]
         },
         {
           "id": "1.7",
           "description": "Run migrations on dev DB. Verify npm run test:all still passes.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["1.5", "1.6"],
-          "files_changed": []
+          "files_changed": [],
+          "notes": "850 unit tests pass (up from 833). Migration applied to sinaicamps.db: sites table populated with 3 rows (safari-camp/premium, mountain-lodge/basic, acacia/ultimate)."
         }
       ]
     },
