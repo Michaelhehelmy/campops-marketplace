@@ -49,7 +49,7 @@ test.describe('Core: Error States', () => {
     });
     expect(res.status()).toBe(400);
     const body = await res.json();
-    expect(body.error).toMatch(/missing/i);
+    expect(body.error).toMatch(/missing|validation/i);
   });
 
   test('API 400 for public properties with missing slug', async ({ request }) => {

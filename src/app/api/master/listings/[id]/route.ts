@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 /**
  * GET /api/master/listings/[id]
@@ -9,6 +11,8 @@ import { db } from '@/lib/db';
  */
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const { id } = params;
 
     const shop = (await db
@@ -17,8 +21,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
           p.id,
           p.name,
           p.slug,
+          p.plan,
           p.is_active,
+          p.subdomain,
+          p.custom_domain,
+          p.owner_id,
           p.created_at,
+          p.settings as raw_settings,
           u.email as owner_email,
           pr.full_name as owner_full_name,
           pr.phone as owner_phone,
@@ -62,20 +71,22 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     });
   } catch (err: any) {
     console.error('[Master Listings Detail API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 /**
  * PUT /api/master/listings/[id]
  *
- * Updates listing configurations.
+ * Updates listing configurations — name, slug, plan, domain, branding, owner.
  */
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const { id } = params;
     const body = await req.json();
-    const { name, slug, plan, isActive, city, country } = body;
+    const { name, slug, plan, isActive, city, country, subdomain, custom_domain, owner_id } = body;
 
     if (!name || !slug) {
       return NextResponse.json({ error: 'Name and slug are required' }, { status: 400 });
@@ -92,22 +103,125 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       );
     }
 
-    await db
-      .prepare(
-        `UPDATE properties 
-         SET name = ?, 
-             slug = ?, 
-             plan = ?, 
-             is_active = ?, 
-             city = ?, 
-             country = ?
-         WHERE id = ?`
-      )
-      .run(name, slug, plan || 'Standard', isActive ? 1 : 0, city || null, country || null, id);
+    // Build dynamic SET clause so only provided fields are updated
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    fields.push('name = ?');
+    values.push(name);
+    fields.push('slug = ?');
+    values.push(slug);
+    fields.push('plan = ?');
+    values.push(plan || 'basic');
+    fields.push('is_active = ?');
+    values.push(isActive ? 1 : 0);
+    fields.push('city = ?');
+    values.push(city || null);
+    fields.push('country = ?');
+    values.push(country || null);
+
+    if (subdomain !== undefined) {
+      fields.push('subdomain = ?');
+      values.push(subdomain || null);
+    }
+    if (custom_domain !== undefined) {
+      fields.push('custom_domain = ?');
+      values.push(custom_domain || null);
+    }
+    if (owner_id !== undefined) {
+      fields.push('owner_id = ?');
+      values.push(owner_id || null);
+    }
+
+    values.push(id);
+    await db.prepare(`UPDATE properties SET ${fields.join(', ')} WHERE id = ?`).run(...values);
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error('[Master Listings Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
+  }
+}
+
+/**
+ * DELETE /api/master/listings/[id]
+ *
+ * Hard-deletes a property and its associated data.
+ * Only available to marketplace_master role.
+ */
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+    const { id } = params;
+
+    const property = (await db
+      .prepare('SELECT id, name, slug FROM properties WHERE id = ?')
+      .get(id)) as any;
+
+    if (!property) {
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+    }
+
+    // Delete associated records in order (child tables first)
+    await db.prepare('DELETE FROM property_staff WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM property_plugins WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM reservations WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM plugin_booking_rooms WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM plugin_booking_bookings WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM rooms WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM room_types WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM commission_rates WHERE property_id = ?').run(id);
+    await db.prepare('DELETE FROM plugin_financial_ops_commissions WHERE property_id = ?').run(id);
+
+    // Delete the property itself
+    await db.prepare('DELETE FROM properties WHERE id = ?').run(id);
+
+    // Audit log entry
+    try {
+      const userEmail = (session.user as any).email || 'unknown';
+      const auditNote = `Property "${property.name}" (${property.slug}, id: ${id}) deleted by ${userEmail}`;
+      await db
+        .prepare(
+          'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
+        )
+        .run('DELETE', 'property', id, auditNote, userEmail);
+    } catch {
+      // audit logging is best-effort
+    }
+
+    return NextResponse.json({ ok: true, deleted: property.name });
+  } catch (err: any) {
+    console.error('[Master Listings Delete API] Error:', err);
+    return errorResponse(err);
+  }
+}
+
+/**
+ * PATCH /api/master/listings/[id]
+ *
+ * Quick actions: activate/deactivate a listing without sending full body.
+ */
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+    const { id } = params;
+    const body = await req.json();
+    const { action } = body;
+
+    if (action === 'activate') {
+      await db.prepare('UPDATE properties SET is_active = 1 WHERE id = ?').run(id);
+      return NextResponse.json({ ok: true, is_active: true });
+    }
+    if (action === 'deactivate') {
+      await db.prepare('UPDATE properties SET is_active = 0 WHERE id = ?').run(id);
+      return NextResponse.json({ ok: true, is_active: false });
+    }
+
+    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+  } catch (err: any) {
+    console.error('[Master Listings Patch API] Error:', err);
+    return errorResponse(err);
   }
 }

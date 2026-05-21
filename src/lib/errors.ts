@@ -71,11 +71,10 @@ export class InternalError extends AppError {
  * Standard JSON error envelope shape.
  */
 export interface ErrorEnvelope {
-  error: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
+  error: string;
+  code: string;
+  message: string;
+  details?: unknown;
 }
 
 /**
@@ -83,36 +82,35 @@ export interface ErrorEnvelope {
  * In production, internal error messages are not leaked to the client.
  */
 export function errorResponse(err: unknown): Response {
+  let statusCode = 500;
+  let code = 'INTERNAL_ERROR';
+  let message = 'Internal server error';
+  let details: unknown = undefined;
+
+  const isProd = process.env.NODE_ENV === 'production';
+
   if (err instanceof AppError) {
-    const envelope: ErrorEnvelope = {
-      error: {
-        code: err.code,
-        message: err.message,
-      },
-    };
-    if (err.details !== undefined) {
-      envelope.error.details = err.details;
+    statusCode = err.statusCode;
+    code = err.code;
+    message = err.message;
+    details = err.details;
+  } else if (err instanceof Error) {
+    if (!isProd) {
+      message = err.message;
     }
-    return new Response(JSON.stringify(envelope), {
-      status: err.statusCode,
-      headers: { 'Content-Type': 'application/json' },
-    });
   }
 
-  // Unknown error — treat as internal
-  const isProd = process.env.NODE_ENV === 'production';
   const envelope: ErrorEnvelope = {
-    error: {
-      code: 'INTERNAL_ERROR',
-      message: isProd
-        ? 'Internal server error'
-        : err instanceof Error
-          ? err.message
-          : 'Internal server error',
-    },
+    error: message,
+    code,
+    message,
   };
+  if (details !== undefined) {
+    envelope.details = details;
+  }
+
   return new Response(JSON.stringify(envelope), {
-    status: 500,
+    status: statusCode,
     headers: { 'Content-Type': 'application/json' },
   });
 }

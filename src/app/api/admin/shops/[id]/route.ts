@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -63,7 +64,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ shop });
   } catch (err: any) {
     console.error('[Admin Shop Detail API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -129,7 +130,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
   } catch (err: any) {
     console.error('[Admin Shop Deactivate API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -233,7 +234,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     });
   } catch (err: any) {
     console.error('[Admin Shop Override API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -298,6 +299,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     });
   } catch (err: any) {
     console.error('[Admin Shop Activate API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

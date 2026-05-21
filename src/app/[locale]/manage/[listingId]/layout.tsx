@@ -16,10 +16,39 @@ import {
   BarChart3,
   Brush,
   Wrench,
+  type LucideIcon,
 } from 'lucide-react';
 
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
+
+/** Core nav items always present in the sidebar regardless of plugins. */
+const CORE_NAV = [
+  { icon: LayoutDashboard, label: 'Dashboard', path: '', exact: true, minRole: 'staff' },
+  { icon: Calendar, label: 'Bookings', path: '/bookings', minRole: 'staff' },
+  { icon: Store, label: 'Rooms & Units', path: '/rooms', minRole: 'manager' },
+  { icon: Users, label: 'Guests (CRM)', path: '/guests', minRole: 'staff' },
+  { icon: CreditCard, label: 'Orders & POS', path: '/orders', minRole: 'staff' },
+  { icon: Brush, label: 'Housekeeping', path: '/housekeeping', minRole: 'staff' },
+  { icon: Wrench, label: 'Maintenance', path: '/maintenance', minRole: 'staff' },
+  { icon: Activity, label: 'Operations', path: '/operations', minRole: 'staff' },
+  { icon: BarChart3, label: 'Finance', path: '/finance', minRole: 'manager' },
+  { icon: Users, label: 'Staff Roster', path: '/staff', minRole: 'manager' },
+  { icon: Settings, label: 'Listing Settings', path: '/settings', minRole: 'manager' },
+];
+
+const ROLE_ORDER = ['staff', 'manager', 'master'];
+function roleAtLeast(userRole: string, minRole: string) {
+  return ROLE_ORDER.indexOf(userRole) >= ROLE_ORDER.indexOf(minRole);
+}
+
+interface PluginMenuItem {
+  label: string;
+  href?: string;
+  path?: string;
+  icon?: string;
+  pluginId?: string;
+}
 
 export default function ManageLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
@@ -29,47 +58,40 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
   const locale = params.locale as string;
   const [loading, setLoading] = useState(true);
   const [property, setProperty] = useState<any>(null);
+  const [pluginMenuItems, setPluginMenuItems] = useState<PluginMenuItem[]>([]);
 
   useEffect(() => {
     const resolveContext = async () => {
       try {
-        const res = await fetch(`/api/listing-access?listing=${listingId}`);
-        if (res.ok) {
-          const data = await res.json();
-          const role = data.role || 'staff';
-
-          // Staff restriction is handled per-page (finance/settings show "Unauthorized" inline)
-
-          let propName = listingId;
-          try {
-            const propRes = await fetch(`/api/public/properties/${listingId}`);
-            if (propRes.ok) {
-              const propData = await propRes.json();
-              propName = propData.property?.name || listingId;
-            }
-          } catch {}
-          if (propName === listingId) {
-            propName =
-              listingId === 'safari-camp'
-                ? 'Safari Camp'
-                : listingId === '1'
-                  ? 'Safari Camp'
-                  : listingId === '2'
-                    ? 'Mountain Lodge'
-                    : listingId;
-          }
-          setProperty({
-            id: listingId,
-            name: propName,
-            role,
-          });
-        } else {
-          const text = await res.text();
-          console.error(
-            `[ManageLayout] Listing access failed: ${res.status} ${res.statusText}`,
-            text
-          );
+        const accessRes = await fetch(`/api/listing-access?listing=${listingId}`);
+        if (!accessRes.ok) {
+          console.error(`[ManageLayout] Listing access failed: ${accessRes.status}`);
           router.push(`/${locale}/owner/dashboard`);
+          return;
+        }
+
+        const accessData = await accessRes.json();
+        const role = accessData.role || 'staff';
+
+        let propName = listingId;
+        try {
+          const propRes = await fetch(`/api/public/properties/${listingId}`);
+          if (propRes.ok) {
+            const propData = await propRes.json();
+            propName = propData.property?.name || listingId;
+          }
+        } catch {}
+
+        setProperty({ id: listingId, name: propName, role });
+
+        try {
+          const regRes = await fetch(`/api/plugins/ui-registry?propertyId=${listingId}`);
+          if (regRes.ok) {
+            const regData = await regRes.json();
+            setPluginMenuItems(regData.menuItems ?? []);
+          }
+        } catch (err) {
+          console.warn('[ManageLayout] Failed to load plugin menu items:', err);
         }
       } catch (error) {
         console.error('Failed to resolve listing context:', error);
@@ -90,6 +112,9 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
       </div>
     );
   }
+
+  const base = `/${locale}/manage/${listingId}`;
+  const role = property?.role ?? 'staff';
 
   return (
     <PluginRegistryProvider>
@@ -112,83 +137,39 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
           <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             <PluginShell name="manager.sidebar.top" props={{ property }} />
 
-            <SidebarLink
-              icon={LayoutDashboard}
-              label="Dashboard"
-              href={`/${locale}/manage/${listingId}`}
-              active={pathname === `/${locale}/manage/${listingId}`}
-            />
-            <SidebarLink
-              icon={Calendar}
-              label="Bookings"
-              href={`/${locale}/manage/${listingId}/bookings`}
-              active={pathname?.includes('/bookings')}
-            />
-            {property.role !== 'staff' && (
-              <SidebarLink
-                icon={Store}
-                label="Rooms & Units"
-                href={`/${locale}/manage/${listingId}/rooms`}
-                active={pathname?.includes('/rooms')}
-              />
-            )}
-            <SidebarLink
-              icon={Users}
-              label="Guests (CRM)"
-              href={`/${locale}/manage/${listingId}/guests`}
-              active={pathname?.includes('/guests')}
-            />
-            <SidebarLink
-              icon={CreditCard}
-              label="Orders & POS"
-              href={`/${locale}/manage/${listingId}/orders`}
-              active={pathname?.includes('/orders')}
-            />
+            {CORE_NAV.map((item) => {
+              if (!roleAtLeast(role, item.minRole)) return null;
+              const href = item.path === '' ? base : `${base}${item.path}`;
+              const active = item.exact
+                ? pathname === href
+                : (pathname?.includes(item.path) ?? false);
+              return (
+                <SidebarLink
+                  key={item.path}
+                  icon={item.icon}
+                  label={item.label}
+                  href={href}
+                  active={active}
+                />
+              );
+            })}
 
             <PluginShell name="manager.sidebar.middle" props={{ property }} />
 
-            <SidebarLink
-              icon={Brush}
-              label="Housekeeping"
-              href={`/${locale}/manage/${listingId}/housekeeping`}
-              active={pathname?.includes('/housekeeping')}
-            />
-            <SidebarLink
-              icon={Wrench}
-              label="Maintenance"
-              href={`/${locale}/manage/${listingId}/maintenance`}
-              active={pathname?.includes('/maintenance')}
-            />
-            <SidebarLink
-              icon={Activity}
-              label="Operations"
-              href={`/${locale}/manage/${listingId}/operations`}
-              active={pathname?.includes('/operations')}
-            />
-            {property.role !== 'staff' && (
-              <SidebarLink
-                icon={BarChart3}
-                label="Finance"
-                href={`/${locale}/manage/${listingId}/finance`}
-                active={pathname?.includes('/finance')}
-              />
-            )}
-            {property.role !== 'staff' && (
-              <SidebarLink
-                icon={Users}
-                label="Staff Roster"
-                href={`/${locale}/manage/${listingId}/staff`}
-                active={pathname?.includes('/staff')}
-              />
-            )}
-            {property.role !== 'staff' && (
-              <SidebarLink
-                icon={Settings}
-                label="Listing Settings"
-                href={`/${locale}/manage/${listingId}/settings`}
-                active={pathname?.includes('/settings')}
-              />
-            )}
+            {pluginMenuItems.map((item, i) => {
+              const href = item.href ?? (item.path ? `${base}${item.path}` : '#');
+              const active = item.path ? (pathname?.includes(item.path) ?? false) : false;
+              return (
+                <SidebarLink
+                  key={`plugin-${i}`}
+                  icon={null}
+                  label={item.label}
+                  href={href}
+                  active={active}
+                  isPlugin
+                />
+              );
+            })}
 
             <PluginShell name="manager.sidebar.bottom" props={{ property }} />
           </nav>
@@ -208,7 +189,7 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
           <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-8 gap-4">
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <div className="text-sm font-bold text-gray-900">Michael CampOwner</div>
+                <div className="text-sm font-bold text-gray-900">{property.name}</div>
                 <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   Property Admin
                 </div>
@@ -228,17 +209,37 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
   );
 }
 
-function SidebarLink({ icon: Icon, label, href, active = false }: any) {
+function SidebarLink({
+  icon: Icon,
+  label,
+  href,
+  active = false,
+  isPlugin = false,
+}: {
+  icon: LucideIcon | null;
+  label: string;
+  href: string;
+  active?: boolean;
+  isPlugin?: boolean;
+}) {
   return (
     <Link
-      href={href || '#'}
+      href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${
         active
           ? 'bg-brand-600 text-white shadow-lg shadow-brand-100'
           : 'text-gray-500 hover:bg-gray-50 hover:text-brand-600'
       }`}
     >
-      <Icon className="h-5 w-5" />
+      {Icon ? (
+        <Icon className="h-5 w-5" />
+      ) : (
+        <span
+          className={`h-5 w-5 flex items-center justify-center text-xs ${isPlugin ? 'opacity-60' : ''}`}
+        >
+          ⬡
+        </span>
+      )}
       {label}
     </Link>
   );

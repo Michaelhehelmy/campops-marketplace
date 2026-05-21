@@ -29,7 +29,7 @@ export default function GuestsPage() {
 
   const fetchGuests = async () => {
     try {
-      const res = await fetch(`/api/manage/${listingId}/guests`);
+      const res = await fetch(`/api/p/crm/guests-by-listing?listingId=${listingId}`);
       const data = await res.json();
       setGuests(data.guests || []);
     } catch (err) {

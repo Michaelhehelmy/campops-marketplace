@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -46,6 +47,6 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     });
   } catch (err: any) {
     console.error('[Public Property API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

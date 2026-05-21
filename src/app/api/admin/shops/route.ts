@@ -1,5 +1,8 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+
+export const dynamic = 'force-dynamic';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -119,7 +122,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Shops API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -175,6 +178,6 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Shops Bulk Update] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

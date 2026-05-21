@@ -1,6 +1,8 @@
+import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 /**
  * GET /api/master/stats
@@ -11,12 +13,8 @@ import { logger } from '@/lib/logger';
  */
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const adminId = searchParams.get('adminId');
-
-    if (!adminId || adminId !== 'master-admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
 
     let tenantsCount = db.prepare('SELECT count(*) as count FROM properties').get();
     if (tenantsCount instanceof Promise) tenantsCount = await tenantsCount;
@@ -58,6 +56,6 @@ export async function GET(request: Request) {
     return NextResponse.json(stats);
   } catch (err: any) {
     logger.error('Error:', err);
-    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
+    return errorResponse(err);
   }
 }

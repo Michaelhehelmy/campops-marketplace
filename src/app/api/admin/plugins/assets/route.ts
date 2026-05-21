@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugin Assets API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -154,7 +155,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (err: any) {
     console.error('[Admin Plugin Assets Create API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -247,7 +248,7 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugin Assets Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -301,6 +302,6 @@ export async function DELETE(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugin Assets Delete API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

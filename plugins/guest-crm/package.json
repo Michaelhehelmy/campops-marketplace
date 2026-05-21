@@ -1,0 +1,18 @@
+{
+  "name": "@sinaicamps/plugin-guest-crm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "guest-crm",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "hooks",
+      "routes"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

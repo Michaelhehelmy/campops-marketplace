@@ -5,6 +5,8 @@ import FeaturedListings from '@/components/homepage/FeaturedListings';
 import Categories from '@/components/homepage/Categories';
 import ListingDetailView from '@/components/ListingDetailView';
 import { getTenantListing } from '@/lib/api';
+import { getSqlite } from '@/lib/db';
+import { PostQuery, type Post } from '@/lib/PostQuery';
 import React from 'react';
 
 interface Props {
@@ -61,9 +63,33 @@ export default async function HomePage({ params, searchParams }: Props) {
 
   // Mode 2: Standard Marketplace Frontend (Oracle Deployment)
   const config = await getHomepageConfig();
+
+  // Pre-fetch featured listings server-side to avoid client waterfall.
+  let featuredListings: Post[] = [];
+  try {
+    const db = getSqlite();
+    const q = new PostQuery(db);
+    featuredListings = await q.globalQuery({
+      postType: 'listing',
+      status: 'publish',
+      meta: [{ key: 'is_featured', value: '1' }],
+      orderBy: 'menu_order',
+      order: 'ASC',
+      limit: 8,
+      includeMeta: true,
+    });
+  } catch {
+    // DB may not be seeded; fall back to client-side fetch in FeaturedListings
+  }
+
   const fallbackMap: Record<string, React.ReactNode> = {
     hero: <HeroSection locale={locale} />,
-    'featured-listings': <FeaturedListings locale={locale} />,
+    'featured-listings': (
+      <FeaturedListings
+        locale={locale}
+        initialListings={featuredListings.length > 0 ? featuredListings : undefined}
+      />
+    ),
     categories: <Categories locale={locale} />,
   };
 

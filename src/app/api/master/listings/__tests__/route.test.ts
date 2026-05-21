@@ -3,6 +3,14 @@ import { GET } from '../route';
 import { db, clearMockStore } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
+vi.mock('@/lib/auth-middleware', () => ({
+  requireRole: vi.fn().mockResolvedValue({
+    user: { id: 'test-user', role: 'marketplace_master' },
+    session: { id: 'test-session' },
+  }),
+  isErrorResponse: vi.fn().mockReturnValue(false),
+}));
+
 // Mock db
 vi.mock('@/lib/db', () => ({
   db: {

@@ -1,14 +1,12 @@
+import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const adminId = searchParams.get('adminId');
-
-    if (!adminId || adminId !== 'master-admin') {
-      // return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
 
     // Fetch properties and their commission rates
     const properties = await db.prepare('SELECT id, name, slug FROM properties').all();
@@ -65,6 +63,6 @@ export async function GET(request: Request) {
     });
   } catch (error: any) {
     console.error('Failed to fetch commissions:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return errorResponse(error);
   }
 }

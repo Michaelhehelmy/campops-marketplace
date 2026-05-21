@@ -6,15 +6,14 @@ import fs from 'fs';
 import path from 'path';
 
 describe('Plugin Health & Audit Suite', () => {
-  it('verifies all 26 registered plugins are present and active in the database', async () => {
+  it('verifies all 27 registered plugins are present and active in the database', async () => {
     // 1. Reset database to ensure a clean seeded state
     db.resetMockStore();
 
     // 2. Query available plugins
     const rows = await db.query('SELECT * FROM available_plugins');
 
-    // Assert 26 plugins are registered (24 from disk, 2 additional catalog stubs)
-    expect(rows.length).toBe(26);
+    expect(rows.length).toBe(27);
 
     // Verify all plugins are official and active
     for (const p of rows) {

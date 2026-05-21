@@ -73,7 +73,7 @@ export default async function init(api: PluginAPI) {
   // Seed sample data
   const now = Math.floor(Date.now() / 1000);
   await api.db.execute(`
-    INSERT INTO plugin_booking_rooms 
+    INSERT OR IGNORE INTO plugin_booking_rooms 
     (id, listing_id, name, description, capacity, base_price, currency, is_active, created_at, updated_at)
     VALUES 
     ('room-1', '1', 'Standard Tent', 'Comfortable tent with basic amenities', 2, 100.00, 'USD', 1, ${now}, ${now}),
@@ -93,7 +93,7 @@ export default async function init(api: PluginAPI) {
 
   if (availabilityInserts.length > 0) {
     await api.db.execute(`
-      INSERT INTO plugin_booking_room_availability 
+      INSERT OR IGNORE INTO plugin_booking_room_availability 
       (id, room_id, date, available, price, created_at)
       VALUES ${availabilityInserts.join(',')}
     `);

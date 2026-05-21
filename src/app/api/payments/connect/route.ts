@@ -1,5 +1,13 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import Stripe from 'stripe';
+import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
+import { AuditService } from '@/lib/audit';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
+  apiVersion: '2023-10-16' as any,
+});
 
 // Helper to verify user has access to property
 async function verifyPropertyAccess(userId: string, propertyId: string): Promise<boolean> {
@@ -29,6 +37,8 @@ async function verifyPropertyAccess(userId: string, propertyId: string): Promise
 // GET /api/payments/connect - Get Stripe Connect account for a property
 export async function GET(req: NextRequest) {
   try {
+    const sessionRes = await requireSession(req);
+    if (isErrorResponse(sessionRes)) return sessionRes;
     const { searchParams } = req.nextUrl;
     const propertyId = searchParams.get('propertyId');
     const userId = searchParams.get('userId');
@@ -75,13 +85,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ account });
   } catch (err: any) {
     console.error('[Stripe Connect Get API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 // POST /api/payments/connect - Create or update Stripe Connect account
 export async function POST(req: NextRequest) {
   try {
+    const sessionRes = await requireSession(req);
+    if (isErrorResponse(sessionRes)) return sessionRes;
     const body = await req.json();
     const {
       userId,
@@ -175,6 +187,15 @@ export async function POST(req: NextRequest) {
         .get(stripeAccountId);
     }
 
+    AuditService.log({
+      userId: sessionRes.user.id,
+      action: existing ? 'stripe_connect.updated' : 'stripe_connect.created',
+      resource: 'stripe_connect_accounts',
+      resourceId: account?.id as string | undefined,
+      propertyId,
+      ipAddress: req.headers.get('x-forwarded-for') || undefined,
+    });
+
     return NextResponse.json({
       success: true,
       account,
@@ -182,49 +203,105 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Stripe Connect Create API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 // PUT /api/payments/connect - Update Stripe Connect account status (webhook handler)
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { stripeAccountId, chargesEnabled, payoutsEnabled, requirementsDue, onboardingComplete } =
-      body;
+    const signature = req.headers.get('stripe-signature');
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let stripeAccountId: string | undefined;
+    let chargesEnabled = false;
+    let payoutsEnabled = false;
+    let requirementsDue: string[] = [];
+    let onboardingComplete = false;
+
+    const rawBody = await req.text();
+
+    if (secret && signature) {
+      try {
+        const event = stripe.webhooks.constructEvent(rawBody, signature, secret);
+        if (event.type === 'account.updated') {
+          const account = event.data.object as Stripe.Account;
+          stripeAccountId = account.id;
+          chargesEnabled = account.charges_enabled;
+          payoutsEnabled = account.payouts_enabled;
+          requirementsDue = account.requirements?.currently_due || [];
+          onboardingComplete = account.details_submitted;
+        } else {
+          return NextResponse.json({ message: `Event ${event.type} ignored` }, { status: 200 });
+        }
+      } catch (err: any) {
+        console.error('[Stripe Webhook Signature Verification Failed]', err.message);
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+      }
+    } else {
+      if (process.env.NODE_ENV === 'production') {
+        console.warn('⚠️ Stripe webhook secret or signature missing in production environment');
+      } else {
+        console.warn(
+          '⚠️ Stripe webhook secret not configured. Skipping signature verification in local dev.'
+        );
+      }
+
+      let body: any;
+      try {
+        body = JSON.parse(rawBody);
+      } catch (e) {
+        return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+      }
+
+      stripeAccountId = body.stripeAccountId;
+      chargesEnabled = body.chargesEnabled;
+      payoutsEnabled = body.payoutsEnabled;
+      requirementsDue = body.requirementsDue;
+      onboardingComplete = body.onboardingComplete;
+    }
 
     if (!stripeAccountId) {
       return NextResponse.json({ error: 'stripeAccountId is required' }, { status: 400 });
     }
 
-    // Update account status
-    await db
-      .prepare(
-        `
-      UPDATE stripe_connect_accounts 
-      SET charges_enabled = $1,
-          payouts_enabled = $2,
-          requirements_due = $3,
-          onboarding_complete = $4,
-          updated_at = CURRENT_TIMESTAMP
-      WHERE stripe_account_id = $5
-    `
-      )
-      .run(
-        chargesEnabled ?? false,
-        payoutsEnabled ?? false,
-        JSON.stringify(requirementsDue ?? []),
-        onboardingComplete ?? false,
-        stripeAccountId
-      );
+    // Update account status in a transaction
+    let account: any = null;
+    const txOk = await db.transaction(async (tx) => {
+      await tx
+        .prepare(
+          `
+        UPDATE stripe_connect_accounts 
+        SET charges_enabled = $1,
+            payouts_enabled = $2,
+            requirements_due = $3,
+            onboarding_complete = $4,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE stripe_account_id = $5
+      `
+        )
+        .run(
+          chargesEnabled ?? false,
+          payoutsEnabled ?? false,
+          JSON.stringify(requirementsDue ?? []),
+          onboardingComplete ?? false,
+          stripeAccountId
+        );
 
-    const account = await db
-      .prepare(
-        `
-      SELECT * FROM stripe_connect_accounts WHERE stripe_account_id = $1
-    `
-      )
-      .get(stripeAccountId);
+      account = await tx
+        .prepare(
+          `
+        SELECT * FROM stripe_connect_accounts WHERE stripe_account_id = $1
+      `
+        )
+        .get(stripeAccountId);
+
+      return true;
+    });
+
+    if (!txOk) {
+      return NextResponse.json({ error: 'Transaction failed' }, { status: 500 });
+    }
 
     if (!account) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
@@ -237,6 +314,6 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Stripe Connect Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

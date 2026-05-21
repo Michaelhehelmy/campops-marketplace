@@ -14,6 +14,7 @@ import {
   BedDouble,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface Props {
   locale: string;
@@ -126,6 +127,7 @@ export function ShopfrontNav({ locale, tenant }: Props) {
             Contact
           </a>
 
+          <LanguageSwitcher locale={locale} />
           <div className="h-6 w-px bg-slate-800" />
 
           {!isPending && (

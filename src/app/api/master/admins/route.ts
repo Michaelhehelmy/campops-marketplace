@@ -1,19 +1,16 @@
+import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { drizzle } from '@/lib/db';
 import { users, userRoles } from '@/db/schema';
 import { eq, or, and } from 'drizzle-orm';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const adminId = searchParams.get('adminId');
-
-  // Basic RBAC check
-  if (!adminId || adminId !== 'master-admin') {
-    // In a real app, use better-auth session check
-    // return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
-
   try {
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
+    const { searchParams } = new URL(request.url);
     const adminUsers = await drizzle
       .select({
         id: users.id,
@@ -54,6 +51,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const body = await request.json();
     const { name, email, role } = body;
 
@@ -88,6 +87,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ id, name, email, role, ok: true }, { status: 201 });
   } catch (error: any) {
     console.error('[Admin API] Failed to create admin:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return errorResponse(error);
   }
 }

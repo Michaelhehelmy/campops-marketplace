@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -52,6 +53,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Domain Check] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

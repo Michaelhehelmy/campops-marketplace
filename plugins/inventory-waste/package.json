@@ -1,0 +1,18 @@
+{
+  "name": "@sinaicamps/plugin-inventory-waste",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "inventory-waste",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "routes"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

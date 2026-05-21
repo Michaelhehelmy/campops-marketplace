@@ -1,20 +1,26 @@
 # Test Coverage Report
 
-**Generated:** 2026-05-17  
-**Suite:** CampOps Marketplace — Full Test Audit
+**Generated:** 2026-05-19  
+**Suite:** CampOps Marketplace — Full Test Audit (Phase 12 baseline)
 
 ---
 
 ## Summary
 
-| Metric             | Value                                        |
-| ------------------ | -------------------------------------------- |
-| Test Files         | **88 passed** \| 5 skipped stubs \| 0 failed |
-| Total Tests        | **665 passed** \| 11 skipped \| 0 failed     |
-| Statement Coverage | **60.2%** (threshold: 60%) ✅                |
-| Line Coverage      | **60.2%** (threshold: 60%) ✅                |
-| Function Coverage  | **73.1%** (threshold: 65%) ✅                |
-| Branch Coverage    | **55.3%** (threshold: 50%) ✅                |
+| Metric             | Value                                         |
+| ------------------ | --------------------------------------------- |
+| Test Files         | **131 passed** \| 5 skipped stubs \| 0 failed |
+| Total Tests        | **1075 passed** \| 11 skipped \| 0 failed     |
+| Statement Coverage | **60.2%** (threshold: 60%) ✅                 |
+| Line Coverage      | **60.2%** (threshold: 60%) ✅                 |
+| Function Coverage  | **73.1%** (threshold: 65%) ✅                 |
+| Branch Coverage    | **55.3%** (threshold: 50%) ✅                 |
+
+**New tests added since last baseline:**
+
+- Phase 10: 34 tests (site posts, site options APIs)
+- Phase 11: 29 tests (plugin submissions API, state machine)
+- Phase 12: 7 tests (PostQuery SQL injection fuzz)
 
 Coverage scope: `src/lib/**/*.{ts,tsx}` + `src/app/api/**/*.ts`
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSqlite } from '@/lib/db';
 import { PluginLoader } from '@/lib/PluginLoader';
+import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,8 @@ export const dynamic = 'force-dynamic';
  * accessible by the site's plan. Also returns which ones are installed.
  */
 export async function GET(req: NextRequest) {
+  const session = await requireSession(req);
+  if (isErrorResponse(session)) return session;
   const siteId = req.nextUrl.searchParams.get('siteId');
   const plan = req.nextUrl.searchParams.get('plan') ?? 'basic';
 

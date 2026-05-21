@@ -9,6 +9,7 @@ describe('BookingService', () => {
     mockDb = {
       query: vi.fn(),
       queryOne: vi.fn(),
+      transaction: vi.fn(async (cb) => cb(mockDb)),
     };
     service = new BookingService(mockDb);
   });

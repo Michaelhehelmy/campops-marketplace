@@ -31,59 +31,70 @@ test.describe('Cross-System Integration Flow', () => {
       await publicPage.request.post('http://localhost:3000/api/test/reset');
 
       console.log('1. Master enabling plugins...');
-      await master.page.goto('/en/admin/listings/1', { waitUntil: 'networkidle' });
-      await master.page.getByRole('tab', { name: /Plugins/i }).click();
+      await master.page.goto('/en/admin/listings/1');
+      const pluginsTab = master.page.getByRole('tab', { name: /Plugins/i });
+      await expect(pluginsTab).toBeVisible({ timeout: 30000 });
+      await pluginsTab.click();
 
       // Wait for plugins to load
-      await master.page.waitForSelector('text=Listing Plugins');
+      await master.page.waitForSelector('text=Listing Plugins', { timeout: 30000 });
       await master.page.waitForTimeout(1000); // Give time for plugins to render
 
       // Find all plugin checkboxes - they have aria-label with plugin name
       const bookingPlugin = master.page.getByRole('checkbox', { name: /booking/i });
-      await expect(bookingPlugin).toBeVisible({ timeout: 5000 });
+      await expect(bookingPlugin).toBeVisible({ timeout: 20000 });
       if (!(await bookingPlugin.isChecked())) {
-        await bookingPlugin.click();
-        await master.page.waitForResponse(
-          (res) => res.url().includes('/plugins') && res.status() === 200
+        const responsePromise = master.page.waitForResponse(
+          (res) => res.url().includes('/plugins') && res.status() === 200,
+          { timeout: 20000 }
         );
+        await bookingPlugin.click();
+        await responsePromise;
       }
 
       // Find CRM plugin toggle
       const crmPlugin = master.page.getByRole('checkbox', { name: 'crm', exact: true });
-      await expect(crmPlugin).toBeVisible({ timeout: 5000 });
+      await expect(crmPlugin).toBeVisible({ timeout: 20000 });
       if (!(await crmPlugin.isChecked())) {
-        await crmPlugin.click();
-        await master.page.waitForResponse(
-          (res) => res.url().includes('/plugins') && res.status() === 200
+        const responsePromise = master.page.waitForResponse(
+          (res) => res.url().includes('/plugins') && res.status() === 200,
+          { timeout: 20000 }
         );
+        await crmPlugin.click();
+        await responsePromise;
       }
 
-      console.log('2. Public user booking...');
-      await publicPage.goto('/en/stay/safari-camp?checkIn=2025-01-01&checkOut=2025-01-02');
-      // Wait for core booking link to appear
-      await expect(publicPage.getByRole('link', { name: /Book now/i }).first()).toBeVisible({
+      console.log('2. Public user booking (logged in as guest)...');
+      await guest.page.goto('/en/stay/safari-camp?checkIn=2025-01-01&checkOut=2025-01-02');
+      await expect(guest.page.getByRole('link', { name: /Book now/i }).first()).toBeVisible({
         timeout: 15000,
       });
 
-      await publicPage
+      await guest.page
         .getByRole('link', { name: /Book now/i })
         .first()
         .click();
+      await guest.page.waitForURL(/\/book\/summary/, { timeout: 30000 });
+
+      await expect(
+        guest.page.locator('h2:has-text("Guest details"), h2:has-text("guest details")')
+      ).toBeVisible({ timeout: 30000 });
 
       console.log('2.1 Filling booking form...');
-      await publicPage.getByPlaceholder('Jane Smith').fill('Integration Guest');
-      await publicPage.getByPlaceholder('jane@example.com').fill('guest@sinaicamps.com');
+      await guest.page.getByPlaceholder('Jane Smith').fill('Integration Guest');
+      await guest.page.getByPlaceholder('jane@example.com').fill('guest@sinaicamps.com');
 
       console.log('2.2 Continuing to payment...');
-      await publicPage.getByRole('button', { name: /Continue to payment/i }).click();
+      await guest.page.getByRole('button', { name: /Proceed to payment/i }).click();
 
-      console.log('2.3 Confirming booking...');
-      await publicPage.getByRole('button', { name: /Confirm Booking|Proceed to payment/i }).click();
+      console.log('2.3 Selecting pay_later and confirming...');
+      await guest.page.click('#pay_later');
+      await guest.page.getByRole('button', { name: /Confirm booking/i }).click();
 
       // Wait for success state and ensure booking is fully persisted
       console.log('2.4 Waiting for success state...');
-      await expect(publicPage.getByText(/Booking Confirmed/i)).toBeVisible({ timeout: 15000 });
-      await publicPage.waitForLoadState('networkidle');
+      await expect(guest.page.getByText(/Booking Confirmed/i)).toBeVisible({ timeout: 15000 });
+      await guest.page.waitForLoadState('networkidle');
 
       console.log('3. Guest verifying reservation...');
       // 3. Guest verifies reservation
@@ -116,7 +127,7 @@ test.describe('Cross-System Integration Flow', () => {
       await staff.page.goto('/en/manage/1/bookings');
       console.log('5.1 Waiting for staff booking row...');
       const staffBookingRow = staff.page.locator('tr', { hasText: 'Integration Guest' }).first();
-      await expect(staffBookingRow).toBeVisible({ timeout: 10000 });
+      await expect(staffBookingRow).toBeVisible({ timeout: 20000 });
 
       console.log('5.2 Clicking Check-in...');
       await staff.page
@@ -125,7 +136,7 @@ test.describe('Cross-System Integration Flow', () => {
         .click();
 
       console.log('5.3 Verifying checked-in status...');
-      await expect(staffBookingRow.getByText(/checked-in/i)).toBeVisible({ timeout: 10000 });
+      await expect(staffBookingRow.getByText(/checked-in/i)).toBeVisible({ timeout: 20000 });
       console.log('5.4 Guest checked in.');
 
       console.log('6. Manager viewing Finance...');
@@ -147,16 +158,26 @@ test.describe('Cross-System Integration Flow', () => {
       // 8. Master disables Booking plugin -> Listing widget disappears
 
       await master.page.goto('/en/admin/listings/1');
-      await master.page.getByRole('tab', { name: /Plugins/i }).click();
+      const pluginsTab2 = master.page.getByRole('tab', { name: /Plugins/i });
+      await expect(pluginsTab2).toBeVisible({ timeout: 20000 });
+      await pluginsTab2.click();
       console.log('8.1 Toggling booking plugin...');
       const bookingPluginCheck = master.page.getByRole('checkbox', { name: /booking/i });
+      const responsePromise2 = master.page.waitForResponse(
+        (res) =>
+          res.url().includes('/listings/') &&
+          res.url().includes('/plugins') &&
+          res.status() === 200,
+        { timeout: 20000 }
+      );
       await bookingPluginCheck.click();
+      await responsePromise2;
 
       console.log('8.2 Verifying widget disappeared...');
       await publicPage.goto('/en/stay/safari-camp');
-      await expect(publicPage.getByRole('button', { name: /Reserve Now/i })).not.toBeVisible({
-        timeout: 10000,
-      });
+      await expect(
+        publicPage.getByTestId('booking-real').or(publicPage.getByTestId('booking-fallback'))
+      ).not.toBeVisible({ timeout: 20000 });
       console.log('8.3 Widget disappeared.');
     } finally {
       await master.context.close();

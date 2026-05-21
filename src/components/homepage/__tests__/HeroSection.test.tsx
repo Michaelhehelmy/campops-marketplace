@@ -12,6 +12,41 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+// Mock next-intl
+function mockT(key: string, params?: Record<string, any>) {
+  const strings: Record<string, string> = {
+    badge: 'Adventure Awaits',
+    srDescription: 'Discover unique camps, lodges, and retreats around the world',
+    heading: 'Escape Ordinary.',
+    headingAccent: 'Experience the Unseen.',
+    subtitle:
+      'Unlock hand-selected eco-resorts, luxury glamping retreats, and private wilderness lodges. Your next unforgettable adventure starts here.',
+    directBookingBonus:
+      '<label>Direct Booking Bonus:</label> Reserve today and unlock <discount>15% Off</discount>, complimentary welcome drinks, and late checkout.',
+    discount: '15% Off',
+    destination: 'Where to?',
+    destinationPlaceholder: 'Search destinations',
+    checkIn: 'Check In',
+    checkOut: 'Check Out',
+    guests: 'Guests',
+    guestLabel: 'Guest',
+    guestsLabel: 'Guests',
+    guest5plus: '5+ Guests',
+    searchButton: 'Search',
+    realtime: '⚡ Real-time availability & secure checkout',
+  };
+  let val = strings[key] ?? key;
+  return val;
+}
+const tRich = (key: string) => mockT(key);
+vi.mock('next-intl', () => ({
+  useTranslations: () => {
+    const fn = (key: string, params?: Record<string, any>) => mockT(key, params);
+    fn.rich = tRich;
+    return fn;
+  },
+}));
+
 describe('HeroSection component', () => {
   beforeEach(() => {
     vi.clearAllMocks();

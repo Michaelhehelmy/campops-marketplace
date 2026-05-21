@@ -1,0 +1,81 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "next-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "next-devtools-mcp@latest"],
+      "enabled": true
+    },
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "enabled": true
+    },
+    "github": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "enabled": true
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp"],
+      "enabled": true
+    },
+    "sqlite": {
+      "type": "local",
+      "command": ["npx", "-y", "mcp-server-sqlite", "--db", "./sinaicamps.db"],
+      "enabled": true
+    },
+    "tailwindcss": {
+      "type": "local",
+      "command": ["npx", "-y", "tailwindcss-mcp@latest"],
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "enabled": true
+    },
+    "lucide-icons": {
+      "type": "local",
+      "command": ["npx", "-y", "@iflow-mcp/lucide-icons-mcp@latest"],
+      "enabled": true
+    },
+    "next-intl": {
+      "type": "local",
+      "command": ["npx", "-y", "@i18nexus/cli@latest"],
+      "enabled": true
+    },
+    "lighthouse": {
+      "type": "local",
+      "command": ["npx", "tsx", "packages/mcp-server-lighthouse/src/index.ts"],
+      "enabled": true
+    },
+    "better-auth": {
+      "type": "local",
+      "command": ["npx", "tsx", "packages/better-auth-mcp/src/index.ts"],
+      "enabled": true
+    },
+    "email": {
+      "type": "local",
+      "command": ["npx", "tsx", "packages/mcp-server-mailgun/src/index.ts"],
+      "enabled": true
+    }
+  },
+  "lsp": {
+    "typescript": {
+      "command": ["typescript-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx"]
+    },
+    "tailwindcss": {
+      "command": ["tailwindcss-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".css"]
+    }
+  },
+  "plugin": [
+    "opencode-agent-memory",
+    "opencode-background-agents",
+    "opencode-handoff",
+    "opencode-skills"
+  ]
+}

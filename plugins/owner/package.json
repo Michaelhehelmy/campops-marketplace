@@ -1,0 +1,19 @@
+{
+  "name": "@sinaicamps/plugin-owner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "owner",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "routes",
+      "auth"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

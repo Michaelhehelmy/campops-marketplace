@@ -1,43 +1,36 @@
-import { Hono } from 'hono';
-import { PluginAPI } from '../../../../packages/plugin-sdk/src/types.js';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 
-export const housekeepingRouter = (api: PluginAPI) => {
-  const app = new Hono();
-
-  app.get('/', async (c) => {
-    const status = c.req.query('status');
-    let sql = 'SELECT * FROM housekeeping_tasks';
-    const params = [];
-
-    if (status) {
-      sql += ' WHERE status = $1';
-      params.push(status);
-    }
-
-    const tasks = await api.db.query(sql, params);
-    return c.json({ data: tasks });
-  });
-
-  app.patch('/tasks/:id/status', async (c) => {
-    const id = c.req.param('id');
-    const { status } = await c.req.json();
-
-    await api.db.execute(
-      'UPDATE housekeeping_tasks SET status = $1, updated_at = NOW() WHERE id = $2',
-      [status, id]
-    );
-
-    // Check if cleaning finished to mark room as available
-    const task = await api.db.queryOne(
-      'SELECT room_id, category FROM housekeeping_tasks WHERE id = $1',
-      [id]
-    );
-    if (task?.category === 'cleaning' && status === 'completed') {
-      await api.hooks.execute('rooms.status_updated', { id: task.room_id, status: 'available' });
-    }
-
-    return c.json({ success: true, status });
-  });
-
-  return app;
-};
+export function housekeepingRouter(api: PluginAPI) {
+  return {
+    GET: async (req: Request) => {
+      const url = new URL(req.url);
+      const status = url.searchParams.get('status');
+      let tasks;
+      if (status) {
+        tasks = await api.db.query(
+          'SELECT * FROM housekeeping_tasks WHERE status = ? ORDER BY created_at DESC',
+          [status]
+        );
+      } else {
+        tasks = await api.db.query('SELECT * FROM housekeeping_tasks ORDER BY created_at DESC');
+      }
+      return new Response(JSON.stringify({ tasks }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    },
+    PATCH: async (req: Request) => {
+      const url = new URL(req.url);
+      const id = url.pathname.split('/').pop();
+      const body = await req.json();
+      await api.db.execute(
+        'UPDATE housekeeping_tasks SET status = ?, updated_at = NOW() WHERE id = ?',
+        [body.status, id]
+      );
+      return new Response(JSON.stringify({ id, status: body.status }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    },
+  };
+}

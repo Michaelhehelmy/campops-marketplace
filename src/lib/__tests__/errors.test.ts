@@ -89,29 +89,29 @@ describe('errorResponse', () => {
     expect(res.status).toBe(404);
     expect(res.headers.get('Content-Type')).toBe('application/json');
     const body = await res.json();
-    expect(body.error.code).toBe('NOT_FOUND');
-    expect(body.error.message).toBe('Resource not found');
+    expect(body.code).toBe('NOT_FOUND');
+    expect(body.error).toBe('Resource not found');
   });
 
   it('should include details when present', async () => {
     const err = new ValidationError('Bad input', { field: 'email' });
     const res = errorResponse(err);
     const body = await res.json();
-    expect(body.error.details).toEqual({ field: 'email' });
+    expect(body.details).toEqual({ field: 'email' });
   });
 
   it('should not include details when absent', async () => {
     const err = new NotFoundError();
     const res = errorResponse(err);
     const body = await res.json();
-    expect(body.error.details).toBeUndefined();
+    expect(body.details).toBeUndefined();
   });
 
   it('should handle unknown errors as internal', async () => {
     const res = errorResponse(new Error('boom'));
     expect(res.status).toBe(500);
     const body = await res.json();
-    expect(body.error.code).toBe('INTERNAL_ERROR');
+    expect(body.code).toBe('INTERNAL_ERROR');
   });
 
   it('should not leak error messages in production', async () => {
@@ -119,7 +119,7 @@ describe('errorResponse', () => {
     try {
       const res = errorResponse(new Error('secret details'));
       const body = await res.json();
-      expect(body.error.message).toBe('Internal server error');
+      expect(body.error).toBe('Internal server error');
     } finally {
       vi.unstubAllEnvs();
     }
@@ -129,6 +129,6 @@ describe('errorResponse', () => {
     const res = errorResponse('string error');
     expect(res.status).toBe(500);
     const body = await res.json();
-    expect(body.error.code).toBe('INTERNAL_ERROR');
+    expect(body.code).toBe('INTERNAL_ERROR');
   });
 });

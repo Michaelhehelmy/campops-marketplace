@@ -1,19 +1,12 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 
-/**
- * GET /api/manage/commissions
- *
- * Returns commission data for all bookings.
- * Requires authentication with manager or staff role.
- *
- * Response:
- * {
- *   "commissions": [...]
- * }
- */
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireSession(req);
+    if (isErrorResponse(session)) return session;
     const { searchParams } = req.nextUrl;
     const limit = parseInt(searchParams.get('limit') || '50');
     const skip = parseInt(searchParams.get('skip') || '0');
@@ -65,6 +58,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Commissions API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

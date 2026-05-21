@@ -14,8 +14,7 @@
  * modifying the existing service.
  */
 
-import type { PluginAPI } from '../../../packages/plugin-sdk/src/types';
-import { Hooks } from '../../../packages/plugin-sdk/src/hooks';
+import { type PluginAPI, Hooks } from '@sinaicamps/plugin-sdk';
 
 const ICAL_SYNC_HOOK = 'ical.sync_requested';
 

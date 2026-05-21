@@ -167,16 +167,16 @@ mv sinaicamps.db.disabled sinaicamps.db
 
 A core test verifies the **framework infrastructure** — things every plugin relies on:
 
-| Area                                   | Files                                        |
-| -------------------------------------- | -------------------------------------------- |
-| Plugin lifecycle (init, route reg.)    | `src/lib/__tests__/plugin-ecosystem.test.ts` |
-| Hook system                            | `src/lib/__tests__/hooks.test.ts`            |
-| PluginAPI surface                      | `src/lib/__tests__/PluginAPI.test.ts`        |
-| Database wrapper                       | `src/lib/__tests__/db.test.ts`               |
-| Plugin SDK contracts                   | `packages/plugin-sdk/__tests__/`             |
-| UI registry route                      | `src/app/api/plugins/ui-registry/__tests__/` |
-| Master APIs (listings, plugins, stats) | `src/app/api/master/*/__tests__/`            |
-| UI components (shell)                  | `src/components/homepage/__tests__/`         |
+| Area                                | Files                                          |
+| ----------------------------------- | ---------------------------------------------- |
+| Plugin lifecycle (init, route reg.) | `src/lib/__tests__/plugin-ecosystem.test.ts`   |
+| Hook system                         | `src/lib/__tests__/hooks.test.ts`              |
+| PluginAPI surface                   | `src/lib/__tests__/PluginAPI.test.ts`          |
+| Database wrapper                    | `src/lib/__tests__/db.test.ts`                 |
+| Plugin SDK contracts                | `packages/plugin-sdk/__tests__/`               |
+| UI registry route                   | `src/app/api/plugins/ui-registry/__tests__/`   |
+| Route coverage                      | `src/app/api/__tests__/route-coverage.test.ts` |
+| API smoke tests                     | `tests/api-smoke.test.ts`                      |
 
 Core tests **must not** depend on domain concepts (bookings, rooms, guests, etc.).
 
@@ -188,7 +188,7 @@ A plugin test verifies **domain logic inside a plugin**:
 - CRM activity logging
 - Plugin-to-plugin hook communication
 
-Plugin tests live in `plugins/<name>/__tests__/` and are **excluded from the root Vitest run** (see `vitest.config.ts` excludes).
+Plugin tests live in `plugins/<name>/__tests__/`. Only `plugins/booking/__tests__/plugin-integration.test.ts` is excluded from the root Vitest run. Most plugin tests are included in the root suite — ensure they do not depend on framework internals.
 
 ---
 
@@ -206,7 +206,6 @@ Use the `buildMockApi()` helper pattern (see `plugins/test-probe/src/__tests__/i
 
 ```ts
 import { describe, it, expect, vi } from 'vitest';
-import { init } from '../src/index.js';
 
 function buildMockApi() {
   return {
@@ -227,13 +226,16 @@ function buildMockApi() {
 
 it('creates the my-plugin table', async () => {
   const api = buildMockApi();
+  const init = (await import('../src/index.js')).default;
   await init(api as any);
   const tableNames = api.db.createTable.mock.calls.map((c) => c[0]);
   expect(tableNames).toContain('my-table');
 });
 ```
 
-**Plugin unit tests run with a separate vitest config** inside the plugin directory or are excluded from root to avoid path resolution issues.
+**Plugin unit tests may use a separate vitest config** inside the plugin directory or be excluded from root to avoid path resolution issues.
+
+By default most plugin tests run as part of the root vitest suite — only `plugins/booking/__tests__/plugin-integration.test.ts` is excluded.
 
 ### 2. Add plugin E2E tests
 

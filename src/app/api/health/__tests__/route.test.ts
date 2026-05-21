@@ -10,7 +10,10 @@ describe('GET /api/health', () => {
     expect(data.uptime).toBeGreaterThanOrEqual(0);
     expect(data.timestamp).toBeDefined();
     expect(data.checks.database.status).toBe('ok');
+    expect(data.checks.database.duration).toBeGreaterThanOrEqual(0);
+    expect(data.checks.disk).toBeDefined();
     expect(data.checks.plugins.status).toBe('ok');
     expect(data.checks.memory.status).toBe('ok');
+    expect(data.checks.memory.message).toContain('MB');
   });
 });

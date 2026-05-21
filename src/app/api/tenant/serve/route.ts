@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db, getSqlite } from '@/lib/db';
 import { logger } from '@/lib/logger';
@@ -35,7 +36,7 @@ function serveFile(
   buildsPath: string,
   rawPath: string,
   resolvedProperty: { id: string; settings?: string | null }
-): NextResponse | null {
+): NextResponse {
   const cleanPathname = rawPath.split('?')[0];
   let relativePath = cleanPathname;
   const localeMatch = cleanPathname.match(/^\/([a-z]{2})(?:\/|$)/);
@@ -226,6 +227,6 @@ export async function GET(req: NextRequest) {
     return serveFile(buildsPath, rawPath, resolvedProperty);
   } catch (err: any) {
     logger.error('[Serve Route] Error serving custom domain asset:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

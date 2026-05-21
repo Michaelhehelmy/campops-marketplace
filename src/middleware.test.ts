@@ -116,4 +116,78 @@ describe('middleware tenant rewrites', () => {
     expect(res.headers.get('x-tenant-plan')).toBe('premium');
     expect(res.headers.get('x-tenant-slug')).toBe('premium-camp');
   });
+
+  describe('CSRF protection', () => {
+    it('sets a secure random CSRF cookie on safe requests if not already set', async () => {
+      const req = new NextRequest('http://localhost/en/search', {
+        headers: { 'x-forwarded-host': 'sinaicamps.localhost' },
+      });
+
+      const res = await middleware(req);
+      const setCookie = res.headers.get('set-cookie');
+      expect(setCookie).toContain('x-csrf-token=');
+    });
+
+    it('sets CSRF cookie on first mutating request when no cookie exists', async () => {
+      const req = new NextRequest('http://localhost/api/plugins', {
+        method: 'POST',
+        headers: { 'x-forwarded-host': 'sinaicamps.localhost' },
+      });
+
+      const res = await middleware(req);
+      expect(res.status).not.toBe(403);
+      const setCookie = res.headers.get('set-cookie');
+      expect(setCookie).toContain('x-csrf-token=');
+    });
+
+    it('allows mutating API requests when CSRF cookie and x-csrf-token header match', async () => {
+      const token = 'test-csrf-token-123';
+      const req = new NextRequest('http://localhost/api/plugins', {
+        method: 'POST',
+        headers: {
+          'x-forwarded-host': 'sinaicamps.localhost',
+          'x-csrf-token': token,
+          cookie: `x-csrf-token=${token}`,
+        },
+      });
+
+      const res = await middleware(req);
+      expect(res.status).not.toBe(403);
+    });
+
+    it('allows mutating API requests when CSRF cookie and X-CSRF-Token header match', async () => {
+      const token = 'test-csrf-token-456';
+      const req = new NextRequest('http://localhost/api/plugins', {
+        method: 'POST',
+        headers: {
+          'x-forwarded-host': 'sinaicamps.localhost',
+          'X-CSRF-Token': token,
+          cookie: `x-csrf-token=${token}`,
+        },
+      });
+
+      const res = await middleware(req);
+      expect(res.status).not.toBe(403);
+    });
+
+    it('allows mutating API requests to excluded auth endpoints even if token is missing', async () => {
+      const req = new NextRequest('http://localhost/api/auth/signin', {
+        method: 'POST',
+        headers: { 'x-forwarded-host': 'sinaicamps.localhost' },
+      });
+
+      const res = await middleware(req);
+      expect(res.status).not.toBe(403);
+    });
+
+    it('allows mutating API requests to excluded test endpoints even if token is missing', async () => {
+      const req = new NextRequest('http://localhost/api/test/reset', {
+        method: 'POST',
+        headers: { 'x-forwarded-host': 'sinaicamps.localhost' },
+      });
+
+      const res = await middleware(req);
+      expect(res.status).not.toBe(403);
+    });
+  });
 });

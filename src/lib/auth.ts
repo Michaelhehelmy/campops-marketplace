@@ -8,8 +8,22 @@ export const auth = betterAuth({
   trustedOrigins: [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'https://*.sinaicamps.com',
     ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
   ],
+  session: {
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      httpOnly: true,
+    },
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 1 day — refresh session when < 1 day remaining
+  },
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === 'production',
+    crossSubdomainActivate: true,
+  },
   database: drizzleAdapter(drizzle, {
     provider:
       typeof process !== 'undefined' &&

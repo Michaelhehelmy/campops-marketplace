@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Loader2, Mail, Lock, ArrowRight, Shield } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 
 export default function LoginPage({ params }: { params: { locale: string } }) {
+  const t = useTranslations('login');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -91,10 +93,8 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
           <div className="mx-auto w-14 h-14 bg-gradient-to-tr from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-500/10 mb-6">
             <Shield className="w-7 h-7 text-slate-950 stroke-[2.5]" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
-          <p className="mt-2 text-sm text-zinc-400">
-            Sign in to manage your premium bookings or listing property.
-          </p>
+          <h1 className="text-3xl font-black text-white tracking-tight">{t('title')}</h1>
+          <p className="mt-2 text-sm text-zinc-400">{t('subtitle')}</p>
         </div>
 
         <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
@@ -167,7 +167,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
                 className="text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors"
                 aria-label="Reset password"
               >
-                Forgot password?
+                {t('forgotPassword')}
               </a>
             </div>
 
@@ -181,7 +181,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
                 <Loader2 className="h-5 w-5 animate-spin text-slate-950" aria-hidden="true" />
               ) : (
                 <div className="flex items-center gap-2">
-                  Sign In{' '}
+                  {t('signIn')}{' '}
                   <ArrowRight
                     className="h-4 w-4 stroke-[2.5] group-hover:translate-x-1 transition-transform"
                     aria-hidden="true"
@@ -193,12 +193,12 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
 
           <div className="mt-8 pt-6 border-t border-slate-800/80 text-center">
             <p className="text-xs text-zinc-500">
-              New to SinaiCamps?{' '}
+              {t('newToPlatform')}{' '}
               <a
                 href={`/${params.locale}/list-your-camp`}
                 className="font-bold text-amber-400 hover:text-amber-300 transition-colors"
               >
-                Register your property
+                {t('registerProperty')}
               </a>
             </p>
           </div>

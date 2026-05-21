@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Search, MapPin, Users, Calendar, Loader2 } from 'lucide-react';
 import { searchProperties, type PropertyResult } from '@/lib/api';
 import PropertyCard from '@/components/PropertyCard';
@@ -17,6 +18,7 @@ interface SearchParams {
 }
 
 export default function SearchPage() {
+  const t = useTranslations('search');
   const [results, setResults] = useState<PropertyResult[] | null>(null);
   const [totalCount, setTotalCount] = useState(0);
   const [nights, setNights] = useState(1);
@@ -63,8 +65,8 @@ export default function SearchPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero */}
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-3">Find your perfect stay</h1>
-        <p className="text-lg text-gray-500">Search across all our properties</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">{t('title')}</h1>
+        <p className="text-lg text-gray-500">{t('subtitle')}</p>
       </div>
 
       {/* Search form */}
@@ -73,7 +75,7 @@ export default function SearchPage() {
       </div>
 
       {/* Results */}
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Available Camps</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('availableCamps')}</h2>
 
       {isPending && (
         <div className="flex justify-center py-20">
@@ -90,12 +92,12 @@ export default function SearchPage() {
       {results !== null && !isPending && (
         <>
           <p className="text-sm text-gray-500 mb-4">
-            {totalCount} propert{totalCount === 1 ? 'y' : 'ies'} found
+            {t('propertiesFound', { count: totalCount })}
           </p>
           {results.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
               <Search className="w-12 h-12 mx-auto mb-4 opacity-40" />
-              <p className="text-lg">No properties available for your dates.</p>
+              <p className="text-lg">{t('noResults')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

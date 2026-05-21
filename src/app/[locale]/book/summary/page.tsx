@@ -1,8 +1,10 @@
 'use client';
 
-import { Suspense, useState, useTransition } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
-import { ArrowLeft, User, Mail, Phone, CreditCard, Loader2, CheckCircle2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { ArrowLeft, User, Mail, Phone, Loader2, CheckCircle2 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 import { createBooking } from '@/lib/api';
 
 type Step = 'details' | 'payment' | 'confirmation';
@@ -37,10 +39,12 @@ export default function BookingSummaryPage() {
 }
 
 function BookingSummaryContent() {
+  const t = useTranslations('booking');
   const params = useParams();
   const sp = useSearchParams();
   const router = useRouter();
   const locale = params.locale as string;
+  const { data: session, isPending } = authClient.useSession();
 
   const propertyId = sp.get('propertyId') ?? '';
   const roomTypeId = sp.get('roomTypeId') ?? '';
@@ -53,19 +57,6 @@ function BookingSummaryContent() {
   const priceCurrency = sp.get('priceCurrency') ?? currency;
   const nights = nightsBetween(checkIn, checkOut);
   const total = pricePerNight * nights;
-
-  console.log('[BookingSummary] params:', {
-    propertyId,
-    roomTypeId,
-    checkIn,
-    checkOut,
-    currency,
-    roomName,
-    propertyName,
-    pricePerNight,
-    nights,
-    total,
-  });
 
   const [step, setStep] = useState<Step>('details');
   const [isLoading, setIsLoading] = useState(false);
@@ -80,6 +71,39 @@ function BookingSummaryContent() {
     adults: 2,
     children: 0,
     paymentProvider: 'stripe',
+  });
+
+  // Redirect unauthenticated users to login
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    const nextParams = new URLSearchParams();
+    if (checkIn) nextParams.set('checkIn', checkIn);
+    if (checkOut) nextParams.set('checkOut', checkOut);
+    if (propertyId) nextParams.set('propertyId', propertyId);
+    if (roomTypeId) nextParams.set('roomTypeId', roomTypeId);
+    const next = `/${locale}/book/summary?${nextParams.toString()}`;
+    router.replace(`/${locale}/login?next=${encodeURIComponent(next)}`);
+    return null;
+  }
+
+  console.log('[BookingSummary] params:', {
+    propertyId,
+    roomTypeId,
+    checkIn,
+    checkOut,
+    currency,
+    roomName,
+    propertyName,
+    pricePerNight,
+    nights,
+    total,
   });
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
@@ -119,14 +143,13 @@ function BookingSummaryContent() {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <CheckCircle2 className="w-16 h-16 text-brand-600 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('bookingConfirmed')}</h1>
         <p className="text-gray-500 mb-6">
-          Your reservation at <strong>{propertyName}</strong> has been received. A confirmation
-          email has been sent to <strong data-testid="confirmed-email">{form.guestEmail}</strong>.
+          {t('confirmedDesc', { name: propertyName, email: form.guestEmail })}
         </p>
         {reservationId && (
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-6 py-4 inline-block mb-8">
-            <p className="text-xs text-gray-400 mb-1">Booking reference</p>
+            <p className="text-xs text-gray-400 mb-1">{t('bookingRef')}</p>
             <p className="font-mono font-bold text-lg text-gray-900">{reservationId}</p>
           </div>
         )}
@@ -134,7 +157,7 @@ function BookingSummaryContent() {
           onClick={() => router.push(`/${locale}/search`)}
           className="bg-brand-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors"
         >
-          Search more properties
+          {t('searchMore')}
         </button>
       </div>
     );
@@ -148,7 +171,7 @@ function BookingSummaryContent() {
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-600 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        {step === 'details' ? 'Back' : 'Edit guest details'}
+        {step === 'details' ? 'Back' : t('editDetails')}
       </button>
 
       {/* Progress steps */}
@@ -170,7 +193,7 @@ function BookingSummaryContent() {
             <span
               className={`text-sm ${step === s ? 'font-medium text-gray-900' : 'text-gray-400'}`}
             >
-              {s === 'details' ? 'Guest details' : 'Payment'}
+              {s === 'details' ? t('guestDetails') : t('payment')}
             </span>
             {i < 1 && <div className="flex-1 h-px bg-gray-200 min-w-6" />}
           </div>
@@ -185,11 +208,11 @@ function BookingSummaryContent() {
               onSubmit={handleDetailsSubmit}
               className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4"
             >
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Guest details</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('guestDetails')}</h2>
 
               <div>
                 <label htmlFor="guestName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full name
+                  {t('fullName')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -211,7 +234,7 @@ function BookingSummaryContent() {
                   htmlFor="guestEmail"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Email address
+                  {t('email')}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -233,7 +256,7 @@ function BookingSummaryContent() {
                   htmlFor="guestPhone"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Phone (optional)
+                  {t('phone')}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -250,7 +273,9 @@ function BookingSummaryContent() {
 
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('adults')}
+                  </label>
                   <input
                     required
                     type="number"
@@ -263,7 +288,9 @@ function BookingSummaryContent() {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Children</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('children')}
+                  </label>
                   <input
                     type="number"
                     min={0}
@@ -281,7 +308,7 @@ function BookingSummaryContent() {
                 onClick={() => setStep('payment')}
                 className="w-full bg-brand-600 text-white py-3 rounded-xl font-medium hover:bg-brand-700 transition-colors mt-2"
               >
-                Continue to payment
+                {t('proceedToPayment')}
               </button>
             </form>
           )}
@@ -292,14 +319,14 @@ function BookingSummaryContent() {
                 data-testid="payment-method-heading"
                 className="text-lg font-semibold text-gray-900 mb-4"
               >
-                Payment method
+                {t('paymentMethod')}
               </h2>
 
               <div className="space-y-3 mb-6">
                 {[
-                  { id: 'stripe', label: 'Credit / Debit card', icon: '💳' },
-                  { id: 'paypal', label: 'PayPal', icon: '🅿️' },
-                  { id: 'pay_later', label: 'Pay at property', icon: '🏕️' },
+                  { id: 'stripe', label: t('card'), icon: '💳' },
+                  { id: 'paypal', label: t('paypal'), icon: '🅿️' },
+                  { id: 'pay_later', label: t('payLater'), icon: '🏕️' },
                 ].map((method) => (
                   <label
                     key={method.id}
@@ -339,7 +366,7 @@ function BookingSummaryContent() {
                 className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-60 transition-colors"
               >
                 {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {form.paymentProvider === 'pay_later' ? 'Confirm Booking' : 'Proceed to payment'}
+                {form.paymentProvider === 'pay_later' ? t('confirmBooking') : t('proceedToPayment')}
               </button>
             </div>
           )}
@@ -347,7 +374,7 @@ function BookingSummaryContent() {
 
         {/* Order summary */}
         <div className="bg-white rounded-2xl border border-gray-200 p-5 h-fit">
-          <h3 className="font-semibold text-gray-900 mb-4">Booking summary</h3>
+          <h3 className="font-semibold text-gray-900 mb-4">{t('summary')}</h3>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center text-lg">
               🏕️
@@ -360,27 +387,27 @@ function BookingSummaryContent() {
 
           <div className="text-sm space-y-2 mb-4 pb-4 border-b border-gray-100">
             <div className="flex justify-between text-gray-600">
-              <span>Check-in</span>
+              <span>{t('checkIn')}</span>
               <span className="font-medium">{checkIn}</span>
             </div>
             <div className="flex justify-between text-gray-600">
-              <span>Check-out</span>
+              <span>{t('checkOut')}</span>
               <span className="font-medium">{checkOut}</span>
             </div>
             <div className="flex justify-between text-gray-600">
-              <span>Duration</span>
+              <span>{t('duration')}</span>
               <span className="font-medium">
-                {nights} night{nights !== 1 ? 's' : ''}
+                {nights} {t('nights', { n: nights })}
               </span>
             </div>
             <div className="flex justify-between text-gray-600">
-              <span>Per night</span>
+              <span>{t('perNight')}</span>
               <span className="font-medium">{formatPrice(pricePerNight, priceCurrency)}</span>
             </div>
           </div>
 
           <div className="flex justify-between font-bold text-gray-900">
-            <span>Total</span>
+            <span>{t('totalAmount')}</span>
             <span>{formatPrice(total, priceCurrency)}</span>
           </div>
         </div>

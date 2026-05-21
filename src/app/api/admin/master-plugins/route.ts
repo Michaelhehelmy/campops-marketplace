@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Master Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -74,6 +75,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ plugins });
   } catch (err: any) {
     console.error('[Master Plugins GET API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

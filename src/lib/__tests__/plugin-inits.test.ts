@@ -6,14 +6,14 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { init as activitiesInit } from '../../../plugins/activities/src/index';
-import { init as guestCrmInit } from '../../../plugins/guest-crm/src/index';
-import { init as housekeepingInit } from '../../../plugins/housekeeping/src/index';
-import { init as staffRosterInit } from '../../../plugins/staff-roster/src/index';
+import activitiesInit from '../../../plugins/activities/src/index';
+import guestCrmInit from '../../../plugins/guest-crm/src/index';
+import housekeepingInit from '../../../plugins/housekeeping/src/index';
+import staffRosterInit from '../../../plugins/staff-roster/src/index';
 import listingAdminInit from '../../../plugins/listing-admin/src/index';
-import { init as otaInit } from '../../../plugins/ota-channel-manager/src/index';
-import { init as posInit } from '../../../plugins/pos-kds/src/index';
-import { init as inventoryInit } from '../../../plugins/inventory-waste/src/index';
+import otaInit from '../../../plugins/ota-channel-manager/src/index';
+import posInit from '../../../plugins/pos-kds/src/index';
+import inventoryInit from '../../../plugins/inventory-waste/src/index';
 
 // ─── buildMockApi ─────────────────────────────────────────────────────────────
 

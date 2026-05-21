@@ -4,8 +4,14 @@
   "private": true,
   "type": "module",
   "main": "src/index.ts",
-  "dependencies": {},
+  "sinaicamps": {
+    "pluginId": "accounting",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "ui"
+    ]
+  },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@sinaicamps/plugin-sdk": "*"
   }
 }

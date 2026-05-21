@@ -33,11 +33,22 @@ api.interceptors.request.use(
       config.headers["X-Property-Id"] = tenantPropertyId;
     }
 
-    // Add idempotency key for mutation requests
+    // Add idempotency key and CSRF token for mutation requests
     const method = config.method?.toLowerCase();
     if (method && ["post", "put", "patch", "delete"].includes(method)) {
       if (!config.headers) config.headers = {} as any;
       config.headers["Idempotency-Key"] = crypto.randomUUID();
+
+      // Read x-csrf-token from cookies to include in mutated requests (Double-Submit Token Pattern)
+      if (typeof document !== "undefined") {
+        const csrfToken = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("x-csrf-token="))
+          ?.split("=")[1];
+        if (csrfToken) {
+          config.headers["x-csrf-token"] = decodeURIComponent(csrfToken);
+        }
+      }
     }
 
     return config;
@@ -53,9 +64,14 @@ api.interceptors.response.use(
       const status = error.response.status;
       const data = error.response.data as {
         message?: string;
-        error?: string;
+        error?: any;
         errors?: Record<string, string>;
       };
+
+      const errorMsg =
+        data.error && typeof data.error === "object" && "message" in data.error
+          ? data.error.message
+          : data.error;
 
       switch (status) {
         case 401:
@@ -70,7 +86,7 @@ api.interceptors.response.use(
           if (data.errors) {
             Object.values(data.errors).forEach((msg) => toast.error(msg));
           } else {
-            toast.error(data.message || data.error || "Validation error");
+            toast.error(data.message || errorMsg || "Validation error");
           }
           break;
         case 429:
@@ -79,10 +95,10 @@ api.interceptors.response.use(
         case 500:
         case 502:
         case 503:
-          toast.error(data.message || data.error || "Server error. Please try again later.");
+          toast.error(data.message || errorMsg || "Server error. Please try again later.");
           break;
         default:
-          toast.error(data.message || data.error || "An error occurred");
+          toast.error(data.message || errorMsg || "An error occurred");
       }
     } else if (error.request) {
       toast.error("Network error. Please check your connection.");

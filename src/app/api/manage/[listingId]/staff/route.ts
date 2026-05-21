@@ -1,36 +1,48 @@
-import { NextResponse } from 'next/server';
-import { drizzle } from '@/lib/db';
-import { propertyStaff, users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
 
-export async function GET(request: Request, { params }: { params: { listingId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { listingId: string } }) {
+  const session = await requireListingAccess(req, params.listingId, [
+    'manager',
+    'marketplace_master',
+  ]);
+  if (isErrorResponse(session)) return session;
+
   const { listingId } = params;
 
   try {
-    const staffMembers = await drizzle
-      .select({
-        id: propertyStaff.id,
-        name: users.name,
-        role: propertyStaff.role,
-        email: users.email,
-      })
-      .from(propertyStaff)
-      .leftJoin(users, eq(propertyStaff.userId, users.id))
-      .where(eq(propertyStaff.tenantId, listingId));
+    const property = (await db
+      .prepare(`SELECT id FROM properties WHERE id = ? OR slug = ? LIMIT 1`)
+      .get(listingId, listingId)) as any;
 
-    // Map to frontend format
-    const formatted = staffMembers.map((s: any) => ({
-      id: s.id,
-      name: s.name || 'Unknown Staff',
-      role: s.role,
-      status: 'on_duty', // Mocked for now
-      phone: '+1 234 567 890', // Mocked for now
-      email: s.email,
-    }));
+    if (!property) {
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+    }
 
-    return NextResponse.json(formatted);
-  } catch (error) {
-    console.error('Failed to fetch staff:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    const staff = (await db
+      .prepare(
+        `SELECT ps.id, ps.user_id, ps.role, u.email, u.name
+         FROM property_staff ps
+         LEFT JOIN users u ON ps.user_id = u.id
+         WHERE ps.property_id = ?
+         ORDER BY ps.role ASC`
+      )
+      .all(property.id)) as any[];
+
+    return NextResponse.json(
+      staff.map((s: any) => ({
+        id: s.id,
+        userId: s.user_id,
+        name: s.name || 'Unknown',
+        email: s.email || '',
+        role: s.role,
+        status: 'on_duty',
+        phone: '',
+      }))
+    );
+  } catch (err: any) {
+    console.error('[Staff API] Error:', err);
+    return NextResponse.json([]);
   }
 }

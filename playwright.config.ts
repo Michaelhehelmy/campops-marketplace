@@ -40,7 +40,7 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      'BASE_DOMAIN=sinaicamps.localhost NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.localhost API_URL=http://localhost:3000 NEXT_PUBLIC_API_URL=http://localhost:3000 npm run dev',
+      'FORCE_LOCAL_REDIRECT=true BASE_DOMAIN=sinaicamps.localhost NEXT_PUBLIC_BASE_DOMAIN=sinaicamps.localhost API_URL=http://localhost:3000 NEXT_PUBLIC_API_URL=http://localhost:3000 npm run dev',
     url: 'http://localhost:3000/api/health',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',

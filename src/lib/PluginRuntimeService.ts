@@ -4,6 +4,30 @@ import { db } from './db';
 import { makePluginAPI } from './PluginAPI';
 import { logger } from './logger';
 import { PluginBroker } from './PluginBroker';
+import { PluginCapability } from '../../packages/plugin-sdk/src/types';
+import { recordLoad, recordError, removeRecord, startWatchdog } from './plugin-watchdog';
+
+/**
+ * Reads the capabilities a plugin declares in its package.json manifest.
+ * Uses a `sinaicamps.capabilities` field — omitted means all capabilities granted.
+ */
+function readPluginCapabilities(
+  pluginDir: string,
+  pluginId: string
+): PluginCapability[] | undefined {
+  const manifestPath = path.join(pluginDir, 'package.json');
+  if (!fs.existsSync(manifestPath)) return undefined;
+
+  try {
+    const pkg = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+    const raw: unknown = (pkg as any).sinaicamps?.capabilities;
+    if (!Array.isArray(raw) || raw.length === 0) return undefined;
+    return raw.map(String) as PluginCapability[];
+  } catch {
+    logger.warn(`Could not parse manifest for plugin ${pluginId}, granting all capabilities`);
+    return undefined;
+  }
+}
 
 /**
  * PluginRuntimeService
@@ -91,6 +115,7 @@ export class PluginRuntimeService {
         cache: false,
         alias: {
           '@': path.join(process.cwd(), 'src'),
+          '@sinaicamps/plugin-sdk': path.join(process.cwd(), 'packages/plugin-sdk/src/index.ts'),
         },
       });
       const pluginModule = jiti(foundPath);
@@ -99,10 +124,23 @@ export class PluginRuntimeService {
 
       if (typeof initFunc === 'function') {
         logger.info(`Initializing plugin: ${pluginId}`);
-        const api = makePluginAPI(pluginId, propertyId);
-        const publicApi = await initFunc(api);
+        const declarations = readPluginCapabilities(pluginDir, pluginId);
+        const api = makePluginAPI(pluginId, propertyId, declarations);
+
+        const initPromise = initFunc(api);
+        const timeoutMs = process.env.NODE_ENV === 'test' ? 100 : 10000;
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`Initialization timed out after ${timeoutMs / 1000}s`)),
+            timeoutMs
+          )
+        );
+
+        const publicApi = await Promise.race([initPromise, timeoutPromise]);
+
         this.initializedPlugins.add(cacheKey);
         PluginBroker.register(pluginId, publicApi ?? {});
+        recordLoad(pluginId, propertyId);
         logger.info(
           `Initialized plugin: ${pluginId}${propertyId ? ` (prop:${propertyId})` : ' (system)'}`
         );
@@ -110,9 +148,22 @@ export class PluginRuntimeService {
         logger.warn(`Plugin ${pluginId} does not have a default export function`);
       }
     } catch (err: any) {
+      recordError(pluginId, err.message, propertyId);
       logger.warn(`Could not load plugin ${pluginId}:`, err.message);
       if (err.stack) logger.error(err.stack);
+
+      // Purge require cache so next attempt gets a fresh module
+      Object.keys(require.cache).forEach((key) => {
+        if (key.includes(`/plugins/${pluginId}/`)) {
+          delete require.cache[key];
+        }
+      });
     }
+  }
+
+  static async initAndWatch(propertyId?: string) {
+    await this.init(propertyId);
+    startWatchdog();
   }
 
   static clearCache() {

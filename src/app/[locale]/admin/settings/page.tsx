@@ -35,11 +35,16 @@ export default function MasterSettingsPage() {
       });
   }, []);
 
+  const getCsrfToken = () => {
+    const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : '';
+  };
+
   const handleSave = async () => {
     try {
       const res = await fetch('/api/master/settings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
         body: JSON.stringify(settings),
       });
       if (res.ok) {
@@ -319,12 +324,17 @@ function HomepageOrdering() {
     setConfig({ ...config, sections: newSections });
   };
 
+  const getCsrfToken = () => {
+    const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : '';
+  };
+
   const saveConfig = async () => {
     setSaving(true);
     try {
       const res = await fetch('/api/public/homepage-config', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
         body: JSON.stringify(config),
       });
       if (res.ok) {

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real, index } from 'drizzle-orm/sqlite-core';
 
 // --- Better Auth Tables ---
 
@@ -188,63 +188,94 @@ export const sites = sqliteTable('sites', {
  * posts — universal content object. Every listing, booking, room, etc. is a post.
  * Domain-specific fields live in postmeta (EAV).
  */
-export const posts = sqliteTable('posts', {
-  id: text('id').primaryKey(),
-  siteId: text('site_id').notNull(),
-  postType: text('post_type').notNull(),
-  postStatus: text('post_status').notNull().default('publish'),
-  postSlug: text('post_slug'),
-  postTitle: text('post_title').notNull().default(''),
-  postContent: text('post_content'),
-  authorId: text('author_id'),
-  parentId: text('parent_id'),
-  menuOrder: integer('menu_order').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }),
-});
+export const posts = sqliteTable(
+  'posts',
+  {
+    id: text('id').primaryKey(),
+    siteId: text('site_id').notNull(),
+    postType: text('post_type').notNull(),
+    postStatus: text('post_status').notNull().default('publish'),
+    postSlug: text('post_slug'),
+    postTitle: text('post_title').notNull().default(''),
+    postContent: text('post_content'),
+    authorId: text('author_id'),
+    parentId: text('parent_id'),
+    menuOrder: integer('menu_order').notNull().default(0),
+    createdAt: integer('created_at', { mode: 'timestamp' }),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    siteTypeStatusIdx: index('idx_posts_site_type_status').on(
+      table.siteId,
+      table.postType,
+      table.postStatus
+    ),
+    slugIdx: index('idx_posts_slug').on(table.postSlug),
+    createdIdx: index('idx_posts_created').on(table.createdAt),
+  })
+);
 
 /**
  * postmeta — key/value attributes for any post.
  * All domain-specific fields (price, capacity, check_in, etc.) live here.
  */
-export const postmeta = sqliteTable('postmeta', {
-  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
-  postId: text('post_id').notNull(),
-  metaKey: text('meta_key').notNull(),
-  metaValue: text('meta_value'),
-});
+export const postmeta = sqliteTable(
+  'postmeta',
+  {
+    id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+    postId: text('post_id').notNull(),
+    metaKey: text('meta_key').notNull(),
+    metaValue: text('meta_value'),
+  },
+  (table) => ({
+    postKeyIdx: index('idx_postmeta_post_key').on(table.postId, table.metaKey),
+  })
+);
 
 /**
  * options — per-site key/value store (equivalent to WordPress wp_options).
  * Used for branding tokens, active theme, feature flags, etc.
  */
-export const options = sqliteTable('options', {
-  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
-  siteId: text('site_id').notNull(),
-  optionName: text('option_name').notNull(),
-  optionValue: text('option_value'),
-  autoload: integer('autoload', { mode: 'boolean' }).notNull().default(false),
-});
+export const options = sqliteTable(
+  'options',
+  {
+    id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+    siteId: text('site_id').notNull(),
+    optionName: text('option_name').notNull(),
+    optionValue: text('option_value'),
+    autoload: integer('autoload', { mode: 'boolean' }).notNull().default(false),
+  },
+  (table) => ({
+    siteNameIdx: index('idx_options_site_name').on(table.siteId, table.optionName),
+  })
+);
 
 /**
  * availableThemes — registry of installed themes.
  * Active theme per site is stored as options(site_id, 'active_theme').
  */
-export const availableThemes = sqliteTable('available_themes', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  displayName: text('display_name').notNull(),
-  description: text('description'),
-  version: text('version').notNull().default('1.0.0'),
-  author: text('author'),
-  screenshotUrl: text('screenshot_url'),
-  themePath: text('theme_path').notNull(),
-  planRequirement: text('plan_requirement').notNull().default('basic'),
-  isActive: integer('is_active', { mode: 'boolean' }).default(true),
-  manifest: text('manifest'),
-  createdAt: integer('created_at', { mode: 'timestamp' }),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }),
-});
+export const availableThemes = sqliteTable(
+  'available_themes',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    displayName: text('display_name').notNull(),
+    description: text('description'),
+    version: text('version').notNull().default('1.0.0'),
+    author: text('author'),
+    screenshotUrl: text('screenshot_url'),
+    themePath: text('theme_path').notNull(),
+    planRequirement: text('plan_requirement').notNull().default('basic'),
+    isActive: integer('is_active', { mode: 'boolean' }).default(true),
+    manifest: text('manifest'),
+    createdAt: integer('created_at', { mode: 'timestamp' }),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    nameIdx: index('idx_available_themes_name').on(table.name),
+    activeIdx: index('idx_available_themes_active').on(table.isActive),
+  })
+);
 
 // ---------------------------------------------------------------------------
 // NOTE: The following tables have been REMOVED from the core schema because

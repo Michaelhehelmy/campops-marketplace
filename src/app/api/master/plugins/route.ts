@@ -1,8 +1,11 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { PluginDiscoveryService } from '@/lib/PluginDiscoveryService';
+import { AuditService } from '@/lib/audit';
 import fs from 'fs';
 import path from 'path';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +17,8 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     if (process.env.NODE_ENV !== 'test') {
       console.log('[Master Plugins API] Syncing plugins...');
       await PluginDiscoveryService.syncPlugins().catch((e) => console.error('Sync failed', e));
@@ -80,7 +85,7 @@ export async function GET(req: NextRequest) {
       );
     } catch (e) {}
     console.error('[Master Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -92,6 +97,8 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const body = await req.json();
     const { pluginId, propertyId, enabled } = body;
 
@@ -159,6 +166,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    AuditService.log({
+      userId: session.user?.id || 'unknown',
+      action: enabled ? 'plugin_activated' : 'plugin_deactivated',
+      resource: 'plugin',
+      resourceId: pluginId,
+      details: { pluginId, propertyId, enabled },
+      propertyId: propertyId !== 'all' ? propertyId : undefined,
+    });
+
     return NextResponse.json({
       ok: true,
       pluginId,
@@ -173,6 +189,6 @@ export async function POST(req: NextRequest) {
       );
     } catch (e) {}
     console.error('[Master Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
+    return errorResponse(err);
   }
 }

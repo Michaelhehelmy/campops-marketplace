@@ -1,5 +1,8 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
+import { AuditService } from '@/lib/audit';
 
 // Helper to calculate commission
 async function calculateCommission(
@@ -58,6 +61,8 @@ async function calculateCommission(
 // GET /api/payments/commission - Get commission rates or transactions
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireSession(req);
+    if (isErrorResponse(session)) return session;
     const { searchParams } = req.nextUrl;
     const type = searchParams.get('type'); // 'rates' or 'transactions'
     const propertyId = searchParams.get('propertyId');
@@ -150,13 +155,15 @@ export async function GET(req: NextRequest) {
     }
   } catch (err: any) {
     console.error('[Commission API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 // POST /api/payments/commission - Calculate and record commission for a booking
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireSession(req);
+    if (isErrorResponse(session)) return session;
     const body = await req.json();
     const { bookingId, stripeAccountId, platformFeeCents = 0 } = body;
 
@@ -243,6 +250,16 @@ export async function POST(req: NextRequest) {
       )
       .get(transactionId);
 
+    AuditService.log({
+      userId: session.user.id,
+      action: 'commission.recorded',
+      resource: 'commission_transactions',
+      resourceId: transactionId?.toString(),
+      propertyId: booking.property_id,
+      details: { bookingId, rate, commissionCents, netPayoutCents },
+      ipAddress: req.headers.get('x-forwarded-for') || undefined,
+    });
+
     return NextResponse.json(
       {
         success: true,
@@ -260,13 +277,15 @@ export async function POST(req: NextRequest) {
     );
   } catch (err: any) {
     console.error('[Commission Create API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 // PUT /api/payments/commission - Update commission status after transfer
 export async function PUT(req: NextRequest) {
   try {
+    const session = await requireSession(req);
+    if (isErrorResponse(session)) return session;
     const body = await req.json();
     const { transactionId, status, stripeTransferId, failureReason } = body;
 
@@ -333,6 +352,14 @@ export async function PUT(req: NextRequest) {
       )
       .get(transactionId);
 
+    AuditService.log({
+      userId: session.user.id,
+      action: `commission.${status}`,
+      resource: 'commission_transactions',
+      resourceId: transactionId,
+      details: { stripeTransferId, failureReason },
+    });
+
     return NextResponse.json({
       success: true,
       transaction,
@@ -340,6 +367,6 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Commission Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

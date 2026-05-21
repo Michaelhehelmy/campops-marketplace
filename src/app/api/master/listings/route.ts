@@ -1,8 +1,11 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { AuditService } from '@/lib/audit';
 import fs from 'fs';
 import path from 'path';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 /**
  * GET /api/master/listings
@@ -21,6 +24,8 @@ import { logger } from '@/lib/logger';
  */
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const { searchParams } = req.nextUrl;
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = parseInt(searchParams.get('skip') || '0');
@@ -81,7 +86,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     logger.error('Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -92,6 +97,8 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const body = await req.json();
     const { name, slug, template } = body;
 
@@ -112,9 +119,17 @@ export async function POST(req: NextRequest) {
       )
       .run(id, name, slug);
 
+    AuditService.log({
+      userId: session.user?.id || 'unknown',
+      action: 'listing_created',
+      resource: 'listing',
+      resourceId: id,
+      details: { name, slug },
+    });
+
     return NextResponse.json({ id, name, slug, ok: true }, { status: 201 });
   } catch (err: any) {
     logger.error('Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

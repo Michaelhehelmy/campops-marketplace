@@ -1,7 +1,10 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+
+export const dynamic = 'force-dynamic';
 import { UIRegistryService } from '@/lib/UIRegistryService';
 import { PluginRuntimeService } from '@/lib/PluginRuntimeService';
 
@@ -156,9 +159,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Merge database-persisted UI registrations from UIRegistryService
+    // Only include registrations from plugins that are enabled for this property
+    const enabledPluginSet = new Set(enabledPlugins.map((p) => p.plugin_name));
     const dbSlots = await UIRegistryService.getSlots(resolvedPropertyId || undefined);
     for (const s of dbSlots) {
       if (!s.componentId || !s.slotName) continue;
+      if (context === 'listing' && resolvedPropertyId && !enabledPluginSet.has(s.pluginId))
+        continue;
       if (!slots[s.slotName]) slots[s.slotName] = [];
       const key = s.componentId.includes(':') ? s.componentId : `${s.pluginId}:${s.componentId}`;
       if (!slots[s.slotName].includes(key)) {
@@ -191,6 +198,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     logger.error('Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

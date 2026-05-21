@@ -4,6 +4,25 @@
     "bookings": "My Bookings",
     "login": "Sign In"
   },
+  "hero": {
+    "badge": "Adventure Awaits",
+    "srDescription": "Discover unique accommodations around the world",
+    "heading": "Escape Ordinary.",
+    "headingAccent": "Experience the Unseen.",
+    "subtitle": "Unlock hand-selected destinations and unique stays. Your next unforgettable adventure starts here.",
+    "directBookingBonus": "<label>Direct Booking Bonus:</label> Reserve today and unlock <discount>15% Off</discount>, complimentary welcome drinks, and late checkout.",
+    "discount": "15% Off",
+    "destination": "Where to?",
+    "destinationPlaceholder": "Search destinations",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "guests": "Guests",
+    "guestLabel": "Guest",
+    "guestsLabel": "Guests",
+    "guest5plus": "5+ Guests",
+    "searchButton": "Search",
+    "realtime": "Real-time availability & secure checkout"
+  },
   "search": {
     "title": "Find your perfect stay",
     "subtitle": "Search across all our properties",
@@ -18,7 +37,26 @@
     "nightsFrom": "{nights} nights from",
     "perNight": "/ night",
     "viewProperty": "View property",
-    "available": "available"
+    "available": "available",
+    "availableCamps": "Available Camps",
+    "propertiesFound": "{count} propert{count, plural, one {y} other {ies}} found"
+  },
+  "categories": {
+    "badge": "Curated Collections",
+    "title": "Browse by Category",
+    "subtitle": "Find the perfect setting matching your preferred style.",
+    "propertyCount": "{count} properties"
+  },
+  "featured": {
+    "badge": "Handpicked Stays",
+    "title": "Featured Stays",
+    "subtitle": "Curated and audited by our experts to guarantee direct-booking pricing, quality standards, and seamless service.",
+    "discount": "DIRECT",
+    "discountPercent": "15% {type}",
+    "guaranteedRate": "Guaranteed Rate",
+    "perNight": "/ night + fees",
+    "viewButton": "View",
+    "viewAll": "Explore All Properties"
   },
   "property": {
     "bookNow": "Book now",
@@ -26,11 +64,35 @@
     "perNight": "/ night",
     "capacity": "Up to {n} guests",
     "roomTypes": "Room types",
-    "noRoomsAvailable": "No rooms available for selected dates"
+    "noRoomsAvailable": "No rooms available for selected dates",
+    "installApp": "Install SinaiCamps App",
+    "installDesc": "Get the full experience"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Platform Overview",
+      "subtitle": "Global marketplace performance and system status.",
+      "loadError": "Error loading stats.",
+      "globalRevenue": "Global Revenue",
+      "totalListings": "Total Listings",
+      "liveGuests": "Live Guests",
+      "systemHealth": "System Health",
+      "growthTitle": "Growth Analytics",
+      "growthSubtitle": "Platform-wide revenue performance",
+      "revenue": "Revenue",
+      "marketplaceActions": "Marketplace Actions",
+      "verifyDomains": "Verify Domain Clusters",
+      "broadcastNotice": "Broadcast Global Notice",
+      "noticeMessage": "Notice Message",
+      "noticePlaceholder": "Type the announcement to broadcast across all listing portals...",
+      "sendBroadcast": "Send Broadcast",
+      "domainsChecked": "Checked 4 domain clusters: All active domains matched successfully! ✅",
+      "broadcastSent": "Global announcement broadcasted successfully! 📣"
+    }
   },
   "booking": {
     "summary": "Booking Summary",
-    "guestDetails": "Guest Details",
+    "guestDetails": "Guest details",
     "payment": "Payment",
     "confirmation": "Confirmation",
     "fullName": "Full name",
@@ -44,7 +106,107 @@
     "confirmBooking": "Confirm booking",
     "bookingConfirmed": "Booking confirmed!",
     "bookingRef": "Booking reference",
-    "payLater": "Pay at property"
+    "payLater": "Pay at property",
+    "paypal": "PayPal",
+    "confirmedDesc": "Your reservation at {name} has been received. A confirmation email has been sent to {email}.",
+    "searchMore": "Search more properties",
+    "editDetails": "Edit guest details",
+    "paymentMethod": "Payment method",
+    "card": "Credit / Debit card",
+    "paypal": "PayPal",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "duration": "Duration",
+    "perNight": "Per night"
+  },
+  "manage": {
+    "dashboard": {
+      "title": "Property Overview",
+      "subtitle": "Real-time performance and insights",
+      "totalBookings": "Total Bookings",
+      "occupancy": "Occupancy",
+      "activePlugins": "Active Plugins",
+      "marketplaceStatus": "Marketplace Status",
+      "live": "Live",
+      "hidden": "Hidden",
+      "healthOk": "Health: OK",
+      "todaysOps": "Today's Operations",
+      "normalOps": "Normal Ops",
+      "arrivals": "Arrivals",
+      "departures": "Departures",
+      "pwaStatus": "PWA Status",
+      "pwaLive": "Your Guest PWA is live",
+      "pwaInactive": "PWA is inactive",
+      "pwaDesc": "Install banners are currently active for all mobile visitors on your listing page.",
+      "manageAppConfig": "Manage App Config",
+      "trendStable": "Stable",
+      "trendHealthOk": "Health: OK"
+    },
+    "plugins": {
+      "title": "Plugin Store",
+      "subtitle": "Extend your site with plugins. Current plan: {plan}.",
+      "searchPlaceholder": "Search plugins…",
+      "filterAll": "All",
+      "filterInstalled": "Installed",
+      "filterAvailable": "Available",
+      "loading": "Loading plugins…",
+      "noResults": "No plugins match your search.",
+      "installed": "Installed",
+      "deactivate": "Deactivate",
+      "install": "Install",
+      "requiresPlan": "Requires {plan} plan",
+      "installedToast": "Plugin installed successfully.",
+      "deactivatedToast": "Plugin deactivated.",
+      "failedToLoad": "Failed to load plugins"
+    }
+  },
+  "guest": {
+    "dashboard": "Guest Dashboard",
+    "hello": "Hello, {name}.",
+    "welcomeBack": "Welcome back. Ready to explore?",
+    "viewItinerary": "View Itinerary",
+    "manageProfile": "Manage Profile",
+    "yourTrips": "Your Trips",
+    "proStatus": "Pro Status",
+    "proTraveler": "Pro Traveler",
+    "proDesc": "You're in the top 5% of explorers this year. Unlock exclusive perks at participating camps.",
+    "contextualPerks": "Contextual Perks",
+    "perksDesc": "Stay active to unlock personalized perks and camp maps.",
+    "campMap": "Interactive Camp Map",
+    "roomService": "Pre-Arrival Room Service",
+    "recentActivity": "Recent Activity"
+  },
+  "owner": {
+    "dashboard": {
+      "title": "Your Dashboard",
+      "planLabel": "Plan: {plan}",
+      "upgrade": "Upgrade for full operations →",
+      "upcomingBookings": "Upcoming bookings",
+      "totalRevenue": "Total revenue",
+      "occupancyRate": "Occupancy rate",
+      "viewBookings": "View bookings",
+      "viewBookingsDesc": "See all incoming and past reservations.",
+      "editListing": "Edit listing",
+      "editListingDesc": "Update photos, description and amenities."
+    }
+  },
+  "login": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to manage your premium bookings or listing property.",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "newToPlatform": "New here?",
+    "registerProperty": "Register your property"
+  },
+  "listYourCamp": {
+    "stepAccount": "Account",
+    "stepBranding": "Branding",
+    "stepPlan": "Plan",
+    "stepDone": "Done",
+    "createAccount": "Create your account",
+    "createAccountDesc": "You'll use this to manage your property.",
+    "continueToBranding": "Continue to branding →",
+    "passwordLengthError": "Password must be at least 8 characters."
   },
   "common": {
     "loading": "Loading...",

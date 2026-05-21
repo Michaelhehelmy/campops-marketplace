@@ -1,6 +1,8 @@
 -- Migration: 002_themes_registry
 -- Description: Add available_themes table for the theme system (Phase 4).
 -- Depends on: 001_core_posts (schema_migrations table)
+-- PostgreSQL compat notes:
+--   Replace: DEFAULT (unixepoch())   → DEFAULT EXTRACT(EPOCH FROM NOW())::INTEGER
 
 -- ---------------------------------------------------------------------------
 -- available_themes

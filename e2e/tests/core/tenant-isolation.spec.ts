@@ -66,7 +66,7 @@ test.describe('Core: Cross-Tenant Isolation', () => {
     request,
   }) => {
     const res = await request.get('/api/manage/1/guests');
-    expect([200, 401, 403]).toContain(res.status());
+    expect([200, 401, 403, 404]).toContain(res.status());
   });
 
   test('Finance endpoint for listing A is accessible', async ({ request }) => {

@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { AuditService } from '@/lib/audit';
 import { auth } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -26,7 +28,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Guest Profile API] GET Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -64,9 +66,17 @@ export async function POST(req: NextRequest) {
       await db.prepare('UPDATE users SET name = ? WHERE id = ?').run(fullName, session.user.id);
     }
 
+    AuditService.log({
+      userId: session.user.id,
+      action: 'profile.update',
+      resource: 'profile',
+      resourceId: session.user.id,
+      details: { fullName, bio },
+    });
+
     return NextResponse.json({ ok: true, message: 'Profile updated' });
   } catch (err: any) {
     console.error('[Guest Profile API] POST Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

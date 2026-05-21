@@ -16,8 +16,10 @@ import {
   AlertTriangle,
   Info,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function AdminPage() {
+  const t = useTranslations('admin.dashboard');
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,10 +55,7 @@ export default function AdminPage() {
     setRunningAction('verify_domains');
     setTimeout(() => {
       setRunningAction(null);
-      showToast(
-        'Checked 4 domain clusters: All active domains matched successfully! ✅',
-        'success'
-      );
+      showToast(t('domainsChecked'), 'success');
     }, 1500);
   };
 
@@ -68,7 +67,7 @@ export default function AdminPage() {
       setNoticeBroadcasting(false);
       setNoticeModalOpen(false);
       setNoticeText('');
-      showToast('Global announcement broadcasted successfully! 📣', 'success');
+      showToast(t('broadcastSent'), 'success');
     }, 1200);
   };
 
@@ -85,7 +84,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!stats) return <div className="p-8 text-zinc-400">Error loading stats.</div>;
+  if (!stats) return <div className="p-8 text-zinc-400">{t('loadError')}</div>;
 
   return (
     <div className="space-y-8 p-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 relative">
@@ -100,36 +99,40 @@ export default function AdminPage() {
       )}
 
       <div>
-        <h1 className="text-3xl font-black text-white tracking-tight">Platform Overview</h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          Global marketplace performance and system status.
-        </p>
+        <h1 className="text-3xl font-black text-white tracking-tight">{t('title')}</h1>
+        <p className="text-zinc-500 text-sm mt-1">{t('subtitle')}</p>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Global Revenue"
+          title={t('globalRevenue')}
           value={`$${(stats.totalRevenue || 128420).toLocaleString()}`}
           trend={12.5}
           icon={DollarSign}
           color="purple"
         />
         <StatCard
-          title="Total Listings"
+          title={t('totalListings')}
           value={stats.totalListings || 0}
           trend={4.2}
           icon={Store}
           color="blue"
         />
         <StatCard
-          title="Live Guests"
+          title={t('liveGuests')}
           value={stats.totalBookings || 0}
           trend={5.2}
           icon={Users}
           color="green"
         />
-        <StatCard title="System Health" value="99.9%" trend={0.1} icon={Activity} color="orange" />
+        <StatCard
+          title={t('systemHealth')}
+          value="99.9%"
+          trend={0.1}
+          icon={Activity}
+          color="orange"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -137,12 +140,12 @@ export default function AdminPage() {
         <div className="lg:col-span-2 bg-slate-950 p-8 rounded-[2.5rem] border border-slate-900 shadow-2xl relative overflow-hidden">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="text-xl font-black text-white tracking-tight">Growth Analytics</h3>
-              <p className="text-sm text-zinc-500">Platform-wide revenue performance</p>
+              <h3 className="text-xl font-black text-white tracking-tight">{t('growthTitle')}</h3>
+              <p className="text-sm text-zinc-500">{t('growthSubtitle')}</p>
             </div>
             <div className="flex gap-2">
               <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-widest">
-                Revenue
+                {t('revenue')}
               </span>
             </div>
           </div>
@@ -174,18 +177,18 @@ export default function AdminPage() {
           <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-900 shadow-2xl relative overflow-hidden">
             <Zap className="absolute top-[-20px] right-[-20px] h-32 w-32 text-amber-500/5 rotate-12" />
             <h3 className="text-lg font-black mb-6 text-white relative z-10">
-              Marketplace Actions
+              {t('marketplaceActions')}
             </h3>
             <div className="space-y-3 relative z-10">
               <ActionButton
                 icon={Globe}
-                label="Verify Domain Clusters"
+                label={t('verifyDomains')}
                 onClick={handleVerifyDomains}
                 loading={runningAction === 'verify_domains'}
               />
               <ActionButton
                 icon={Bell}
-                label="Broadcast Global Notice"
+                label={t('broadcastNotice')}
                 onClick={() => setNoticeModalOpen(true)}
               />
             </div>
@@ -205,12 +208,12 @@ export default function AdminPage() {
             </button>
             <div className="flex items-center gap-3 mb-6">
               <Bell className="h-6 w-6 text-amber-500" />
-              <h3 className="text-xl font-black text-white">Broadcast Global Notice</h3>
+              <h3 className="text-xl font-black text-white">{t('broadcastNotice')}</h3>
             </div>
             <form onSubmit={handleBroadcastNotice} className="space-y-4">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
-                  Notice Message
+                  {t('noticeMessage')}
                 </label>
                 <textarea
                   required
@@ -218,7 +221,7 @@ export default function AdminPage() {
                   value={noticeText}
                   onChange={(e) => setNoticeText(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-900 border border-slate-850 focus:border-amber-500 rounded-2xl text-white outline-none transition-all text-sm resize-none"
-                  placeholder="Type the announcement to broadcast across all listing portals..."
+                  placeholder={t('noticePlaceholder')}
                 />
               </div>
               <button
@@ -229,7 +232,7 @@ export default function AdminPage() {
                 {noticeBroadcasting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  'Send Broadcast'
+                  t('sendBroadcast')
                 )}
               </button>
             </form>

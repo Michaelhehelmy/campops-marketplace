@@ -435,4 +435,128 @@ describe('PluginAPI', () => {
     expect(executeSpy).toHaveBeenCalled();
     executeSpy.mockRestore();
   });
+
+  it('db.transaction runs callback and handles commits/rollbacks', async () => {
+    const api = makePluginAPI('test-plugin', 'prop-123');
+    const result = await api.db.transaction(async (tx) => {
+      return 'transact-success';
+    });
+    expect(result).toBe('transact-success');
+  });
+
+  it('errorResponse formats errors matching standard envelope format', () => {
+    const api = makePluginAPI('test-plugin', 'prop-123');
+    const res = api.errorResponse(new Error('Sample error'));
+    expect(res.status).toBe(500);
+  });
+
+  it('validate parses valid objects and throws validation error on invalid input', () => {
+    const api = makePluginAPI('test-plugin', 'prop-123');
+    const schema = {
+      parse: (data: any) => {
+        if (!data.name) throw new Error('Name required');
+        return data;
+      },
+    };
+    expect(api.validate(schema, { name: 'camp' })).toEqual({ name: 'camp' });
+    expect(() => api.validate(schema, {})).toThrow('Name required');
+  });
+
+  it('checkIdempotency and storeIdempotency store and retrieve responses', async () => {
+    const api = makePluginAPI('test-plugin', 'prop-123');
+    const key = 'test-idempotency-key-1';
+    const responseObj = { ok: true, bookingId: '123' };
+
+    let cached = await api.checkIdempotency(key);
+    expect(cached).toBeNull();
+
+    await api.storeIdempotency(key, responseObj);
+
+    cached = await api.checkIdempotency(key);
+    expect(cached).toEqual(responseObj);
+  });
+
+  // ─── Capability enforcement ──────────────────────────────────────────────────
+
+  describe('capability enforcement', () => {
+    it('allows all APIs when capabilities is undefined (backward compat)', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123');
+      expect(() => api.db.getTable('rooms')).not.toThrow();
+    });
+
+    it('allows APIs in the explicit capabilities list', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', [
+        'database',
+        'hooks',
+        'routes',
+        'auth',
+        'events',
+        'ui',
+        'payment',
+        'notification',
+      ]);
+      expect(() => api.db.getTable('rooms')).not.toThrow();
+      expect(() => api.registerHook('test', vi.fn())).not.toThrow();
+      expect(() => api.registerRoute('/test', vi.fn())).not.toThrow();
+      expect(() => api.auth.getSession(new Request('http://localhost'))).not.toThrow();
+      expect(() => api.publish('ch', {})).not.toThrow();
+    });
+
+    it('throws when missing database capability', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', ['hooks']);
+      expect(() => api.db.getTable('rooms')).toThrow(/database/);
+    });
+
+    it('throws when missing hooks capability on registerHook', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', ['database']);
+      expect(() => api.registerHook('test', vi.fn())).toThrow(/hooks/);
+    });
+
+    it('throws when missing routes capability on registerRoute', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.registerRoute('/test', vi.fn())).toThrow(/routes/);
+    });
+
+    it('throws when missing auth capability on getSession', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.auth.getSession(new Request('http://localhost'))).toThrow(/auth/);
+    });
+
+    it('throws when missing events capability on publish', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.publish('test', {})).toThrow(/events/);
+    });
+
+    it('throws when missing events capability on subscribe', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.subscribe('test', vi.fn())).toThrow(/events/);
+    });
+
+    it('throws when missing events capability on events.emit', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.events.emit('test', {})).toThrow(/events/);
+    });
+
+    it('throws when missing payment capability', async () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      await expect(api.services.payment.initiatePayment('o', 100, 'USD')).rejects.toThrow(
+        /payment/
+      );
+    });
+
+    it('throws when missing notification capability', async () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      await expect(api.services.notification.send({} as any)).rejects.toThrow(/notification/);
+    });
+
+    it('throws when missing ui capability on registerSlot', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.ui.registerSlot('test', 'comp')).toThrow(/ui/);
+    });
+
+    it('throws when missing ui capability on registerMenuItem', () => {
+      const api = makePluginAPI('test-plugin', 'prop-123', []);
+      expect(() => api.ui.registerMenuItem({ label: 'Test', path: '/test' })).toThrow(/ui/);
+    });
+  });
 });

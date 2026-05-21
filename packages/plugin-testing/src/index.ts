@@ -52,6 +52,11 @@ export function createMockPluginAPI(
   });
 
   return {
+    errorResponse: (err: unknown) =>
+      new Response(JSON.stringify({ error: String(err) }), { status: 500 }),
+    validate: (schema: { parse: (data: any) => any }, body: any) => schema.parse(body),
+    checkIdempotency: async () => null,
+    storeIdempotency: async () => {},
     pluginId,
     version: '1.0.0',
     logger: {
@@ -118,6 +123,43 @@ export function createMockPluginAPI(
         }
         return result;
       },
+      // WordPress-style hook API (Phase 3)
+      addAction: (name, handler, priority?) => {
+        if (!hooks.has(name)) hooks.set(name, []);
+        hooks.get(name)!.push(handler);
+        return () => {
+          const h = hooks.get(name);
+          if (h)
+            hooks.set(
+              name,
+              h.filter((x) => x !== handler)
+            );
+        };
+      },
+      addFilter: (name, handler, priority?) => {
+        if (!hooks.has(name)) hooks.set(name, []);
+        hooks.get(name)!.push(handler);
+        return () => {
+          const h = hooks.get(name);
+          if (h)
+            hooks.set(
+              name,
+              h.filter((x) => x !== handler)
+            );
+        };
+      },
+      doAction: async (name, data) => {
+        for (const handler of hooks.get(name) || []) {
+          await handler(data);
+        }
+      },
+      applyFilters: async (name, value, context?) => {
+        let result = value;
+        for (const handler of hooks.get(name) || []) {
+          result = await handler(result);
+        }
+        return result;
+      },
     },
     db: {
       rooms: makeMockRepo('rooms'),
@@ -162,6 +204,8 @@ export function createMockPluginAPI(
       },
     },
     plugins: { get: () => null },
+    registerPostType: async () => {},
+    requestContext: () => null,
     registerRoute: () => {},
     auth: {
       getSession: async () => null,

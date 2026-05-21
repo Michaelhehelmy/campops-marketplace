@@ -16,7 +16,7 @@ rsync -avz -e "ssh -i $SSH_KEY" .next/standalone/ $REMOTE_USER@$VM_IP:$REMOTE_PA
 rsync -avz -e "ssh -i $SSH_KEY" .next/static/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/.next/static/
 rsync -avz -e "ssh -i $SSH_KEY" public/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/public/
 rsync -avz -e "ssh -i $SSH_KEY" plugins/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/plugins/
-scp -i $SSH_KEY .env.production nginx-unified.conf scripts/boot.sh $REMOTE_USER@$VM_IP:$REMOTE_PATH/
+scp -i $SSH_KEY .env.production nginx-unified.conf scripts/boot.sh ecosystem.config.js $REMOTE_USER@$VM_IP:$REMOTE_PATH/
 
 # 2. Restart Services on VM
 echo "🔄 Restarting application..."
@@ -27,8 +27,8 @@ ssh -i $SSH_KEY $REMOTE_USER@$VM_IP << 'EOF'
   mv boot.sh scripts/boot.sh
   chmod +x scripts/boot.sh
   
-  # Restart with PM2
-  pm2 restart sinaicamps || pm2 start server.js --name sinaicamps
+  # Refresh PM2 from ecosystem config
+  pm2 startOrRestart ecosystem.config.js --update-env
   pm2 save
   
   # Reload Nginx (if config changed)

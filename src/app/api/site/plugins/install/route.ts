@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSqlite } from '@/lib/db';
 import { PluginLoader, PlanRequirementError, PluginNotFoundError } from '@/lib/PluginLoader';
+import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
+import { validateBody } from '@/lib/validate';
+import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
+
+const installSchema = z.object({
+  siteId: z.string().uuid(),
+  pluginId: z.string().min(1).max(100),
+  plan: z.string().max(50).optional().default('basic'),
+  actorId: z.string().uuid().optional(),
+});
 
 /**
  * POST /api/site/plugins/install
@@ -10,19 +20,13 @@ export const dynamic = 'force-dynamic';
  * Activates a plugin for a site, respecting plan requirements.
  */
 export async function POST(req: NextRequest) {
-  let body: { siteId?: string; pluginId?: string; plan?: string; actorId?: string };
+  const session = await requireSession(req);
+  if (isErrorResponse(session)) return session;
 
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
-  }
+  const [body, error] = await validateBody(req, installSchema);
+  if (error) return error;
 
-  const { siteId, pluginId, plan = 'basic', actorId } = body;
-
-  if (!siteId || !pluginId) {
-    return NextResponse.json({ error: 'siteId and pluginId are required' }, { status: 400 });
-  }
+  const { siteId, pluginId, plan, actorId } = body;
 
   try {
     const db = getSqlite();

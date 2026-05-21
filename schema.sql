@@ -188,3 +188,103 @@ CREATE INDEX IF NOT EXISTS idx_property_staff_user ON property_staff(user_id);
 CREATE INDEX IF NOT EXISTS idx_property_plugins_property ON property_plugins(property_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_property ON audit_logs(property_id);
+
+-- New Core Framework Tables
+CREATE TABLE IF NOT EXISTS sites (
+    id TEXT PRIMARY KEY,
+    slug TEXT NOT NULL,
+    name TEXT NOT NULL,
+    plan TEXT NOT NULL DEFAULT 'basic',
+    subdomain TEXT,
+    custom_domain TEXT,
+    domain_verified BOOLEAN DEFAULT FALSE,
+    owner_id TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    id TEXT PRIMARY KEY,
+    site_id TEXT NOT NULL,
+    post_type TEXT NOT NULL,
+    post_status TEXT NOT NULL DEFAULT 'publish',
+    post_slug TEXT,
+    post_title TEXT NOT NULL DEFAULT '',
+    post_content TEXT,
+    author_id TEXT,
+    parent_id TEXT,
+    menu_order INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS postmeta (
+    id SERIAL PRIMARY KEY,
+    post_id TEXT NOT NULL,
+    meta_key TEXT NOT NULL,
+    meta_value TEXT
+);
+
+CREATE TABLE IF NOT EXISTS options (
+    id SERIAL PRIMARY KEY,
+    site_id TEXT NOT NULL,
+    option_name TEXT NOT NULL,
+    option_value TEXT,
+    autoload BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS available_themes (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    display_name TEXT NOT NULL,
+    description TEXT,
+    version TEXT NOT NULL DEFAULT '1.0.0',
+    author TEXT,
+    screenshot_url TEXT,
+    theme_path TEXT NOT NULL,
+    plan_requirement TEXT NOT NULL DEFAULT 'basic',
+    is_active BOOLEAN DEFAULT TRUE,
+    manifest TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS build_queue (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
+    site_id TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    triggered_by TEXT,
+    created_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::INTEGER,
+    started_at INTEGER,
+    finished_at INTEGER,
+    error TEXT
+);
+
+CREATE TABLE IF NOT EXISTS plugin_submissions (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
+    plugin_id TEXT NOT NULL,
+    submitted_by TEXT NOT NULL,
+    version TEXT NOT NULL,
+    zip_url TEXT,
+    manifest TEXT,
+    review_notes TEXT,
+    status TEXT NOT NULL DEFAULT 'pending',
+    reviewed_by TEXT,
+    submitted_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::INTEGER,
+    reviewed_at INTEGER
+);
+
+-- Additional Performance Indexes
+CREATE INDEX IF NOT EXISTS idx_posts_site_type_status ON posts(site_id, post_type, post_status);
+CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(post_slug);
+CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at);
+CREATE INDEX IF NOT EXISTS idx_postmeta_post_key ON postmeta(post_id, meta_key);
+CREATE INDEX IF NOT EXISTS idx_options_site_name ON options(site_id, option_name);
+CREATE INDEX IF NOT EXISTS idx_available_themes_name ON available_themes(name);
+CREATE INDEX IF NOT EXISTS idx_available_themes_active ON available_themes(is_active);
+CREATE INDEX IF NOT EXISTS idx_build_queue_site_id ON build_queue (site_id);
+CREATE INDEX IF NOT EXISTS idx_build_queue_status  ON build_queue (status);
+CREATE INDEX IF NOT EXISTS idx_plugin_submissions_plugin_id ON plugin_submissions(plugin_id);
+CREATE INDEX IF NOT EXISTS idx_plugin_submissions_status    ON plugin_submissions(status);
+CREATE INDEX IF NOT EXISTS idx_plugin_submissions_submitter ON plugin_submissions(submitted_by);

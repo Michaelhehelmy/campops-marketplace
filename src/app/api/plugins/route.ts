@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { AuditService } from '@/lib/audit';
 
 // GET /api/plugins - Get active plugins with full manifests for a property
 export async function GET(req: NextRequest) {
@@ -78,7 +80,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -165,6 +167,15 @@ export async function POST(req: NextRequest) {
         })
       );
 
+    AuditService.log({
+      userId,
+      action: 'plugin.enable',
+      resource: 'plugin',
+      resourceId: pluginName,
+      propertyId,
+      details: { config, version: plugin.version },
+    });
+
     return NextResponse.json({
       success: true,
       plugin: {
@@ -177,7 +188,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Plugins Enable API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -237,13 +248,22 @@ export async function PUT(req: NextRequest) {
       )
       .run(pluginName, propertyId, 'config_update', JSON.stringify({ config }));
 
+    AuditService.log({
+      userId: body.userId || 'system',
+      action: 'plugin.config_update',
+      resource: 'plugin',
+      resourceId: pluginName,
+      propertyId,
+      details: { config, featureFlags },
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Plugin configuration updated',
     });
   } catch (err: any) {
     console.error('[Plugins Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -286,12 +306,21 @@ export async function DELETE(req: NextRequest) {
       )
       .run(pluginName, propertyId, 'disable', JSON.stringify({ disabled_by: userId }));
 
+    AuditService.log({
+      userId: userId || 'system',
+      action: 'plugin.disable',
+      resource: 'plugin',
+      resourceId: pluginName,
+      propertyId,
+      details: {},
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Plugin disabled successfully',
     });
   } catch (err: any) {
     console.error('[Plugins Disable API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

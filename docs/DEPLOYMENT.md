@@ -2,6 +2,119 @@
 
 **Last updated:** May 2026
 
+---
+
+## Pre-deployment Checklist
+
+Before going live, verify each item:
+
+- [ ] `DATABASE_URL` points to PostgreSQL (not SQLite in production)
+- [ ] `BETTER_AUTH_SECRET` is a 32+ character random string (`openssl rand -base64 32`)
+- [ ] `STRIPE_SECRET_KEY` is the **live** key (not `sk_test_...`)
+- [ ] `MAILGUN_API_KEY` and `MAILGUN_DOMAIN` are configured for transactional email
+- [ ] `NEXT_PUBLIC_BASE_DOMAIN` is set to your production domain (e.g., `sinaicamps.com`)
+- [ ] `NODE_ENV=production` is set
+- [ ] `TRUSTED_ORIGINS` includes all tenant custom domains
+- [ ] Nginx config (`nginx-unified.conf`) deployed and `nginx -t` passes
+- [ ] SSL certificate active (Cloudflare Origin Cert or Let's Encrypt)
+- [ ] Database migrations have run: `npm run db:migrate`
+- [ ] Initial seed data loaded: `npm run db:seed`
+- [ ] Production build completed: `npm run build`
+- [ ] PWA service worker reachable at `https://sinaicamps.com/sw-marketplace.js`
+- [ ] PWA manifest reachable at `https://sinaicamps.com/manifest.webmanifest`
+- [ ] Static files (`/public/*`) served directly by Nginx (not routed through Next.js)
+- [ ] Health endpoint returns `{"status":"ok"}`: `curl https://sinaicamps.com/api/health`
+- [ ] Metrics endpoint returns counters: `curl https://sinaicamps.com/api/metrics`
+
+---
+
+## Required Environment Variables
+
+See `.env.example` for the complete template. Key variables for production:
+
+| Variable | Required | Source | Example |
+|----------|----------|--------|---------|
+| `NODE_ENV` | **Required** | Set manually | `production` |
+| `BETTER_AUTH_SECRET` | **Required** | Generate: `openssl rand -base64 32` | `uL3tT...8Zw==` |
+| `BETTER_AUTH_URL` | **Required** | Your domain | `https://sinaicamps.com` |
+| `DATABASE_URL` | **Required** | PostgreSQL connection string | `postgresql://user:pass@host:5432/campops` |
+| `NEXT_PUBLIC_BASE_DOMAIN` | **Required** | Your domain | `sinaicamps.com` |
+| `NEXT_PUBLIC_API_URL` | **Required** | Your API domain | `https://api.sinaicamps.com` |
+| `NEXT_PUBLIC_APP_URL` | **Required** | Your domain | `https://sinaicamps.com` |
+| `TRUSTED_ORIGINS` | **Required** | Comma-separated origins | `https://sinaicamps.com,https://api.sinaicamps.com` |
+| `AUTH_TRUST_HOST` | **Required** | Set to `true` | `true` |
+| `STRIPE_SECRET_KEY` | Optional (required for payments) | Stripe Dashboard | `sk_live_...` |
+| `STRIPE_WEBHOOK_SECRET` | Optional (required for payments) | Stripe Dashboard | `whsec_...` |
+| `MAILGUN_API_KEY` | Optional (required for email) | Mailgun Dashboard | `key-...` |
+| `MAILGUN_DOMAIN` | Optional (required for email) | Mailgun Dashboard | `mg.sinaicamps.com` |
+| `SENTRY_DSN` | Optional | Sentry Dashboard | `https://...@o....ingest.sentry.io` |
+| `REDIS_URL` | Optional | Redis provider | `redis://...:6379` |
+| `PORT` | Optional | Set manually | `3000` |
+
+---
+
+## Rollback Procedure
+
+If a deployment causes issues, revert to the previous version:
+
+### Option A — PM2 Rollback (same server)
+
+```bash
+# 1. Switch to the previous release directory
+cd ~/marketplace/releases
+ls -lt                              # identify the previous release
+pm2 stop campops                    # stop current instance
+
+# 2. Update the symlink to the previous release
+rm ~/marketplace/current
+ln -s ~/marketplace/releases/2026-05-20_12-00-00 ~/marketplace/current
+
+# 3. Restart with previous build
+cd ~/marketplace/current
+pm2 start server.js --name campops
+pm2 save
+
+# 4. Verify health
+curl http://localhost:3000/api/health
+```
+
+### Option B — Git Revert (build from previous commit)
+
+```bash
+# 1. Revert the release commit
+git revert HEAD --no-edit
+
+# 2. Rebuild
+npm run build
+bash scripts/fix-standalone.sh
+
+# 3. Deploy (see Phase 4 below)
+rsync -avz .next/standalone/ user@server:~/marketplace/current/
+pm2 restart campops
+```
+
+### Option C — Restore Database Snapshot
+
+If a migration caused data issues:
+
+```bash
+# 1. Stop the app
+pm2 stop campops
+
+# 2. Restore database from backup
+cp ~/marketplace/backups/campops-2026-05-20.db ~/marketplace/current/campops-prod.db
+
+# 3. Restart
+pm2 restart campops
+
+# 4. Run migration rollback if needed
+node -e "const { rollbackMigration } = require('./src/lib/runMigrations'); rollbackMigration();"
+```
+
+> **Tip**: Schedule daily database backups via cron. An example script is at `scripts/backup-db.sh`.
+
+---
+
 ## Architecture
 
 ```

@@ -1,0 +1,19 @@
+{
+  "name": "@sinaicamps/plugin-activities",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "activities",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "hooks",
+      "routes"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

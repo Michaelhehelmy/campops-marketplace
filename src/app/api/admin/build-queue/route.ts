@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSqlite } from '@/lib/db';
 import { auth } from '@/lib/auth';
@@ -61,7 +62,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ builds: rows, total: rows.length });
   } catch (err: any) {
     console.error('[Build Queue GET] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -102,6 +103,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, build: inserted }, { status: 201 });
   } catch (err: any) {
     console.error('[Build Queue POST] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

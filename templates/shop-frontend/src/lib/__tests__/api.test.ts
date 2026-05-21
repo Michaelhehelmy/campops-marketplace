@@ -189,6 +189,25 @@ describe("API Client", () => {
       expect(result.headers["Idempotency-Key"]).toBe("test-uuid-123");
     });
 
+    it("adds csrf token from cookies for mutating requests", async () => {
+      Object.defineProperty(document, "cookie", {
+        value: "x-csrf-token=csrf-token-abc-999; other-cookie=val",
+        writable: true,
+      });
+
+      const { api } = await import("../api");
+
+      const config: Partial<InternalAxiosRequestConfig> = {
+        headers: {} as any,
+        method: "post",
+      };
+
+      const handlers = (api.interceptors.request as any).handlers;
+      const fulfilled = handlers?.[0]?.fulfilled;
+      const result = await fulfilled(config);
+      expect(result.headers["x-csrf-token"]).toBe("csrf-token-abc-999");
+    });
+
     it("rejects with error on request failure", async () => {
       const { api } = await import("../api");
       const error = new Error("Request failed");

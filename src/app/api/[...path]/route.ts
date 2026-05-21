@@ -10,6 +10,7 @@ import {
   errorResponse,
 } from '@/lib/errors';
 import { apiRateLimiter } from '@/lib/rateLimit';
+import { incrementCounter } from '@/lib/metrics';
 
 /**
  * Catch-all API route for plugin-registered handlers.
@@ -44,13 +45,24 @@ export async function DELETE(req: NextRequest, { params }: { params: { path: str
 }
 
 async function handleRequest(req: NextRequest, pathSegments: string[], method: string) {
+  // Metrics
+  incrementCounter('requests_total');
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+    incrementCounter('mutating_requests');
+  }
+
   // Rate limiting
   const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
   try {
     const rateInfo = apiRateLimiter.check(ip);
     // Rate limit headers will be set on the response below
-  } catch (err) {
-    return errorResponse(err);
+  } catch (err: any) {
+    const retryAfter = err.details?.retryAfter ?? 60;
+    const response = errorResponse(err);
+    response.headers.set('Retry-After', String(retryAfter));
+    response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
+    response.headers.set('X-RateLimit-Remaining', '0');
+    return response;
   }
 
   // Ensure plugins are initialized before handling requests
@@ -88,7 +100,12 @@ async function handleRequest(req: NextRequest, pathSegments: string[], method: s
       return errorResponse(new ValidationError('Validation error', error.errors));
     }
 
-    if (error instanceof AuthError || error instanceof ForbiddenError) {
+    if (error instanceof AuthError) {
+      incrementCounter('auth_failures');
+      return errorResponse(error);
+    }
+
+    if (error instanceof ForbiddenError) {
       return errorResponse(error);
     }
 

@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 /**
  * GET /api/public/homepage-config
@@ -41,12 +43,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data);
   } catch (err: any) {
     console.error('[Homepage Config API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
 export async function PUT(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const body = await req.json();
     const { sections, roleBased } = body;
 
@@ -75,6 +79,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json(response);
   } catch (err: any) {
     console.error('[Homepage Config API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

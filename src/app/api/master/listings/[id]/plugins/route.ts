@@ -1,8 +1,12 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const { id } = params;
     const body = await req.json();
     const { pluginName, enabled } = body;
@@ -32,6 +36,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error('[Master Plugin API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

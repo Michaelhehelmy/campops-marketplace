@@ -26,8 +26,10 @@ test.describe('Cross-System Integration Flow', () => {
       await bookingToggle.click();
     }
 
-    // 2. Public guest searches and books a room via Marketplace
+    // 2. Guest searches and books a room via Marketplace
+    const guestState = JSON.parse(guestSession.storageState);
     await page.context().clearCookies();
+    await page.context().addCookies(guestState.cookies);
     await page.goto('/en/stay/safari-camp?checkIn=2025-06-15&checkOut=2025-06-20');
 
     await page
@@ -36,14 +38,13 @@ test.describe('Cross-System Integration Flow', () => {
       .click();
     await page.getByPlaceholder('Jane Smith').fill('Integration Guest');
     await page.getByPlaceholder('jane@example.com').fill('guest@sinaicamps.com');
-    await page.getByRole('button', { name: /Continue to payment/i }).click();
-    await page.getByLabel(/Pay at property/i).check();
-    await page.getByRole('button', { name: /Confirm Booking/i }).click();
+    await page.getByTestId('continue-to-payment').click();
+    await page.locator('#pay_later').click();
+    await page.getByRole('button', { name: /Confirm booking/i }).click();
     await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
     await page.waitForLoadState('networkidle');
 
     // 3. Guest logs in and sees the booking in their dashboard
-    const guestState = JSON.parse(guestSession.storageState);
     await page.context().clearCookies();
     await page.context().addCookies(guestState.cookies);
     await page.goto('/en/guest/reservations');

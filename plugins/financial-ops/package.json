@@ -1,0 +1,21 @@
+{
+  "name": "@sinaicamps/plugin-financial-ops",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "financial-ops",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "hooks",
+      "routes",
+      "auth",
+      "ui"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

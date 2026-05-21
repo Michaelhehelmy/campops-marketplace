@@ -142,6 +142,24 @@ export interface OTAAdapter {
   cancelReservation(channelRef: string): Promise<void>;
 }
 
+// ─── Plugin Capabilities / Scopes ──────────────────────────────────────────────
+
+/**
+ * Recognised plugin capabilities.
+ * Each string maps to a set of APIs the plugin is allowed to use.
+ */
+export type PluginCapability =
+  | 'database' // plugin-scoped DB tables, queries, CRUD
+  | 'network' // outbound HTTP requests
+  | 'payment' // PaymentServiceAPI.initiatePayment
+  | 'notification' // NotificationServiceAPI.send
+  | 'hooks' // registerHook / executeHook / addAction / addFilter
+  | 'routes' // registerRoute
+  | 'auth' // auth.getSession
+  | 'events' // publish / subscribe / events.emit
+  | 'ui' // UI slot / menu / widget / settings page injection
+  | 'storage'; // file storage (future)
+
 // ─── Plugin Manifest ──────────────────────────────────────────────────────────
 
 export interface PluginManifestEntry {
@@ -151,6 +169,8 @@ export interface PluginManifestEntry {
   path: string; // resolved module path
   config: Record<string, any>; // env vars resolved server-side
   enabled?: boolean; // defaults to true
+  /** Capabilities the plugin declares. When omitted, all capabilities are granted. */
+  capabilities?: PluginCapability[];
 }
 
 // ─── Plugin Database API ──────────────────────────────────────────────────────
@@ -191,11 +211,22 @@ export interface PluginDatabaseAPI {
 
   /** Returns true when the plugin's table already exists. */
   tableExists(tableSuffix: string): Promise<boolean>;
+
+  /** Run inside a database transaction */
+  transaction<T>(
+    callback: (tx: Omit<PluginDatabaseAPI, 'transaction'>) => Promise<T>
+  ): Promise<T | null>;
 }
 
 // ─── Plugin API ───────────────────────────────────────────────────────────────
 
 export interface PluginAPI {
+  // Helpers
+  errorResponse(err: unknown): any;
+  validate(schema: { parse: (data: any) => any }, body: any): any;
+  checkIdempotency(key: string): Promise<any>;
+  storeIdempotency(key: string, response: object): Promise<void>;
+
   // Identity
   readonly pluginId: string;
   readonly version: string;
@@ -203,6 +234,7 @@ export interface PluginAPI {
 
   // Hook system — top-level convenience methods
   registerHook<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
+
   executeHook<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
 
   // Hook system — namespaced (matches server plugin-dock API shape)

@@ -1,7 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
 import { type NextRequest, NextResponse } from 'next/server';
 import { locales } from '@/i18n/request';
-import { logger } from '@/lib/logger';
+import { logger, runWithRequestId, getRequestId } from '@/lib/logger';
+import { apiRateLimiter } from '@/lib/rateLimit';
+import { incrementCounter, recordHistogram } from '@/lib/metrics';
+import { initErrorTracking, captureError } from '@/lib/error-tracking';
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -9,20 +12,71 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'always',
 });
 
+function withSecurityHeaders(res: Response | NextResponse): NextResponse {
+  const response = res as NextResponse;
+  const isProd = process.env.NODE_ENV === 'production';
+  const connectSrc = isProd
+    ? 'https://*.sinaicamps.com'
+    : 'https://*.sinaicamps.com http://localhost:3001 http://127.0.0.1:3001';
+  response.headers.set(
+    'Content-Security-Policy',
+    `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' ${connectSrc};`
+  );
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  return response;
+}
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL !== ''
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.API_URL || `http://localhost:${process.env.PORT || '3001'}`;
 
-const AUTH_REQUIRED = ['/owner', '/admin', '/guest', '/manage'];
+const AUTH_REQUIRED = ['/owner', '/admin', '/guest', '/manage', '/admin/settings', '/admin/setup'];
 const PREMIUM_ONLY = ['/admin'];
 const LISTING_ACCESS_REQUIRED = ['/manage'];
 
-export async function middleware(req: NextRequest) {
+async function handleMiddleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
-  // 1. Immediately bypass internal Next.js static asset and API paths
+  logger.info(
+    `[Middleware] pathname: ${pathname}, hostname: ${req.headers.get('x-forwarded-host') ?? req.nextUrl.hostname}, url: ${req.url}`
+  );
+
+  // 1. Rate-limit all API prefixes before anything else.
+  const RATE_LIMITED_PREFIXES = [
+    '/api/auth/',
+    '/api/payments/',
+    '/api/manage/',
+    '/api/master/',
+    '/api/owner/',
+    '/api/admin/',
+    '/api/site/',
+    '/api/public/',
+    '/api/plugins/submit',
+  ];
+  if (RATE_LIMITED_PREFIXES.some((p) => pathname.startsWith(p))) {
+    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'anonymous';
+    try {
+      await apiRateLimiter.check(ip);
+    } catch (err: any) {
+      const retryAfter = err.details?.retryAfter ?? 60;
+      const response = NextResponse.json(
+        { error: 'Too many requests', code: 'RATE_LIMIT', retryAfter },
+        { status: 429 }
+      );
+      response.headers.set('Retry-After', String(retryAfter));
+      response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
+      response.headers.set('X-RateLimit-Remaining', '0');
+      return withSecurityHeaders(response);
+    }
+  }
+
+  // Immediately bypass internal Next.js static asset and API paths
   if (pathname.startsWith('/_next/') || pathname === '/api' || pathname.startsWith('/api/')) {
     return NextResponse.next();
   }
@@ -90,9 +144,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Backup: Redirect ultimate-tier users accessing central dashboards on main domain
+  // Backup: Redirect ultimate-tier users accessing central dashboards on main domain.
+  // Only enabled in production — in local dev, custom domain entries in /etc/hosts
+  // should serve the tenant page without redirecting to the production URL.
   const isMainDomain = cleanHostname === BASE_DOMAIN || cleanHostname === `www.${BASE_DOMAIN}`;
-  if (needsAuth && token && isMainDomain) {
+  if (process.env.NODE_ENV === 'production' && needsAuth && token && isMainDomain) {
     try {
       const redirectRes = await fetch(`${API_URL}/api/auth/redirect-check`, {
         headers: {
@@ -107,7 +163,7 @@ export async function middleware(req: NextRequest) {
         }
       }
     } catch (err) {
-      logger.error('Middleware redirect check failed:', err);
+      captureError(err as Error, { pathname, hostname: cleanHostname });
     }
   }
 
@@ -154,7 +210,7 @@ export async function middleware(req: NextRequest) {
             }
           }
         } catch (err) {
-          logger.error('Error checking listing access:', err);
+          captureError(err as Error, { pathname, listingSlug });
           // On network error, only redirect non-master users who are accessing sensitive pages
           if (userRole && userRole !== 'master') {
             // For cross-listing access, we can't verify — allow through with caution
@@ -180,12 +236,18 @@ export async function middleware(req: NextRequest) {
     const isTenantRoot =
       barePath === '/' || barePath === `/${locale}` || barePath === `/${locale}/`;
     if (isTenantRoot) {
-      const rewriteUrl = new URL(`/${locale}/stay/${tenantSlug}`, req.url);
+      const rewriteUrl = req.nextUrl.clone();
+      rewriteUrl.pathname = `/${locale}/stay/${tenantSlug}`;
+      logger.info(
+        `[Middleware] Rewriting tenant root to: ${rewriteUrl.toString()} (tenantSlug: ${tenantSlug})`
+      );
       req.nextUrl.searchParams.forEach((v, k) => rewriteUrl.searchParams.set(k, v));
       const response = NextResponse.rewrite(rewriteUrl);
       response.headers.set('x-tenant-property-id', tenantPropertyId);
       response.headers.set('x-tenant-plan', tenantPlan ?? 'basic');
       response.headers.set('x-tenant-slug', tenantSlug);
+      response.headers.set('X-Next-Intl-Locale', locale);
+      response.headers.set('x-next-intl-locale', locale);
       return response;
     }
   }
@@ -207,6 +269,7 @@ export async function middleware(req: NextRequest) {
     '/resource',
     '/stay',
     '/unauthorized',
+    '/offline',
     '/api',
     '/_next',
     '/pwa-preview',
@@ -250,6 +313,75 @@ export async function middleware(req: NextRequest) {
   return next;
 }
 
+export async function middleware(req: NextRequest) {
+  const requestId = globalThis.crypto.randomUUID();
+  const startTime = Date.now();
+  return runWithRequestId(requestId, async () => {
+    const { pathname } = req.nextUrl;
+    const method = req.method;
+
+    incrementCounter('requests_total');
+
+    initErrorTracking();
+
+    // CSRF Double-Submit Token Pattern Validation
+    const isMutating = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
+    const isApi = pathname.startsWith('/api/');
+
+    if (isApi && isMutating) {
+      incrementCounter('mutating_requests');
+    }
+    const isExcluded =
+      pathname.startsWith('/api/auth/') ||
+      pathname.startsWith('/api/test/') ||
+      pathname.startsWith('/api/test-probe/') ||
+      pathname === '/api/payments/connect' ||
+      pathname === '/api/csrf-token';
+
+    let csrfCookie = req.cookies.get('x-csrf-token')?.value;
+
+    // Only validate CSRF when a cookie already exists.
+    // If no cookie yet (first request from a new/anonymous visitor), skip
+    // validation and let the response set the cookie. Subsequent mutating
+    // requests must include the x-csrf-token header matching the cookie.
+    if (isApi && isMutating && !isExcluded && csrfCookie) {
+      const csrfHeader = req.headers.get('x-csrf-token') || req.headers.get('X-CSRF-Token');
+      if (!csrfHeader || csrfCookie !== csrfHeader) {
+        logger.warn(
+          `[CSRF] Blocked mutating request to ${pathname}. Cookie: ${csrfCookie}, Header: ${csrfHeader}`
+        );
+        incrementCounter('csrf_blocked');
+        return withSecurityHeaders(
+          NextResponse.json({ error: 'CSRF token validation failed' }, { status: 403 })
+        );
+      }
+    }
+
+    const res = await handleMiddleware(req);
+    const response = res || NextResponse.next();
+
+    // If x-csrf-token cookie doesn't exist, generate and set it
+    if (!csrfCookie) {
+      const token = globalThis.crypto.randomUUID();
+      response.cookies.set('x-csrf-token', token, {
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      });
+    }
+
+    const duration = Date.now() - startTime;
+    response.headers.set('x-request-id', requestId);
+    response.headers.set('x-response-time', `${duration}ms`);
+    recordHistogram('response_time_ms', duration);
+
+    return withSecurityHeaders(response);
+  });
+}
+
 export const config = {
-  matcher: ['/((?!_next/static|_next/image).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|icon.png|favicon.ico|sinaicamps.png|sw.js|manifest.webmanifest|robots.txt|sitemap.xml).*)',
+  ],
 };

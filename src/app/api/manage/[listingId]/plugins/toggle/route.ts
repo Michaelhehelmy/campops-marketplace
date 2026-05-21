@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { AuditService } from '@/lib/audit';
 import { auth } from '@/lib/auth';
 
 /**
@@ -47,9 +49,18 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
       )
       .run(`assoc-${propertyId}-${pluginName}`, propertyId, pluginName, isEnabled ? 1 : 0);
 
+    AuditService.log({
+      userId: session.user?.id || 'system',
+      action: isEnabled ? 'plugin.enable' : 'plugin.disable',
+      resource: 'plugin',
+      resourceId: pluginName,
+      propertyId,
+      details: { listingId },
+    });
+
     return NextResponse.json({ ok: true, pluginName, isEnabled });
   } catch (err: any) {
     console.error('[Plugin Toggle API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

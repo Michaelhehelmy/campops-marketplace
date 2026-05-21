@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Puzzle,
@@ -12,7 +12,30 @@ import {
   ExternalLink,
   ChevronRight,
   Info,
+  InboxIcon,
+  XCircle,
+  Loader2,
 } from 'lucide-react';
+
+function getCsrfToken(): string {
+  if (typeof document === 'undefined') return '';
+  const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+  return match ? match[1] : '';
+}
+
+interface PluginSubmission {
+  id: string;
+  pluginId: string;
+  submittedBy: string;
+  version: string;
+  zipUrl: string | null;
+  manifest: { name?: string; description?: string; category?: string } | null;
+  reviewNotes: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewedBy: string | null;
+  submittedAt: number;
+  reviewedAt: number | null;
+}
 
 interface Plugin {
   id: string;
@@ -41,10 +64,15 @@ export default function MasterPluginsPage() {
     return saved || 'all';
   });
   const [shops, setShops] = useState<any[]>([]);
-  const [view, setView] = useState<'catalog' | 'properties'>('catalog');
+  const [view, setView] = useState<'catalog' | 'properties' | 'submissions'>('catalog');
+  const [submissions, setSubmissions] = useState<PluginSubmission[]>([]);
+  const [subFilter, setSubFilter] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [subLoading, setSubLoading] = useState(false);
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPlugins();
+    fetchSubmissions('pending');
     fetch('/api/master/listings')
       .then((res) => res.json())
       .then((data) => {
@@ -62,6 +90,45 @@ export default function MasterPluginsPage() {
       console.log('[AdminPlugins] Saved selected property to localStorage:', selectedProperty);
     }
   }, [selectedProperty]);
+
+  const fetchSubmissions = async (status?: string) => {
+    try {
+      setSubLoading(true);
+      const qs = status ? `?status=${status}` : '';
+      const res = await fetch(`/api/admin/plugins/submissions${qs}`);
+      if (!res.ok) throw new Error('Failed to load submissions');
+      const data = await res.json();
+      setSubmissions(data.submissions ?? []);
+    } catch (err) {
+      console.error('[AdminPlugins] Failed to fetch submissions:', err);
+    } finally {
+      setSubLoading(false);
+    }
+  };
+
+  const reviewSubmission = async (
+    id: string,
+    action: 'approve' | 'reject',
+    reviewNotes?: string
+  ) => {
+    try {
+      setReviewingId(id);
+      const res = await fetch('/api/admin/plugins/submissions', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-csrf-token': getCsrfToken(),
+        },
+        body: JSON.stringify({ id, action, reviewNotes }),
+      });
+      if (!res.ok) throw new Error('Review failed');
+      await fetchSubmissions(subFilter);
+    } catch (err) {
+      console.error('[AdminPlugins] Review failed:', err);
+    } finally {
+      setReviewingId(null);
+    }
+  };
 
   const fetchPlugins = async () => {
     try {
@@ -102,7 +169,10 @@ export default function MasterPluginsPage() {
     try {
       const res = await fetch('/api/master/plugins', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-csrf-token': getCsrfToken(),
+        },
         body: JSON.stringify({
           pluginId: plugin.name,
           propertyId: targetProperty,
@@ -150,6 +220,23 @@ export default function MasterPluginsPage() {
               className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${view === 'properties' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white text-gray-500 border border-gray-100'}`}
             >
               Per-Property Plugins
+            </button>
+            <button
+              onClick={() => {
+                setView('submissions');
+                fetchSubmissions(subFilter);
+              }}
+              className={`relative px-6 py-2 rounded-xl text-sm font-bold transition-all ${view === 'submissions' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white text-gray-500 border border-gray-100'}`}
+            >
+              <span className="flex items-center gap-2">
+                <InboxIcon className="h-4 w-4" />
+                Submissions
+                {submissions.filter((s) => s.status === 'pending').length > 0 && (
+                  <span className="ml-1 px-1.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-black">
+                    {submissions.filter((s) => s.status === 'pending').length}
+                  </span>
+                )}
+              </span>
             </button>
           </div>
         </div>
@@ -318,6 +405,119 @@ export default function MasterPluginsPage() {
               })}
             </div>
           </>
+        ) : view === 'submissions' ? (
+          <div className="flex-1 space-y-5">
+            <div className="flex items-center gap-3">
+              {(['pending', 'approved', 'rejected'] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => {
+                    setSubFilter(s);
+                    fetchSubmissions(s);
+                  }}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${subFilter === s ? 'bg-purple-600 text-white' : 'bg-white text-gray-500 border border-gray-100 hover:border-purple-200'}`}
+                >
+                  {s}
+                </button>
+              ))}
+              {subLoading && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
+            </div>
+
+            {submissions.length === 0 && !subLoading && (
+              <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+                <InboxIcon className="h-12 w-12 mx-auto text-gray-200 mb-4" />
+                <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">
+                  No {subFilter} submissions
+                </p>
+              </div>
+            )}
+
+            {submissions.map((sub) => (
+              <div
+                key={sub.id}
+                className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 p-8"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="font-black text-gray-900 truncate">
+                        {sub.manifest?.name ?? sub.pluginId}
+                      </h3>
+                      <span className="font-mono text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-lg">
+                        v{sub.version}
+                      </span>
+                      <StatusChip status={sub.status} />
+                    </div>
+                    <p className="text-xs text-gray-500 mb-2 font-mono">{sub.pluginId}</p>
+                    {sub.manifest?.description && (
+                      <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                        {sub.manifest.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                      <span>By: {sub.submittedBy}</span>
+                      <span>
+                        Submitted: {new Date(sub.submittedAt * 1000).toLocaleDateString()}
+                      </span>
+                      {sub.zipUrl && (
+                        <a
+                          href={sub.zipUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-purple-600 hover:text-purple-700"
+                        >
+                          <ExternalLink className="h-3 w-3" /> Download ZIP
+                        </a>
+                      )}
+                    </div>
+                    {sub.reviewNotes && (
+                      <div className="mt-3 p-3 bg-gray-50 rounded-xl text-xs text-gray-600 leading-relaxed">
+                        <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">
+                          Review notes:{' '}
+                        </span>
+                        {sub.reviewNotes}
+                      </div>
+                    )}
+                  </div>
+
+                  {sub.status === 'pending' && (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => {
+                          const notes = prompt('Rejection reason (optional):') ?? undefined;
+                          reviewSubmission(sub.id, 'reject', notes);
+                        }}
+                        disabled={reviewingId === sub.id}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-all disabled:opacity-50"
+                      >
+                        {reviewingId === sub.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <XCircle className="h-4 w-4" />
+                        )}
+                        Reject
+                      </button>
+                      <button
+                        onClick={() => {
+                          const notes = prompt('Approval notes (optional):') ?? undefined;
+                          reviewSubmission(sub.id, 'approve', notes);
+                        }}
+                        disabled={reviewingId === sub.id}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-green-50 text-green-600 font-bold text-sm hover:bg-green-100 transition-all disabled:opacity-50"
+                      >
+                        {reviewingId === sub.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="h-4 w-4" />
+                        )}
+                        Approve
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="flex-1 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40 overflow-hidden">
             <table className="w-full text-left">
@@ -387,6 +587,21 @@ export default function MasterPluginsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function StatusChip({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    pending: 'bg-orange-50 text-orange-600',
+    approved: 'bg-green-50 text-green-600',
+    rejected: 'bg-red-50 text-red-500',
+  };
+  return (
+    <span
+      className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${map[status] ?? 'bg-gray-50 text-gray-500'}`}
+    >
+      {status}
+    </span>
   );
 }
 

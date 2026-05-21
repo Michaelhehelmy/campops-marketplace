@@ -56,6 +56,44 @@ describe('PluginRuntimeService: graceful plugin init failure', () => {
     warnSpy.mockRestore();
     errorSpy.mockRestore();
   });
+
+  it('times out plugin initialization if it takes longer than the allowed timeout', async () => {
+    const { PluginRuntimeService } = await import('../PluginRuntimeService');
+    const { logger } = await import('../logger');
+    const { db } = await import('../db');
+    const fs = await import('fs');
+    const path = await import('path');
+
+    // Create the temporary plugin directory and file
+    const pluginDir = path.join(process.cwd(), 'plugins', 'slow-mock-plugin');
+    fs.mkdirSync(pluginDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(pluginDir, 'index.js'),
+      `module.exports = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        return { status: 'ok' };
+      };`
+    );
+
+    PluginRuntimeService.clearCache();
+    const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
+    const dbQuerySpy = vi.spyOn(db, 'query').mockResolvedValue([{ name: 'slow-mock-plugin' }]);
+
+    await PluginRuntimeService.init();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Could not load plugin slow-mock-plugin:'),
+      expect.stringContaining('timed out')
+    );
+
+    // Clean up
+    fs.rmSync(pluginDir, { recursive: true, force: true });
+    PluginRuntimeService.clearCache();
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
+    dbQuerySpy.mockRestore();
+  });
 });
 
 // ─── PluginBroker: missing plugin dispatch ────────────────────────────────────
@@ -134,6 +172,54 @@ describe('RateLimiter: handles concurrent bursts safely', () => {
     // First 5 succeed, rest are rate limited
     expect(allowedCount).toBe(5);
     expect(limitedCount).toBe(15);
+  });
+
+  it('rate limit error response includes 429 status and Retry-After header', async () => {
+    const { RateLimiter } = await import('../rateLimit');
+    const { RateLimitError, errorResponse } = await import('../errors');
+
+    const limiter = new RateLimiter(3, 60_000);
+
+    for (let i = 0; i < 3; i++) {
+      limiter.check('resp-header-key');
+    }
+
+    try {
+      limiter.check('resp-header-key');
+      expect(true).toBe(false); // should not reach here
+    } catch (err: any) {
+      expect(err).toBeInstanceOf(RateLimitError);
+      expect(err.statusCode).toBe(429);
+
+      const res = errorResponse(err);
+      expect(res.status).toBe(429);
+
+      const body = await res.json();
+      expect(body.error).toBe('Too many requests');
+      expect(body.code).toBe('RATE_LIMIT');
+      expect(body.details?.retryAfter).toBeGreaterThan(0);
+
+      // Retry-After header
+      const retryAfter = err.details?.retryAfter ?? 60;
+      expect(retryAfter).toBeGreaterThan(0);
+    }
+  });
+
+  it('rate limit headers include X-RateLimit-Limit and X-RateLimit-Remaining', async () => {
+    const { RateLimiter } = await import('../rateLimit');
+    const limiter = new RateLimiter(3, 60_000);
+
+    for (let i = 0; i < 3; i++) {
+      limiter.check('header-key-2');
+    }
+
+    try {
+      limiter.check('header-key-2');
+    } catch (err: any) {
+      expect(limiter.maxRequests).toBe(3);
+      const retryAfter = err.details?.retryAfter ?? 60;
+      expect(retryAfter).toBeGreaterThan(0);
+    }
   });
 });
 

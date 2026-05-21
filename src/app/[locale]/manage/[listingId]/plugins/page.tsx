@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Package, CheckCircle, XCircle, AlertCircle, Loader2, Search } from 'lucide-react';
 
 interface PluginEntry {
@@ -22,6 +23,7 @@ const PLAN_BADGE: Record<string, { label: string; color: string }> = {
 };
 
 export default function PluginsPage() {
+  const t = useTranslations('manage.plugins');
   const params = useParams();
   const listingId = params.listingId as string;
 
@@ -44,7 +46,7 @@ export default function PluginsPage() {
     setError(null);
     try {
       const res = await fetch(`/api/site/plugins?siteId=${listingId}&plan=${sitePlan}`);
-      if (!res.ok) throw new Error('Failed to load plugins');
+      if (!res.ok) throw new Error(t('failedToLoad'));
       const data = await res.json();
       setPlugins(data.plugins ?? []);
     } catch (err: any) {
@@ -72,7 +74,7 @@ export default function PluginsPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Install failed');
-      showToast(`Plugin installed successfully.`, true);
+      showToast(t('installedToast'), true);
       await loadPlugins();
     } catch (err: any) {
       showToast(err.message, false);
@@ -89,7 +91,7 @@ export default function PluginsPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Uninstall failed');
-      showToast(`Plugin deactivated.`, true);
+      showToast(t('deactivatedToast'), true);
       await loadPlugins();
     } catch (err: any) {
       showToast(err.message, false);
@@ -112,12 +114,9 @@ export default function PluginsPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Package className="w-6 h-6 text-indigo-600" />
-            Plugin Store
+            {t('title')}
           </h1>
-          <p className="text-gray-500 mt-1">
-            Extend your site with plugins. Current plan:{' '}
-            <span className="font-medium capitalize">{sitePlan}</span>.
-          </p>
+          <p className="text-gray-500 mt-1">{t('subtitle', { plan: sitePlan })}</p>
         </div>
 
         {/* Toast */}
@@ -136,7 +135,7 @@ export default function PluginsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search plugins…"
+              placeholder={t('searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -149,7 +148,7 @@ export default function PluginsPage() {
                 onClick={() => setFilter(f)}
                 className={`px-4 py-2 capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
               >
-                {f}
+                {f.charAt(0).toUpperCase() + f.slice(1)}
               </button>
             ))}
           </div>
@@ -158,14 +157,14 @@ export default function PluginsPage() {
         {/* Content */}
         {loading ? (
           <div className="flex items-center justify-center py-16 text-gray-400">
-            <Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading plugins…
+            <Loader2 className="w-6 h-6 animate-spin mr-2" /> {t('loading')}
           </div>
         ) : error ? (
           <div className="flex items-center gap-2 text-red-600 bg-red-50 rounded-lg p-4">
             <AlertCircle className="w-5 h-5" /> {error}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">No plugins match your search.</div>
+          <div className="text-center py-16 text-gray-400">{t('noResults')}</div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {filtered.map((plugin) => {
@@ -193,7 +192,7 @@ export default function PluginsPage() {
                         </span>
                         {plugin.installed && (
                           <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
-                            Installed
+                            {t('installed')}
                           </span>
                         )}
                       </div>
@@ -217,7 +216,7 @@ export default function PluginsPage() {
                         ) : (
                           <XCircle className="w-4 h-4" />
                         )}
-                        Deactivate
+                        {t('deactivate')}
                       </button>
                     ) : canInstall ? (
                       <button
@@ -230,13 +229,11 @@ export default function PluginsPage() {
                         ) : (
                           <CheckCircle className="w-4 h-4" />
                         )}
-                        Install
+                        {t('install')}
                       </button>
                     ) : (
                       <div className="text-xs text-center text-amber-700 bg-amber-50 rounded-lg py-2 px-3">
-                        Requires{' '}
-                        <span className="font-semibold capitalize">{plugin.planRequirement}</span>{' '}
-                        plan
+                        {t('requiresPlan', { plan: plugin.planRequirement })}
                       </div>
                     )}
                   </div>

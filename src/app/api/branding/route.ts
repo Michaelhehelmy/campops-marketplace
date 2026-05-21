@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { AuditService } from '@/lib/audit';
 
 // Full branding configuration structure
 export interface BrandingConfig {
@@ -310,7 +312,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Branding API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -459,6 +461,14 @@ export async function PUT(req: NextRequest) {
         property.id
       );
 
+    AuditService.log({
+      userId: userId || 'system',
+      action: 'branding.update',
+      resource: 'property',
+      resourceId: property.id,
+      details: { slug, brandingKeys: Object.keys(incomingBranding) },
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Branding updated successfully',
@@ -466,6 +476,6 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Branding API] PUT Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

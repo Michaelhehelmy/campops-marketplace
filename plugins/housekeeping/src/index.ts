@@ -1,21 +1,17 @@
-import { PluginAPI } from '@sinaicamps/plugin-sdk';
+import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import { housekeepingRouter } from './routes/housekeeping.js';
 
-export async function init(api: PluginAPI) {
+export default async function init(api: PluginAPI) {
   api.logger.info('Initializing Housekeeping Plugin');
 
-  // Register routes
-  api.registerRoute('/api/housekeeping', housekeepingRouter(api));
+  api.registerRoute('/api/p/housekeeping', housekeepingRouter(api));
 
-  // Listen for guest checkout to create cleaning task
   api.hooks.register('reservations.after_checkout', async (data: any) => {
     api.logger.info(`Creating cleaning task for room: ${data.room_id}`);
     const id = crypto.randomUUID();
     await api.db.query(
-      `
-      INSERT INTO housekeeping_tasks (id, room_id, category, status, priority, created_at)
-      VALUES ($1, $2, 'cleaning', 'pending', 'high', NOW())
-    `,
+      `INSERT INTO housekeeping_tasks (id, room_id, category, status, priority, created_at)
+       VALUES ($1, $2, 'cleaning', 'pending', 'high', NOW())`,
       [id, data.room_id]
     );
     return data;

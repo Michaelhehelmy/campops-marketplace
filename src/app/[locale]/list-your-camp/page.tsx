@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function Step1AccountPage() {
+  const t = useTranslations('listYourCamp');
   const router = useRouter();
   const { locale } = useParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +17,7 @@ export default function Step1AccountPage() {
     e.preventDefault();
     setError(null);
     if (form.password.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError(t('passwordLengthError'));
       return;
     }
     // Persist to sessionStorage so subsequent steps can read it
@@ -27,7 +29,7 @@ export default function Step1AccountPage() {
     <div>
       <div className="mb-8">
         <div className="flex gap-2 mb-6">
-          {['Account', 'Branding', 'Plan', 'Done'].map((label, i) => (
+          {[t('stepAccount'), t('stepBranding'), t('stepPlan'), t('stepDone')].map((label, i) => (
             <div key={label} className="flex items-center gap-2">
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
@@ -39,8 +41,8 @@ export default function Step1AccountPage() {
             </div>
           ))}
         </div>
-        <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-        <p className="text-gray-500 mt-1">You'll use this to manage your property.</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t('createAccount')}</h1>
+        <p className="text-gray-500 mt-1">{t('createAccountDesc')}</p>
       </div>
 
       <form
@@ -106,7 +108,7 @@ export default function Step1AccountPage() {
         </div>
 
         <button type="submit" className="btn-primary w-full">
-          Continue to branding →
+          {t('continueToBranding')}
         </button>
       </form>
     </div>

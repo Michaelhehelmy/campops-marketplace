@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Palette, Image, Type, Globe, Phone, MapPin } from 'lucide-react';
+import { toSlug } from '@/lib/slug';
 
 const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa'];
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR', 'ZAR', 'KES', 'CHF', 'AUD'];
@@ -76,15 +77,6 @@ export default function StepBrandingPage() {
   });
 
   const [slugEdited, setSlugEdited] = useState(false);
-
-  function toSlug(name: string): string {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim()
-      .replace(/\s+/g, '-')
-      .slice(0, 40);
-  }
 
   const handleNameChange = (v: string) => {
     setForm((f) => ({

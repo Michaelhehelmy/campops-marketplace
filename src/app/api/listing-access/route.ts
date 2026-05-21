@@ -47,12 +47,24 @@ export async function GET(req: NextRequest) {
 
     if (userRole === 'master') {
       console.log('[Listing Access API] Master access granted');
-      return NextResponse.json({ ok: true, role: 'master' });
+      return NextResponse.json({ ok: true, role: 'master', plan: 'master' });
     }
+
+    // Get the property's plan
+    const property = (await db
+      .prepare(`SELECT id, plan FROM properties WHERE id = ? OR slug = ? LIMIT 1`)
+      .get(listingSlug, listingSlug)) as any;
+    const plan = property?.plan || 'basic';
 
     console.log(
       `[Listing Access API] Checking access for user=${userId}, role=${userRole}, listing=${listingSlug}`
     );
+
+    // Check if user is the property owner
+    if (property?.owner_id === userId) {
+      console.log(`[Listing Access API] Access granted: owner (manager)`);
+      return NextResponse.json({ ok: true, role: 'manager', plan });
+    }
 
     // Check staff access for non-master users
     const access = await db
@@ -60,15 +72,14 @@ export async function GET(req: NextRequest) {
         `
       SELECT ps.role
       FROM property_staff ps
-      JOIN properties p ON p.id = ps.property_id
-      WHERE (p.id = ? OR p.slug = ?) AND ps.user_id = ?
+      WHERE ps.property_id = ? AND ps.user_id = ?
     `
       )
-      .get(listingSlug, listingSlug, userId);
+      .get(property?.id || listingSlug, userId);
 
     if (access) {
       console.log(`[Listing Access API] Access granted: ${access.role}`);
-      return NextResponse.json({ ok: true, role: access.role });
+      return NextResponse.json({ ok: true, role: access.role, plan });
     }
 
     console.warn(`[Listing Access API] Access denied for user=${userId} on listing=${listingSlug}`);

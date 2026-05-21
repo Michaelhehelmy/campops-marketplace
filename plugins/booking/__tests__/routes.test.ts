@@ -17,21 +17,25 @@ function makeRequest(
 function buildMockApi(role: string = 'guest', email: string = 'test@example.com') {
   const routes = new Map<string, any>();
   const executeHook = vi.fn().mockResolvedValue({});
+  const idempotencyStore = new Map<string, any>();
+
+  const dbMock: any = {
+    query: vi.fn().mockResolvedValue([]),
+    queryOne: vi.fn().mockResolvedValue({
+      id: 'booking-1',
+      guest_name: 'Test Guest',
+      total_price: 100,
+      currency: 'USD',
+      base_price: 50,
+    }),
+    execute: vi.fn().mockResolvedValue(undefined),
+  };
+  dbMock.transaction = vi.fn(async (cb) => cb(dbMock));
 
   return {
     pluginId: 'booking',
     logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-    db: {
-      query: vi.fn().mockResolvedValue([]),
-      queryOne: vi.fn().mockResolvedValue({
-        id: 'booking-1',
-        guest_name: 'Test Guest',
-        total_price: 100,
-        currency: 'USD',
-        base_price: 50,
-      }),
-      execute: vi.fn().mockResolvedValue(undefined),
-    },
+    db: dbMock,
     auth: {
       getSession: vi.fn().mockResolvedValue({
         user: { role, email },
@@ -39,6 +43,10 @@ function buildMockApi(role: string = 'guest', email: string = 'test@example.com'
     },
     registerRoute: vi.fn().mockImplementation((path: string, handler: any) => {
       routes.set(path, handler);
+    }),
+    checkIdempotency: vi.fn(async (key: string) => idempotencyStore.get(key) || null),
+    storeIdempotency: vi.fn(async (key: string, resp: any) => {
+      idempotencyStore.set(key, resp);
     }),
     executeHook,
     hooks: { executeHook },
@@ -131,5 +139,41 @@ describe('Booking Plugin Routes', () => {
         guestName: 'Test Guest',
       })
     );
+  });
+
+  it('POST /api/p/booking/book handles idempotency key correctly', async () => {
+    const api = buildMockApi();
+    registerRoutes(api as any);
+
+    const validBody = {
+      listingId: 'tenant-1',
+      roomId: 'room-1',
+      guestName: 'Jane',
+      guestEmail: 'jane@example.com',
+      checkIn: '2025-06-15',
+      checkOut: '2025-06-17',
+    };
+
+    const handler = api._internal.routes.get('/api/p/booking/book');
+
+    // First request with idempotency key
+    const res1 = await handler(
+      makeRequest('/api/p/booking/book', 'POST', validBody, {
+        'Idempotency-Key': 'key-abc-123',
+      })
+    );
+    expect(res1.status).toBe(201);
+    const body1 = await res1.json();
+
+    // Second request with same idempotency key
+    const res2 = await handler(
+      makeRequest('/api/p/booking/book', 'POST', validBody, {
+        'Idempotency-Key': 'key-abc-123',
+      })
+    );
+    expect(res2.status).toBe(201);
+    expect(res2.headers.get('X-Cache-Lookup')).toBe('HIT');
+    const body2 = await res2.json();
+    expect(body2).toEqual(body1);
   });
 });

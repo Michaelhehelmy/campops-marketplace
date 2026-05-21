@@ -3,6 +3,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Search, Calendar, Users, MapPin, Sparkles, AlertCircle } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -15,6 +16,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('2');
+  const t = useTranslations('hero');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,37 +42,38 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 hover:bg-white/10 transition-all duration-300">
           <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
           <span className="text-xs font-semibold tracking-wider uppercase text-amber-300">
-            Adventure Awaits
+            {t('badge')}
           </span>
         </div>
 
         {/* Hidden screen-reader only elements for Vitest backward compatibility */}
-        <p className="sr-only">Discover unique camps, lodges, and retreats around the world</p>
+        <p className="sr-only">{t('srDescription')}</p>
 
         {/* Master Heading */}
         <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight leading-none bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
-          Escape Ordinary. <br className="hidden sm:inline" />
+          {t('heading')} <br className="hidden sm:inline" />
           <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
-            Experience the Unseen.
+            {t('headingAccent')}
           </span>
         </h1>
 
         {/* Persuasive Subtext */}
         <p className="text-base sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Unlock hand-selected eco-resorts, luxury glamping retreats, and private wilderness lodges.
-          Your next unforgettable adventure starts here.
+          {t('subtitle')}
         </p>
 
         {/* Urgent Direct Booking Incentive Banner */}
         <div className="max-w-4xl mx-auto mb-8 bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/25 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-zinc-300">
           <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
           <p className="text-sm font-medium text-center sm:text-left">
-            <span className="text-amber-300 font-bold">Direct Booking Bonus:</span> Reserve today
-            and unlock{' '}
-            <span className="underline decoration-amber-400 decoration-2 font-extrabold text-white">
-              15% Off
-            </span>
-            , complimentary welcome drinks, and late checkout.
+            {t.rich('directBookingBonus', {
+              label: (chunks) => <span className="text-amber-300 font-bold">{chunks}</span>,
+              discount: (chunks) => (
+                <span className="underline decoration-amber-400 decoration-2 font-extrabold text-white">
+                  {chunks}
+                </span>
+              ),
+            })}
           </p>
         </div>
 
@@ -90,7 +93,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                 htmlFor="destination"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
               >
-                Where to?
+                {t('destination')}
               </label>
               <div className="relative">
                 <MapPin
@@ -100,7 +103,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                 <input
                   id="destination"
                   type="text"
-                  placeholder="Search destinations"
+                  placeholder={t('destinationPlaceholder')}
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-300"
@@ -117,7 +120,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                 htmlFor="check-in"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
               >
-                Check In
+                {t('checkIn')}
               </label>
               <div className="relative">
                 <Calendar
@@ -143,7 +146,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                 htmlFor="check-out"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
               >
-                Check Out
+                {t('checkOut')}
               </label>
               <div className="relative">
                 <Calendar
@@ -169,7 +172,7 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                 htmlFor="guests"
                 className="text-xs font-bold tracking-wider text-zinc-400 uppercase ml-1"
               >
-                Guests
+                {t('guests')}
               </label>
               <div className="relative">
                 <Users
@@ -182,26 +185,24 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
                   onChange={(e) => setGuests(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-300 appearance-none cursor-pointer"
                 >
-                  <option value="1">1 Guest</option>
-                  <option value="2">2 Guests</option>
-                  <option value="3">3 Guests</option>
-                  <option value="4">4 Guests</option>
-                  <option value="5">5+ Guests</option>
+                  <option value="1">1 {t('guestLabel')}</option>
+                  <option value="2">2 {t('guestsLabel')}</option>
+                  <option value="3">3 {t('guestsLabel')}</option>
+                  <option value="4">4 {t('guestsLabel')}</option>
+                  <option value="5">{t('guest5plus')}</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div className="mt-6 flex flex-col sm:flex-row justify-end items-center gap-4">
-            <span className="text-xs text-zinc-500 font-medium">
-              ⚡ Real-time availability & secure checkout
-            </span>
+            <span className="text-xs text-zinc-500 font-medium">{t('realtime')}</span>
             <button
               type="submit"
               className="w-full sm:w-auto px-10 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0"
             >
               <Search className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
-              Search
+              {t('searchButton')}
             </button>
           </div>
         </form>

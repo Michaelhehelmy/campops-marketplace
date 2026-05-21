@@ -1,16 +1,81 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import { MapPin, Users, ArrowLeft, Download } from 'lucide-react';
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
 import { getProperty } from '@/lib/api';
 import BookingFallback from '@/components/BookingFallback';
+import { getSqlite } from '@/lib/db';
+import { PostQuery } from '@/lib/PostQuery';
 
 export const dynamic = 'force-dynamic';
 
 interface Props {
   params: { locale: string; slug: string };
   searchParams: { checkIn?: string; checkOut?: string; currency?: string };
+}
+
+/**
+ * Attempt to load listing data via PostQuery (Posts-native path).
+ * Resolves: site.slug → site.id → PostQuery.queryOne({ postSlug })
+ * Returns null if not found so the caller can fall back to getProperty().
+ */
+async function loadViaPostQuery(
+  slug: string
+): Promise<{ property: Record<string, any>; room_types: any[] } | null> {
+  try {
+    const db = getSqlite();
+    const site = db
+      .prepare('SELECT id, slug, name, plan FROM sites WHERE slug = ? AND is_active = 1 LIMIT 1')
+      .get(slug) as { id: string; slug: string; name: string; plan: string } | undefined;
+
+    if (!site) return null;
+
+    const q = new PostQuery(db);
+    const post = q.queryOne({
+      siteId: site.id,
+      postType: 'listing',
+      postSlug: slug,
+      status: 'publish',
+      includeMeta: true,
+    });
+
+    if (!post) return null;
+
+    const m = post.meta ?? {};
+    let amenities: string[] = [];
+    try {
+      if (m.amenities) amenities = JSON.parse(m.amenities);
+    } catch {
+      amenities = [];
+    }
+
+    const property = {
+      id: post.id,
+      slug: post.postSlug ?? slug,
+      name: post.postTitle,
+      description: post.postContent ?? '',
+      city: m.city ?? null,
+      country: m.country ?? null,
+      settings: m.settings ?? null,
+      plan: site.plan,
+      amenities,
+      rating: parseFloat(m.rating ?? '0') || 0,
+    };
+
+    const room_types = (() => {
+      try {
+        return m.room_types ? JSON.parse(m.room_types) : [];
+      } catch {
+        return [];
+      }
+    })();
+
+    return { property, room_types };
+  } catch {
+    return null;
+  }
 }
 
 function formatPrice(amount: number, currency: string) {
@@ -24,15 +89,24 @@ function formatPrice(amount: number, currency: string) {
 export default async function PropertyPage({ params, searchParams }: Props) {
   const { locale, slug } = params;
   const { checkIn, checkOut, currency = 'USD' } = searchParams;
+  const t = await getTranslations('property');
 
-  let data: Awaited<ReturnType<typeof getProperty>>;
-  try {
-    data = await getProperty(slug, checkIn, checkOut, currency);
-  } catch {
-    notFound();
+  // Primary path: Posts-native via PostQuery (site.slug → posts table)
+  let postQueryData = await loadViaPostQuery(slug);
+
+  // Fallback: legacy getProperty() for sites not yet migrated to posts
+  let data: Awaited<ReturnType<typeof getProperty>> | null = null;
+  if (!postQueryData) {
+    try {
+      data = await getProperty(slug, checkIn, checkOut, currency);
+    } catch {
+      notFound();
+    }
   }
 
-  const { property, room_types } = data!;
+  if (!postQueryData && !data) notFound();
+
+  const { property, room_types } = (postQueryData ?? data)!;
   const settings =
     typeof property.settings === 'string'
       ? JSON.parse(property.settings || '{}')
@@ -104,8 +178,8 @@ export default async function PropertyPage({ params, searchParams }: Props) {
           <div className="flex items-center gap-3">
             <Download className="w-5 h-5" />
             <div>
-              <p className="font-bold">Install SinaiCamps App</p>
-              <p className="text-sm text-brand-100">Get the full experience</p>
+              <p className="font-bold">{t('installApp')}</p>
+              <p className="text-sm text-brand-100">{t('installDesc')}</p>
             </div>
           </div>
           <button className="bg-white text-brand-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-50">
@@ -169,9 +243,9 @@ export default async function PropertyPage({ params, searchParams }: Props) {
           fallback={null}
         />
 
-        <h2 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Room types</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mt-6 mb-4">{t('roomTypes')}</h2>
         {room_types.length === 0 ? (
-          <p className="text-gray-400 py-8 text-center">No rooms available for selected dates</p>
+          <p className="text-gray-400 py-8 text-center">{t('noRoomsAvailable')}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {room_types.map((rt: any) => {
@@ -198,13 +272,13 @@ export default async function PropertyPage({ params, searchParams }: Props) {
                       <p className="text-lg font-bold text-gray-900">
                         {formatPrice(roomPrice, roomCurrency)}
                       </p>
-                      <p className="text-xs text-gray-400">/ night</p>
+                      <p className="text-xs text-gray-400">{t('perNight')}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
                     <Users className="w-4 h-4" />
-                    <span>Up to {rt.capacity} guests</span>
+                    <span>{t('capacity', { n: rt.capacity })}</span>
                   </div>
 
                   {checkIn && checkOut ? (
@@ -213,14 +287,14 @@ export default async function PropertyPage({ params, searchParams }: Props) {
                       data-testid={`book-button-${rt.id}`}
                       className="block w-full text-center bg-brand-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
                     >
-                      Book now
+                      {t('bookNow')}
                     </Link>
                   ) : (
                     <Link
                       href={`/${locale}/search`}
                       className="block w-full text-center border border-brand-600 text-brand-600 py-2.5 rounded-lg text-sm font-medium hover:bg-brand-50 transition-colors"
                     >
-                      Check availability
+                      {t('checkAvailability')}
                     </Link>
                   )}
                 </div>

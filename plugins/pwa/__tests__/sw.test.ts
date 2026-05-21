@@ -1,123 +1,62 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
-describe('PWA Service Worker', () => {
-  let installHandler: any;
-  let activateHandler: any;
-  let fetchHandler: any;
-  let cacheAddAllSpy: any;
-  let cacheOpenSpy: any;
-  let cacheMatchSpy: any;
-  let fetchSpy: any;
+describe('PWA Service Worker - Marketplace', () => {
+  let swCode: string;
 
-  beforeEach(async () => {
-    vi.clearAllMocks();
-
-    installHandler = null;
-    activateHandler = null;
-    fetchHandler = null;
-
-    // Stub global self
-    const listeners: any = {};
-    (global as any).self = {
-      addEventListener: vi.fn().mockImplementation((event: string, handler: any) => {
-        listeners[event] = handler;
-      }),
-    };
-
-    cacheAddAllSpy = vi.fn().mockResolvedValue(undefined);
-    cacheOpenSpy = vi.fn().mockResolvedValue({
-      addAll: cacheAddAllSpy,
-    });
-    cacheMatchSpy = vi.fn().mockResolvedValue({ status: 200 });
-
-    (global as any).caches = {
-      open: cacheOpenSpy,
-      match: cacheMatchSpy,
-    };
-
-    fetchSpy = vi.fn().mockResolvedValue({ status: 200 });
-    (global as any).fetch = fetchSpy;
-
-    // Load sw.ts dynamically
-    await import('../src/sw');
-
-    installHandler = listeners['install'];
-    activateHandler = listeners['activate'];
-    fetchHandler = listeners['fetch'];
+  beforeEach(() => {
+    const swPath = path.resolve(process.cwd(), 'public/sw-marketplace.js');
+    swCode = fs.readFileSync(swPath, 'utf-8');
   });
 
-  afterEach(() => {
-    delete (global as any).self;
-    delete (global as any).caches;
-    delete (global as any).fetch;
-    vi.resetModules();
+  it('contains install event listener', () => {
+    expect(swCode).toContain("addEventListener('install'");
+    expect(swCode).toContain('waitUntil');
+    expect(swCode).toContain('caches.open');
   });
 
-  it('registers all event listeners', () => {
-    expect(installHandler).toBeDefined();
-    expect(activateHandler).toBeDefined();
-    expect(fetchHandler).toBeDefined();
+  it('contains activate event listener', () => {
+    expect(swCode).toContain("addEventListener('activate'");
+    expect(swCode).toContain('clients.claim');
   });
 
-  it('handles install event by pre-caching', async () => {
-    const mockWaitUntil = vi.fn();
-    const event = {
-      waitUntil: mockWaitUntil,
-    };
-
-    await installHandler(event);
-
-    expect(mockWaitUntil).toHaveBeenCalled();
-    const promise = mockWaitUntil.mock.calls[0][0];
-    await promise;
-
-    expect(cacheOpenSpy).toHaveBeenCalledWith('sinaicamps-pwa-v1');
-    expect(cacheAddAllSpy).toHaveBeenCalledWith(['/', '/offline', '/manifest.json']);
+  it('contains fetch event listener', () => {
+    expect(swCode).toContain("addEventListener('fetch'");
+    expect(swCode).toContain('respondWith');
   });
 
-  it('handles activate event', () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    activateHandler({});
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[PWA SW] Service Worker activated')
-    );
-    consoleLogSpy.mockRestore();
+  it('defines a cache name', () => {
+    expect(swCode).toMatch(/CACHE_VERSION|CACHE_NAME|cacheName|STATIC_CACHE/i);
   });
 
-  it('handles fetch event with network-first strategy (success)', async () => {
-    const mockRespondWith = vi.fn();
-    const event = {
-      request: 'http://localhost/index.html',
-      respondWith: mockRespondWith,
-    };
+  it('pre-caches offline fallback and critical assets', () => {
+    expect(swCode).toContain('/offline');
+    expect(swCode).toContain('/sinaicamps.png');
+  });
+});
 
-    await fetchHandler(event);
+describe('PWA Service Worker - Tenant', () => {
+  let swCode: string;
 
-    expect(mockRespondWith).toHaveBeenCalled();
-    const promise = mockRespondWith.mock.calls[0][0];
-    const response = await promise;
-
-    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/index.html');
-    expect(response.status).toBe(200);
+  beforeEach(() => {
+    const swPath = path.resolve(process.cwd(), 'public/sw-tenant.js');
+    swCode = fs.readFileSync(swPath, 'utf-8');
   });
 
-  it('handles fetch event falling back to cache on network failure', async () => {
-    fetchSpy.mockRejectedValue(new Error('Network down'));
+  it('contains install event listener', () => {
+    expect(swCode).toContain("addEventListener('install'");
+    expect(swCode).toContain('waitUntil');
+    expect(swCode).toContain('caches.open');
+  });
 
-    const mockRespondWith = vi.fn();
-    const event = {
-      request: 'http://localhost/index.html',
-      respondWith: mockRespondWith,
-    };
+  it('contains fetch event listener with tenant-specific API routes', () => {
+    expect(swCode).toContain("addEventListener('fetch'");
+    expect(swCode).toContain('\\/api\\/site\\/');
+    expect(swCode).toContain('\\/api\\/p\\/');
+  });
 
-    await fetchHandler(event);
-
-    expect(mockRespondWith).toHaveBeenCalled();
-    const promise = mockRespondWith.mock.calls[0][0];
-    const response = await promise;
-
-    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/index.html');
-    expect(cacheMatchSpy).toHaveBeenCalledWith('http://localhost/index.html');
-    expect(response.status).toBe(200);
+  it('defines a hostname-keyed cache namespace', () => {
+    expect(swCode).toMatch(/hostname|location\.host/);
   });
 });

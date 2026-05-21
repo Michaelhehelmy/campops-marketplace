@@ -9,9 +9,9 @@
  */
 export type HookHandler<T = any> = (data: T, context: HookContext) => Promise<T>;
 export interface HookContext {
-  propertyId?: string;
-  userId?: string;
-  [key: string]: any;
+    propertyId?: string;
+    userId?: string;
+    [key: string]: any;
 }
 /**
  * A property-scoped database accessor provided to plugins.
@@ -19,176 +19,226 @@ export interface HookContext {
  * accidentally read or write data from another property.
  */
 export interface ScopedRepository<T> {
-  findMany(query?: Partial<T>): Promise<T[]>;
-  findById(id: string): Promise<T | null>;
-  create(data: Omit<T, 'id' | 'created_at' | 'updated_at'>): Promise<T>;
-  update(id: string, data: Partial<T>): Promise<T>;
-  delete(id: string): Promise<void>;
+    findMany(query?: Partial<T>): Promise<T[]>;
+    findById(id: string): Promise<T | null>;
+    create(data: Omit<T, 'id' | 'created_at' | 'updated_at'>): Promise<T>;
+    update(id: string, data: Partial<T>): Promise<T>;
+    delete(id: string): Promise<void>;
 }
 export interface PaymentServiceAPI {
-  initiatePayment(
-    orderId: string,
-    amount: number,
-    currency: string,
-    metadata?: Record<string, any>
-  ): Promise<{
-    paymentUrl?: string;
-    transactionId?: string;
-  }>;
+    initiatePayment(orderId: string, amount: number, currency: string, metadata?: Record<string, any>): Promise<{
+        paymentUrl?: string;
+        transactionId?: string;
+    }>;
 }
 export interface TaxServiceAPI {
-  calculateTaxes(
-    baseAmount: number,
-    propertyId?: string
-  ): Promise<{
-    taxes: {
-      name: string;
-      rate: number;
-      amount: number;
-    }[];
-    totalTax: number;
-  }>;
+    calculateTaxes(baseAmount: number, propertyId?: string): Promise<{
+        taxes: {
+            name: string;
+            rate: number;
+            amount: number;
+        }[];
+        totalTax: number;
+    }>;
 }
 export interface NotificationServiceAPI {
-  send(opts: {
-    to: string;
-    channel: 'email' | 'sms' | 'whatsapp';
-    subject?: string;
-    body: string;
-    metadata?: Record<string, any>;
-  }): Promise<void>;
+    send(opts: {
+        to: string;
+        channel: 'email' | 'sms' | 'whatsapp';
+        subject?: string;
+        body: string;
+        metadata?: Record<string, any>;
+    }): Promise<void>;
 }
 export interface I18nServiceAPI {
-  t(key: string, locale?: string, vars?: Record<string, string>): string;
+    t(key: string, locale?: string, vars?: Record<string, string>): string;
 }
 export interface AdminMenuItem {
-  label: string;
-  icon?: string;
-  path: string;
-  permission?: string;
+    label: string;
+    icon?: string;
+    path: string;
+    permission?: string;
 }
 export interface DashboardWidget {
-  id: string;
-  title: string;
-  component: string;
-  width?: 'sm' | 'md' | 'lg' | 'full';
+    id: string;
+    title: string;
+    component: string;
+    width?: 'sm' | 'md' | 'lg' | 'full';
 }
 export interface SettingsPageDefinition {
-  id: string;
-  label: string;
-  icon?: string;
-  component: string;
+    id: string;
+    label: string;
+    icon?: string;
+    component: string;
 }
 export interface Logger {
-  info(msg: string, ...args: any[]): void;
-  warn(msg: string, ...args: any[]): void;
-  error(msg: string, ...args: any[]): void;
-  debug(msg: string, ...args: any[]): void;
+    info(msg: string, ...args: any[]): void;
+    warn(msg: string, ...args: any[]): void;
+    error(msg: string, ...args: any[]): void;
+    debug(msg: string, ...args: any[]): void;
 }
 export interface RoomMapping {
-  localRoomId: string;
-  channelRoomId: string;
+    localRoomId: string;
+    channelRoomId: string;
 }
 export interface RateMapping {
-  localRatePlanId: string;
-  channelRatePlanId: string;
-  price: number;
-  currency: string;
+    localRatePlanId: string;
+    channelRatePlanId: string;
+    price: number;
+    currency: string;
 }
 export interface ChannelReservation {
-  channelRef: string;
-  roomId: string;
-  guestName: string;
-  checkIn: Date;
-  checkOut: Date;
-  totalAmount: number;
-  currency: string;
-  source: string;
+    channelRef: string;
+    roomId: string;
+    guestName: string;
+    checkIn: Date;
+    checkOut: Date;
+    totalAmount: number;
+    currency: string;
+    source: string;
+}
+export interface InventorySyncResult {
+    updated: number;
+    errors: string[];
+}
+export interface RateSyncResult {
+    updated: number;
+    errors: string[];
 }
 export interface OTAAdapter {
-  id: string;
-  name: string;
-  syncInventory(roomMappings: RoomMapping[]): Promise<void>;
-  syncRates(rateMappings: RateMapping[]): Promise<void>;
-  fetchReservations(since: Date): Promise<ChannelReservation[]>;
-  cancelReservation(channelRef: string): Promise<void>;
+    id: string;
+    name: string;
+    syncInventory(roomMappings: RoomMapping[]): Promise<InventorySyncResult>;
+    syncRates(rateMappings: RateMapping[]): Promise<RateSyncResult>;
+    fetchReservations(since: Date): Promise<ChannelReservation[]>;
+    cancelReservation(channelRef: string): Promise<void>;
 }
+/**
+ * Recognised plugin capabilities.
+ * Each string maps to a set of APIs the plugin is allowed to use.
+ */
+export type PluginCapability = 'database' | 'network' | 'payment' | 'notification' | 'hooks' | 'routes' | 'auth' | 'events' | 'ui' | 'storage';
 export interface PluginManifestEntry {
-  name: string;
-  version: string;
-  sinaicampsVersion: string;
-  path: string;
-  config: Record<string, any>;
-  enabled?: boolean;
+    name: string;
+    version: string;
+    sinaicampsVersion: string;
+    path: string;
+    config: Record<string, any>;
+    enabled?: boolean;
+    /** Capabilities the plugin declares. When omitted, all capabilities are granted. */
+    capabilities?: PluginCapability[];
 }
 export interface PluginDatabaseAPI {
-  rooms: ScopedRepository<Record<string, any>>;
-  reservations: ScopedRepository<Record<string, any>>;
-  guests: ScopedRepository<Record<string, any>>;
-  folios: ScopedRepository<Record<string, any>>;
-  roomTypes: ScopedRepository<Record<string, any>>;
-  /** Run a SELECT and return all rows. */
-  query(sql: string, params?: any[]): Promise<any[]>;
-  /** Run a SELECT and return the first matching row. */
-  queryOne(sql: string, params?: any[]): Promise<any>;
-  /** Run an INSERT / UPDATE / DELETE. */
-  execute(sql: string, params?: any[]): Promise<void>;
-  /**
-   * Create a plugin-namespaced table following the standard convention.
-   * Table name: `plugin_<pluginId>_<tableSuffix>`.
-   * Auto-adds: id, property_id, created_at, updated_at + indexes + trigger.
-   */
-  createTable(tableSuffix: string, columnsSql: string): Promise<void>;
-  /** Drop the plugin's table (call from drop.sql equivalent or uninstall hook). */
-  dropTable(tableSuffix: string): Promise<void>;
-  /** Returns true when the plugin's table already exists. */
-  tableExists(tableSuffix: string): Promise<boolean>;
+    /**
+     * getTable — generic scoped-repository factory.
+     *
+     * Returns a property-scoped CRUD repository for any table name.
+     * The returned repository automatically prefixes queries with
+     * `plugin_<pluginId>_` so plugin tables are isolated.
+     *
+     * This replaces the removed shortcut properties `rooms`, `reservations`,
+     * `guests`, `folios`, and `roomTypes` which encoded hospitality-domain
+     * concepts into the core SDK.
+     *
+     * @example
+     *   const bookings = api.db.getTable<Booking>('bookings');
+     *   const items    = await bookings.findMany({ status: 'confirmed' });
+     */
+    getTable<T = Record<string, any>>(tableName: string): ScopedRepository<T>;
+    /** Run a SELECT and return all rows. */
+    query(sql: string, params?: any[]): Promise<any[]>;
+    /** Run a SELECT and return the first matching row. */
+    queryOne(sql: string, params?: any[]): Promise<any>;
+    /** Run an INSERT / UPDATE / DELETE. */
+    execute(sql: string, params?: any[]): Promise<void>;
+    /**
+     * Create a plugin-namespaced table following the standard convention.
+     * Table name: `plugin_<pluginId>_<tableSuffix>`.
+     */
+    createTable(tableSuffix: string, columnsSql: string): Promise<void>;
+    /** Drop the plugin's table (call from uninstall hook). */
+    dropTable(tableSuffix: string): Promise<void>;
+    /** Returns true when the plugin's table already exists. */
+    tableExists(tableSuffix: string): Promise<boolean>;
+    /** Run inside a database transaction */
+    transaction<T>(callback: (tx: Omit<PluginDatabaseAPI, 'transaction'>) => Promise<T>): Promise<T | null>;
 }
 export interface PluginAPI {
-  readonly pluginId: string;
-  readonly version: string;
-  readonly logger: Logger;
-  registerHook<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
-  executeHook<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
-  hooks: {
-    register<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
+    errorResponse(err: unknown): any;
+    validate(schema: {
+        parse: (data: any) => any;
+    }, body: any): any;
+    checkIdempotency(key: string): Promise<any>;
+    storeIdempotency(key: string, response: object): Promise<void>;
+    readonly pluginId: string;
+    readonly version: string;
+    readonly logger: Logger;
     registerHook<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
-    execute<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
     executeHook<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
-  };
-  db: PluginDatabaseAPI;
-  services: {
-    payment: PaymentServiceAPI;
-    tax: TaxServiceAPI;
-    notification: NotificationServiceAPI;
-    i18n: I18nServiceAPI;
-  };
-  config: Record<string, any>;
-  publish(channel: string, message: any): void;
-  subscribe(channel: string, handler: (msg: any) => void): () => void;
-  events: {
-    emit(event: string, data: any): void;
-  };
-  plugins: {
-    get(name: string): any;
-  };
-  registerRoute(path: string, router: any): void;
-  ui: {
-    addSlotComponent(slotName: string, componentKey: string): void;
-    addMenuItem(item: AdminMenuItem): void;
-    addDashboardWidget(widget: DashboardWidget): void;
-    addSettingsPage(page: SettingsPageDefinition): void;
-    registerSlot?(slotName: string, componentKey: string): void;
-    registerMenuItem?(item: {
-      id: string;
-      label: string;
-      icon?: string;
-      path: string;
-      order?: number;
-    }): void;
-    registerDashboardWidget?(widget: { id: string; position: string }): void;
-    registerSettingsPage?(page: { id: string; label: string; path: string }): void;
-  };
+    hooks: {
+        register<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
+        registerHook<T = any>(name: string, handler: HookHandler<T>, priority?: number): () => void;
+        /** Phase 3: WordPress-style action registration (fire-and-forget). */
+        addAction(name: string, handler: (data?: any) => void | Promise<void>, priority?: number): () => void;
+        /** Phase 3: WordPress-style filter registration (transforms value). */
+        addFilter(name: string, handler: (data: any) => any | Promise<any>, priority?: number): () => void;
+        /** Phase 3: Fire an action hook (runs handlers, discards return values). */
+        doAction(name: string, data?: any): Promise<void>;
+        /** Phase 3: Apply a filter hook (passes value through all handlers). */
+        applyFilters<T = any>(name: string, value: T, context?: any): Promise<T>;
+        execute<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
+        executeHook<T = any>(name: string, data: T, context?: HookContext): Promise<T>;
+    };
+    db: PluginDatabaseAPI;
+    services: {
+        payment: PaymentServiceAPI;
+        tax: TaxServiceAPI;
+        notification: NotificationServiceAPI;
+        i18n: I18nServiceAPI;
+    };
+    config: Record<string, any>;
+    publish(channel: string, message: any): void;
+    subscribe(channel: string, handler: (msg: any) => void): () => void;
+    events: {
+        emit(event: string, data: any): void;
+    };
+    plugins: {
+        get(name: string): any;
+    };
+    auth: {
+        getSession(req: Request): Promise<any>;
+    };
+    registerRoute(path: string, router: any): void;
+    registerPostType(definition: {
+        name: string;
+        label: string;
+        labelPlural: string;
+        icon?: string;
+        supports?: string[];
+    }): Promise<void>;
+    requestContext(): {
+        siteId: string;
+        siteSlug: string | null;
+        plan: string;
+        theme: Record<string, any> | null;
+        activePlugins: string[];
+        autoloadOptions: Map<string, string | null>;
+        isMainDomain: boolean;
+    } | null;
+    ui: {
+        /** Register a component for a specific slot. Alias for addSlotComponent. */
+        registerSlot(slotName: string, componentKey: string): void;
+        addSlotComponent(slotName: string, componentKey: string): void;
+        /** Add an item to the sidebar navigation. Alias for addMenuItem. */
+        registerMenuItem(item: AdminMenuItem): void;
+        addMenuItem(item: AdminMenuItem): void;
+        /** Add a widget to the property dashboard. Alias for addDashboardWidget. */
+        registerDashboardWidget(widget: DashboardWidget): void;
+        addDashboardWidget(widget: DashboardWidget): void;
+        /** Add a new tab to the settings page. Alias for addSettingsPage. */
+        registerSettingsPage(page: SettingsPageDefinition): void;
+        addSettingsPage(page: SettingsPageDefinition): void;
+    };
 }
 export type PluginInitFn = (api: PluginAPI) => void | Promise<void>;
 //# sourceMappingURL=types.d.ts.map

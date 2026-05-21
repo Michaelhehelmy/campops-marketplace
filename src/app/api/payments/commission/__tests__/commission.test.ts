@@ -3,6 +3,13 @@ import { GET, POST, PUT } from '../route';
 import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 
+vi.mock('@/lib/auth-middleware', () => ({
+  requireSession: vi
+    .fn()
+    .mockResolvedValue({ user: { id: 'test-user' }, session: { id: 'test-session' } }),
+  isErrorResponse: vi.fn().mockReturnValue(false),
+}));
+
 vi.mock('@/lib/db', () => {
   const getMock = vi.fn();
   const allMock = vi.fn();
@@ -20,6 +27,7 @@ vi.mock('@/lib/db', () => {
       get: getMock,
       all: allMock,
       run: runMock,
+      execute: vi.fn().mockResolvedValue(undefined),
     },
   };
 });

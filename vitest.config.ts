@@ -20,6 +20,7 @@ export default defineConfig({
     testTimeout: 20000,
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@sinaicamps/plugin-sdk': path.resolve(__dirname, './packages/plugin-sdk/src/index.ts'),
     },
     coverage: {
       provider: 'v8',

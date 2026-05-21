@@ -24,7 +24,7 @@ test.describe('Public (no login)', () => {
   });
 
   test.describe('Full booking flow', () => {
-    test('select listing, book dates, confirm', async ({ page }) => {
+    test('guest is redirected to login before booking', async ({ page }) => {
       // Navigate directly to a listing page with dates
       await page.goto('/en/stay/safari-camp?checkIn=2025-06-15&checkOut=2025-06-20');
 
@@ -38,29 +38,10 @@ test.describe('Public (no login)', () => {
       await expect(bookButton).toBeVisible({ timeout: 10000 });
       await bookButton.click();
 
-      // Wait for summary page to load and hydrate (client component + Suspense)
-      await page.waitForURL(/\/book\/summary/, { timeout: 20000 });
-      await expect(
-        page.locator('h2:has-text("Guest details"), h2:has-text("guest details")')
-      ).toBeVisible({ timeout: 20000 });
-
-      // Fill guest information
-      await page.getByPlaceholder('Jane Smith').fill('Test Guest');
-      await page.getByPlaceholder('jane@example.com').fill('test@example.com');
-      await page.fill('input[name="adults"]', '2');
-
-      // Proceed to payment
-      await page.click('button:has-text("Continue to payment")');
-
-      // Select pay at property option
-      await page.click('input[value="pay_later"]');
-
-      // Confirm booking
-      await page.click('button:has-text("Confirm Booking"), button:has-text("Confirm booking")');
-
-      // Verify confirmation
-      await expect(page.locator('h1:has-text("Booking Confirmed!")')).toBeVisible({
-        timeout: 20000,
+      // Guest should be redirected to login page
+      await page.waitForURL(/\/en\/login/, { timeout: 20000 });
+      await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible({
+        timeout: 10000,
       });
     });
   });

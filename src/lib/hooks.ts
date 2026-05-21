@@ -38,12 +38,18 @@ export const Hooks = {
   CORE_THEME_LOADED: 'core:theme:loaded',
   /** Action: fired when a plugin registers a post type. Payload: { siteId, pluginId, postType }. */
   CORE_POST_TYPE_REGISTERED: 'core:post_type:registered',
+  /** Action: fired when a developer submits a plugin for review. Payload: submission object. */
+  CORE_PLUGIN_SUBMITTED: 'core:plugin:submitted',
   /** Action: fired after a plugin is activated for a site. Payload: { siteId, pluginId, version }. */
   CORE_PLUGIN_ACTIVATED: 'core:plugin:activated',
   /** Action: fired after a plugin is deactivated for a site. Payload: { siteId, pluginId }. */
   CORE_PLUGIN_DEACTIVATED: 'core:plugin:deactivated',
   /** Filter: fired when building the PWA manifest for a site. Payload: manifest object. */
   CORE_MANIFEST_BUILD: 'core:manifest:build',
+  /** Filter: applied to args before executing a cross-site globalQuery. Payload: GlobalPostQueryArgs. */
+  CORE_GLOBAL_QUERY_ARGS: 'core:global_query:args',
+  /** Filter: applied to args before executing the public listings API query. */
+  CORE_PUBLIC_LISTINGS_QUERY: 'core:public_listings:query',
   /** Action: fired after a site's plan is upgraded. Payload: { siteId, previousPlan, newPlan }. */
   CORE_SITE_PLAN_UPGRADED: 'core:site:plan_upgraded',
 

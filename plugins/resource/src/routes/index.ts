@@ -38,6 +38,56 @@ function validationError(issues: { path: any[]; message: string }[]): Response {
  *   /api/p/resource/manage/*  – tenant-admin
  */
 export function registerRoutes(api: PluginAPI) {
+  // ── GET /api/public/search ──────────────────────────────────────────────────
+  // Backward-compatible public search for properties (core table)
+  api.registerRoute('/api/public/search', {
+    GET: async (req: Request) => {
+      try {
+        const url = new URL(req.url);
+        const destination = url.searchParams.get('destination');
+        const checkIn = url.searchParams.get('checkIn');
+        const checkOut = url.searchParams.get('checkOut');
+
+        let sql = 'SELECT * FROM properties WHERE is_active = 1';
+        const params: any[] = [];
+
+        if (destination) {
+          sql += ' AND (name LIKE ? OR city LIKE ? OR country LIKE ?)';
+          params.push(`%${destination}%`, `%${destination}%`, `%${destination}%`);
+        }
+
+        const properties = await api.db.query(sql, params);
+
+        const enhancedProperties = (properties as any[]).map((p: any) => ({
+          ...p,
+          displayMinPrice: p.min_price_per_night || 100,
+          displayCurrency: p.currency_code || 'USD',
+          availableRoomTypes: [
+            {
+              id: `rt-${p.id}-1`,
+              name: 'Standard Tent',
+              price: p.min_price_per_night || 100,
+              displayPrice: p.min_price_per_night || 100,
+              displayCurrency: p.currency_code || 'USD',
+              capacity: 2,
+              remaining: 5,
+            },
+          ],
+        }));
+
+        return json({
+          properties: enhancedProperties,
+          totalCount: enhancedProperties.length,
+          checkIn,
+          checkOut,
+          nights: 5,
+        });
+      } catch (err: any) {
+        return json({ error: err.message || 'Database error' }, 500);
+      }
+    },
+  });
+
   // ── GET /api/p/resource/listings ────────────────────────────────────────────
   // Public search: accepts search, location, tier, page, limit query params.
   api.registerRoute('/api/p/resource/listings', {

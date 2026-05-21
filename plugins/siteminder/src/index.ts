@@ -13,7 +13,7 @@ import type {
   InventorySyncResult,
   RateSyncResult,
 } from '../../../packages/plugin-sdk/src/ota.js';
-import { OTAAdapterRegistry } from '../../../packages/plugin-sdk/src/ota.js';
+import { OTAAdapterRegistry } from '@sinaicamps/plugin-sdk';
 
 const DEFAULT_BASE_URL = 'https://api.siteminder.com/v1';
 

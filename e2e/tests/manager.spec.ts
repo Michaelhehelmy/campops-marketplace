@@ -78,7 +78,9 @@ authenticatedTest.describe('Authenticated manager journeys', () => {
         await page.goto('/en/manage/safari-camp/finance');
 
         // Wait for finance page to load
-        await expect(page.locator('h1:has-text("Financial Overview")')).toBeVisible();
+        await expect(page.locator('h1:has-text("Financial Overview")')).toBeVisible({
+          timeout: 30000,
+        });
 
         // Verify commission data is displayed
         await expect(page.locator('text=/Commission Breakdown/i')).toBeVisible();

@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -100,7 +101,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -210,7 +211,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (err: any) {
     console.error('[Admin Plugins Create API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -322,7 +323,7 @@ export async function PUT(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugins Update API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }
 
@@ -365,6 +366,6 @@ export async function DELETE(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Admin Plugins Deactivate API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

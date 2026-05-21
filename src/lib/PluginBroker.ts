@@ -6,8 +6,19 @@ import { logger } from './logger';
  * Tracks loaded plugin instances and their returned public API objects,
  * enabling inter-plugin communication via api.plugins.get(name).
  */
+const BROKER_KEY = '__pluginBroker__';
+
+function getBrokerMap(): Map<string, unknown> {
+  if (!(globalThis as any)[BROKER_KEY]) {
+    (globalThis as any)[BROKER_KEY] = new Map<string, unknown>();
+  }
+  return (globalThis as any)[BROKER_KEY];
+}
+
 export class PluginBroker {
-  private static instances = new Map<string, unknown>();
+  private static get instances() {
+    return getBrokerMap();
+  }
 
   static register(pluginId: string, publicApi: unknown): void {
     this.instances.set(pluginId, publicApi);

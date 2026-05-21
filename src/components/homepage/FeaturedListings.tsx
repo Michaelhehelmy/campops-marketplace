@@ -3,8 +3,10 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Loader2, Star, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import type { Post } from '@/lib/PostQuery';
 
 interface FeaturedListing {
   id: string;
@@ -20,6 +22,8 @@ interface FeaturedListing {
 interface FeaturedListingsProps {
   locale?: string;
   limit?: number;
+  /** SSR-provided Post[] — skips the client fetch when present. */
+  initialListings?: Post[];
 }
 
 function formatPrice(amount: number) {
@@ -30,20 +34,50 @@ function formatPrice(amount: number) {
   }).format(amount);
 }
 
-export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedListingsProps) {
+function postToListing(post: Post): FeaturedListing {
+  const m = post.meta ?? {};
+  let amenities: string[] = [];
+  try {
+    const raw = m.amenities;
+    if (raw) amenities = JSON.parse(raw);
+  } catch {
+    amenities = [];
+  }
+  return {
+    id: post.id,
+    slug: post.postSlug ?? post.id,
+    name: post.postTitle,
+    primaryImage: m.primary_image ?? '',
+    shortDescription: m.short_description ?? post.postContent ?? '',
+    pricePerNight: parseFloat(m.price_per_night ?? '0') || 0,
+    rating: parseFloat(m.rating ?? '0') || 0,
+    amenities,
+  };
+}
+
+export default function FeaturedListings({
+  locale = 'en',
+  limit = 8,
+  initialListings,
+}: FeaturedListingsProps) {
   const router = useRouter();
-  const [listings, setListings] = useState<FeaturedListing[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [listings, setListings] = useState<FeaturedListing[]>(
+    initialListings ? initialListings.map(postToListing) : []
+  );
+  const [loading, setLoading] = useState(!initialListings);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations('featured');
 
   useEffect(() => {
+    if (initialListings) return;
     const fetchFeatured = async () => {
       try {
         setLoading(true);
         const res = await fetch(`/api/public/featured-listings?limit=${limit}`);
         if (!res.ok) throw new Error('Failed to fetch featured listings');
         const data = await res.json();
-        setListings(data.listings || []);
+        const posts: Post[] = data.listings ?? [];
+        setListings(posts.map(postToListing));
         setError(null);
       } catch (err: any) {
         setError(err.message);
@@ -52,9 +86,8 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
         setLoading(false);
       }
     };
-
     fetchFeatured();
-  }, [limit]);
+  }, [limit, initialListings]);
 
   if (loading) {
     return (
@@ -82,14 +115,13 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
         {/* Header */}
         <div className="text-center mb-16 relative">
           <span className="text-xs font-bold uppercase tracking-widest text-amber-500 bg-amber-50 px-3.5 py-1.5 rounded-full inline-block mb-3.5">
-            👑 Handpicked Stays
+            {t('badge')}
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Featured Stays
+            {t('title')}
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury
-            standards, and seamless service.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -111,7 +143,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                 ) : (
                   <div className="w-full h-full bg-gradient-to-tr from-amber-50 to-amber-100 flex items-center justify-center">
                     <span className="text-5xl" aria-hidden="true">
-                      🏕️
+                      ✨
                     </span>
                   </div>
                 )}
@@ -119,7 +151,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                 {/* Direct Booking Discount Badge */}
                 <div className="absolute top-4 left-4 bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>15% DIRECT</span>
+                  <span>{t('discountPercent', { type: t('discount') })}</span>
                 </div>
 
                 {/* Rating Badge */}
@@ -182,12 +214,12 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                 <div className="flex items-end justify-between border-t border-slate-100 pt-5 mt-auto shrink-0">
                   <div>
                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                      Guaranteed Rate
+                      {t('guaranteedRate')}
                     </p>
                     <p className="text-2xl font-black text-slate-900 leading-none my-1">
                       {formatPrice(listing.pricePerNight)}
                     </p>
-                    <p className="text-[10px] text-slate-500">/ night + fees</p>
+                    <p className="text-[10px] text-slate-500">{t('perNight')}</p>
                   </div>
 
                   <Link
@@ -195,7 +227,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
                     className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm transform hover:-translate-y-0.5"
                     aria-label={`View details for ${listing.name}`}
                   >
-                    View
+                    {t('viewButton')}
                     <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </Link>
                 </div>
@@ -211,7 +243,7 @@ export default function FeaturedListings({ locale = 'en', limit = 8 }: FeaturedL
             className="px-10 py-4 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 font-extrabold rounded-2xl transition-all duration-300 shadow-lg shadow-slate-900/10 hover:shadow-amber-500/20 transform hover:-translate-y-0.5"
             aria-label="View all properties"
           >
-            Explore All Properties
+            {t('viewAll')}
           </button>
         </div>
       </div>

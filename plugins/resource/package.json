@@ -1,0 +1,20 @@
+{
+  "name": "@sinaicamps/plugin-resource",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "resource",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "hooks",
+      "routes",
+      "ui"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

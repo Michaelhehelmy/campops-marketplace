@@ -27,30 +27,37 @@
     "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@sentry/nextjs": "^10.53.1",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.6.9",
     "better-sqlite3": "^12.9.0",
+    "chrome-launcher": "^1.2.1",
     "drizzle-orm": "^0.45.2",
+    "form-data": "^4.0.5",
     "hono": "^4.12.17",
+    "ioredis": "^5.10.1",
     "jiti": "^2.7.0",
+    "lighthouse": "^13.3.0",
     "lucide-react": "^0.511.0",
+    "mailgun.js": "^13.0.1",
     "next": "14.2.29",
     "next-intl": "^3.26.3",
+    "nodemailer": "^8.0.7",
     "pg": "^8.20.0",
     "plugin-engine": "^5.8.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "single-spa": "^6.0.3",
     "single-spa-react": "^6.0.2",
+    "stripe": "^22.1.1",
     "tapable": "^2.3.3",
-    "ts-node": "^10.9.2",
     "uuid": "^14.0.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.0",
@@ -69,5 +76,22 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
-  }
+  },
+  "description": "> A white-label, multi-tenant hospitality marketplace. One platform powers your public listing site, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem you control.",
+  "main": "ecosystem.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelhehelmy/campops-marketplace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michaelhehelmy/campops-marketplace/issues"
+  },
+  "homepage": "https://github.com/michaelhehelmy/campops-marketplace#readme"
 }

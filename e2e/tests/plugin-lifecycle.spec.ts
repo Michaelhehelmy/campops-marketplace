@@ -70,7 +70,6 @@ test.describe('Plugin Lifecycle', () => {
     managerSession,
     guestSession,
   }) => {
-    // TODO: Fix plugin component registration issue - booking widget not rendering
     // 1. Ensure Booking is enabled for Safari Camp
     const masterState = JSON.parse(masterSession.storageState);
     await page.context().addCookies(masterState.cookies);
@@ -85,13 +84,32 @@ test.describe('Plugin Lifecycle', () => {
       ).toBeVisible();
     }
 
-    // 2. Book as guest
+    // 2. Book as guest via listing → summary → confirm flow
     const guestState = JSON.parse(guestSession.storageState);
     await page.context().addCookies(guestState.cookies);
-    await page.goto('/en/stay/safari-camp');
+    await page.goto('/en/stay/safari-camp?checkIn=2026-06-01&checkOut=2026-06-03');
 
-    await page.getByRole('button', { name: /Reserve Now/i }).click();
-    await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
+    // Click "Book Now" on Luxury Tent room card
+    await page.getByTestId('book-button-room-1').click();
+
+    // Wait for summary page to load
+    await page.waitForURL(/\/en\/book\/summary/);
+
+    // Fill in guest details
+    await page.fill('#guestName', 'Alice Smith');
+    await page.fill('#guestEmail', 'guest@sinaicamps.com');
+
+    // Go to payment step
+    await page.getByTestId('continue-to-payment').click();
+
+    // Select pay_later
+    await page.click('#pay_later');
+
+    // Confirm booking
+    await page.getByRole('button', { name: /Confirm booking/i }).click();
+
+    // Wait for confirmation
+    await expect(page.getByText(/Booking confirmed!/i)).toBeVisible({ timeout: 15000 });
 
     // 3. Check as manager in admin
     const managerState = JSON.parse(managerSession.storageState);
@@ -120,12 +138,19 @@ test.describe('Plugin Lifecycle', () => {
     const crmToggle = page.getByRole('button', { name: /Customer Relations/i });
     if ((await crmToggle.textContent())?.includes('Enable')) await crmToggle.click();
 
-    // 1. Create booking as guest
+    // 1. Create booking as guest via listing → summary → confirm flow
     const guestState = JSON.parse(guestSession.storageState);
     await page.context().addCookies(guestState.cookies);
-    await page.goto('/en/stay/safari-camp');
-    await page.getByRole('button', { name: /Reserve Now/i }).click();
-    await expect(page.getByText(/Booking Confirmed!/i)).toBeVisible();
+    await page.goto('/en/stay/safari-camp?checkIn=2026-06-01&checkOut=2026-06-03');
+
+    await page.getByTestId('book-button-room-1').click();
+    await page.waitForURL(/\/en\/book\/summary/);
+    await page.fill('#guestName', 'Alice Smith');
+    await page.fill('#guestEmail', 'guest@sinaicamps.com');
+    await page.getByTestId('continue-to-payment').click();
+    await page.click('#pay_later');
+    await page.getByRole('button', { name: /Confirm booking/i }).click();
+    await expect(page.getByText(/Booking confirmed!/i)).toBeVisible({ timeout: 15000 });
 
     // 2. Check CRM history as manager
     const managerState = JSON.parse(managerSession.storageState);

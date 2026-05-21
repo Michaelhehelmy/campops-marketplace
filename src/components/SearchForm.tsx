@@ -46,10 +46,16 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
       {/* Destination */}
       <div className="lg:col-span-1 relative">
-        <label className="block text-xs font-medium text-gray-500 mb-1">Destination</label>
+        <label
+          htmlFor="search-destination"
+          className="block text-xs font-medium text-gray-600 mb-1"
+        >
+          Destination
+        </label>
         <div className="relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
+            id="search-destination"
             type="text"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
@@ -61,8 +67,11 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
 
       {/* Check-in */}
       <div>
-        <label className="block text-xs font-medium text-gray-500 mb-1">Check-in</label>
+        <label htmlFor="search-checkin" className="block text-xs font-medium text-gray-600 mb-1">
+          Check-in
+        </label>
         <input
+          id="search-checkin"
           type="date"
           value={checkIn}
           min={today()}
@@ -74,8 +83,11 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
 
       {/* Check-out */}
       <div>
-        <label className="block text-xs font-medium text-gray-500 mb-1">Check-out</label>
+        <label htmlFor="search-checkout" className="block text-xs font-medium text-gray-600 mb-1">
+          Check-out
+        </label>
         <input
+          id="search-checkout"
           type="date"
           value={checkOut}
           min={checkIn}
@@ -87,11 +99,12 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
 
       {/* Guests */}
       <div>
-        <label className="block text-xs font-medium text-gray-500 mb-1">Guests</label>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Guests</label>
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Users className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
+              id="search-adults"
               type="number"
               value={adults}
               min={1}
@@ -99,9 +112,11 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
               onChange={(e) => setAdults(parseInt(e.target.value))}
               className="w-full pl-8 pr-2 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none"
               placeholder="Adults"
+              aria-label="Adults"
             />
           </div>
           <input
+            id="search-children"
             type="number"
             value={children}
             min={0}
@@ -109,6 +124,7 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
             onChange={(e) => setChildren(parseInt(e.target.value))}
             className="w-16 px-2 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none"
             placeholder="Kids"
+            aria-label="Children"
           />
         </div>
       </div>
@@ -116,8 +132,11 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
       {/* Currency + Submit */}
       <div className="flex gap-2 items-end">
         <div className="flex-1">
-          <label className="block text-xs font-medium text-gray-500 mb-1">Currency</label>
+          <label htmlFor="search-currency" className="block text-xs font-medium text-gray-600 mb-1">
+            Currency
+          </label>
           <select
+            id="search-currency"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
             className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none bg-white"
@@ -132,7 +151,7 @@ export default function SearchForm({ onSearch, loading = false, initialValues }:
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 bg-brand-700 hover:bg-brand-900 disabled:opacity-60 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
         >
           <Search className="w-4 h-4" />
           {loading ? 'Searching…' : 'Search'}

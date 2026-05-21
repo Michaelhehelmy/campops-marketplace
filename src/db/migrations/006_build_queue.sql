@@ -3,6 +3,9 @@
 --   Triggered when a site upgrades to ultimate (requires custom-domain SPA build).
 --   Workers poll this table for pending jobs and update status to running/done/failed.
 -- Depends on: 001_core_posts (schema_migrations table)
+-- PostgreSQL compat notes:
+--   Replace: DEFAULT (lower(hex(randomblob(16))))  → DEFAULT gen_random_uuid()::TEXT
+--   Replace: DEFAULT (unixepoch())                 → DEFAULT EXTRACT(EPOCH FROM NOW())::INTEGER
 
 CREATE TABLE IF NOT EXISTS build_queue (
   id          TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),

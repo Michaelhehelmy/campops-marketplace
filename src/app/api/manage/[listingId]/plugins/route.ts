@@ -1,5 +1,7 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +12,11 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(req: NextRequest, { params }: { params: { listingId: string } }) {
   try {
+    const session = await requireListingAccess(req, params.listingId, [
+      'manager',
+      'marketplace_master',
+    ]);
+    if (isErrorResponse(session)) return session;
     const { listingId } = params;
 
     // Get all available plugins
@@ -56,6 +63,6 @@ export async function GET(req: NextRequest, { params }: { params: { listingId: s
     });
   } catch (err: any) {
     console.error('[Manage Plugins API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

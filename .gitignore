@@ -9,6 +9,9 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.production
+.env.test
+.env.development
 
 # Build
 .vercel
@@ -30,3 +33,14 @@ coverage/
 e2e/test-results/
 test-results/
 playwright-report/
+
+# Agent/MCP artifacts
+.opencode/
+.playwright-mcp/
+
+# QA screenshots
+flow-*.png
+login-page.png
+homepage-snapshot.md
+cookies.txt
+test_failures.txt

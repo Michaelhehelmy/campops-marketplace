@@ -119,8 +119,9 @@ describe('apiFetch utility (via searchProperties)', () => {
 
   it('calls correct URL and method for createBooking', async () => {
     (global.fetch as any).mockResolvedValue({
+      ok: true,
       status: 200,
-      text: async () => JSON.stringify({ reservationId: 'r-123' }),
+      text: async () => JSON.stringify({ booking: { id: 'r-123' } }),
     });
 
     const { createBooking } = await import('../api');
@@ -137,10 +138,9 @@ describe('apiFetch utility (via searchProperties)', () => {
     const result = await createBooking(payload);
 
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('/api/public/book'),
+      expect.stringContaining('/api/p/booking/book'),
       expect.objectContaining({
         method: 'POST',
-        body: JSON.stringify(payload),
       })
     );
     expect(result.reservationId).toBe('r-123');

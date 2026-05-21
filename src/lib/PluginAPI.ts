@@ -7,6 +7,7 @@ import {
   HookHandler,
   HookContext,
   Logger,
+  PluginCapability,
 } from '../../packages/plugin-sdk/src/types';
 import { hookManager, doAction, Hooks } from './hooks';
 import { RequestContext } from './RequestContext';
@@ -15,6 +16,7 @@ import { Logger as StructuredLogger } from './logger';
 import { UIRegistryService } from './UIRegistryService';
 import { PluginBroker } from './PluginBroker';
 import { EmailService } from './email';
+import { errorResponse } from './errors';
 
 /**
  * Creates a property-scoped repository for a specific table.
@@ -94,9 +96,30 @@ function makeScopedRepository<T>(tableName: string, propertyId?: string): Scoped
 }
 
 /**
+ * Guards a capability — throws when the plugin has an explicit capabilities
+ * array that does NOT include the required capability.
+ * When capabilities is undefined (omitted), all capabilities are allowed.
+ */
+function requireCapability(
+  pluginId: string,
+  capability: PluginCapability,
+  declared?: PluginCapability[]
+): void {
+  if (declared !== undefined && !declared.includes(capability)) {
+    throw new Error(
+      `Plugin "${pluginId}" requires the "${capability}" capability but did not declare it in its manifest`
+    );
+  }
+}
+
+/**
  * Creates the PluginAPI implementation for a specific plugin instance.
  */
-export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI {
+export function makePluginAPI(
+  pluginId: string,
+  propertyId?: string,
+  capabilities?: PluginCapability[]
+): PluginAPI {
   const pluginLogger = new StructuredLogger(`plugin:${pluginId}`);
   const logger: Logger = {
     info: (msg, ...args) => pluginLogger.info(msg, ...args),
@@ -114,39 +137,59 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
      * Usage:  const bookings = api.db.getTable('bookings');
      */
     getTable<T = Record<string, any>>(tableName: string): ScopedRepository<T> {
+      requireCapability(pluginId, 'database', capabilities);
       const prefix = `plugin_${pluginId.replace(/-/g, '_')}_`;
       const fullName = tableName.startsWith(prefix) ? tableName : `${prefix}${tableName}`;
       return makeScopedRepository<T>(fullName, propertyId);
     },
 
     async query(sql: string, params: any[] = []): Promise<any[]> {
+      requireCapability(pluginId, 'database', capabilities);
       return db.query(sql, params);
     },
 
     async queryOne(sql: string, params: any[] = []): Promise<any> {
+      requireCapability(pluginId, 'database', capabilities);
       return db.queryOne(sql, params);
     },
 
     async execute(sql: string, params: any[] = []): Promise<void> {
+      requireCapability(pluginId, 'database', capabilities);
       await db.execute(sql, params);
     },
 
     async createTable(tableSuffix: string, columnsSql: string): Promise<void> {
+      requireCapability(pluginId, 'database', capabilities);
       const prefix = `plugin_${pluginId.replace(/-/g, '_')}_`;
       const tableName = tableSuffix.startsWith(prefix) ? tableSuffix : `${prefix}${tableSuffix}`;
       await db.createTable(tableName, columnsSql);
     },
 
     async dropTable(tableSuffix: string): Promise<void> {
+      requireCapability(pluginId, 'database', capabilities);
       const prefix = `plugin_${pluginId.replace(/-/g, '_')}_`;
       const tableName = tableSuffix.startsWith(prefix) ? tableSuffix : `${prefix}${tableSuffix}`;
       await db.dropTable(tableName);
     },
 
     async tableExists(tableSuffix: string): Promise<boolean> {
+      requireCapability(pluginId, 'database', capabilities);
       const prefix = `plugin_${pluginId.replace(/-/g, '_')}_`;
       const tableName = tableSuffix.startsWith(prefix) ? tableSuffix : `${prefix}${tableSuffix}`;
       return db.tableExists(tableName);
+    },
+
+    async transaction<T>(callback: (tx: any) => Promise<T>): Promise<T | null> {
+      requireCapability(pluginId, 'database', capabilities);
+      return db.transaction(async (rawTx) => {
+        const txApi: any = {
+          ...dbApi,
+          query: (sql: string, params: any[] = []) => rawTx.query(sql, params),
+          queryOne: (sql: string, params: any[] = []) => rawTx.queryOne(sql, params),
+          execute: (sql: string, params: any[] = []) => rawTx.execute(sql, params),
+        };
+        return callback(txApi);
+      });
     },
   };
 
@@ -155,45 +198,91 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
     version: '1.0.0', // This should come from manifest
     logger,
 
+    errorResponse(err: unknown) {
+      return errorResponse(err);
+    },
+
+    validate(schema: { parse: (data: any) => any }, body: any) {
+      return schema.parse(body);
+    },
+
+    async checkIdempotency(key: string) {
+      const existing = await db.queryOne('SELECT response FROM idempotency_keys WHERE key = ?', [
+        key,
+      ]);
+      if (existing) {
+        return JSON.parse(existing.response);
+      }
+      return null;
+    },
+
+    async storeIdempotency(key: string, response: object) {
+      await db.execute(
+        'INSERT INTO idempotency_keys (key, response, created_at) VALUES (?, ?, ?)',
+        [key, JSON.stringify(response), Math.floor(Date.now() / 1000)]
+      );
+    },
+
     registerHook<T>(name: string, handler: HookHandler<T>, priority?: number) {
+      requireCapability(pluginId, 'hooks', capabilities);
       return hookManager.register(name, handler as any, { priority });
     },
 
     async executeHook<T>(name: string, data: T, context?: HookContext) {
+      requireCapability(pluginId, 'hooks', capabilities);
       return hookManager.execute(name, { ...data, ...context, propertyId });
     },
 
     hooks: {
-      register: (name, handler, priority) =>
-        hookManager.register(name, handler as any, { priority }),
-      registerHook: (name, handler, priority) =>
-        hookManager.register(name, handler as any, { priority }),
-      addAction: (name: string, handler: any, priority?: number) =>
-        hookManager.register(name, handler, { priority }),
-      addFilter: (name: string, handler: any, priority?: number) =>
-        hookManager.register(name, handler, { priority }),
-      doAction: (name: string, data?: any) => hookManager.doAction(name, data),
-      applyFilters: <T>(name: string, value: T, context?: any) =>
-        hookManager.applyFilters(name, value, context),
-      execute: (name, data, context) =>
-        hookManager.execute(name, { ...data, ...context, propertyId }),
-      executeHook: (name, data, context) =>
-        hookManager.execute(name, { ...data, ...context, propertyId }),
+      register: (name, handler, priority) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.register(name, handler as any, { priority });
+      },
+      registerHook: (name, handler, priority) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.register(name, handler as any, { priority });
+      },
+      addAction: (name: string, handler: any, priority?: number) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.register(name, handler, { priority });
+      },
+      addFilter: (name: string, handler: any, priority?: number) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.register(name, handler, { priority });
+      },
+      doAction: (name: string, data?: any) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.doAction(name, data);
+      },
+      applyFilters: <T>(name: string, value: T, context?: any) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.applyFilters(name, value, context);
+      },
+      execute: (name, data, context) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.execute(name, { ...data, ...context, propertyId });
+      },
+      executeHook: (name, data, context) => {
+        requireCapability(pluginId, 'hooks', capabilities);
+        return hookManager.execute(name, { ...data, ...context, propertyId });
+      },
     },
 
     db: dbApi,
 
     services: {
       payment: {
-        initiatePayment: async () => ({
-          paymentUrl: process.env.PAYMENT_URL || 'https://mock-payment.com',
-        }),
+        initiatePayment: async () => {
+          requireCapability(pluginId, 'payment', capabilities);
+          return { paymentUrl: process.env.PAYMENT_URL || 'https://mock-payment.com' };
+        },
       },
       tax: {
         calculateTaxes: async (amount) => ({ taxes: [], totalTax: 0 }),
       },
       notification: {
         send: async (opts) => {
+          requireCapability(pluginId, 'notification', capabilities);
           if (opts.to && opts.subject && opts.body) {
             await EmailService.send({
               to: opts.to,
@@ -213,15 +302,18 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
     config: {}, // Should be populated from property_plugins.config
 
     publish: (channel, message) => {
+      requireCapability(pluginId, 'events', capabilities);
       pluginLogger.info(`[PubSub] ${channel}:`, message);
     },
 
     subscribe: (channel, handler) => {
+      requireCapability(pluginId, 'events', capabilities);
       return () => {};
     },
 
     events: {
       emit: (event, data) => {
+        requireCapability(pluginId, 'events', capabilities);
         pluginLogger.info(`[Event] ${event}:`, data);
       },
     },
@@ -231,10 +323,14 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
     },
 
     auth: {
-      getSession: (req: Request) => getAuthSession(req),
+      getSession: (req: Request) => {
+        requireCapability(pluginId, 'auth', capabilities);
+        return getAuthSession(req);
+      },
     },
 
     registerRoute: (path, handler) => {
+      requireCapability(pluginId, 'routes', capabilities);
       pluginLogger.info(`Registered route: ${path}`);
       // Extract method from handler if it's an object with methods
       if (typeof handler === 'object' && handler !== null) {
@@ -273,27 +369,35 @@ export function makePluginAPI(pluginId: string, propertyId?: string): PluginAPI 
 
     ui: {
       registerSlot: (slot, component) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerSlot(pluginId, slot, component, propertyId);
       },
       addSlotComponent: (slot, component) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerSlot(pluginId, slot, component, propertyId);
       },
       registerMenuItem: (item) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerMenuItem(pluginId, item, propertyId);
       },
       addMenuItem: (item) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerMenuItem(pluginId, item, propertyId);
       },
       registerDashboardWidget: (widget) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerDashboardWidget(pluginId, widget, propertyId);
       },
       addDashboardWidget: (widget) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerDashboardWidget(pluginId, widget, propertyId);
       },
       registerSettingsPage: (page) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerSettingsPage(pluginId, page, propertyId);
       },
       addSettingsPage: (page) => {
+        requireCapability(pluginId, 'ui', capabilities);
         UIRegistryService.registerSettingsPage(pluginId, page, propertyId);
       },
     },

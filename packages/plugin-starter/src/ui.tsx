@@ -1,10 +1,5 @@
 import React from 'react';
 
-/**
- * MyWidget
- * ────────
- * A placeholder widget for your plugin.
- */
 export function MyWidget() {
   return (
     <div className="bg-white p-6 rounded-2xl border border-dashed border-gray-200 flex flex-col items-center justify-center text-center space-y-2">
@@ -19,6 +14,4 @@ export function MyWidget() {
   );
 }
 
-export const components = {
-  MyWidget,
-};
+export const components = { MyWidget };

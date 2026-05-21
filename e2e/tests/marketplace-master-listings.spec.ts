@@ -16,10 +16,16 @@ test.describe('Master Listings Management', () => {
   test('Master can create a new listing via API', async ({ request, masterSession }) => {
     const state = JSON.parse(masterSession.storageState);
     const cookies = state.cookies.map((c: any) => `${c.name}=${c.value}`).join('; ');
+    const csrfCookie = state.cookies.find((c: any) => c.name === 'x-csrf-token');
+    const csrfToken = csrfCookie?.value || '';
 
     const uniqueSlug = `test-camp-${Date.now()}`;
     const res = await request.post('http://localhost:3000/api/master/listings', {
-      headers: { 'Content-Type': 'application/json', Cookie: cookies },
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookies,
+        ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+      },
       data: { name: `Test Camp ${Date.now()}`, slug: uniqueSlug },
     });
     expect(res.status()).toBe(201);
@@ -53,13 +59,19 @@ test.describe('Master Listings Management', () => {
 
     const wasChecked = await bookingToggle.isChecked();
     await bookingToggle.click();
-    await page.waitForResponse((res) => res.url().includes('/plugins') && res.status() === 200);
+    await page.waitForResponse(
+      (res) =>
+        res.url().includes('/listings/') && res.url().includes('/plugins') && res.status() === 200
+    );
 
     const isNowChecked = await bookingToggle.isChecked();
     expect(isNowChecked).toBe(!wasChecked);
 
     await bookingToggle.click();
-    await page.waitForResponse((res) => res.url().includes('/plugins') && res.status() === 200);
+    await page.waitForResponse(
+      (res) =>
+        res.url().includes('/listings/') && res.url().includes('/plugins') && res.status() === 200
+    );
     expect(await bookingToggle.isChecked()).toBe(wasChecked);
   });
 

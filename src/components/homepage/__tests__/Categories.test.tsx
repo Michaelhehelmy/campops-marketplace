@@ -11,6 +11,23 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+// Mock next-intl
+function mockT(key: string, params?: Record<string, any>) {
+  const strings: Record<string, string> = {
+    badge: '🔍 Curated Collections',
+    title: 'Browse by Category',
+    subtitle:
+      'From secluded glamping domes to luxury mountain cabins, find the perfect setting matching your preferred adventure style.',
+    propertyCount: '{count} properties',
+  };
+  let val = strings[key] ?? key;
+  if (params?.count !== undefined) val = val.replace('{count}', params.count);
+  return val;
+}
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, params?: Record<string, any>) => mockT(key, params),
+}));
+
 // Mock fetch
 global.fetch = vi.fn();
 
@@ -168,7 +185,7 @@ describe('Categories component', () => {
     render(<Categories />);
 
     await waitFor(() => {
-      expect(screen.getByText('🏕️')).toBeInTheDocument();
+      expect(screen.getByText('📌')).toBeInTheDocument();
     });
   });
 });

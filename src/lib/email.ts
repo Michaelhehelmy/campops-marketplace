@@ -44,6 +44,44 @@ export class EmailService {
     logger.info('────────────────────────────────────────');
   }
 }
+// ─── SMTP transport initialization ───────────────────────────────────────────
+
+if (
+  typeof process !== 'undefined' &&
+  process.env.SMTP_HOST &&
+  process.env.SMTP_PORT &&
+  process.env.SMTP_USER &&
+  process.env.SMTP_PASS
+) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT),
+      secure: process.env.SMTP_SECURE === 'true' || parseInt(process.env.SMTP_PORT) === 465,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    EmailService.setTransport(async (opts) => {
+      await transporter.sendMail({
+        from: opts.from,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+      });
+    });
+    logger.info('Nodemailer SMTP transport initialized successfully.');
+  } catch (err: any) {
+    logger.warn(
+      'Failed to initialize Nodemailer SMTP transport. Falling back to log-only.',
+      err.message
+    );
+  }
+}
 
 // ─── Email Templates ──────────────────────────────────────────────────────────
 

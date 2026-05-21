@@ -4,8 +4,15 @@
   "private": true,
   "type": "module",
   "main": "src/index.ts",
+  "sinaicamps": {
+    "capabilities": [
+      "database",
+      "hooks"
+    ]
+  },
   "dependencies": {},
   "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*",
     "typescript": "^5.0.0"
   }
 }

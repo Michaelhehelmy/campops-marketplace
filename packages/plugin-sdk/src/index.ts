@@ -10,3 +10,12 @@ export {
   type SettingsPage,
   type PublicBlock,
 } from './ui.js';
+export { OTAAdapterRegistry } from './ota.js';
+export type {
+  RoomMapping,
+  RateMapping,
+  ChannelReservation,
+  OTAAdapter,
+  InventorySyncResult,
+  RateSyncResult,
+} from './ota.js';

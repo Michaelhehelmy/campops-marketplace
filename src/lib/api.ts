@@ -9,13 +9,22 @@ import { logger } from './logger';
 const BASE =
   typeof window === 'undefined' ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000' : '';
 
+function getCsrfTokenFromCookie(): string {
+  if (typeof document === 'undefined') return '';
+  const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+  return match ? match[1] : '';
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const url = path.startsWith('http') ? path : `${BASE}/api/public${path}`;
   logger.debug(`[apiFetch] Fetching ${url}`);
+  const csrfToken = getCsrfTokenFromCookie();
+  const isMutating = init?.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(init.method);
   const res = await fetch(url, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      ...(isMutating && csrfToken ? { 'x-csrf-token': csrfToken } : {}),
       ...(init?.headers ?? {}),
     },
   });
@@ -128,10 +137,41 @@ export async function getProperty(
 }
 
 export async function createBooking(payload: BookingPayload): Promise<BookingResponse> {
-  return apiFetch<BookingResponse>('/book', {
+  const BASE =
+    typeof window === 'undefined' ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000' : '';
+  const csrfToken = getCsrfTokenFromCookie();
+  const body = {
+    listingId: payload.propertyId,
+    roomId: payload.roomTypeId,
+    checkIn: payload.checkIn,
+    checkOut: payload.checkOut,
+    guestName: payload.guestName,
+    guestEmail: payload.guestEmail,
+    guestPhone: payload.guestPhone,
+    adults: payload.adults,
+    children: payload.children ?? 0,
+    paymentProvider: payload.paymentProvider ?? 'pay_later',
+  };
+  const res = await fetch(`${BASE}/api/p/booking/book`, {
     method: 'POST',
-    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+    },
+    body: JSON.stringify(body),
   });
+  const text = await res.text();
+  if (!res.ok) throw new Error(text);
+  const data = JSON.parse(text);
+  return {
+    reservationId: data.booking?.id ?? data.id,
+    status: data.booking?.status ?? 'confirmed',
+    totalAmount: data.booking?.total_price ?? 0,
+    displayAmount: data.booking?.total_price ?? 0,
+    displayCurrency: data.booking?.currency ?? 'USD',
+    paymentUrl: null,
+    transactionId: null,
+  };
 }
 
 export async function getBooking(id: string) {

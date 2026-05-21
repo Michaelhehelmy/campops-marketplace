@@ -96,4 +96,34 @@ describe('runMigrations', () => {
     expect(results).toHaveLength(1);
     expect(results[0].version).toBe('001_create_foo');
   });
+
+  // Placeholder: runMigrations currently only applies forward (no rollback).
+  // Un-skip this test once direction: 'down' is implemented.
+  it.skip('applies and rolls back a migration successfully', () => {
+    fs.writeFileSync(
+      path.join(tmpDir, '001_create_test.sql'),
+      'CREATE TABLE rollback_test (id INTEGER PRIMARY KEY, name TEXT);'
+    );
+    fs.writeFileSync(
+      path.join(tmpDir, '001_create_test.rollback.sql'),
+      'DROP TABLE IF EXISTS rollback_test;'
+    );
+
+    const applyResults = runMigrations(db, tmpDir);
+    expect(applyResults).toHaveLength(1);
+    expect(applyResults[0].applied).toBe(true);
+
+    const tableExists = db
+      .prepare("SELECT name FROM sqlite_master WHERE name='rollback_test'")
+      .get();
+    expect(tableExists).toBeTruthy();
+
+    const rollbackFn: any = runMigrations;
+    const rollbackResults = rollbackFn(db, tmpDir, { direction: 'down', target: '000' });
+    expect(rollbackResults).toHaveLength(1);
+    expect(rollbackResults[0].applied).toBe(true);
+
+    const tableGone = db.prepare("SELECT name FROM sqlite_master WHERE name='rollback_test'").get();
+    expect(tableGone).toBeUndefined();
+  });
 });

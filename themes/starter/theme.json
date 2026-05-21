@@ -1,0 +1,24 @@
+{
+  "id": "starter",
+  "name": "starter",
+  "displayName": "Starter Theme",
+  "description": "A minimal reference theme for developers. Copy this to create a new theme.",
+  "version": "1.0.0",
+  "author": "SinaiCamps",
+  "planRequirement": "basic",
+  "screenshot": "/themes/starter/screenshot.png",
+  "templateHierarchy": {
+    "homepage": ["homepage", "default"],
+    "listing": ["listing-detail", "default"],
+    "booking": ["booking", "default"],
+    "page": ["page", "default"]
+  },
+  "widgetAreas": [
+    { "id": "sidebar", "label": "Sidebar" },
+    { "id": "footer", "label": "Footer" }
+  ],
+  "customFields": [],
+  "supports": {
+    "darkMode": false
+  }
+}

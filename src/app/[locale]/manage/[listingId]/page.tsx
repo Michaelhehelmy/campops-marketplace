@@ -2,9 +2,12 @@
 
 import React from 'react';
 import { TrendingUp, Users, Calendar, DollarSign, Activity, AppWindow } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { MarketplaceInsights, MarketplaceFeesWidget } from '@/components/MarketplaceInsights';
+import { PluginShell } from '@/app/PluginShell';
 
 export default function ListingDashboardPage({ params }: { params: { listingId: string } }) {
+  const t = useTranslations('manage.dashboard');
   const { listingId } = params;
   const [stats, setStats] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(true);
@@ -12,7 +15,7 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
   React.useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`/api/manage/${listingId}/stats`);
+        const response = await fetch(`/api/p/crm/stats?listingId=${listingId}`);
         if (response.ok) {
           const data = await response.json();
           setStats(data);
@@ -60,37 +63,39 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Property Overview</h1>
-          <p className="text-sm text-gray-500 mt-1">Real-time performance and insights</p>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">{t('title')}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t('subtitle')}</p>
         </div>
       </div>
 
+      <PluginShell name="dashboard.top" props={{ listingId, stats }} />
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Bookings"
+          title={t('totalBookings')}
           value={stats.totalBookings ?? 0}
           trend="+12%"
           icon={Calendar}
           color="brand"
         />
         <StatCard
-          title="Occupancy"
+          title={t('occupancy')}
           value={`${stats.occupancy ?? 0}%`}
           trend="+5%"
           icon={Users}
           color="blue"
         />
         <StatCard
-          title="Active Plugins"
+          title={t('activePlugins')}
           value={stats.enabledPlugins ?? 0}
-          trend="Stable"
+          trend={t('trendStable')}
           icon={AppWindow}
           color="green"
         />
         <StatCard
-          title="Marketplace Status"
-          value={stats.isActive ? 'Live' : 'Hidden'}
-          trend="Health: OK"
+          title={t('marketplaceStatus')}
+          value={stats.isActive ? t('live') : t('hidden')}
+          trend={t('healthOk')}
           icon={TrendingUp}
           color="purple"
         />
@@ -102,12 +107,10 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
 
           <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                Today's Operations
-              </h3>
+              <h3 className="text-xl font-black text-gray-900 tracking-tight">{t('todaysOps')}</h3>
               <div className="flex gap-2">
                 <span className="px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest">
-                  Normal Ops
+                  {t('normalOps')}
                 </span>
               </div>
             </div>
@@ -115,7 +118,7 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
               <div className="p-6 rounded-3xl bg-gray-50 flex items-center justify-between">
                 <div>
                   <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest">
-                    Arrivals
+                    {t('arrivals')}
                   </div>
                   <div className="text-2xl font-black text-gray-900">
                     {stats.arrivalsToday ?? 0}
@@ -128,7 +131,7 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
               <div className="p-6 rounded-3xl bg-gray-50 flex items-center justify-between">
                 <div>
                   <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest">
-                    Departures
+                    {t('departures')}
                   </div>
                   <div className="text-2xl font-black text-gray-900">
                     {stats.departuresToday ?? 0}
@@ -140,28 +143,32 @@ export default function ListingDashboardPage({ params }: { params: { listingId: 
               </div>
             </div>
           </div>
+
+          <PluginShell name="dashboard.main" props={{ listingId, stats }} />
         </div>
 
         {/* Sidebar Widgets */}
         <div className="space-y-6">
           <MarketplaceFeesWidget propertyId={listingId} />
 
+          <PluginShell name="dashboard.sidebar" props={{ listingId, stats }} />
+
           <div className="bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl shadow-brand-900/10 text-white relative overflow-hidden">
             <div className="absolute top-[-20px] right-[-20px] h-32 w-32 bg-brand-600/20 rounded-full blur-3xl"></div>
             <div className="flex items-center gap-2 mb-4 relative z-10">
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
               <span className="text-[10px] text-brand-400 font-black uppercase tracking-widest">
-                PWA Status
+                {t('pwaStatus')}
               </span>
             </div>
             <div className="text-lg font-black relative z-10">
-              {stats.pwaActive ? 'Your Guest PWA is live' : 'PWA is inactive'}
+              {stats.pwaActive ? t('pwaLive') : t('pwaInactive')}
             </div>
             <p className="text-xs text-slate-400 mt-2 relative z-10 leading-relaxed">
-              Install banners are currently active for all mobile visitors on your listing page.
+              {t('pwaDesc')}
             </p>
             <button className="mt-6 w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all border border-white/10">
-              Manage App Config
+              {t('manageAppConfig')}
             </button>
           </div>
         </div>

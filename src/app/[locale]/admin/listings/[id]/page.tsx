@@ -21,6 +21,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Info,
+  Trash2,
+  Globe,
 } from 'lucide-react';
 
 export default function ListingDetailsPage() {
@@ -38,12 +40,19 @@ export default function ListingDetailsPage() {
   const [editForm, setEditForm] = useState({
     name: '',
     slug: '',
-    plan: 'Standard',
+    plan: 'basic',
     isActive: true,
     city: '',
     country: '',
+    subdomain: '',
+    custom_domain: '',
+    owner_id: '',
   });
   const [updating, setUpdating] = useState(false);
+
+  // Delete Confirmation State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Quick Actions State
   const [toast, setToast] = useState<{
@@ -68,10 +77,13 @@ export default function ListingDetailsPage() {
         setEditForm({
           name: data.shop.name || '',
           slug: data.shop.slug || '',
-          plan: data.shop.plan || 'Standard',
+          plan: data.shop.plan || 'basic',
           isActive: !!data.shop.is_active,
           city: data.shop.city || '',
           country: data.shop.country || '',
+          subdomain: data.shop.subdomain || '',
+          custom_domain: data.shop.custom_domain || '',
+          owner_id: data.shop.owner_id?.toString() || '',
         });
       }
     } catch (error) {
@@ -100,6 +112,11 @@ export default function ListingDetailsPage() {
     return assoc ? assoc.is_enabled : false;
   };
 
+  const getCsrfToken = () => {
+    const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : '';
+  };
+
   const handleTogglePlugin = async (pluginName: string, currentlyEnabled: boolean) => {
     setToggling(pluginName);
     setShop((prev: any) => {
@@ -116,7 +133,7 @@ export default function ListingDetailsPage() {
     try {
       const res = await fetch(`/api/master/listings/${id}/plugins`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
         body: JSON.stringify({ pluginName, enabled: !currentlyEnabled }),
       });
       if (res.ok) {
@@ -138,7 +155,7 @@ export default function ListingDetailsPage() {
     try {
       const res = await fetch(`/api/master/listings/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
         body: JSON.stringify(editForm),
       });
       if (res.ok) {
@@ -154,6 +171,28 @@ export default function ListingDetailsPage() {
       showToast('An error occurred during update', 'error');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleDeleteProperty = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/master/listings/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-csrf-token': getCsrfToken() },
+      });
+      if (res.ok) {
+        setIsDeleteModalOpen(false);
+        showToast('Property permanently deleted', 'success');
+        setTimeout(() => router.push(`/${locale}/admin/listings`), 1500);
+      } else {
+        const error = await res.json();
+        showToast(error.error || 'Failed to delete property', 'error');
+      }
+    } catch {
+      showToast('An error occurred during deletion', 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -397,6 +436,13 @@ export default function ListingDetailsPage() {
                   onClick={handleLoginAsOwner}
                   loading={activeQuickAction === 'login_owner'}
                 />
+                <ActionButton
+                  icon={Trash2}
+                  label="Delete Property"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  loading={false}
+                  className="border-red-900/50 hover:border-red-500/50 text-red-400"
+                />
               </div>
             </div>
           </div>
@@ -585,10 +631,46 @@ export default function ListingDetailsPage() {
                   onChange={(e) => setEditForm({ ...editForm, plan: e.target.value })}
                   className="w-full px-4 py-3 bg-slate-900 border border-slate-850 focus:border-amber-500 rounded-2xl text-white outline-none transition-all text-sm cursor-pointer"
                 >
-                  <option value="Standard">Standard</option>
-                  <option value="Premium">Premium</option>
-                  <option value="Enterprise">Enterprise</option>
+                  <option value="basic">Basic</option>
+                  <option value="premium">Premium</option>
+                  <option value="ultimate">Ultimate</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                  Subdomain
+                </label>
+                <input
+                  type="text"
+                  value={editForm.subdomain}
+                  onChange={(e) => setEditForm({ ...editForm, subdomain: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-850 focus:border-amber-500 rounded-2xl text-white outline-none transition-all text-sm"
+                  placeholder="e.g. safari"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                  Custom Domain
+                </label>
+                <input
+                  type="text"
+                  value={editForm.custom_domain}
+                  onChange={(e) => setEditForm({ ...editForm, custom_domain: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-850 focus:border-amber-500 rounded-2xl text-white outline-none transition-all text-sm"
+                  placeholder="e.g. safaricamp.com"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                  Owner ID
+                </label>
+                <input
+                  type="number"
+                  value={editForm.owner_id}
+                  onChange={(e) => setEditForm({ ...editForm, owner_id: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-850 focus:border-amber-500 rounded-2xl text-white outline-none transition-all text-sm"
+                  placeholder="User ID of the owner"
+                />
               </div>
               <div className="flex items-center gap-3 py-2">
                 <input
@@ -613,6 +695,45 @@ export default function ListingDetailsPage() {
                 {updating ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Save Modifications'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-slate-950 border border-red-900/50 rounded-[2.5rem] p-8 w-full max-w-md shadow-2xl relative">
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="absolute top-6 right-6 p-2 text-zinc-400 hover:text-white rounded-full bg-slate-900 border border-slate-800 hover:bg-slate-850"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-3 mb-6">
+              <Trash2 className="h-6 w-6 text-red-500" />
+              <h3 className="text-xl font-black text-white">Delete Property</h3>
+            </div>
+            <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+              Are you sure you want to permanently delete{' '}
+              <span className="font-bold text-white">{shop?.name}</span>? This will irreversibly
+              remove all rooms, bookings, staff assignments, commissions, and plugin configurations.
+              This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="flex-1 py-3 bg-slate-900 border border-slate-800 hover:border-zinc-600 text-zinc-300 rounded-2xl font-bold transition-all text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteProperty}
+                disabled={deleting}
+                className="flex-1 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-2xl font-black shadow-xl shadow-red-500/10 transition-all flex items-center justify-center gap-2 text-sm"
+              >
+                {deleting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Delete Permanently'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -643,12 +764,12 @@ function StatsCard({ title, value, icon: Icon, color }: any) {
   );
 }
 
-function ActionButton({ icon: Icon, label, onClick, loading }: any) {
+function ActionButton({ icon: Icon, label, onClick, loading, className = '' }: any) {
   return (
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-900 border border-slate-850 hover:border-amber-500/30 text-zinc-300 hover:text-white transition-all text-sm font-bold group disabled:opacity-50"
+      className={`w-full flex items-center justify-between p-4 rounded-2xl bg-slate-900 border border-slate-850 hover:border-amber-500/30 text-zinc-300 hover:text-white transition-all text-sm font-bold group disabled:opacity-50 ${className}`}
     >
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-lg bg-slate-950 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all text-amber-500 border border-slate-850">

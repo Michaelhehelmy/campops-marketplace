@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { CalendarDays, DollarSign, Star, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { PluginShell } from '@/app/PluginShell';
 
 interface Stats {
@@ -14,6 +15,7 @@ interface Stats {
 }
 
 export default function OwnerDashboardPage() {
+  const t = useTranslations('owner.dashboard');
   const { locale } = useParams();
   const [stats, setStats] = useState<Stats | null>(null);
   const [propertyName, setPropertyName] = useState<string>('');
@@ -59,10 +61,10 @@ export default function OwnerDashboardPage() {
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {propertyName ? `${propertyName}` : 'Your Dashboard'}
+            {propertyName ? `${propertyName}` : t('title')}
           </h1>
           <p className="text-gray-500 mt-0.5">
-            Plan: <span className="font-medium text-gray-700 capitalize">{plan}</span>
+            {t('planLabel', { plan })}
             {plan === 'basic' && (
               <>
                 {' · '}
@@ -70,7 +72,7 @@ export default function OwnerDashboardPage() {
                   href={`/${locale}/list-your-camp/plan`}
                   className="text-brand-600 hover:underline text-sm"
                 >
-                  Upgrade for full operations →
+                  {t('upgrade')}
                 </Link>
               </>
             )}
@@ -84,19 +86,19 @@ export default function OwnerDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
         <StatCard
           icon={<CalendarDays className="w-5 h-5 text-brand-600" />}
-          label="Upcoming bookings"
+          label={t('upcomingBookings')}
           value={String(stats?.upcomingBookings ?? 0)}
           bg="bg-brand-50"
         />
         <StatCard
           icon={<DollarSign className="w-5 h-5 text-green-600" />}
-          label="Total revenue"
+          label={t('totalRevenue')}
           value={`${stats?.currency} ${(stats?.totalRevenue ?? 0).toLocaleString()}`}
           bg="bg-green-50"
         />
         <StatCard
           icon={<Star className="w-5 h-5 text-amber-500" />}
-          label="Occupancy rate"
+          label={t('occupancyRate')}
           value={`${stats?.occupancyRate ?? 0}%`}
           bg="bg-amber-50"
         />
@@ -108,14 +110,14 @@ export default function OwnerDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <QuickAction
           href={`/${locale}/owner/bookings`}
-          title="View bookings"
-          description="See all incoming and past reservations."
+          title={t('viewBookings')}
+          description={t('viewBookingsDesc')}
           icon={<CalendarDays size={20} />}
         />
         <QuickAction
           href={`/${locale}/owner/property`}
-          title="Edit listing"
-          description="Update photos, description and amenities."
+          title={t('editListing')}
+          description={t('editListingDesc')}
           icon={<Star size={20} />}
         />
       </div>

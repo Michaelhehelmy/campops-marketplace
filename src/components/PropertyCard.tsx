@@ -35,7 +35,7 @@ export default function PropertyCard({ property, nights }: PropertyCardProps) {
       <div className="p-5">
         {/* Location */}
         {(property.city || property.country) && (
-          <div className="flex items-center gap-1 text-xs text-gray-400 mb-1">
+          <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
             <MapPin className="w-3 h-3" />
             <span>{[property.city, property.country].filter(Boolean).join(', ')}</span>
           </div>
@@ -68,17 +68,17 @@ export default function PropertyCard({ property, nights }: PropertyCardProps) {
         {/* Price + CTA */}
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-xs text-gray-400">{nights} nights from</p>
+            <p className="text-xs text-gray-500">{nights} nights from</p>
             <p className="text-xl font-bold text-gray-900">
               {formatPrice(property.displayMinPrice * nights, displayCurrency)}
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-500">
               {formatPrice(property.displayMinPrice, displayCurrency)} / night
             </p>
           </div>
           <Link
             href={`/${locale}/stay/${property.slug}`}
-            className="flex items-center gap-1.5 bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors"
+            className="flex items-center gap-1.5 bg-brand-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-brand-900 transition-colors"
           >
             View
             <ArrowRight className="w-4 h-4" />

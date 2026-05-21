@@ -1,6 +1,9 @@
 -- Migration: 001_core_posts
 -- Description: Add sites, posts, postmeta, options tables — the universal EAV core layer.
 -- Depends on: (none — additive only, existing tables untouched)
+-- PostgreSQL compat notes:
+--   Replace: DEFAULT (unixepoch())   → DEFAULT EXTRACT(EPOCH FROM NOW())::INTEGER
+--   The rest of this file is PostgreSQL-compatible.
 
 -- ---------------------------------------------------------------------------
 -- sites

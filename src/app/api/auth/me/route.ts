@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/auth/me
  * Custom backward-compatibility endpoint for multi-tenant Vite/PWA custom shopfronts.

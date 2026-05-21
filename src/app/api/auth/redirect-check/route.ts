@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 const parseJSON = (val: any) => {
   if (!val) return {};
   if (typeof val === 'string') {
@@ -72,6 +74,12 @@ export async function GET(req: NextRequest) {
       if (isVerified) {
         const locale = req.cookies.get('NEXT_LOCALE')?.value || 'en';
         const isLocalDev = process.env.FORCE_LOCAL_REDIRECT === 'true';
+
+        // In local dev, never redirect to a production HTTPS URL.
+        // The caller (middleware) already skips this check in dev, but guard here too.
+        if (process.env.NODE_ENV !== 'production' && !isLocalDev) {
+          return NextResponse.json({ redirect: false });
+        }
 
         let redirectUrl =
           role === 'guest'

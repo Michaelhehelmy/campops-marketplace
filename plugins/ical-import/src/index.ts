@@ -14,7 +14,7 @@ import type {
   InventorySyncResult,
   RateSyncResult,
 } from '../../../packages/plugin-sdk/src/ota.js';
-import { OTAAdapterRegistry } from '../../../packages/plugin-sdk/src/ota.js';
+import { OTAAdapterRegistry } from '@sinaicamps/plugin-sdk';
 
 class ICalImportAdapter implements OTAAdapter {
   readonly id = 'ical';

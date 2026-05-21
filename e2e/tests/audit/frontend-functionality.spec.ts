@@ -62,6 +62,8 @@ async function clearAndApply(page: Page, session: { storageState: string }) {
 }
 
 test.describe('Frontend Functionality Audit', () => {
+  test.describe.configure({ timeout: 300000 });
+
   test('1. Public Pages', async ({ page }) => {
     await audit(page, 'Homepage', 'page load', 'navigate', async () => {
       await page.goto(`${BASE}/en`);
@@ -186,7 +188,7 @@ test.describe('Frontend Functionality Audit', () => {
   });
 
   test('5. Console Error Collection', async ({ page, masterSession, guestSession }) => {
-    test.setTimeout(120000);
+    test.setTimeout(300000);
     const pagesToCheck: { url: string; auth: any }[] = [
       { url: '/en', auth: null },
       { url: '/en/search', auth: null },

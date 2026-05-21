@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { LayoutDashboard, LogOut, Search, Menu, X, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function Nav({ locale }: { locale: string }) {
   const { data: session, isPending } = authClient.useSession();
@@ -48,6 +49,7 @@ export function Nav({ locale }: { locale: string }) {
 
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6">
+          <LanguageSwitcher locale={locale} />
           <a
             href={`/${locale}/search`}
             className="text-zinc-400 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 
 interface Category {
@@ -23,6 +24,7 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations('categories');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -73,14 +75,13 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
         {/* Header */}
         <div className="text-center mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-amber-500 bg-amber-50 px-3.5 py-1.5 rounded-full inline-block mb-3.5">
-            🔍 Curated Collections
+            {t('badge')}
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Browse by Category
+            {t('title')}
           </h2>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            From secluded glamping domes to luxury mountain cabins, find the perfect setting
-            matching your preferred adventure style.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -99,7 +100,7 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
                 className="w-16 h-16 bg-slate-50 group-hover:bg-amber-50 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300"
                 aria-hidden="true"
               >
-                {category.icon || '🏕️'}
+                {category.icon || '📌'}
               </div>
 
               {/* Category Meta */}
@@ -107,7 +108,7 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
                 {category.name}
               </h3>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                {category.count} properties
+                {t('propertyCount', { count: category.count })}
               </span>
             </button>
           ))}

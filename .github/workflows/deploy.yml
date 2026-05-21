@@ -28,8 +28,8 @@ jobs:
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" .next/static/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/.next/static/
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" public/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/public/
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" plugins/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/plugins/
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no .env.production nginx-unified.conf scripts/boot.sh scripts/deploy-prod.sh ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && bash scripts/deploy-prod.sh"
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no .env.production nginx-unified.conf scripts/boot.sh scripts/deploy-prod.sh ecosystem.config.js ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && bash scripts/deploy-prod.sh && bash scripts/backup-s3.sh"
 
   deploy-cloudflare:
     if: startsWith(github.ref, 'refs/heads/tenant/')

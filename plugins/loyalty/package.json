@@ -4,8 +4,17 @@
   "private": true,
   "type": "module",
   "main": "src/index.ts",
-  "dependencies": {},
+  "sinaicamps": {
+    "pluginId": "loyalty",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "hooks",
+      "ui"
+    ]
+  },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@sinaicamps/plugin-sdk": "*",
+    "typescript": "^5.4.0"
   }
 }

@@ -13,19 +13,11 @@ export interface AuditEntry {
   createdAt?: string;
 }
 
-/**
- * AuditService
- * ────────────
- * Lightweight audit trail for admin actions.
- * Logs are written asynchronously (fire-and-forget) to avoid blocking
- * the request cycle.
- */
 export class AuditService {
   /**
    * Record an audit entry. Returns immediately; the write happens in the background.
    */
   static log(entry: AuditEntry): void {
-    // Fire-and-forget — don't block the caller
     this.writeEntry(entry).catch((err) => {
       logger.error('Failed to write audit entry:', err);
     });

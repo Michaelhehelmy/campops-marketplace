@@ -1,30 +1,24 @@
 {
-  "name": "sinaicamps-plugin-starter",
+  "name": "@sinaicamps/plugin-starter",
   "version": "1.0.0",
-  "description": "GitHub template for building SinaiCamps plugins",
+  "description": "Reference starter template for building marketplace plugins",
+  "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "eslint src --ext .ts",
-    "test": "vitest run",
-    "proxy": "node scripts/dev-proxy.js"
-  },
-  "devDependencies": {
-    "sinaicamps-sdk": "*",
-    "typescript": "^5.4.0",
-    "vitest": "^1.6.0",
-    "eslint": "^8.57.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0"
-  },
-  "peerDependencies": {
-    "sinaicamps-sdk": ">=2.0.0"
+    "test": "vitest run"
   },
   "sinaicamps": {
     "pluginId": "my-plugin",
-    "sinaicampsVersion": ">=2.0.0"
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "hooks",
+      "ui"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
   }
 }

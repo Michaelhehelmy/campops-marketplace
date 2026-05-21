@@ -3,18 +3,10 @@
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Building2, MapPin, Globe } from 'lucide-react';
+import { toSlug } from '@/lib/slug';
 
 const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa'];
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR', 'ZAR'];
-
-function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .slice(0, 40);
-}
 
 export default function Step2PropertyPage() {
   const router = useRouter();

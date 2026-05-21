@@ -1,8 +1,12 @@
+import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 
 export async function GET(request: Request) {
   try {
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     // In a real app, these might be in a 'settings' table
     // For now, we'll try to fetch from a mock settings table or just return default values
     // if the table doesn't exist yet.
@@ -33,12 +37,14 @@ export async function GET(request: Request) {
 
     return NextResponse.json(settings);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return errorResponse(error);
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const session = await requireRole(request, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
     const body = await request.json();
 
     await db
@@ -53,6 +59,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return errorResponse(error);
   }
 }

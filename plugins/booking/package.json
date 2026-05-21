@@ -5,11 +5,20 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sinaicamps": {
+    "capabilities": [
+      "auth",
+      "database",
+      "hooks",
+      "routes",
+      "ui"
+    ]
+  },
   "dependencies": {
     "zod": "^3.22.0",
     "tapable": "^2.2.0"
   },
   "devDependencies": {
-    "sinaicamps-sdk": "*"
+    "@sinaicamps/plugin-sdk": "*"
   }
 }

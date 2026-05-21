@@ -1,6 +1,9 @@
+import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/guest/dashboard
@@ -85,6 +88,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[Guest Dashboard API] Error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return errorResponse(err);
   }
 }

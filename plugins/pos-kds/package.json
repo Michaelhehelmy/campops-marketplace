@@ -1,0 +1,18 @@
+{
+  "name": "@sinaicamps/plugin-pos-kds",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "pos-kds",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "database",
+      "routes"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import { logger } from './logger';
 import { runMigrations } from './runMigrations';
+import './bootstrap';
 
 // Environment-aware DB initialisation
 const isTest = process.env.NODE_ENV === 'test';
@@ -37,6 +38,8 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
   logger.info(`Using SQLite database: ${dbFile} (NODE_ENV=${process.env.NODE_ENV})`);
   sqliteDb = new Database(dbFile);
   getSqlite().pragma('journal_mode = WAL');
+  const journalMode = getSqlite().pragma('journal_mode');
+  logger.info(`SQLite journal_mode: ${JSON.stringify(journalMode)}`);
   getSqlite().pragma('busy_timeout = 10000');
   getSqlite().pragma('synchronous = NORMAL');
   drizzle = drizzleSqlite(getSqlite(), { schema });
@@ -327,7 +330,29 @@ class DrizzleDatabaseWrapper {
       const client = await pgPool.connect();
       try {
         await client.query('BEGIN');
-        const result = await callback(this);
+        const scopedTx = Object.create(this, {
+          prepare: {
+            value: (sql: string) =>
+              ({
+                all: async (...args: any[]) => {
+                  const { finalSql, finalParams } = this._transformSql(sql, args);
+                  const res = await client.query(finalSql, finalParams);
+                  return res.rows.map((r: any) => this._normalizeRow(r));
+                },
+                get: async (...args: any[]) => {
+                  const { finalSql, finalParams } = this._transformSql(sql, args);
+                  const res = await client.query(finalSql, finalParams);
+                  return res.rows.length > 0 ? this._normalizeRow(res.rows[0]) : null;
+                },
+                run: async (...args: any[]) => {
+                  const { finalSql, finalParams } = this._transformSql(sql, args);
+                  const res = await client.query(finalSql, finalParams);
+                  return { changes: res.rowCount, lastInsertRowid: null };
+                },
+              }) as any,
+          },
+        });
+        const result = await callback(scopedTx);
         await client.query('COMMIT');
         return result;
       } catch (err) {
@@ -355,7 +380,7 @@ class DrizzleDatabaseWrapper {
       // -----------------------------------------------------------------------
       // Core framework tables (generic):
       //   users, sessions, accounts, verifications, user_roles,
-      //   available_plugins, profiles
+      //   available_plugins, plugin_submissions, profiles
       //   properties (tenants), property_staff (tenantStaff),
       //   property_plugins (tenantPlugins)
       //
@@ -364,6 +389,13 @@ class DrizzleDatabaseWrapper {
       // New code should use api.db.createTable() inside the plugin init.
       // -----------------------------------------------------------------------
       const coreTables = [
+        `DROP TABLE IF EXISTS schema_migrations`,
+        `DROP TABLE IF EXISTS postmeta`,
+        `DROP TABLE IF EXISTS posts`,
+        `DROP TABLE IF EXISTS options`,
+        `DROP TABLE IF EXISTS build_queue`,
+        `DROP TABLE IF EXISTS sites`,
+        `DROP TABLE IF EXISTS plugin_submissions`,
         `DROP TABLE IF EXISTS available_plugins`,
         `DROP TABLE IF EXISTS properties`,
         `DROP TABLE IF EXISTS property_staff`,
@@ -392,12 +424,13 @@ class DrizzleDatabaseWrapper {
         `DROP TABLE IF EXISTS plugin_resource_listings`,
         `DROP TABLE IF EXISTS homepage_config`,
         `DROP TABLE IF EXISTS categories`,
+        `DROP TABLE IF EXISTS idempotency_keys`,
         `CREATE TABLE IF NOT EXISTS users (id ${idDefault}, email TEXT NOT NULL UNIQUE, name TEXT, email_verified INTEGER, image TEXT, password TEXT, role TEXT, created_at INTEGER, updated_at INTEGER, is_verified INTEGER)`,
         `CREATE TABLE IF NOT EXISTS sessions (id ${idDefault}, user_id TEXT NOT NULL, token TEXT NOT NULL UNIQUE, expires_at INTEGER NOT NULL, ip_address TEXT, user_agent TEXT, created_at INTEGER, updated_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS accounts (id ${idDefault}, user_id TEXT NOT NULL, account_id TEXT NOT NULL, provider_id TEXT NOT NULL, access_token TEXT, refresh_token TEXT, id_token TEXT, expires_at INTEGER, password TEXT, created_at INTEGER, updated_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS verifications (id ${idDefault}, identifier TEXT NOT NULL, value TEXT NOT NULL, expires_at INTEGER NOT NULL, created_at INTEGER, updated_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS user_roles (id ${idDefault}, user_id TEXT NOT NULL, role TEXT NOT NULL, permissions TEXT)`,
-        `CREATE TABLE IF NOT EXISTS available_plugins (id ${idDefault}, name TEXT NOT NULL UNIQUE, display_name TEXT, description TEXT, category TEXT, is_official INTEGER, is_active INTEGER, manifest TEXT, entry_point_url TEXT, config_schema TEXT, version TEXT, updated_at INTEGER)`,
+        `CREATE TABLE IF NOT EXISTS available_plugins (id ${idDefault}, name TEXT NOT NULL UNIQUE, display_name TEXT, description TEXT, category TEXT, is_official INTEGER, is_active INTEGER, manifest TEXT, entry_point_url TEXT, config_schema TEXT, version TEXT, updated_at INTEGER, plan_requirement TEXT NOT NULL DEFAULT 'basic', post_types TEXT, campops_version TEXT, review_status TEXT NOT NULL DEFAULT 'approved', zip_url TEXT)`,
         `CREATE TABLE IF NOT EXISTS properties (id ${idDefault}, slug TEXT NOT NULL UNIQUE, name TEXT NOT NULL, description TEXT, short_description TEXT, city TEXT, country TEXT, settings TEXT, branding TEXT, is_active INTEGER, owner_id TEXT, created_at INTEGER, subdomain TEXT, custom_domain TEXT, domain_verified INTEGER DEFAULT 0, plan TEXT, primary_image TEXT, is_featured INTEGER, rating REAL, amenities TEXT, price_per_night INTEGER, min_price_per_night INTEGER, currency_code TEXT DEFAULT 'USD', featured_order INTEGER)`,
         `CREATE TABLE IF NOT EXISTS property_staff (id ${idDefault}, property_id TEXT NOT NULL, user_id TEXT NOT NULL, role TEXT NOT NULL, created_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS marketplace_bookings (id ${idDefault}, property_id TEXT NOT NULL, room_type_id TEXT, guest_name TEXT NOT NULL, guest_email TEXT NOT NULL, check_in TEXT, check_out TEXT, total_amount_cents INTEGER NOT NULL, status TEXT, created_at INTEGER, booking_type TEXT, guest_count INTEGER, currency TEXT, stripe_payment_intent_id TEXT, stripe_checkout_session_id TEXT)`,
@@ -405,7 +438,7 @@ class DrizzleDatabaseWrapper {
         `CREATE TABLE IF NOT EXISTS commission_transactions (id ${idDefault}, booking_id TEXT, property_id TEXT, stripe_account_id TEXT, total_amount_cents INTEGER, commission_rate_used REAL, commission_amount_cents INTEGER, net_payout_cents INTEGER, currency TEXT, status TEXT, stripe_transfer_id TEXT, transferred_at INTEGER, created_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS stripe_connect_accounts (id ${idDefault}, property_id TEXT, owner_id TEXT, stripe_account_id TEXT, stripe_account_type TEXT, charges_enabled INTEGER, payouts_enabled INTEGER, country TEXT, currency TEXT, onboarding_complete INTEGER, created_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS payout_summaries (id ${idDefault}, property_id TEXT, owner_id TEXT, period_start TEXT, period_end TEXT, total_bookings INTEGER, total_revenue_cents INTEGER, total_commission_cents INTEGER, net_payout_cents INTEGER, currency TEXT, status TEXT, stripe_payout_id TEXT, paid_at INTEGER, created_at INTEGER)`,
-        `CREATE TABLE IF NOT EXISTS property_plugins (id ${idDefault}, property_id TEXT NOT NULL, plugin_name TEXT NOT NULL, is_enabled INTEGER, config TEXT, installed_version TEXT, installed_by TEXT, last_disabled_at INTEGER, created_at INTEGER, UNIQUE(property_id, plugin_name))`,
+        `CREATE TABLE IF NOT EXISTS property_plugins (id ${idDefault}, property_id TEXT NOT NULL, plugin_name TEXT NOT NULL, is_enabled INTEGER, config TEXT, installed_version TEXT, installed_by TEXT, last_disabled_at INTEGER, created_at INTEGER, activated_at INTEGER, activated_by TEXT, version TEXT, UNIQUE(property_id, plugin_name))`,
         `CREATE TABLE IF NOT EXISTS plugin_assets (id ${idDefault}, plugin_name TEXT, asset_type TEXT, asset_url TEXT, target_location TEXT, load_order INTEGER, is_active INTEGER, created_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS plugin_analytics (id ${idDefault}, plugin_name TEXT, property_id TEXT, event_type TEXT, event_data TEXT, created_at INTEGER)`,
         `CREATE TABLE IF NOT EXISTS plugin_ui_registry (id TEXT PRIMARY KEY, plugin_id TEXT NOT NULL, slot_name TEXT NOT NULL, component_id TEXT NOT NULL, property_id TEXT, config TEXT, created_at TEXT)`,
@@ -421,12 +454,22 @@ class DrizzleDatabaseWrapper {
         `CREATE TABLE IF NOT EXISTS homepage_config (id TEXT PRIMARY KEY, config TEXT)`,
         `CREATE TABLE IF NOT EXISTS profiles (id ${idDefault}, user_id TEXT NOT NULL, full_name TEXT, bio TEXT, phone TEXT)`,
         `CREATE TABLE IF NOT EXISTS categories (id ${idDefault}, name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, icon TEXT, description TEXT, display_order INTEGER)`,
+        `CREATE TABLE IF NOT EXISTS sites (id TEXT PRIMARY KEY, slug TEXT NOT NULL UNIQUE, name TEXT NOT NULL, plan TEXT NOT NULL DEFAULT 'basic', subdomain TEXT, custom_domain TEXT, domain_verified INTEGER NOT NULL DEFAULT 0, owner_id TEXT, is_active INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL DEFAULT (unixepoch()), updated_at INTEGER NOT NULL DEFAULT (unixepoch()))`,
+        `CREATE TABLE IF NOT EXISTS posts (id TEXT PRIMARY KEY, site_id TEXT NOT NULL REFERENCES sites(id) ON DELETE CASCADE, post_type TEXT NOT NULL, post_status TEXT NOT NULL DEFAULT 'publish', post_slug TEXT, post_title TEXT NOT NULL DEFAULT '', post_content TEXT, author_id TEXT, parent_id TEXT, menu_order INTEGER NOT NULL DEFAULT 0, created_at INTEGER, updated_at INTEGER)`,
+        `CREATE TABLE IF NOT EXISTS postmeta (id INTEGER PRIMARY KEY AUTOINCREMENT, post_id TEXT NOT NULL REFERENCES posts(id) ON DELETE CASCADE, meta_key TEXT NOT NULL, meta_value TEXT, UNIQUE(post_id, meta_key))`,
+        `CREATE TABLE IF NOT EXISTS options (id INTEGER PRIMARY KEY AUTOINCREMENT, site_id TEXT NOT NULL, option_name TEXT NOT NULL, option_value TEXT, autoload INTEGER NOT NULL DEFAULT 0, UNIQUE(site_id, option_name))`,
+        `CREATE TABLE IF NOT EXISTS build_queue (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), site_id TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', triggered_by TEXT, created_at INTEGER NOT NULL DEFAULT (unixepoch()), started_at INTEGER, finished_at INTEGER, error TEXT)`,
+        `CREATE TABLE IF NOT EXISTS plugin_submissions (id TEXT PRIMARY KEY, plugin_id TEXT NOT NULL, submitted_by TEXT NOT NULL, version TEXT NOT NULL, zip_url TEXT, manifest TEXT, review_notes TEXT, status TEXT NOT NULL DEFAULT 'pending', reviewed_by TEXT, submitted_at INTEGER NOT NULL DEFAULT (unixepoch()), reviewed_at INTEGER)`,
+        `CREATE TABLE IF NOT EXISTS idempotency_keys (key TEXT PRIMARY KEY, response TEXT NOT NULL, created_at INTEGER)`,
       ];
 
       for (const sql of coreTables) {
         logger.info('Executing:', sql.substring(0, 50));
         getSqlite().exec(sql);
       }
+
+      // Reapply migrations so any additional structural adjustments are made
+      runMigrations(getSqlite());
 
       // Seed Users
       // Pre-computed scrypt hash for 'password123' used by Better Auth
@@ -900,6 +943,12 @@ class DrizzleDatabaseWrapper {
 
 export const db = new DrizzleDatabaseWrapper();
 
+// Initialize idempotency_keys table at startup
+db.createTable(
+  'idempotency_keys',
+  'key TEXT PRIMARY KEY, response TEXT NOT NULL, created_at INTEGER'
+).catch((e) => logger.error('Failed to create idempotency_keys table:', e));
+
 // For unit tests
 export const resetMockStore = () => {
   db.resetMockStore();
@@ -910,58 +959,94 @@ export const clearMockStore = () => {
 };
 
 // Always ensure seeded in dev/test if users table missing or empty
-try {
-  const criticalTables = ['users', 'properties', 'available_plugins', 'property_staff'];
-  let needsReset = false;
+const shouldRunResetCheck =
+  process.env.NODE_ENV !== 'production' &&
+  !process.env.DATABASE_URL?.startsWith('postgres') &&
+  !pgPool &&
+  (process.env.NODE_ENV === 'test' || process.argv.includes('--force-reset'));
 
-  for (const table of criticalTables) {
-    const tableExists = getSqlite()
-      .prepare("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name=?")
-      .get(table);
-    if (!tableExists || (tableExists as any).count === 0) {
-      needsReset = true;
-      break;
-    }
-    const rowCount = getSqlite().prepare(`SELECT count(*) as count FROM ${table}`).get();
-    if (!rowCount || (rowCount as any).count === 0) {
-      needsReset = true;
-      break;
-    }
-  }
+if (shouldRunResetCheck) {
+  try {
+    const criticalTables = ['users', 'properties', 'available_plugins', 'property_staff'];
+    let needsReset = false;
 
-  if (needsReset) {
-    logger.info('Critical table missing or empty, forcing reset...');
-    db.resetMockStore();
+    for (const table of criticalTables) {
+      const tableExists = getSqlite()
+        .prepare("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name=?")
+        .get(table);
+      if (!tableExists || (tableExists as any).count === 0) {
+        needsReset = true;
+        break;
+      }
+      const rowCount = getSqlite()
+        .prepare('SELECT count(*) as count FROM ' + table)
+        .get();
+      if (!rowCount || (rowCount as any).count === 0) {
+        needsReset = true;
+        break;
+      }
+    }
+
+    if (needsReset) {
+      logger.info('Critical table missing or empty, forcing reset...');
+      db.resetMockStore();
+    }
+  } catch (e) {
+    logger.error('Error checking database state:', e);
   }
-} catch (e) {
-  logger.error('Error checking database state:', e);
-  db.resetMockStore();
 }
 
-// Normalize property names to match test expectations (runs on every server start)
-try {
-  getSqlite()
-    .prepare("UPDATE properties SET name = 'Safari Camp' WHERE id = '1' AND name != 'Safari Camp'")
-    .run();
-  getSqlite()
-    .prepare(
-      'INSERT OR IGNORE INTO properties (id, slug, name, city, owner_id, is_active) VALUES (?, ?, ?, ?, ?, 1)'
-    )
-    .run('2', 'mountain-lodge', 'Mountain Lodge', 'Rocky Mountains', 'master-user-2');
-  getSqlite()
-    .prepare(
-      'INSERT OR IGNORE INTO property_staff (id, property_id, user_id, role) VALUES (?, ?, ?, ?)'
-    )
-    .run('ps-3', '2', 'master-user-2', 'manager');
-  // Ensure booking plugin has an entry for property 1 if not already present
-  const bkExists = getSqlite().prepare("SELECT id FROM property_plugins WHERE id='pp-1'").get();
-  if (!bkExists) {
+// Normalize property names to match test expectations (runs only in local SQLite dev/test)
+if (shouldRunResetCheck || (process.env.NODE_ENV === 'test' && !pgPool)) {
+  try {
     getSqlite()
       .prepare(
-        'INSERT INTO property_plugins (id, property_id, plugin_name, is_enabled) VALUES (?, ?, ?, ?)'
+        "UPDATE properties SET name = 'Safari Camp' WHERE id = '1' AND name != 'Safari Camp'"
       )
-      .run('pp-1', '1', 'booking', 1);
+      .run();
+    getSqlite()
+      .prepare(
+        'INSERT OR IGNORE INTO properties (id, slug, name, city, owner_id, is_active) VALUES (?, ?, ?, ?, ?, 1)'
+      )
+      .run('2', 'mountain-lodge', 'Mountain Lodge', 'Rocky Mountains', 'master-user-2');
+    getSqlite()
+      .prepare(
+        'INSERT OR IGNORE INTO property_staff (id, property_id, user_id, role) VALUES (?, ?, ?, ?)'
+      )
+      .run('ps-3', '2', 'master-user-2', 'manager');
+    // Ensure booking plugin has an entry for property 1 if not already present
+    const bkExists = getSqlite().prepare("SELECT id FROM property_plugins WHERE id='pp-1'").get();
+    if (!bkExists) {
+      getSqlite()
+        .prepare(
+          'INSERT INTO property_plugins (id, property_id, plugin_name, is_enabled) VALUES (?, ?, ?, ?)'
+        )
+        .run('pp-1', '1', 'booking', 1);
+    }
+  } catch (e) {
+    logger.error('Error normalizing property data:', e);
   }
-} catch (e) {
-  logger.error('Error normalizing property data:', e);
+}
+
+export async function closeConnection() {
+  if (pgPool) {
+    logger.info('Closing PostgreSQL connection pool...');
+    await pgPool.end();
+    pgPool = null;
+  }
+  if (sqliteDb) {
+    logger.info('Closing SQLite database connection...');
+    sqliteDb.close();
+    sqliteDb = null;
+  }
+}
+
+if (typeof process !== 'undefined') {
+  const handleShutdown = async (signal: string) => {
+    logger.info(`Received ${signal}, commencing graceful database shutdown.`);
+    await closeConnection();
+    process.exit(0);
+  };
+  process.on('SIGTERM', () => handleShutdown('SIGTERM'));
+  process.on('SIGINT', () => handleShutdown('SIGINT'));
 }

@@ -4,6 +4,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Loader2, CheckCircle2, LogOut, X, Plus } from 'lucide-react';
 
+function csrfToken(): string {
+  if (typeof document === 'undefined') return '';
+  const m = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+  return m ? m[1] : '';
+}
+
 interface Booking {
   id: string;
   guestName: string;
@@ -48,7 +54,7 @@ export default function BookingsPage() {
   const handleCheckIn = async (bookingId: string) => {
     await fetch(`/api/manage/${listingId}/bookings`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken() },
       body: JSON.stringify({ id: bookingId, status: 'checked-in' }),
     });
     fetchBookings();
@@ -57,7 +63,7 @@ export default function BookingsPage() {
   const handleCheckOut = async (bookingId: string) => {
     await fetch(`/api/manage/${listingId}/bookings`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken() },
       body: JSON.stringify({ id: bookingId, status: 'checked-out' }),
     });
     fetchBookings();
@@ -73,7 +79,7 @@ export default function BookingsPage() {
     setSaving(true);
     await fetch(`/api/manage/${listingId}/bookings`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken() },
       body: JSON.stringify({ id: manageModal.id, notes: modalNotes }),
     });
     setSaving(false);

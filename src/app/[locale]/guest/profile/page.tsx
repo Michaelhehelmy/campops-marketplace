@@ -39,12 +39,17 @@ export default function GuestProfilePage() {
       });
   }, []);
 
+  const getCsrfToken = () => {
+    const match = document.cookie.match(/(?:^|;\s*)x-csrf-token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : '';
+  };
+
   const handleSave = async () => {
     setError(null);
     try {
       const res = await fetch('/api/guest/profile', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
         body: JSON.stringify(form),
       });
 

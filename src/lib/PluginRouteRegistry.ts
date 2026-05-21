@@ -18,6 +18,8 @@ export interface RouteEntry {
   handlers: Map<string, RouteHandler>;
 }
 
+const GLOBAL_KEY = '__pluginRouteRegistry__';
+
 class PluginRouteRegistry {
   private routes: RouteEntry[] = [];
 
@@ -114,4 +116,5 @@ class PluginRouteRegistry {
   }
 }
 
-export const pluginRouteRegistry = new PluginRouteRegistry();
+export const pluginRouteRegistry: PluginRouteRegistry =
+  (globalThis as any)[GLOBAL_KEY] || ((globalThis as any)[GLOBAL_KEY] = new PluginRouteRegistry());

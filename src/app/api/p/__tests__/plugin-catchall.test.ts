@@ -32,7 +32,7 @@ describe('Plugin catch-all route /api/p/[...plugin]', () => {
     const res = await GET(req, { params: { plugin: ['unknown', 'route'] } });
     expect(res.status).toBe(404);
     const body = await res.json();
-    expect(body.error.code).toBe('NOT_FOUND');
+    expect(body.code).toBe('NOT_FOUND');
   });
 
   it('delegates GET to registered plugin handler', async () => {
@@ -72,7 +72,7 @@ describe('Plugin catch-all route /api/p/[...plugin]', () => {
     const res = await GET(req, { params: { plugin: ['booking', 'crash'] } });
     expect(res.status).toBe(500);
     const body = await res.json();
-    expect(body.error.message).toContain('Plugin crashed');
+    expect(body.error).toContain('Plugin crashed');
   });
 
   it('passes dynamic params through and calls handler once', async () => {

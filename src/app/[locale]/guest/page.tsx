@@ -1,11 +1,13 @@
 'use client';
 
 import { authClient } from '@/lib/auth-client';
+import { useTranslations } from 'next-intl';
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
 import { Star, TrendingUp, MapPin, ShoppingBag } from 'lucide-react';
 
 export default function GuestPortalPage({ params }: { params: { locale: string } }) {
+  const t = useTranslations('guest');
   const { data: session } = authClient.useSession();
 
   return (
@@ -16,20 +18,18 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-600/20 to-transparent"></div>
           <div className="relative z-10">
             <p className="text-xs font-black uppercase tracking-widest text-brand-400 mb-2">
-              Guest Dashboard
+              {t('dashboard')}
             </p>
             <h1 className="text-4xl font-black tracking-tight mb-4">
-              Hello, {session?.user?.name || 'Explorer'}.
+              {t('hello', { name: session?.user?.name || 'Explorer' })}
             </h1>
-            <p className="text-slate-400 text-lg max-w-md mb-8">
-              Welcome back to SinaiCamps. Ready to explore?
-            </p>
+            <p className="text-slate-400 text-lg max-w-md mb-8">{t('welcomeBack')}</p>
             <div className="flex gap-4">
               <button className="bg-brand-600 hover:bg-brand-700 px-8 py-3 rounded-2xl font-bold transition-all">
-                View Itinerary
+                {t('viewItinerary')}
               </button>
               <button className="bg-white/10 hover:bg-white/20 px-8 py-3 rounded-2xl font-bold transition-all border border-white/10">
-                Manage Profile
+                {t('manageProfile')}
               </button>
             </div>
           </div>
@@ -44,7 +44,9 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
               fallback={
                 <section>
                   <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">Your Trips</h2>
+                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+                      {t('yourTrips')}
+                    </h2>
                   </div>
                   <div className="space-y-4" data-testid="guest-reservations-list">
                     <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
@@ -72,37 +74,34 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
           {/* Sidebar */}
           <div className="space-y-8">
             <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
-              <h3 className="text-lg font-black text-gray-900 mb-6">Pro Status</h3>
+              <h3 className="text-lg font-black text-gray-900 mb-6">{t('proStatus')}</h3>
               <div className="bg-brand-50 p-6 rounded-[2rem] border border-brand-100">
                 <div className="flex items-center gap-2 mb-2">
                   <Star className="h-4 w-4 text-brand-600 fill-brand-600" />
-                  <span className="text-sm font-black text-brand-600">Pro Traveler</span>
+                  <span className="text-sm font-black text-brand-600">{t('proTraveler')}</span>
                 </div>
-                <p className="text-xs text-brand-700/70">
-                  You're in the top 5% of explorers this year. Unlock exclusive perks at
-                  participating camps.
-                </p>
+                <p className="text-xs text-brand-700/70">{t('proDesc')}</p>
               </div>
             </div>
 
             <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group">
               <TrendingUp className="absolute top-[-20px] right-[-20px] h-32 w-32 text-brand-600/20 rotate-12" />
-              <h3 className="text-lg font-black mb-4 relative z-10">Contextual Perks</h3>
+              <h3 className="text-lg font-black mb-4 relative z-10">{t('contextualPerks')}</h3>
               <p className="text-sm text-slate-400 mb-6 relative z-10 leading-relaxed">
-                Stay active to unlock personalized perks and camp maps.
+                {t('perksDesc')}
               </p>
               <div className="space-y-3 relative z-10">
                 <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer">
                   <div className="h-8 w-8 rounded-xl bg-brand-600/20 flex items-center justify-center text-brand-400">
                     <MapPin className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-bold">Interactive Camp Map</span>
+                  <span className="text-xs font-bold">{t('campMap')}</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer">
                   <div className="h-8 w-8 rounded-xl bg-orange-600/20 flex items-center justify-center text-orange-400">
                     <ShoppingBag className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-bold">Pre-Arrival Room Service</span>
+                  <span className="text-xs font-bold">{t('roomService')}</span>
                 </div>
               </div>
             </div>
@@ -118,7 +117,7 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
                 aria-label="Recent Activity"
                 className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40 p-8"
               >
-                <h3 className="text-lg font-black text-gray-900 mb-6">Recent Activity</h3>
+                <h3 className="text-lg font-black text-gray-900 mb-6">{t('recentActivity')}</h3>
                 <div className="space-y-3">
                   {[
                     {

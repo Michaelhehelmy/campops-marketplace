@@ -524,161 +524,173 @@
     {
       "id": "phase-9",
       "name": "Central Marketplace Aggregation",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "9.1",
           "description": "Add PostQuery.globalQuery(args) that queries across all active sites (no siteId filter). Requires postType. Applies applyFilters('core:global_query:args', args) before executing.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["8.8"],
-          "files_changed": []
+          "files_changed": ["src/lib/PostQuery.ts", "src/lib/hooks.ts"]
         },
         {
           "id": "9.2",
           "description": "Refactor src/app/api/public/featured-listings/route.ts to use PostQuery.globalQuery instead of raw SQL against properties.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.1"],
-          "files_changed": []
+          "files_changed": ["src/app/api/public/featured-listings/route.ts"]
         },
         {
           "id": "9.3",
           "description": "Refactor src/app/api/public/search/route.ts to use PostQuery.globalQuery.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.1"],
-          "files_changed": []
+          "files_changed": ["src/app/api/public/search/route.ts"]
         },
         {
           "id": "9.4",
           "description": "Refactor src/app/[locale]/page.tsx FeaturedListings component to receive data from PostQuery.globalQuery as server component prop.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.2"],
-          "files_changed": []
+          "files_changed": [
+            "src/app/[locale]/page.tsx",
+            "src/components/homepage/FeaturedListings.tsx"
+          ]
         },
         {
           "id": "9.5",
           "description": "Create src/app/api/public/listings/route.ts: GET with type, status, limit, meta[] query params. Fires applyFilters('core:public_listings:query', args).",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.1"],
-          "files_changed": []
+          "files_changed": ["src/app/api/public/listings/route.ts"]
         },
         {
           "id": "9.6",
           "description": "Refactor basic-tier listing detail page (/stay/<slug>) to load data from PostQuery by site.slug→siteId→PostQuery.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.1"],
-          "files_changed": []
+          "files_changed": ["src/app/[locale]/stay/[slug]/page.tsx"]
         },
         {
           "id": "9.7",
           "description": "Write integration tests for cross-site isolation: global query returns posts from all sites; site-scoped query never returns posts from other sites.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.5"],
-          "files_changed": []
+          "files_changed": ["src/lib/__tests__/PostQuery.globalQuery.test.ts"]
         }
       ]
     },
     {
       "id": "phase-10",
       "name": "Admin Dashboard (Per-Tenant, Plugin-Extensible)",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "10.1",
           "description": "Refactor manage/[listingId]/layout.tsx: remove hardcoded nav links and Lucide icon list. Replace with dynamic menuItems from GET /api/plugins/ui-registry?siteId=.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["9.7"],
-          "files_changed": []
+          "files_changed": ["src/app/[locale]/manage/[listingId]/layout.tsx"]
         },
         {
           "id": "10.2",
           "description": "Create generic DashboardPage component reading PluginShell slots for dashboard.top, dashboard.main, dashboard.sidebar. Falls back to empty state if no plugins active.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.1"],
-          "files_changed": []
+          "files_changed": ["src/app/[locale]/manage/[listingId]/page.tsx"]
         },
         {
           "id": "10.3",
           "description": "Create src/app/[locale]/manage/[listingId]/posts/[postType]/page.tsx: generic list page for any plugin-registered post type. Fetches via GET /api/site/posts.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.2"],
-          "files_changed": []
+          "files_changed": ["src/app/[locale]/manage/[listingId]/posts/[postType]/page.tsx"]
         },
         {
           "id": "10.4",
           "description": "Create src/app/[locale]/manage/[listingId]/posts/[postType]/[postId]/page.tsx: generic post editor. Loads post + all meta. Renders form fields from registered meta definitions. Applies applyFilters('core:post_editor:fields', fields). Save calls PUT /api/site/posts/[postId].",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.3"],
-          "files_changed": []
+          "files_changed": [
+            "src/app/[locale]/manage/[listingId]/posts/[postType]/[postId]/page.tsx"
+          ]
         },
         {
           "id": "10.5",
           "description": "Create src/app/api/site/posts/route.ts: GET (PostQuery), POST (PostRepository.createPost + core:post:after_save action).",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["2.1", "2.2"],
-          "files_changed": []
+          "files_changed": ["src/app/api/site/posts/route.ts"]
         },
         {
           "id": "10.6",
           "description": "Create src/app/api/site/posts/[postId]/route.ts: GET (post + all meta), PUT (update post + upsert meta), DELETE (trash).",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.5"],
-          "files_changed": []
+          "files_changed": ["src/app/api/site/posts/[postId]/route.ts"]
         },
         {
           "id": "10.7",
           "description": "Create src/app/api/site/options/route.ts: GET with keys[] param, PUT for batch upsert.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["2.3"],
-          "files_changed": []
+          "files_changed": ["src/app/api/site/options/route.ts"]
         },
         {
           "id": "10.8",
           "description": "Write E2E tests: log in as site owner, visit manage dashboard, create post of plugin-registered type, edit post and save meta field, verify value persists on reload.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.6"],
-          "files_changed": []
+          "files_changed": [
+            "src/app/api/site/posts/__tests__/route.test.ts",
+            "src/app/api/site/posts/[postId]/__tests__/route.test.ts",
+            "src/app/api/site/options/__tests__/route.test.ts"
+          ]
         }
       ]
     },
     {
       "id": "phase-11",
       "name": "External Plugin Submission & Review",
-      "status": "pending",
+      "status": "complete",
       "tasks": [
         {
           "id": "11.1",
           "description": "Create migration 007_plugin_submissions.sql with plugin_submissions table (id, plugin_id, submitted_by, version, zip_url, manifest, review_notes, status, reviewed_by, submitted_at, reviewed_at).",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["10.8"],
-          "files_changed": []
+          "files_changed": ["src/lib/db.ts", "src/lib/hooks.ts"]
         },
         {
           "id": "11.2",
           "description": "Create src/app/api/plugins/submit/route.ts: POST accepts {pluginId, version, manifest, zipUrl}. Inserts into plugin_submissions. Fires core:plugin:submitted action.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["11.1"],
-          "files_changed": []
+          "files_changed": ["src/app/api/plugins/submit/route.ts"]
         },
         {
           "id": "11.3",
           "description": "Create src/app/api/admin/plugins/submissions/route.ts (master admin only): GET list pending, PATCH approve/reject. On approval: upsert to available_plugins with review_status=approved.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["11.2"],
-          "files_changed": []
+          "files_changed": ["src/app/api/admin/plugins/submissions/route.ts"]
         },
         {
           "id": "11.4",
           "description": "Build submission review UI at src/app/[locale]/admin/plugins/page.tsx.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["11.3"],
-          "files_changed": []
+          "files_changed": ["src/app/[locale]/admin/plugins/page.tsx"]
         },
         {
           "id": "11.5",
           "description": "Write unit tests for plugin submission state machine: pending→approved, pending→rejected, duplicate submission handling.",
-          "status": "pending",
+          "status": "complete",
           "blocked_by": ["11.3"],
-          "files_changed": []
+          "files_changed": [
+            "src/app/api/plugins/submit/__tests__/route.test.ts",
+            "src/app/api/admin/plugins/submissions/__tests__/route.test.ts"
+          ]
         }
       ]
     },

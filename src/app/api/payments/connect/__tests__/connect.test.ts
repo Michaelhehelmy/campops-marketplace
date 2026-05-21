@@ -3,6 +3,13 @@ import { GET, POST, PUT } from '../route';
 import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 
+vi.mock('@/lib/auth-middleware', () => ({
+  requireSession: vi
+    .fn()
+    .mockResolvedValue({ user: { id: 'test-user' }, session: { id: 'test-session' } }),
+  isErrorResponse: vi.fn().mockReturnValue(false),
+}));
+
 vi.mock('@/lib/db', () => {
   const getMock = vi.fn();
   const allMock = vi.fn();
@@ -20,6 +27,16 @@ vi.mock('@/lib/db', () => {
       get: getMock,
       all: allMock,
       run: runMock,
+      execute: vi.fn().mockResolvedValue(undefined),
+      transaction: vi.fn().mockImplementation(async (callback) => {
+        return callback({
+          prepare: prepareMock,
+          get: getMock,
+          all: allMock,
+          run: runMock,
+          execute: vi.fn().mockResolvedValue(undefined),
+        });
+      }),
     },
   };
 });
@@ -373,6 +390,46 @@ describe('Payments Connect API Route', () => {
 
       expect(res.status).toBe(500);
       expect(data.error).toBe('Database update failed');
+    });
+
+    it('should verify stripe signature if webhook secret is configured', async () => {
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+      const stripeModule = await import('stripe');
+      const constructSpy = vi
+        .spyOn(stripeModule.default.webhooks, 'constructEvent')
+        .mockReturnValue({
+          type: 'account.updated',
+          data: {
+            object: {
+              id: 'acct-123',
+              charges_enabled: true,
+              payouts_enabled: true,
+              requirements: { currently_due: [] },
+              details_submitted: true,
+            },
+          },
+        } as any);
+
+      const prepareMock = vi.mocked(db.prepare);
+      prepareMock.mockReturnValue({
+        get: vi.fn().mockResolvedValue({ stripe_account_id: 'acct-123' }),
+        all: vi.fn(),
+        run: vi.fn().mockResolvedValue({ changes: 1 }),
+      });
+
+      const req = new NextRequest('http://localhost/api/payments/connect', {
+        method: 'PUT',
+        headers: { 'stripe-signature': 'sig_123' },
+        body: 'raw-body-content',
+      });
+      const res = await PUT(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(constructSpy).toHaveBeenCalledWith('raw-body-content', 'sig_123', 'whsec_test');
+
+      constructSpy.mockRestore();
+      delete process.env.STRIPE_WEBHOOK_SECRET;
     });
   });
 });

@@ -11,6 +11,29 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+// Mock next-intl
+function mockT(key: string, params?: Record<string, any>) {
+  const strings: Record<string, string> = {
+    badge: '👑 Handpicked Stays',
+    title: 'Featured Stays',
+    subtitle:
+      'Curated and audited by our adventure experts to guarantee direct-booking pricing, luxury standards, and seamless service.',
+    discount: 'DIRECT',
+    discountPercent: '15% {type}',
+    guaranteedRate: 'Guaranteed Rate',
+    perNight: '/ night + fees',
+    viewButton: 'View',
+    viewAll: 'Explore All Properties',
+  };
+  let val = strings[key] ?? key;
+  if (params?.count !== undefined) val = val.replace('{count}', params.count);
+  if (params?.type !== undefined) val = val.replace('{type}', params.type);
+  return val;
+}
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, params?: Record<string, any>) => mockT(key, params),
+}));
+
 // Mock Link component
 vi.mock('next/link', () => ({
   default: ({ children, href, ...props }: any) => (
@@ -35,22 +58,33 @@ describe('FeaturedListings component', () => {
   });
 
   it('should render listings after successful fetch', async () => {
-    const mockListings = [
+    const mockPosts = [
       {
         id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi', 'pool'],
+        siteId: 's1',
+        postType: 'listing',
+        postStatus: 'publish',
+        postSlug: 'safari-camp',
+        postTitle: 'Safari Camp',
+        postContent: null,
+        authorId: null,
+        parentId: null,
+        menuOrder: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        meta: {
+          short_description: 'Amazing safari experience',
+          primary_image: 'https://example.com/image.jpg',
+          price_per_night: '150',
+          rating: '4.8',
+          amenities: JSON.stringify(['wifi', 'pool']),
+        },
       },
     ];
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: mockPosts }),
     });
 
     render(<FeaturedListings locale="en" limit={8} />);
@@ -111,130 +145,134 @@ describe('FeaturedListings component', () => {
   });
 
   it('should use custom limit prop', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi'],
-      },
-    ];
-
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: { short_description: 'A camp', price_per_night: '150', rating: '4.8', amenities: '[]' },
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings limit={4} />);
-
     await waitFor(() => {
       expect(screen.getByText('Safari Camp')).toBeInTheDocument();
     });
   });
 
   it('should use custom locale prop', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi'],
-      },
-    ];
-
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: { short_description: 'A camp', price_per_night: '150', rating: '4.8', amenities: '[]' },
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings locale="fr" />);
-
     await waitFor(() => {
       expect(screen.getByText('Safari Camp')).toBeInTheDocument();
     });
   });
 
   it('should display rating when present', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi'],
-      },
-    ];
-
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: { price_per_night: '150', rating: '4.8', amenities: '[]' },
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings />);
-
     await waitFor(() => {
       expect(screen.getByText('4.8')).toBeInTheDocument();
     });
   });
 
   it('should not display rating when absent', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: null,
-        amenities: ['wifi'],
-      },
-    ];
-
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: { price_per_night: '150', amenities: '[]' },
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings />);
-
     await waitFor(() => {
       expect(screen.queryByText('4.8')).not.toBeInTheDocument();
     });
   });
 
   it('should display amenities', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: 'https://example.com/image.jpg',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi', 'pool', 'parking'],
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: {
+        price_per_night: '150',
+        rating: '4.8',
+        amenities: JSON.stringify(['wifi', 'pool', 'parking']),
       },
-    ];
-
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings />);
-
     await waitFor(() => {
       expect(screen.getByText('wifi')).toBeInTheDocument();
       expect(screen.getByText('pool')).toBeInTheDocument();
@@ -243,28 +281,28 @@ describe('FeaturedListings component', () => {
   });
 
   it('should use default icon when no primary image', async () => {
-    const mockListings = [
-      {
-        id: '1',
-        slug: 'safari-camp',
-        name: 'Safari Camp',
-        primaryImage: '',
-        shortDescription: 'Amazing safari experience',
-        pricePerNight: 150,
-        rating: 4.8,
-        amenities: ['wifi'],
-      },
-    ];
-
+    const mockPost = {
+      id: '1',
+      siteId: 's1',
+      postType: 'listing',
+      postStatus: 'publish',
+      postSlug: 'safari-camp',
+      postTitle: 'Safari Camp',
+      postContent: null,
+      authorId: null,
+      parentId: null,
+      menuOrder: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      meta: { price_per_night: '150', rating: '4.8', amenities: '[]' },
+    };
     (global.fetch as any).mockResolvedValue({
       ok: true,
-      json: async () => ({ listings: mockListings }),
+      json: async () => ({ listings: [mockPost] }),
     });
-
     render(<FeaturedListings />);
-
     await waitFor(() => {
-      expect(screen.getByText('🏕️')).toBeInTheDocument();
+      expect(screen.getByText('✨')).toBeInTheDocument();
     });
   });
 });
