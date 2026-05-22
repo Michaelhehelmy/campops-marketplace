@@ -38,9 +38,23 @@ playwright-report/
 .opencode/
 .playwright-mcp/
 
-# QA screenshots
+# QA screenshots & visual artifacts
+screenshots/
 flow-*.png
 login-page.png
 homepage-snapshot.md
 cookies.txt
 test_failures.txt
+
+# Loose logs at project root
+*.log
+logs/
+
+# Agent / AI handoff docs
+AGENT_HANDOFF.md
+AGENT_TASK_PROMPT.md
+
+# Plugin test result logs
+plugin_results*.log
+server.log
+server_out.log
