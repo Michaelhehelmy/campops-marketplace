@@ -184,6 +184,8 @@
     "opencode-agent-memory",
     "opencode-background-agents",
     "opencode-handoff",
-    "opencode-skills"
+    "opencode-skills",
+    "opencode-websearch-cited",
+    "opencode-pty"
   ]
 }
