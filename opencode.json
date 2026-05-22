@@ -31,7 +31,7 @@
       "type": "local",
       "command": [
         "node",
-        ".opencode/node_modules/@playwright/mcp/dist/cli.js"
+        ".opencode/node_modules/@playwright/mcp/cli.js"
       ],
       "enabled": true
     },
@@ -140,6 +140,43 @@
         ".ts",
         ".tsx",
         ".css"
+      ]
+    },
+    "json": {
+      "command": [
+        "vscode-json-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".json",
+        ".jsonc"
+      ]
+    },
+    "html": {
+      "command": [
+        "vscode-html-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".html"
+      ]
+    },
+    "css": {
+      "command": [
+        "vscode-css-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".css"
+      ]
+    },
+    "markdown": {
+      "command": [
+        "marksman",
+        "server"
+      ],
+      "extensions": [
+        ".md"
       ]
     }
   },
