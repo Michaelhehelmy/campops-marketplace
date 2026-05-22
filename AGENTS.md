@@ -1,13 +1,18 @@
-# SinaiCamps Marketplace — Agent System Rules
+# SinaiCamps Marketplace — OpenCode Agent Rules
 
-> **This file is the authoritative system prompt for any AI agent working in this repository.**
+> **This file is the authoritative system prompt for OpenCode agents working in this repository.**
 > Read this completely before writing a single line of code. Do not skip sections.
+
+**Project:** SinaiCamps Marketplace
+**Developer:** Michael Helmy ([@Michaelhehelmy](https://github.com/Michaelhehelmy))
+**AI Environment:** [OpenCode](https://opencode.ai) — configured via `opencode.json`
+**Production:** `sinaicamps.com` on Oracle Cloud (Ubuntu VM, PM2, Nginx, Cloudflare CDN)
 
 ---
 
 ## 1. Project Overview
 
-**CampOps** is a white-label, multi-tenant hospitality marketplace — described as _"WordPress for Rental Marketplaces"_.
+**SinaiCamps** is a white-label, multi-tenant hospitality marketplace — _"WordPress for Rental Marketplaces"_.
 
 One platform powers:
 
@@ -39,7 +44,7 @@ The core principle: **Core is a thin framework.** All business logic lives in pl
 | `ultimate` | **Platform-provisioned custom domain** (purchased through the marketplace), PWA, all plugins, branded shopfront |
 
 > [!IMPORTANT]
-> **Custom domains are owned and provisioned by the marketplace, not by tenants.** When an `ultimate` tenant requests a custom domain, they purchase it through CampOps (billed via Stripe as part of the Ultimate package). The platform controls DNS, SSL provisioning (Let's Encrypt via Cloudflare/Nginx), and domain renewal. Tenants may not bring external domains — all domains are registered and managed through the CampOps domain service. This gives the platform full control, ensures uptime guarantees, and enables the marketplace to charge for this as a recurring service.
+> **Custom domains are owned and provisioned by the marketplace, not by tenants.** When an `ultimate` tenant requests a custom domain, they purchase it through SinaiCamps (billed via Stripe as part of the Ultimate package). The platform controls DNS, SSL provisioning (Let's Encrypt via Cloudflare/Nginx), and domain renewal. Tenants may not bring external domains.
 
 ---
 
@@ -47,9 +52,9 @@ The core principle: **Core is a thin framework.** All business logic lives in pl
 
 | Layer          | Technology                                            |
 | -------------- | ----------------------------------------------------- |
-| Framework      | Next.js 14 (App Router)                               |
+| Framework      | Next.js 14 (App Router, `output: 'standalone'`)       |
 | Auth           | `better-auth` v1.6+                                   |
-| Database       | SQLite (dev) via `better-sqlite3`                     |
+| Database       | SQLite via `better-sqlite3` (`sinaicamps.db`)         |
 | ORM            | Drizzle ORM                                           |
 | API routing    | Hono within Next.js API routes                        |
 | Plugin system  | `plugin-engine` (Tapable wrapper)                     |
@@ -60,6 +65,7 @@ The core principle: **Core is a thin framework.** All business logic lives in pl
 | Email          | Mailgun (`mailgun.js`)                                |
 | Payments       | Stripe                                                |
 | PWA            | Dual service workers (marketplace + tenant)           |
+| Deployment     | Oracle Cloud VM, PM2, Nginx, Cloudflare               |
 
 ---
 
@@ -68,32 +74,76 @@ The core principle: **Core is a thin framework.** All business logic lives in pl
 1. **Nothing hardcoded** — no field named `price`, `amenities`, `capacity` in core or themes. All business fields are plugin-registered or declared in `theme.json`.
 2. **Hooks everywhere** — use `doAction` / `applyFilters` from `@/lib/hooks` for all lifecycle events. Core never calls plugin code directly.
 3. **Multi-tenant isolation** — every DB query for tenant data must be scoped by `site_id` or `property_id`. Cross-tenant data leaks are unacceptable.
-4. **Preserve tests** — all 1,055+ unit/integration tests and E2E tests must pass after every change. Run `npm run test:all` before finishing any task.
+4. **Preserve tests** — all unit/integration tests and E2E tests must pass after every change. Run `npm run test:all` before finishing any task.
 5. **No schema changes without migration** — every DB change requires a `.sql` file in `src/db/migrations/`.
 
 ---
 
-## 4. PWA Architecture
+## 4. OpenCode Configuration
+
+This project uses **OpenCode** as the AI coding environment. Config is in `opencode.json`.
+
+### OpenCode Plugins (active)
+
+| Plugin                       | Purpose                                              |
+| ---------------------------- | ---------------------------------------------------- |
+| `opencode-agent-memory`      | Persist context across sessions                      |
+| `opencode-background-agents` | Run long tasks in background                         |
+| `opencode-handoff`           | Hand off tasks between agent sessions                |
+| `opencode-skills`            | Load reusable agent skill definitions                |
+
+### Language Servers (LSP)
+
+| Server        | Extensions              |
+| ------------- | ----------------------- |
+| `typescript`  | `.ts`, `.tsx`, `.js`, `.jsx` |
+| `tailwindcss` | `.ts`, `.tsx`, `.css`   |
+
+---
+
+## 5. MCP Tools (from `opencode.json`)
+
+All MCP servers below are configured and active. Use them proactively.
+
+| MCP                   | Package / Command                                | Purpose                                                       |
+| --------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `filesystem`          | `@modelcontextprotocol/server-filesystem`        | Read/write project files directly                             |
+| `github`              | `@modelcontextprotocol/server-github`            | Read issues, PRs, push code, manage branches                  |
+| `playwright`          | `@playwright/mcp`                                | Browser automation — run E2E tests, take screenshots, debug UI |
+| `sqlite`              | `mcp-server-sqlite --db ./sinaicamps.db`         | Query `sinaicamps.db` directly — inspect live data            |
+| `sequential-thinking` | `@modelcontextprotocol/server-sequential-thinking` | Break complex tasks into structured reasoning steps          |
+| `tailwindcss`         | `tailwindcss-mcp@latest`                         | TailwindCSS class completion and design tokens                |
+| `lucide-icons`        | `lucide-icons-mcp@latest`                        | Search and reference Lucide icon names                        |
+| `next-devtools`       | `next-devtools-mcp@latest`                       | Next.js developer tools — inspect routes, pages, components   |
+| `next-intl`           | `@i18nexus/mcp@latest`                           | i18n management — translation keys, locale handling          |
+| `lighthouse`          | `packages/mcp-server-lighthouse/src/index.ts`    | Run Lighthouse audits on any URL (custom local MCP)           |
+| `better-auth`         | `packages/better-auth-mcp/src/index.ts`          | Query/manage auth state via Better Auth (custom local MCP)    |
+| `email`               | `packages/mcp-server-mailgun/src/index.ts`       | Send emails via Mailgun (custom local MCP)                    |
+
+> [!TIP]
+> Use `sequential-thinking` before starting any task with more than 2 steps. Use `sqlite` to verify database state during debugging. Use `playwright` to confirm UI behaviour before marking tasks done.
+
+---
+
+## 6. PWA Architecture
 
 ### Two Service Workers
 
 #### `sw-marketplace.js` (main platform)
 
 - **Scope**: `sinaicamps.com` and all `*.sinaicamps.com` subdomains
+- **Cache keys**: `sinaicamps-marketplace-static-*`, `sinaicamps-marketplace-dynamic-*`
 - **Users**: Master, admin, manager, guest
 - **Manifest**: `src/app/manifest.ts` (static, platform-branded)
 - **Offline**: Cache-first for shell, network-first for API
-- **Push**: Booking confirmation, admin alerts
-- **Background sync**: `sync-bookings` tag
+- **Push**: Booking confirmation, admin alerts (`sinaicamps-notification` tag)
 
 #### `sw-tenant.js` (platform-provisioned custom domain tenants — Ultimate plan)
 
-- **Scope**: Custom domains provisioned by the marketplace (e.g. `acaciacamp.com` — registered and DNS-managed by CampOps)
-- **Users**: Managers and staff managing their property; **public visitors browsing listings**
-- **NOT for guests** — no guest portal, no auth, no account management on tenant domains. Guests who click "Book Now" are redirected to sinaicamps.com to complete authentication and checkout.
-- **Manifest**: Dynamic from `GET /api/manifest.webmanifest?siteId=` — branded per tenant (tenant name, colors, logo)
-- **Cache namespace**: Keyed by hostname so each tenant is isolated
-- **Background sync**: `sync-availability` (listing availability pre-fetch for fast load)
+- **Scope**: Custom domains provisioned by the marketplace (e.g. `acaciacamp.com`)
+- **Cache keys**: `sinaicamps-tenant-{hostname}-static-*`, etc.
+- **Users**: Managers/staff + public visitors
+- **NOT for guests** — guests who click "Book Now" are redirected to sinaicamps.com
 
 #### Registration Logic (`src/components/PWAServiceWorker.tsx`)
 
@@ -102,34 +152,9 @@ if (hostname === sinaicamps.com or *.sinaicamps.com) → register sw-marketplace
 else (platform-provisioned custom domain)            → register sw-tenant.js
 ```
 
-> **Rule**: Custom domains only reach `sw-tenant.js` if they are provisioned through the CampOps domain service. The middleware validates this via `GET /api/tenant/resolve?host=`. If a host is not in the platform database, it is treated as unknown and not granted tenant access.
-
-#### Offline Fallback
-
-`/public/offline.html` — branded fallback page for both SWs.
-
-### Dynamic Manifest API
-
-`GET /api/manifest.webmanifest?siteId=<id>` returns a per-tenant JSON manifest built from the tenant's branding options stored in the `properties.settings` JSON column. This manifest is served on the tenant's custom domain at `/manifest.webmanifest`.
-
-### Domain Provisioning Flow (Ultimate Plan)
-
-```
-1. Tenant selects a domain name in the Owner portal
-2. Platform checks availability via domain registrar API
-3. Domain is purchased on behalf of the tenant (billed via Stripe)
-4. Platform creates DNS A/CNAME records pointing to its servers
-5. Let's Encrypt SSL certificate provisioned automatically
-6. Nginx config updated — custom domain now resolves to the tenant shopfront
-7. Tenant domain added to `properties.custom_domain` in DB
-8. `domain_verified = true` set after DNS propagation check
-```
-
-The marketplace charges for this as a **recurring annual fee** included in the Ultimate plan or as an add-on.
-
 ---
 
-## 5. Plugin System
+## 7. Plugin System
 
 ### Plugin Contract (`plugin.json`)
 
@@ -165,32 +190,10 @@ Plugins receive an `api` object exposing:
 
 ---
 
-## 6. Available MCP Tools
-
-The following MCP servers are configured in `opencode.json`. Use them actively.
-
-| MCP                   | Purpose                                                                         |
-| --------------------- | ------------------------------------------------------------------------------- |
-| `filesystem`          | Read/write project files directly                                               |
-| `github`              | Read issues, PRs, push code, manage branches                                    |
-| `playwright`          | Browser automation — run E2E tests, take screenshots, debug UI                  |
-| `sqlite`              | Query `sinaicamps.db` directly — inspect live data                              |
-| `sequential-thinking` | Break complex tasks into structured reasoning steps                             |
-| `tailwindcss`         | TailwindCSS class completion and design tokens                                  |
-| `lucide-icons`        | Search and reference Lucide icon names                                          |
-| `next-devtools`       | Next.js developer tools — inspect routes, pages, components                     |
-| `next-intl`           | i18n management — translation keys, locale handling                             |
-| `docker`              | Manage Docker containers — build, run, inspect                                  |
-| `lighthouse`          | Run Lighthouse audits on any URL                                                |
-| `better-auth`         | Query/manage auth state via Better Auth                                         |
-| `email`               | Send emails via Mailgun (requires `MAILGUN_API_KEY`, `MAILGUN_DOMAIN` env vars) |
-
----
-
-## 7. Directory Map
+## 8. Directory Map
 
 ```
-campops-marketplace/
+sinaicamps-marketplace/
 ├── src/
 │   ├── app/
 │   │   ├── [locale]/        # All pages under locale prefix (en, ar, fr, de, ru)
@@ -227,16 +230,51 @@ campops-marketplace/
 ├── e2e/                     # Playwright E2E tests
 │   ├── pages/               # Page Object Models (POMs)
 │   └── tests/               # Test specs
-├── tests/                   # Vitest integration tests
-├── scripts/                 # Utility scripts
-├── BLUEPRINT.md             # Master architecture document — read before making structural decisions
-├── PRODUCTION_READINESS_PLAN.md
+├── scripts/
+│   ├── deploy-sinaicamps.sh # PRIMARY deploy script (build locally, rsync to Oracle)
+│   ├── deploy.sh            # Server-side deploy script (git pull on Oracle)
+│   ├── boot.sh              # Oracle VM startup script
+│   └── backup-db.sh         # Database backup script
+├── opencode.json            # OpenCode MCP + LSP configuration
+├── ecosystem.config.js      # PM2 process configuration
+├── nginx-unified.conf       # Nginx reverse proxy config
+├── BLUEPRINT.md             # Master architecture document
+├── AUTHORS.md               # Project authorship
 └── QA-VERIFICATION-REPORT.md
 ```
 
 ---
 
-## 8. Testing Requirements
+## 9. Deployment
+
+### Primary Workflow (local build → rsync to Oracle)
+
+```bash
+# 1. Build locally (fast — uses your machine's full RAM/CPU)
+export NODE_OPTIONS=--max-old-space-size=4096
+npm run build
+
+# 2. Deploy to Oracle (rsync only changed files)
+./scripts/deploy-sinaicamps.sh
+```
+
+### Server-Side Workflow (git pull on Oracle)
+
+```bash
+# For quick deploys when only config/docs changed
+ssh -i ~/Downloads/oracle.key ubuntu@84.235.239.6 \
+  "nohup bash -c 'FORCE=1 ~/marketplace/scripts/deploy.sh' > ~/deploy.log 2>&1 &"
+
+# Watch logs
+ssh -i ~/Downloads/oracle.key ubuntu@84.235.239.6 "tail -f ~/deploy.log"
+```
+
+### Daily Auto-Deploy (cron on Oracle)
+Configured via `crontab -l` on the Oracle VM: `0 3 * * *` runs `deploy.sh`.
+
+---
+
+## 10. Testing Requirements
 
 ### Commands
 
@@ -259,37 +297,24 @@ campops-marketplace/
 
 ---
 
-## 9. Database
+## 11. Database
 
-- **Dev**: `sinaicamps.db` (SQLite) — use the `sqlite` MCP to inspect directly
+- **File**: `sinaicamps.db` (SQLite)
+- **Inspect**: Use the `sqlite` MCP to query directly
 - **Schema**: See `schema.sql` and `src/db/migrations/`
 - **Key tables**: `properties`, `property_plugins`, `available_plugins`, `users`, `site_users`, `bookings`, `rooms`, `options`
 - **NEVER** use raw SQL strings in application code. Use Drizzle ORM or the existing repository pattern.
+- **Column naming**: `platform_version` (not `campops_version` — renamed in rebrand)
 
 ---
 
-## 10. Agent Behaviour Rules
-
-1. **Always read `BLUEPRINT.md`** before making structural architecture decisions.
-2. **Check `QA-VERIFICATION-REPORT.md`** for the current list of known bugs and priorities.
-3. **Use `sequential-thinking` MCP** for complex multi-step tasks — plan before coding.
-4. **Use `playwright` MCP** to verify UI behaviour before marking a task done.
-5. **Use `sqlite` MCP** to verify database state during debugging.
-6. **Use `lighthouse` MCP** to audit performance of pages after significant UI changes.
-7. **Never break passing tests.** If a change causes a test failure, fix it before continuing.
-8. **Always scope DB queries by `site_id`.** Cross-tenant data leaks are a critical security failure.
-9. **Log clearly.** Use `console.error` for errors (visible in production logs), `console.log` only in development.
-10. **Update `TASKS_STATUS.md`** when completing major tasks.
-
----
-
-## 11. Environment Variables (Key)
+## 12. Environment Variables (Key)
 
 | Variable                  | Purpose                                                 |
 | ------------------------- | ------------------------------------------------------- |
 | `NEXT_PUBLIC_BASE_DOMAIN` | Base domain (`sinaicamps.com`)                          |
 | `NEXT_PUBLIC_API_URL`     | Internal API base URL                                   |
-| `DATABASE_URL`            | SQLite path or PostgreSQL connection string             |
+| `DATABASE_URL`            | SQLite path (`file:./sinaicamps.db`)                   |
 | `BETTER_AUTH_SECRET`      | Auth session signing secret                             |
 | `STRIPE_SECRET_KEY`       | Stripe API key                                          |
 | `MAILGUN_API_KEY`         | Mailgun API key (for `email` MCP + transactional email) |
@@ -299,29 +324,42 @@ See `.env.example` for the complete list.
 
 ---
 
-## 12. Critical Known Issues (Phase 12 Complete)
+## 13. Agent Behaviour Rules
 
-| Issue                                                                     | Severity    | Status                                                      |
-| ------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------- |
-| Guest booking blocked — CSRF fails for unauthenticated users              | 🔴 Critical | ✅ Fixed — middleware only validates when cookie exists     |
-| No "Book Now" button for guests (unauthenticated)                         | 🔴 Critical | ✅ Fixed — redirects to login then back to checkout         |
-| PWA manifest 404 (no `manifest.webmanifest` served on main domain)        | 🟠 High     | ✅ Fixed — rewrite rule in next.config.mjs                  |
-| 4 of 5 locales crash — missing translation files (`ar`, `fr`, `de`, `es`) | 🟠 High     | ✅ Fixed — translation files created with English fallback  |
-| Homepage missing featured listings and categories                         | 🟠 High     | ✅ Fixed — 3 featured properties + categories seeded        |
-| Audit logging not recording (0 records)                                   | 🟠 High     | ✅ Fixed — all mutation routes instrumented                 |
-| Metrics endpoint returns empty                                            | 🟡 Medium   | ✅ Fixed — counters added to Node.js-side route handlers    |
-| Rate limiter returns 503, should return 429                               | 🟡 Medium   | ✅ Fixed — status code corrected, X-RateLimit headers added |
-| Staff session staleness on maintenance pages                              | 🟡 Medium   | ✅ Fixed — updateAge added to better-auth config            |
-| React hydration warning in BookingFallback                                | 🟢 Low      | ✅ Fixed — clientDefaults pattern for SSR-safe defaultValue |
-| Cross-system E2E failure — dbSlots from disabled plugins                  | 🔴 Critical | ✅ Fixed — filter by enabledPluginSet                       |
-| ultimate-redirect E2E excluded — no dev redirect                          | 🟠 High     | ✅ Fixed — `FORCE_LOCAL_REDIRECT=true` env var              |
-| Production build fails — missing exports, deps, dynamic flags             | 🔴 Critical | ✅ Fixed — all build errors resolved                        |
- | Lighthouse a11y failures — color contrast, form labels, lang              | 🟡 Medium   | ✅ Fixed — all three pages at 100 a11y score                |
-| Homepage showed no featured listings — `is_featured` NULL on all properties | 🟠 High     | ✅ Fixed — seeded via SQL, now controlled via master dashboard |
-| Categories API crashed — `no such column: p.category_id`                    | 🟠 High     | ✅ Fixed — migration 009 adds `property_categories` junction table |
-| `posts`/`postmeta` tables empty — SSR pre-fetch returned nothing            | 🟠 High     | ✅ Fixed — `scripts/seed-posts-from-properties.ts` seeds data |
-| `is_featured` set by SQL with no UI control                                  | 🟠 High     | ✅ Fixed — master dashboard now has "Homepage Feature" toggle with display-order control |
-| `--listing-*` CSS vars duplicated `--tenant-*` system                        | 🟡 Medium   | ✅ Fixed — unified to `--tenant-*`; `single-listing.tsx` is the sole template |
-| `ThemeLoader` existed but was never called by any page                       | 🟡 Medium   | ✅ Fixed — `stay/[slug]/page.tsx` now resolves template via `ThemeLoader` |
- 
-**All known issues resolved as of Phase 13 (2026-05-22). Platform is production-ready with 187/187 E2E tests passing, clean production build, 100/100 Lighthouse a11y/BP/SEO scores, homepage showing live featured listings and categories, unified theme rendering via ThemeLoader, and master dashboard controlling featured listing placement.**
+1. **Read `BLUEPRINT.md`** before making structural architecture decisions.
+2. **Use `sequential-thinking` MCP** for complex multi-step tasks — plan before coding.
+3. **Use `playwright` MCP** to verify UI behaviour before marking a task done.
+4. **Use `sqlite` MCP** to verify database state during debugging.
+5. **Use `lighthouse` MCP** to audit performance after significant UI changes.
+6. **Never break passing tests.** If a change causes a test failure, fix it before continuing.
+7. **Always scope DB queries by `site_id`.** Cross-tenant data leaks are a critical security failure.
+8. **Log clearly.** Use `console.error` for errors, `console.log` only in development.
+9. **No hardcoded branding.** Use `process.env.NEXT_PUBLIC_BASE_DOMAIN` — not `'sinaicamps.com'` literals.
+10. **Commit clean.** Never commit: `*.log`, `*.db`, `test-results/`, `playwright-report/`, `screenshots/`, `.playwright-mcp/` — all covered by `.gitignore`.
+
+---
+
+## 14. Platform Status (Phase 13 — 2026-05-22)
+
+**All known issues resolved. Platform is production-ready.**
+
+| Issue                                                                        | Severity    | Status                                                                          |
+| ---------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------- |
+| Guest booking blocked — CSRF fails for unauthenticated users                 | 🔴 Critical | ✅ Fixed — middleware only validates when cookie exists                         |
+| No "Book Now" button for guests (unauthenticated)                            | 🔴 Critical | ✅ Fixed — redirects to login then back to checkout                             |
+| PWA manifest 404 on main domain                                              | 🟠 High     | ✅ Fixed — rewrite rule in next.config.mjs                                      |
+| 4 of 5 locales crash — missing translation files                             | 🟠 High     | ✅ Fixed — translation files created with English fallback                      |
+| Homepage missing featured listings and categories                            | 🟠 High     | ✅ Fixed — 3 featured properties + categories seeded                            |
+| Audit logging not recording (0 records)                                      | 🟠 High     | ✅ Fixed — all mutation routes instrumented                                     |
+| Metrics endpoint returns empty                                               | 🟡 Medium   | ✅ Fixed — counters added to Node.js-side route handlers                        |
+| Rate limiter returns 503, should return 429                                  | 🟡 Medium   | ✅ Fixed — status code corrected, X-RateLimit headers added                     |
+| Staff session staleness on maintenance pages                                 | 🟡 Medium   | ✅ Fixed — updateAge added to better-auth config                                |
+| React hydration warning in BookingFallback                                   | 🟢 Low      | ✅ Fixed — clientDefaults pattern for SSR-safe defaultValue                     |
+| Cross-system E2E failure — dbSlots from disabled plugins                     | 🔴 Critical | ✅ Fixed — filter by enabledPluginSet                                           |
+| Production build fails — missing exports, deps, dynamic flags                | 🔴 Critical | ✅ Fixed — all build errors resolved                                            |
+| Lighthouse a11y failures — color contrast, form labels, lang                 | 🟡 Medium   | ✅ Fixed — all three pages at 100 a11y score                                    |
+| `is_featured` set by SQL with no UI control                                  | 🟠 High     | ✅ Fixed — master dashboard has "Homepage Feature" toggle with display-order    |
+| `--listing-*` CSS vars duplicated `--tenant-*` system                       | 🟡 Medium   | ✅ Fixed — unified to `--tenant-*`; `single-listing.tsx` is the sole template  |
+| `ThemeLoader` existed but was never called by any page                       | 🟡 Medium   | ✅ Fixed — `stay/[slug]/page.tsx` now resolves template via `ThemeLoader`       |
+
+**Scores: 187/187 E2E tests passing · Clean production build · 100/100 Lighthouse a11y/BP/SEO**
