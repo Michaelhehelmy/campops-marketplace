@@ -99,6 +99,60 @@
         "packages/mcp-server-mailgun/src/index.ts"
       ],
       "enabled": true
+    },
+    "git": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@cyanheads/git-mcp-server@latest"
+      ],
+      "enabled": true
+    },
+    "fetch": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "markfetch@latest"
+      ],
+      "enabled": true
+    },
+    "docker": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@thelord/mcp-server-docker-npx@latest"
+      ],
+      "enabled": true
+    },
+    "ripgrep": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "ripgrep-mcp@latest"
+      ],
+      "enabled": true
+    },
+    "everything": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-everything@latest"
+      ],
+      "enabled": true
+    },
+    "pdf": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-pdf@latest"
+      ],
+      "enabled": true
     }
   },
   "agent": {

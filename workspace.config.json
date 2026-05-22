@@ -38,7 +38,13 @@
     "next-intl": true,
     "lighthouse": true,
     "better-auth": true,
-    "email": true
+    "email": true,
+    "git": true,
+    "fetch": true,
+    "docker": true,
+    "ripgrep": true,
+    "everything": true,
+    "pdf": true
   },
   "agents": {
     "deploy": true,
