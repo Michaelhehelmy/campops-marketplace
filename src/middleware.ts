@@ -119,13 +119,13 @@ async function handleMiddleware(req: NextRequest) {
   const locale = localeMatch?.[1] ?? 'en';
 
   // 2. If it is a verified custom domain, redirect to the SSR listing page.
-  //    NextResponse.rewrite to non-API routes from middleware works in Next.js 14,
-  //    but we use redirect here to avoid edge cases with intlMiddleware interference.
+  //    Use the original scheme and host from headers (not req.url which may be the proxy URL).
   if (tenantPropertyId && isCustomDomain && barePath === '/') {
     const slug = tenantSlug || 'acacia';
-    const redirectUrl = new URL(req.url);
-    redirectUrl.pathname = `/${locale}/stay/${slug}`;
-    logger.info(`[CustomDomain] Redirecting to ${redirectUrl.pathname} for host ${cleanHostname}`);
+    const scheme = req.headers.get('x-forwarded-proto') || 'https';
+    const host = cleanHostname;
+    const redirectUrl = `${scheme}://${host}/${locale}/stay/${slug}`;
+    logger.info(`[CustomDomain] Redirecting to ${redirectUrl} for host ${cleanHostname}`);
     return NextResponse.redirect(redirectUrl, 302);
   }
 

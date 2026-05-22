@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'host query parameter is required' }, { status: 400 });
   }
 
-  const hostname = host.split(':')[0];
+  const hostname = host.split(':')[0].replace(/^www\./, '');
 
   if (hostname === '127.0.0.1') {
     return NextResponse.json({

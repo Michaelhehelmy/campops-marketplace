@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -9,10 +9,31 @@ import { Nav } from '@/components/Nav';
 import { ShopfrontNav } from '@/components/ShopfrontNav';
 import { ShopfrontFooter } from '@/components/ShopfrontFooter';
 
-export const metadata: Metadata = {
-  title: { default: 'SinaiCamps Marketplace', template: '%s | SinaiCamps' },
-  description: 'Find and book your perfect camp stay',
-};
+export async function generateMetadata(
+  { params }: { params: { locale: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const headerList = headers();
+  const host = headerList.get('x-forwarded-host') || headerList.get('host') || '';
+  const cleanHostname = host.split(':')[0].toLowerCase().replace(/^www\./, '');
+  try {
+    const property = (await db
+      .prepare(
+        `SELECT name FROM properties WHERE is_active = true AND (custom_domain = ? OR COALESCE(json_extract(CASE WHEN json_valid(settings) THEN settings ELSE '{}' END, '$.customDomain'), '') = ?) LIMIT 1`
+      )
+      .get(cleanHostname, cleanHostname)) as any;
+    if (property) {
+      return {
+        title: property.name,
+        description: `Book your stay at ${property.name}`,
+      };
+    }
+  } catch {}
+  return {
+    title: 'SinaiCamps Marketplace',
+    description: 'Find and book your perfect camp stay',
+  };
+}
 
 interface Props {
   children: React.ReactNode;
@@ -37,7 +58,7 @@ const parseJSON = (val: any) => {
 
 async function getTenantForHost(host: string) {
   if (!host) return null;
-  const cleanHostname = host.split(':')[0].toLowerCase();
+  const cleanHostname = host.split(':')[0].toLowerCase().replace(/^www\./, '');
   const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
   try {
