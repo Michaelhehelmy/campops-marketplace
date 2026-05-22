@@ -25,19 +25,19 @@ import { db } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   try {
-    // Fetch categories from database
     const categories = await db
       .prepare(
         `
-      SELECT 
+      SELECT
         c.id,
         c.name,
         c.slug,
         c.icon,
         c.description,
-        COUNT(p.id) as count
+        COUNT(pc.property_id) as count
       FROM categories c
-      LEFT JOIN properties p ON p.category_id = c.id AND p.is_active = true
+      LEFT JOIN property_categories pc ON pc.category_id = c.id
+      LEFT JOIN properties p ON p.id = pc.property_id AND p.is_active = 1
       GROUP BY c.id, c.name, c.slug, c.icon, c.description
       ORDER BY c.display_order ASC, c.name ASC
     `

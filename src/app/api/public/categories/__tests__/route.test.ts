@@ -84,7 +84,7 @@ describe('GET /api/public/categories', () => {
     const res = await GET(req);
     expect(res.status).toBe(200);
 
-    expect(db.prepare).toHaveBeenCalledWith(expect.stringContaining('LEFT JOIN properties'));
+    expect(db.prepare).toHaveBeenCalledWith(expect.stringContaining('LEFT JOIN property_categories'));
     expect(db.prepare).toHaveBeenCalledWith(expect.stringContaining('GROUP BY'));
   });
 

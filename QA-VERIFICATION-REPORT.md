@@ -275,7 +275,7 @@ The overwhelming majority are generated `.playwright-mcp/*.yml` snapshot files c
 | --- | -------------------------------------- | --------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | H1  | **PWA manifest 404**                   | PWA       | ✅     | Rewrite rule in `next.config.mjs`: `/:locale/manifest.webmanifest → /manifest.webmanifest`. Manifest metadata in root layout.                                      |
 | H2  | **Non-EN locales crash**               | i18n      | ✅     | Translation files created for `ar`, `fr`, `de`, `es` (English fallback with `_translated: false`). LanguageSwitcher dropdown component on both Nav + ShopfrontNav. |
-| H3  | **No featured listings or categories** | Homepage  | ✅     | All 3 properties set `is_featured = 1`. `price_per_night`, `rating`, `short_description` seeded. FeaturedListings + Categories sections render with real data.     |
+| H3  | **No featured listings or categories** | Homepage  | ✅     | All 3 properties set `is_featured = 1`. `price_per_night`, `rating`, `short_description` seeded. FeaturedListings + Categories sections render with real data. Master dashboard has "Homepage Feature" toggle + display-order control (data-testid: `feature-toggle`, `feature-order-input`). `GET /api/master/listings` returns `is_featured`/`featured_order`. |
 | H4  | **Audit logging not recording**        | Audit     | ✅     | All mutation routes instrumented: manage/domain, manage/plugins/toggle, plugins, plugins/submit, guest/profile, admin/plugins/submissions, branding.               |
 | H5  | **Metrics endpoint returns empty**     | Metrics   | ✅     | Counters added to Node.js-side route handlers (catch-all, metrics endpoint, booking plugin). 2 new unit tests verify non-empty metrics response.                   |
 
@@ -302,10 +302,35 @@ The overwhelming majority are generated `.playwright-mcp/*.yml` snapshot files c
 
 ---
 
-## 8. Overall Verdict
+## 8. Master Dashboard — Featured Control
+
+**Component**: `src/app/[locale]/admin/master/listings/[id]/page.tsx`  
+**API**: `PATCH /api/master/listings/[id]` (actions: `feature`, `unfeature`)  
+**Tests**: 9 unit tests in `src/app/api/master/listings/[id]/__tests__/route.test.ts`
+
+### Behaviour
+
+| Action | Effect |
+|--------|--------|
+| Toggle ON | Sends `PATCH { action: 'feature' }` → sets `is_featured = 1`, auto-computes `featured_order = max(order) + 1` |
+| Toggle OFF | Sends `PATCH { action: 'unfeature' }` → clears `is_featured` and `featured_order` |
+| Order input | Sends `PATCH { action: 'feature', featuredOrder: <number> }` on blur |
+
+Both mutations are logged to `audit_logs` with `action: 'listing.feature'` or `action: 'listing.unfeature'`.
+
+### UI Elements
+
+- Toggle switch with `data-testid="feature-toggle"` and `role="switch"`
+- Display-order number input with `data-testid="feature-order-input"`
+- Status line: "This listing appears on the marketplace homepage"
+- Inline error display on API failure
+
+---
+
+## 9. Overall Verdict
 
 ```
-VERDICT: ✅ PRODUCTION READY (Phase 10 Complete)
+VERDICT: ✅ PRODUCTION READY (Phase 13 Complete)
 ```
 
 The marketplace is **production-ready** after Phase 10 fixes. All known issues have been resolved.

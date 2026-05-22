@@ -38,6 +38,8 @@ describe('GET /api/master/listings', () => {
         isFeatured: true,
         is_active: 1,
         isActive: true,
+        is_featured: true,
+        featured_order: 1,
         createdAt: '2024-01-01',
         totalBookings: 10,
         totalRevenue: 25000,
@@ -50,7 +52,8 @@ describe('GET /api/master/listings', () => {
     (db.prepare as any)
       .mockReturnValueOnce({ all: vi.fn().mockResolvedValue(mockListings) })
       .mockReturnValueOnce({ get: vi.fn().mockResolvedValue(mockCount) })
-      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue(mockStats) });
+      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue(mockStats) })
+      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue({ featured: 2 }) });
 
     const req = new NextRequest('http://localhost/api/master/listings');
     const res = await GET(req);
@@ -81,7 +84,8 @@ describe('GET /api/master/listings', () => {
     (db.prepare as any)
       .mockReturnValueOnce({ all: vi.fn().mockResolvedValue([]) })
       .mockReturnValueOnce({ get: vi.fn().mockResolvedValue({ count: 0 }) })
-      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue({ active: 0, featured: 0 }) });
+      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue({ active: 0, featured: 0 }) })
+      .mockReturnValueOnce({ get: vi.fn().mockResolvedValue({ featured: 0 }) });
 
     const req = new NextRequest('http://localhost/api/master/listings');
     const res = await GET(req);

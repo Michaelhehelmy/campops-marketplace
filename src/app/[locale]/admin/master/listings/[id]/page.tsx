@@ -14,6 +14,7 @@ import {
   Activity,
   ArrowUpRight,
   User,
+  Star,
 } from 'lucide-react';
 
 export default function ListingDetailsPage() {
@@ -22,6 +23,10 @@ export default function ListingDetailsPage() {
   const { id, locale } = params;
   const [shop, setShop] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [featuredOrder, setFeaturedOrder] = useState<number | null>(null);
+  const [featureLoading, setFeatureLoading] = useState(false);
+  const [featureError, setFeatureError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchShop = async () => {
@@ -30,6 +35,8 @@ export default function ListingDetailsPage() {
         if (response.ok) {
           const data = await response.json();
           setShop(data.shop);
+          setIsFeatured(!!data.shop.is_featured);
+          setFeaturedOrder(data.shop.featured_order ?? null);
         }
       } catch (error) {
         console.error('Failed to fetch shop details:', error);
@@ -207,6 +214,107 @@ export default function ListingDetailsPage() {
 
         {/* Sidebar */}
         <div className="space-y-8">
+          {/* Featured control */}
+          <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
+            <div className="flex items-center gap-3 mb-6">
+              <div className={`p-2 rounded-xl ${isFeatured ? 'bg-yellow-50' : 'bg-gray-100'}`}>
+                <Star className={`h-5 w-5 ${isFeatured ? 'text-yellow-500 fill-yellow-400' : 'text-gray-400'}`} />
+              </div>
+              <h3 className="text-lg font-black text-gray-900">Homepage Feature</h3>
+            </div>
+
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              Featured listings appear in the <span className="font-bold text-gray-700">"Featured Stays"</span> carousel
+              on the sinaicamps.com homepage. Only the master operator can control this.
+            </p>
+
+            {featureError && (
+              <div className="mb-4 text-xs font-bold text-red-600 bg-red-50 rounded-xl px-4 py-3">
+                {featureError}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl mb-4">
+              <span className="text-sm font-bold text-gray-700">Show on homepage</span>
+              <button
+                data-testid="featured-toggle"
+                disabled={featureLoading}
+                onClick={async () => {
+                  setFeatureLoading(true);
+                  setFeatureError(null);
+                  try {
+                    const action = isFeatured ? 'unfeature' : 'feature';
+                    const body: any = { action };
+                    if (!isFeatured && featuredOrder != null) body.featured_order = featuredOrder;
+                    const res = await fetch(`/api/master/listings/${shop.id}`, {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(body),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Request failed');
+                    setIsFeatured(data.is_featured);
+                    setFeaturedOrder(data.featured_order);
+                  } catch (err: any) {
+                    setFeatureError(err.message);
+                  } finally {
+                    setFeatureLoading(false);
+                  }
+                }}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+                  isFeatured ? 'bg-yellow-400' : 'bg-gray-300'
+                } ${featureLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ${
+                    isFeatured ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {isFeatured && (
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-bold text-gray-600 whitespace-nowrap">Display order</label>
+                <input
+                  data-testid="featured-order-input"
+                  type="number"
+                  min={1}
+                  value={featuredOrder ?? ''}
+                  onChange={(e) => setFeaturedOrder(e.target.value ? parseInt(e.target.value) : null)}
+                  onBlur={async () => {
+                    if (featuredOrder == null) return;
+                    setFeatureLoading(true);
+                    setFeatureError(null);
+                    try {
+                      const res = await fetch(`/api/master/listings/${shop.id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'feature', featured_order: featuredOrder }),
+                      });
+                      const data = await res.json();
+                      if (!res.ok) throw new Error(data.error || 'Request failed');
+                      setFeaturedOrder(data.featured_order);
+                    } catch (err: any) {
+                      setFeatureError(err.message);
+                    } finally {
+                      setFeatureLoading(false);
+                    }
+                  }}
+                  className="w-20 px-3 py-2 text-sm font-bold rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 text-center"
+                />
+                <span className="text-xs text-gray-400">(1 = first in carousel)</span>
+              </div>
+            )}
+
+            <div className={`mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
+              isFeatured ? 'text-yellow-600' : 'text-gray-400'
+            }`}>
+              <Star className={`h-3 w-3 ${isFeatured ? 'fill-yellow-400' : ''}`} />
+              {isFeatured ? `Featured — position #${featuredOrder ?? '–'}` : 'Not featured'}
+            </div>
+          </div>
+
           <div className="bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl shadow-purple-900/20 text-white">
             <h3 className="text-lg font-black mb-6">Quick Actions</h3>
             <div className="space-y-3">

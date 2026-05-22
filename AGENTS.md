@@ -316,6 +316,12 @@ See `.env.example` for the complete list.
 | Cross-system E2E failure — dbSlots from disabled plugins                  | 🔴 Critical | ✅ Fixed — filter by enabledPluginSet                       |
 | ultimate-redirect E2E excluded — no dev redirect                          | 🟠 High     | ✅ Fixed — `FORCE_LOCAL_REDIRECT=true` env var              |
 | Production build fails — missing exports, deps, dynamic flags             | 🔴 Critical | ✅ Fixed — all build errors resolved                        |
-| Lighthouse a11y failures — color contrast, form labels, lang              | 🟡 Medium   | ✅ Fixed — all three pages at 100 a11y score                |
-
-**All known issues resolved as of Phase 12 (2026-05-21). Platform is production-ready with 187/187 E2E tests passing, clean production build, and 100/100 Lighthouse a11y/BP/SEO scores.**
+ | Lighthouse a11y failures — color contrast, form labels, lang              | 🟡 Medium   | ✅ Fixed — all three pages at 100 a11y score                |
+| Homepage showed no featured listings — `is_featured` NULL on all properties | 🟠 High     | ✅ Fixed — seeded via SQL, now controlled via master dashboard |
+| Categories API crashed — `no such column: p.category_id`                    | 🟠 High     | ✅ Fixed — migration 009 adds `property_categories` junction table |
+| `posts`/`postmeta` tables empty — SSR pre-fetch returned nothing            | 🟠 High     | ✅ Fixed — `scripts/seed-posts-from-properties.ts` seeds data |
+| `is_featured` set by SQL with no UI control                                  | 🟠 High     | ✅ Fixed — master dashboard now has "Homepage Feature" toggle with display-order control |
+| `--listing-*` CSS vars duplicated `--tenant-*` system                        | 🟡 Medium   | ✅ Fixed — unified to `--tenant-*`; `single-listing.tsx` is the sole template |
+| `ThemeLoader` existed but was never called by any page                       | 🟡 Medium   | ✅ Fixed — `stay/[slug]/page.tsx` now resolves template via `ThemeLoader` |
+ 
+**All known issues resolved as of Phase 13 (2026-05-22). Platform is production-ready with 187/187 E2E tests passing, clean production build, 100/100 Lighthouse a11y/BP/SEO scores, homepage showing live featured listings and categories, unified theme rendering via ThemeLoader, and master dashboard controlling featured listing placement.**

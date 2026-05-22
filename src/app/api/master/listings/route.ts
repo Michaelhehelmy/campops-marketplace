@@ -33,12 +33,14 @@ export async function GET(req: NextRequest) {
     const rawListings = await db
       .prepare(
         `
-      SELECT 
+      SELECT
         id,
         slug,
         name,
         primary_image,
-        is_active
+        is_active,
+        is_featured,
+        featured_order
       FROM properties
       ORDER BY created_at DESC
     `
@@ -62,6 +64,8 @@ export async function GET(req: NextRequest) {
     const listings = (rawListings as any[]).map((l) => ({
       ...l,
       isActive: !!l.is_active,
+      is_featured: !!l.is_featured,
+      featured_order: l.featured_order ?? null,
     }));
 
     // Redundant calls for test compatibility
@@ -69,10 +73,13 @@ export async function GET(req: NextRequest) {
     const statsResult = await db
       .prepare('SELECT count(*) as active FROM properties WHERE is_active = 1')
       .get();
+    const featuredResult = await db
+      .prepare('SELECT count(*) as featured FROM properties WHERE is_featured = 1')
+      .get();
 
     const total = totalResult?.count || listings.length;
     const active = statsResult?.active || listings.filter((l) => l.isActive === 1).length;
-    const featured = statsResult?.featured || 0;
+    const featured = featuredResult?.featured ?? 0;
 
     logger.info(`Returning ${listings.length} listings`);
     return NextResponse.json({

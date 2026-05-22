@@ -23,6 +23,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
           p.slug,
           p.plan,
           p.is_active,
+          p.is_featured,
+          p.featured_order,
           p.subdomain,
           p.custom_domain,
           p.owner_id,
@@ -63,6 +65,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       shop: {
         ...shop,
         is_active: !!shop.is_active,
+        is_featured: !!shop.is_featured,
+        featured_order: shop.featured_order ?? null,
         plugins,
         total_revenue_cents: 0,
         reservations_count: 0,
@@ -208,7 +212,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (isErrorResponse(session)) return session;
     const { id } = params;
     const body = await req.json();
-    const { action } = body;
+    const { action, featured_order } = body;
 
     if (action === 'activate') {
       await db.prepare('UPDATE properties SET is_active = 1 WHERE id = ?').run(id);
@@ -217,6 +221,44 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (action === 'deactivate') {
       await db.prepare('UPDATE properties SET is_active = 0 WHERE id = ?').run(id);
       return NextResponse.json({ ok: true, is_active: false });
+    }
+
+    if (action === 'feature') {
+      // Compute next featured_order if not provided
+      let order = featured_order;
+      if (order == null) {
+        const maxRow = (await db
+          .prepare('SELECT COALESCE(MAX(featured_order), 0) as max_order FROM properties WHERE is_featured = 1')
+          .get()) as any;
+        order = (maxRow?.max_order ?? 0) + 1;
+      }
+      await db
+        .prepare('UPDATE properties SET is_featured = 1, featured_order = ? WHERE id = ?')
+        .run(order, id);
+      try {
+        const userEmail = (session.user as any).email || 'unknown';
+        await db
+          .prepare(
+            'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
+          )
+          .run('FEATURE', 'property', id, `Featured with order ${order}`, userEmail);
+      } catch { /* audit is best-effort */ }
+      return NextResponse.json({ ok: true, is_featured: true, featured_order: order });
+    }
+
+    if (action === 'unfeature') {
+      await db
+        .prepare('UPDATE properties SET is_featured = NULL, featured_order = NULL WHERE id = ?')
+        .run(id);
+      try {
+        const userEmail = (session.user as any).email || 'unknown';
+        await db
+          .prepare(
+            'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
+          )
+          .run('UNFEATURE', 'property', id, 'Removed from featured', userEmail);
+      } catch { /* audit is best-effort */ }
+      return NextResponse.json({ ok: true, is_featured: false, featured_order: null });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

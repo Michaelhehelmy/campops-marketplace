@@ -42,8 +42,8 @@ describe('tenant head branding', () => {
     const element = await Head({ params: { slug } });
     const html = renderToStaticMarkup(<>{element}</>);
 
-    expect(html).toContain('--listing-primary:#112233');
-    expect(html).toContain('--listing-secondary:#445566');
+    expect(html).toContain('--tenant-primary:#112233');
+    expect(html).toContain('--tenant-secondary:#445566');
     expect(html).toContain('meta name="theme-color" content="#112233"');
   });
 });

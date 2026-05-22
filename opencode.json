@@ -38,12 +38,12 @@
     },
     "lucide-icons": {
       "type": "local",
-      "command": ["npx", "-y", "@iflow-mcp/lucide-icons-mcp@latest"],
+      "command": ["npx", "-y", "lucide-icons-mcp@latest"],
       "enabled": true
     },
     "next-intl": {
       "type": "local",
-      "command": ["npx", "-y", "@i18nexus/cli@latest"],
+      "command": ["npx", "-y", "@i18nexus/mcp@latest"],
       "enabled": true
     },
     "lighthouse": {

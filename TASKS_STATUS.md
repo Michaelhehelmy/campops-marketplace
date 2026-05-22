@@ -60,3 +60,17 @@
 | PH12-002 | 12 – Production Build & Lighthouse | A11y           | MEDIUM   | Fix Lighthouse accessibility failures (color contrast, labels, lang)     | [x]   | [x]      |
 | PH12-003 | 12 – Production Build & Lighthouse | Testing        | LOW      | Fix regression test in api-client.test.ts (ok + URL assertion)           | [x]   | [x]      |
 | PH12-004 | 12 – Production Build & Lighthouse | Documentation  | LOW      | Update QA-VERIFICATION-REPORT.md, AGENTS.md, TASKS_STATUS.md             | [x]   | [x]      |
+
+## Phase 13 — Homepage Fix + Theme Unification + Master Featured Control [2026-05-22]
+
+| ID | Area | Priority | Description | Done |
+|----|------|----------|-------------|------|
+| PH13-001 | Data | HIGH | Seed is_featured on 2 properties; fix homepage featured listings | [x] |
+| PH13-002 | API | HIGH | Fix categories API — create property_categories junction table (migration 009) | [x] |
+| PH13-003 | Data | HIGH | Seed posts/postmeta from properties (idempotent script) | [x] |
+| PH13-004 | Theme | HIGH | Unify stay/[slug] + ListingDetailView into single-listing.tsx template | [x] |
+| PH13-005 | Theme | HIGH | Wire ThemeLoader.resolveTemplate() into stay/[slug]/page.tsx | [x] |
+| PH13-006 | Theme | MEDIUM | Remove --listing-* CSS var system; unify to --tenant-* | [x] |
+| PH13-007 | Master UI | HIGH | Add Featured control to master listing detail page (toggle + order) | [x] |
+| PH13-008 | API | HIGH | Add feature/unfeature PATCH actions + audit logging to master listings API | [x] |
+| PH13-009 | Testing | MEDIUM | Add 9 unit tests for feature/unfeature actions; fix 2 list-route test regressions | [x] |
