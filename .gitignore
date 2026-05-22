@@ -34,11 +34,8 @@ e2e/test-results/
 test-results/
 playwright-report/
 
-# Agent/MCP artifacts — track skills/tools/agents, ignore runtime artifacts
-.opencode/node_modules/
-.opencode/package-lock.json
-.opencode/bun.lock
-.opencode/ocx.jsonc
+# Agent/MCP artifacts
+.opencode/
 .playwright-mcp/
 
 # QA screenshots & visual artifacts

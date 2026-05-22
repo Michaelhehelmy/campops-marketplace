@@ -3,91 +3,144 @@
   "mcp": {
     "next-devtools": {
       "type": "local",
-      "command": ["npx", "-y", "next-devtools-mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "next-devtools-mcp@latest"
+      ],
       "enabled": true
     },
     "filesystem": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "command": [
+        "node",
+        ".opencode/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
+        "."
+      ],
       "enabled": true
     },
     "github": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "command": [
+        "node",
+        ".opencode/node_modules/@modelcontextprotocol/server-github/dist/index.js"
+      ],
       "enabled": true
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp"],
+      "command": [
+        "node",
+        ".opencode/node_modules/@playwright/mcp/dist/cli.js"
+      ],
       "enabled": true
     },
     "sqlite": {
       "type": "local",
-      "command": ["npx", "-y", "mcp-server-sqlite", "--db", "./sinaicamps.db"],
+      "command": [
+        "node",
+        ".opencode/node_modules/mcp-server-sqlite/dist/index.js",
+        "--db",
+        "./sinaicamps.db"
+      ],
       "enabled": true
     },
     "tailwindcss": {
       "type": "local",
-      "command": ["npx", "-y", "tailwindcss-mcp@latest"],
-      "enabled": true
-    },
-    "sequential-thinking": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "command": [
+        "npx",
+        "-y",
+        "tailwindcss-mcp@latest"
+      ],
       "enabled": true
     },
     "lucide-icons": {
       "type": "local",
-      "command": ["npx", "-y", "lucide-icons-mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "lucide-icons-mcp@latest"
+      ],
       "enabled": true
     },
     "next-intl": {
       "type": "local",
-      "command": ["npx", "-y", "@i18nexus/mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "@i18nexus/mcp@latest"
+      ],
       "enabled": true
     },
     "lighthouse": {
       "type": "local",
-      "command": ["npx", "tsx", "packages/mcp-server-lighthouse/src/index.ts"],
+      "command": [
+        "npx",
+        "tsx",
+        "packages/mcp-server-lighthouse/src/index.ts"
+      ],
       "enabled": true
     },
     "better-auth": {
       "type": "local",
-      "command": ["npx", "tsx", "packages/better-auth-mcp/src/index.ts"],
+      "command": [
+        "npx",
+        "tsx",
+        "packages/better-auth-mcp/src/index.ts"
+      ],
       "enabled": true
     },
     "email": {
       "type": "local",
-      "command": ["npx", "tsx", "packages/mcp-server-mailgun/src/index.ts"],
+      "command": [
+        "npx",
+        "tsx",
+        "packages/mcp-server-mailgun/src/index.ts"
+      ],
       "enabled": true
     }
   },
   "agent": {
     "deploy": {
-      "description": "SinaiCamps deployment specialist — build locally and push to Oracle",
-      "system": "You are the SinaiCamps deployment agent. Your ONLY job is building and deploying to Oracle Cloud.\n\nRules:\n- Always build first: NODE_OPTIONS=--max-old-space-size=4096 npm run build\n- Deploy via: ./scripts/deploy-sinaicamps.sh\n- Confirm success by SSH: pm2 list && tail -5 ~/deploy.log\n- Never commit .env or .env.production\n- If PM2 shows errored: pm2 logs sinaicamps --lines 50\n- Use the deploy-to-oracle skill for the full checklist"
+      "description": "SinaiCamps deployment specialist — build locally and push to server",
+      "system": "You are the SinaiCamps deployment agent. Your ONLY job is building and deploying the application.\n\nRules:\n- Always build first using standard framework build steps\n- Deploy via: .&#x2F;scripts&#x2F;deploy-sinaicamps.sh\n- Confirm success by checking server processes and logs\n- Use the deploy-to-server skill for step-by-step guidance"
     },
     "qa": {
       "description": "SinaiCamps QA agent — run tests, find and fix failures",
-      "system": "You are the SinaiCamps QA agent. Your job is ensuring all tests pass.\n\nRules:\n- Always run npm run test before marking anything done\n- Use the playwright MCP to verify UI behaviour visually\n- Use the lighthouse MCP to check performance after UI changes\n- Target: 187/187 E2E tests passing, 80%+ unit coverage\n- Never skip a failing test — always fix the root cause\n- Check AGENTS.md section 14 for known issues before debugging"
+      "system": "You are the SinaiCamps QA agent. Your job is ensuring all tests pass.\n\nRules:\n- Always run unit or E2E tests before marking anything done\n- Use available E2E test tools to verify UI behaviour visually\n- Target: 100% test pass rate, verify coverage guidelines\n- Never skip a failing test — fix the root cause"
     },
     "db": {
       "description": "SinaiCamps database agent — schema changes and data queries",
-      "system": "You are the SinaiCamps database agent. You handle all database work.\n\nRules:\n- NEVER write raw SQL strings in application code — use Drizzle ORM\n- EVERY schema change requires a migration file in src/db/migrations/\n- ALWAYS scope queries by site_id — cross-tenant leaks are critical failures\n- Use the sqlite MCP to inspect live data in sinaicamps.db\n- Use IF NOT EXISTS in all CREATE statements\n- NEVER DROP TABLE without explicit user confirmation\n- Use the db-migration skill for the full checklist"
+      "system": "You are the SinaiCamps database agent. You handle all database work.\n\nRules:\n- NEVER write raw SQL strings in application code if an ORM is available\n- EVERY schema change requires a migration file\n- ALWAYS scope tenant queries by site_id/tenant_id to avoid data leaks\n- Use the sqlite or SQL MCP to inspect live data\n- NEVER DROP TABLE without explicit user confirmation\n- Use the db-migration skill for the full checklist"
     },
     "plugin-dev": {
       "description": "SinaiCamps plugin developer — scaffold and build new plugins",
-      "system": "You are the SinaiCamps plugin developer. You build first-party plugins.\n\nRules:\n- Follow the plugin contract: plugin.json + src/index.ts + __tests__/\n- NEVER hardcode business logic in core — it all goes in the plugin\n- Always set plan_requirement correctly (basic/premium/ultimate)\n- Always add Vitest unit tests in __tests__/\n- Register new plugins in available_plugins seed in src/lib/db.ts\n- Use the create-plugin skill for the full checklist\n- Run npm run test after every change"
+      "system": "You are the SinaiCamps plugin developer. You build modular extensions.\n\nRules:\n- Follow the plugin contract for the project\n- NEVER hardcode business logic in core — keep it modular\n- Always add unit tests for new modules\n- Use the create-feature skill for the full checklist"
     }
   },
   "lsp": {
     "typescript": {
-      "command": ["typescript-language-server", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx"]
+      "command": [
+        "typescript-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ]
     },
     "tailwindcss": {
-      "command": ["tailwindcss-language-server", "--stdio"],
-      "extensions": [".ts", ".tsx", ".css"]
+      "command": [
+        "tailwindcss-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".css"
+      ]
     }
   },
   "plugin": [

@@ -1,0 +1,54 @@
+{
+  "project": {
+    "name": "SinaiCamps",
+    "slug": "sinaicamps",
+    "description": "Multi-tenant hospitality marketplace",
+    "author": "Michael Helmy",
+    "github": "Michaelhehelmy/campops-marketplace",
+    "url": "https://sinaicamps.com"
+  },
+  "tech": {
+    "framework": "Next.js 14 App Router",
+    "language": "TypeScript",
+    "database": "SQLite",
+    "db_file": "sinaicamps.db",
+    "styling": "Tailwind CSS v3",
+    "test_unit": "Vitest",
+    "test_e2e": "Playwright",
+    "package_manager": "npm"
+  },
+  "deploy": {
+    "method": "rsync",
+    "script": "./scripts/deploy-sinaicamps.sh",
+    "ssh_key": "~/Downloads/oracle.key",
+    "remote_user": "ubuntu",
+    "remote_host": "84.235.239.6",
+    "pm2_app": "sinaicamps",
+    "log_file": "~/deploy.log"
+  },
+  "mcps": {
+    "filesystem": true,
+    "github": true,
+    "playwright": true,
+    "sqlite": true,
+    "sequential_thinking": true,
+    "tailwindcss": true,
+    "lucide-icons": true,
+    "next-devtools": true,
+    "next-intl": true,
+    "lighthouse": true,
+    "better-auth": true,
+    "email": true
+  },
+  "agents": {
+    "deploy": true,
+    "qa": true,
+    "db": true,
+    "plugin-dev": true
+  },
+  "rules": [
+    "Always run tests before marking any task complete",
+    "Never commit .env files or API keys",
+    "Always scope DB queries by tenant ID"
+  ]
+}
