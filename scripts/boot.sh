@@ -24,7 +24,7 @@ else
 fi
 
 # 3. Ensure SQLite WAL mode on reboot
-DB_PATH=/home/ubuntu/marketplace/campops-prod-sim.db
+DB_PATH=/home/ubuntu/marketplace/sinaicamps-prod.db
 if [ -f "$DB_PATH" ]; then
   CURRENT_MODE=$(sqlite3 "$DB_PATH" "PRAGMA journal_mode;" 2>/dev/null)
   if [ "$CURRENT_MODE" != "wal" ]; then

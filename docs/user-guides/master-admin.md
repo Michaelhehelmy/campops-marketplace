@@ -2,7 +2,7 @@
 
 ## Role Description
 
-The **Master Admin** is a super administrator with full, unrestricted access to every feature across the CampOps Marketplace platform. Master admins can manage all properties, users, plugins, themes, financials, and global settings.
+The **Master Admin** is a super administrator with full, unrestricted access to every feature across the SinaiCamps Marketplace platform. Master admins can manage all properties, users, plugins, themes, financials, and global settings.
 
 ## How to Get This Role
 

@@ -2,7 +2,7 @@
 
 ## Role Description
 
-A **Property Manager** handles day-to-day operations for one or more properties on the CampOps Marketplace. Managers can manage bookings, rooms, guests, staff, finances, and property settings.
+A **Property Manager** handles day-to-day operations for one or more properties on the SinaiCamps Marketplace. Managers can manage bookings, rooms, guests, staff, finances, and property settings.
 
 ## How to Get This Role
 
@@ -208,7 +208,7 @@ Platform commissions are calculated based on your property's plan tier:
 
 ## Mobile App (PWA)
 
-The CampOps Marketplace supports Progressive Web App (PWA) functionality for mobile access.
+The SinaiCamps Marketplace supports Progressive Web App (PWA) functionality for mobile access.
 
 ### Installing the PWA
 

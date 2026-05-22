@@ -4,7 +4,7 @@
 set -e
 
 BACKUPS_DIR="backups"
-S3_BUCKET="${S3_BACKUP_BUCKET:-campops-marketplace-backups}"
+S3_BUCKET="${S3_BACKUP_BUCKET:-sinaicamps-marketplace-backups}"
 S3_ENDPOINT="${S3_ENDPOINT:-}"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 

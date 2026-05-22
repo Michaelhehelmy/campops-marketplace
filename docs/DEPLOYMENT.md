@@ -102,7 +102,7 @@ If a migration caused data issues:
 pm2 stop campops
 
 # 2. Restore database from backup
-cp ~/marketplace/backups/campops-2026-05-20.db ~/marketplace/current/campops-prod.db
+cp ~/marketplace/backups/campops-2026-05-20.db ~/marketplace/current/sinaicamps-prod.db
 
 # 3. Restart
 pm2 restart campops
@@ -212,7 +212,7 @@ NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 
 # Database (SQLite — change path as needed)
-DATABASE_URL=file:./campops-prod.db
+DATABASE_URL=file:./sinaicamps-prod.db
 
 # Auth
 NEXTAUTH_URL=https://yourdomain.com
@@ -290,7 +290,7 @@ When using Cloudflare proxy (orange cloud), the Let's Encrypt HTTP challenge is 
    ```
 5. Update `nginx-unified.conf` cert paths, then reload:
    ```bash
-   sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/campops
+   sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
    sudo nginx -t && sudo systemctl reload nginx
    ```
 6. Cloudflare SSL/TLS → set mode to **Full (Strict)**
@@ -312,8 +312,8 @@ When using Cloudflare proxy (orange cloud), the Let's Encrypt HTTP challenge is 
 The `nginx-unified.conf` in the repo root is the template. Update the domain names and cert paths for your deployment, then:
 
 ```bash
-sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/campops
-sudo ln -sf /etc/nginx/sites-available/campops /etc/nginx/sites-enabled/
+sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
+sudo ln -sf /etc/nginx/sites-available/sinaicamps /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -367,7 +367,7 @@ On the server, run:
 ```bash
 cd YOUR_APP_DIR
 node -e "
-const db = require('better-sqlite3')('campops-prod.db');
+const db = require('better-sqlite3')('sinaicamps-prod.db');
 const now = Date.now();
 db.prepare(\`INSERT OR REPLACE INTO properties
   (id, slug, name, is_active, custom_domain, plan, branding, settings, created_at)
@@ -412,7 +412,7 @@ sudo nginx -t && sudo systemctl reload nginx
 # View properties in DB
 cd YOUR_APP_DIR
 node -e "
-const db = require('better-sqlite3')('campops-prod.db');
+const db = require('better-sqlite3')('sinaicamps-prod.db');
 console.table(db.prepare('SELECT id,slug,name,custom_domain FROM properties').all());
 "
 ```

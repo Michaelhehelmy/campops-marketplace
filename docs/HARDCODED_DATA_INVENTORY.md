@@ -1,6 +1,6 @@
 # SinaiCamps Hardcoded Data Inventory
 
-This inventory documents all hardcoded credentials, mock URLs, brand names, and static version strings present in the CampOps Marketplace codebase, along with their resolution status for high-security launch readiness.
+This inventory documents all hardcoded credentials, mock URLs, brand names, and static version strings present in the SinaiCamps Marketplace codebase, along with their resolution status for high-security launch readiness.
 
 ---
 

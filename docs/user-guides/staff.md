@@ -2,7 +2,7 @@
 
 ## Role Description
 
-**Staff** members have limited access to the CampOps Marketplace. They can perform daily operational tasks — checking guests in and out, managing housekeeping, tracking maintenance, and looking up guest information. They cannot access financial data, settings, or plugin management.
+**Staff** members have limited access to the SinaiCamps Marketplace. They can perform daily operational tasks — checking guests in and out, managing housekeeping, tracking maintenance, and looking up guest information. They cannot access financial data, settings, or plugin management.
 
 ## How to Get This Role
 

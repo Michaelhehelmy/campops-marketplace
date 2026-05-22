@@ -19,7 +19,7 @@ echo "Running pre-deployment database backup..."
 bash scripts/backup-db.sh
 
 # Ensure SQLite WAL mode is enabled for concurrent read performance
-DB_PATH=~/marketplace/campops-prod-sim.db
+DB_PATH=~/marketplace/sinaicamps-prod.db
 if [ -f "$DB_PATH" ]; then
   CURRENT_MODE=$(sqlite3 "$DB_PATH" "PRAGMA journal_mode;" 2>/dev/null)
   echo "Current journal mode: $CURRENT_MODE"

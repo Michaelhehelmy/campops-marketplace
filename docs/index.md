@@ -1,6 +1,6 @@
-# CampOps Platform — Documentation Index
+# SinaiCamps Platform — Documentation Index
 
-> Complete reference for deploying, configuring, and extending the CampOps multi-tenant hospitality marketplace under your own brand and domain.
+> Complete reference for deploying, configuring, and extending the SinaiCamps multi-tenant hospitality marketplace under your own brand and domain.
 
 ---
 
@@ -106,7 +106,7 @@ The platform-level admin panel at `/en/admin`. Only accessible to users with the
 | `NEXT_PUBLIC_BASE_DOMAIN` | Your marketplace domain (e.g. `yourdomain.com`)         |
 | `NEXT_PUBLIC_API_URL`     | Full URL of the API (e.g. `https://api.yourdomain.com`) |
 | `NEXT_PUBLIC_APP_URL`     | Full URL of the app (e.g. `https://yourdomain.com`)     |
-| `DATABASE_URL`            | SQLite path (e.g. `file:./campops-prod.db`)             |
+| `DATABASE_URL`            | SQLite path (e.g. `file:./sinaicamps-prod.db`)             |
 | `AUTH_TRUST_HOST`         | Set to `true` when running behind a proxy               |
 | `TRUSTED_ORIGINS`         | Comma-separated list of allowed origins for auth        |
 

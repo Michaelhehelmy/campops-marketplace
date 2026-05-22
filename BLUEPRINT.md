@@ -1,4 +1,4 @@
-# CampOps Marketplace — Architecture Blueprint
+# SinaiCamps Marketplace — Architecture Blueprint
 
 ## "WordPress for Rental Marketplaces"
 

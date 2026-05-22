@@ -1,4 +1,4 @@
-# CampOps Marketplace — Comprehensive QA Verification Report
+# SinaiCamps Marketplace — Comprehensive QA Verification Report
 
 **Date:** 2026-05-21 (Updated)  
 **Tester:** QA Lead (Automated)  

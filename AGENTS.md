@@ -1,4 +1,4 @@
-# CampOps Marketplace — Agent System Rules
+# SinaiCamps Marketplace — Agent System Rules
 
 > **This file is the authoritative system prompt for any AI agent working in this repository.**
 > Read this completely before writing a single line of code. Do not skip sections.

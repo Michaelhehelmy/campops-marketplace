@@ -1,6 +1,8 @@
-# CampOps — Modular Hospitality Marketplace Platform
+# SinaiCamps — Modular Hospitality Marketplace Platform
 
 [![CI](https://github.com/michaelhehelmy/campops-marketplace/workflows/CI/badge.svg)](https://github.com/michaelhehelmy/campops-marketplace/actions)
+
+> **Developed by [Michael Helmy](https://github.com/Michaelhehelmy)**
 
 > A white-label, multi-tenant hospitality marketplace. One platform powers your public listing site, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem you control.
 
@@ -62,7 +64,7 @@ campops-marketplace/
 ```bash
 # 1. Clone and install
 git clone https://github.com/michaelhehelmy/campops-marketplace.git
-cd campops-marketplace
+cd sinaicamps-marketplace
 npm install
 
 # 2. Configure environment

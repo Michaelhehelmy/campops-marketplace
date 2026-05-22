@@ -22,7 +22,7 @@ No database server needed — the app uses SQLite out of the box for local devel
 
 ```bash
 git clone https://github.com/your-org/campops-marketplace.git
-cd campops-marketplace
+cd sinaicamps-marketplace
 npm install
 ```
 
@@ -42,7 +42,7 @@ BETTER_AUTH_SECRET=any-random-32-char-string
 NEXT_PUBLIC_BASE_DOMAIN=localhost
 NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-DATABASE_URL=file:./campops-dev.db
+DATABASE_URL=file:./sinaicamps-dev.db
 AUTH_TRUST_HOST=true
 TRUSTED_ORIGINS=http://localhost:3000
 ```

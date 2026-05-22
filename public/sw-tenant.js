@@ -9,9 +9,9 @@ const CACHE_VERSION = 'v1';
 
 // Cache name is keyed by hostname so each tenant has its own cache namespace
 const hostname = self.location.hostname;
-const STATIC_CACHE = `campops-tenant-${hostname}-static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `campops-tenant-${hostname}-dynamic-${CACHE_VERSION}`;
-const API_CACHE = `campops-tenant-${hostname}-api-${CACHE_VERSION}`;
+const STATIC_CACHE = `sinaicamps-tenant-${hostname}-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `sinaicamps-tenant-${hostname}-dynamic-${CACHE_VERSION}`;
+const API_CACHE = `sinaicamps-tenant-${hostname}-api-${CACHE_VERSION}`;
 
 const PRECACHE_ASSETS = ['/', '/offline'];
 
@@ -56,7 +56,7 @@ self.addEventListener('activate', (event) => {
           keys
             .filter(
               (key) =>
-                key.startsWith(`campops-tenant-${hostname}-`) &&
+                key.startsWith(`sinaicamps-tenant-${hostname}-`) &&
                 key !== STATIC_CACHE &&
                 key !== DYNAMIC_CACHE &&
                 key !== API_CACHE

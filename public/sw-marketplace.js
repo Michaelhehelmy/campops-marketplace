@@ -4,9 +4,9 @@
 // ============================================================
 
 const CACHE_VERSION = 'v1';
-const STATIC_CACHE = `campops-marketplace-static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `campops-marketplace-dynamic-${CACHE_VERSION}`;
-const API_CACHE = `campops-marketplace-api-${CACHE_VERSION}`;
+const STATIC_CACHE = `sinaicamps-marketplace-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `sinaicamps-marketplace-dynamic-${CACHE_VERSION}`;
+const API_CACHE = `sinaicamps-marketplace-api-${CACHE_VERSION}`;
 
 // Assets to pre-cache on install (app shell)
 const PRECACHE_ASSETS = ['/', '/en', '/en/login', '/sinaicamps.png', '/offline'];
@@ -50,7 +50,7 @@ self.addEventListener('activate', (event) => {
           keys
             .filter(
               (key) =>
-                key.startsWith('campops-marketplace-') &&
+                key.startsWith('sinaicamps-marketplace-') &&
                 key !== STATIC_CACHE &&
                 key !== DYNAMIC_CACHE &&
                 key !== API_CACHE
@@ -120,7 +120,7 @@ self.addEventListener('push', (event) => {
     icon: '/sinaicamps.png',
     badge: '/sinaicamps.png',
     data: data.url || '/',
-    tag: data.tag || 'campops-notification',
+    tag: data.tag || 'sinaicamps-notification',
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });

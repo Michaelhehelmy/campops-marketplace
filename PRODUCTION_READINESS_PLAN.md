@@ -1,4 +1,4 @@
-# CampOps Marketplace — Production Readiness Plan
+# SinaiCamps Marketplace — Production Readiness Plan
 
 > Generated: 2026-05-20  
 > Author: Lead Architect (automated analysis)  
@@ -2878,7 +2878,7 @@ npm run test:e2e
 ```bash
 #!/bin/bash
 # scripts/load-test.sh
-# Load and stress test script for CampOps Marketplace
+# Load and stress test script for SinaiCamps Marketplace
 # Prerequisites: Node.js (for autocannon) or wrk (system tool)
 # Usage: bash scripts/load-test.sh
 #
@@ -2894,7 +2894,7 @@ BASE_URL="${BASE_URL:-http://localhost:3000}"
 REPORT_FILE="load-test-report-$(date +%Y%m%d-%H%M%S).txt"
 
 echo "=========================================="
-echo " CampOps Marketplace — Load Test Suite"
+echo " SinaiCamps Marketplace — Load Test Suite"
 echo " Started: $(date)"
 echo " Target:  $BASE_URL"
 echo "=========================================="

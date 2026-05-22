@@ -2,7 +2,7 @@
 
 ## Role Description
 
-A **Property Owner** owns one or more properties on the CampOps Marketplace. Unlike Property Managers who handle day-to-day operations, Owners focus on financial performance, plan management, and high-level property oversight.
+A **Property Owner** owns one or more properties on the SinaiCamps Marketplace. Unlike Property Managers who handle day-to-day operations, Owners focus on financial performance, plan management, and high-level property oversight.
 
 ## How to Get This Role
 

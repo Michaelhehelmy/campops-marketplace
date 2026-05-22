@@ -1,6 +1,6 @@
 # Custom Domain Template Serving System
 
-This document outlines the architecture, routing rules, and serving mechanism used to deliver branded tenant template frontends (specifically for high-tier custom domains like `acaciacamp.com`) alongside standard marketplace and subdomain traffic in the CampOps platform.
+This document outlines the architecture, routing rules, and serving mechanism used to deliver branded tenant template frontends (specifically for high-tier custom domains like `acaciacamp.com`) alongside standard marketplace and subdomain traffic in the SinaiCamps platform.
 
 ---
 

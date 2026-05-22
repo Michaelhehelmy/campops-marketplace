@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "project": "campops-marketplace-blueprint",
+  "project": "sinaicamps-marketplace-blueprint",
   "phases": [
     {
       "id": "phase-0",

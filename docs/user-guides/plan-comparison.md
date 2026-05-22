@@ -2,7 +2,7 @@
 
 ## Overview
 
-The CampOps Marketplace offers three plan tiers to accommodate properties of all sizes. Each tier provides access to different features, plugins, and commission rates.
+The SinaiCamps Marketplace offers three plan tiers to accommodate properties of all sizes. Each tier provides access to different features, plugins, and commission rates.
 
 ---
 

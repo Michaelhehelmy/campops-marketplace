@@ -26,7 +26,7 @@ fi
 
 # Fallback default if still empty
 if [ -z "$DATABASE_URL" ]; then
-  DATABASE_URL="file:./campops-prod-sim.db"
+  DATABASE_URL="file:./sinaicamps-prod.db"
 fi
 
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
@@ -52,8 +52,8 @@ else
   DB_FILE=$(echo "$DATABASE_URL" | sed 's/^file://')
   if [ ! -f "$DB_FILE" ]; then
     # Fallback to check if default SQLite file exists
-    if [ -f "campops-prod-sim.db" ]; then
-      DB_FILE="campops-prod-sim.db"
+    if [ -f "sinaicamps-prod.db" ]; then
+      DB_FILE="sinaicamps-prod.db"
     else
       echo "WARNING: SQLite database file not found at '$DB_FILE'. Skipping backup." >&2
       exit 0

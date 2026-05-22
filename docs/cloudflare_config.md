@@ -40,17 +40,17 @@ When the orange cloud is enabled, Cloudflare intercepts all HTTP traffic before 
 3. Set validity to 15 years → **Create**
 4. Copy the **Origin Certificate** and **Private Key** to your server:
    ```bash
-   sudo mkdir -p /etc/ssl/campops
-   sudo vi /etc/ssl/campops/fullchain.pem    # paste Origin Certificate
-   sudo vi /etc/ssl/campops/privkey.pem      # paste Private Key
+   sudo mkdir -p /etc/ssl/sinaicamps
+   sudo vi /etc/ssl/sinaicamps/fullchain.pem    # paste Origin Certificate
+   sudo vi /etc/ssl/sinaicamps/privkey.pem      # paste Private Key
    ```
 5. Append the Cloudflare CA root to complete the certificate chain:
    ```bash
-   sudo bash -c 'curl -s https://developers.cloudflare.com/ssl/static/origin_ca_rsa_root.pem >> /etc/ssl/campops/fullchain.pem'
+   sudo bash -c 'curl -s https://developers.cloudflare.com/ssl/static/origin_ca_rsa_root.pem >> /etc/ssl/sinaicamps/fullchain.pem'
    ```
 6. Update cert paths in `nginx-unified.conf`, deploy and reload:
    ```bash
-   sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/campops
+   sudo cp YOUR_APP_DIR/nginx-unified.conf /etc/nginx/sites-available/sinaicamps
    sudo nginx -t && sudo systemctl reload nginx
    ```
 7. Back in Cloudflare SSL/TLS → set encryption mode to **Full (Strict)**

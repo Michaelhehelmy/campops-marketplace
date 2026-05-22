@@ -1,3 +1,7 @@
+## Maintainer
+
+**Michael Helmy** — [github.com/Michaelhehelmy](https://github.com/Michaelhehelmy)
+
 # Contributing
 
 ## Setup
@@ -25,7 +29,7 @@ npm run dev
 
 ## Architecture Overview
 
-CampOps Marketplace is a Next.js 14+ application with a plugin-based architecture.
+SinaiCamps Marketplace is a Next.js 14+ application with a plugin-based architecture.
 
 ### Directory Structure
 

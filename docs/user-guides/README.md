@@ -1,10 +1,10 @@
-# CampOps Marketplace — User Guides
+# SinaiCamps Marketplace — User Guides
 
-Welcome to the CampOps Marketplace platform. This documentation covers every user role on the platform — from guests browsing campsites to master administrators managing the entire system.
+Welcome to the SinaiCamps Marketplace platform. This documentation covers every user role on the platform — from guests browsing campsites to master administrators managing the entire system.
 
 ## Platform Overview
 
-CampOps Marketplace is a white-label, multi-tenant hospitality platform. It powers public listing sites, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem.
+SinaiCamps Marketplace is a white-label, multi-tenant hospitality platform. It powers public listing sites, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem.
 
 The platform is accessible at your marketplace domain (e.g., `https://marketplace.yourdomain.com`) and supports custom domains for ultimate-tier properties (e.g., `https://acaciacamp.com`).
 

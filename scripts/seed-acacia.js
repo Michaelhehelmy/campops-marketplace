@@ -1,7 +1,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '..', 'campops-prod-sim.db');
+const dbPath = path.join(__dirname, '..', 'sinaicamps-prod.db');
 const db = new Database(dbPath);
 
 const id = 'acacia-1';

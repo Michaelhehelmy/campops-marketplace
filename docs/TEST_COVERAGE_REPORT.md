@@ -1,7 +1,7 @@
 # Test Coverage Report
 
 **Generated:** 2026-05-19  
-**Suite:** CampOps Marketplace — Full Test Audit (Phase 12 baseline)
+**Suite:** SinaiCamps Marketplace — Full Test Audit (Phase 12 baseline)
 
 ---
 
