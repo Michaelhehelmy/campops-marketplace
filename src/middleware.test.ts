@@ -51,7 +51,8 @@ describe('middleware tenant rewrites', () => {
 
     const res = await middleware(req);
 
-    expect(res.headers.get('x-middleware-rewrite')).toContain('/api/tenant/serve');
+    expect(res.status).toBe(302);
+    expect(res.headers.get('location')).toContain('/en/stay/');
   });
 
   it('redirects unauthenticated manage requests to login', async () => {

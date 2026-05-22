@@ -1,9 +1,12 @@
-import { logger } from './logger';
+import { registerBuildListener } from './listeners/buildListener';
+import { registerDomainProvisioningListener } from './listeners/domainProvisioningListener';
 
-process.on('unhandledRejection', (reason: unknown) => {
-  logger.error(
-    'Unhandled Rejection (likely from a plugin):',
-    reason instanceof Error ? reason.message : reason,
-    reason instanceof Error ? reason.stack : undefined
-  );
-});
+let bootstrapped = false;
+
+export function bootstrap() {
+  if (bootstrapped) return;
+  bootstrapped = true;
+
+  registerBuildListener();
+  registerDomainProvisioningListener();
+}

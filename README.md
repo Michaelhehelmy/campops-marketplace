@@ -159,12 +159,12 @@ npm run build            # Production build verification
 
 ## Architecture References
 
-| Document | What it covers |
-| -------- | -------------- |
-| [AGENTS.md](AGENTS.md) | Agent system prompt — project rules, tech stack, directory map |
-| [BLUEPRINT.md](BLUEPRINT.md) | Master architecture document — read before structural decisions |
-| [DOCS/DEPLOYMENT.md](DOCS/DEPLOYMENT.md) | Production deployment guide with env checklist and rollback |
-| [QA-VERIFICATION-REPORT.md](QA-VERIFICATION-REPORT.md) | Full QA report with E2E results and Lighthouse scores |
+| Document                                               | What it covers                                                  |
+| ------------------------------------------------------ | --------------------------------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                 | Agent system prompt — project rules, tech stack, directory map  |
+| [BLUEPRINT.md](BLUEPRINT.md)                           | Master architecture document — read before structural decisions |
+| [DOCS/DEPLOYMENT.md](DOCS/DEPLOYMENT.md)               | Production deployment guide with env checklist and rollback     |
+| [QA-VERIFICATION-REPORT.md](QA-VERIFICATION-REPORT.md) | Full QA report with E2E results and Lighthouse scores           |
 
 ## Code Quality
 

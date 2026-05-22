@@ -201,27 +201,13 @@ export async function GET(req: NextRequest) {
 
     if (!fs.existsSync(buildsPath)) {
       logger.info(
-        `[Serve Route] No pre-built dist for ${tenantSlug} — checking ThemeLoader fallback`
+        `[Serve Route] No pre-built dist for ${tenantSlug} — middleware should handle SSR redirect`
       );
-      try {
-        const sqliteDb = getSqlite();
-        const theme = ThemeRegistry.getForSite(sqliteDb, resolvedProperty.id);
-        if (theme) {
-          return NextResponse.json(
-            {
-              themeId: theme.id,
-              themeName: theme.displayName,
-              siteId: resolvedProperty.id,
-              message: 'SSR theme active — serve via Next.js routes',
-            },
-            { status: 200 }
-          );
-        }
-      } catch {
-        // ignore — fall through to 404
-      }
-      logger.warn(`[Serve Route] Builds directory not found for ${tenantSlug} at ${buildsPath}`);
-      return NextResponse.json({ error: 'Branded template build not found' }, { status: 404 });
+      // Return a message so the caller can retry with the SSR page.
+      return NextResponse.json({
+        error: 'Not built',
+        redirect: `/${tenantSlug ? 'en/stay/' + tenantSlug : ''}`,
+      });
     }
 
     return serveFile(buildsPath, rawPath, resolvedProperty);

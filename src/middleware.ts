@@ -114,22 +114,20 @@ async function handleMiddleware(req: NextRequest) {
     } catch {}
   }
 
-  // 2. If it is a verified custom domain, rewrite all non-API paths directly to the template serve endpoint
-  if (tenantPropertyId && isCustomDomain) {
-    const rewriteUrl = req.nextUrl.clone();
-    rewriteUrl.pathname = '/api/tenant/serve';
-    rewriteUrl.search = '';
-    rewriteUrl.searchParams.set('host', cleanHostname);
-    rewriteUrl.searchParams.set('path', pathname + req.nextUrl.search);
-    const headers = new Headers(req.headers);
-    headers.set('x-tenant-host', cleanHostname);
-    headers.set('x-tenant-path', pathname + req.nextUrl.search);
-    return NextResponse.rewrite(rewriteUrl, { request: { headers } });
-  }
-
   const localeMatch = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
   const barePath = localeMatch ? pathname.replace(/^\/[a-z]{2}/, '') || '/' : pathname;
   const locale = localeMatch?.[1] ?? 'en';
+
+  // 2. If it is a verified custom domain, redirect to the SSR listing page.
+  //    NextResponse.rewrite to non-API routes from middleware works in Next.js 14,
+  //    but we use redirect here to avoid edge cases with intlMiddleware interference.
+  if (tenantPropertyId && isCustomDomain && barePath === '/') {
+    const slug = tenantSlug || 'acacia';
+    const redirectUrl = new URL(req.url);
+    redirectUrl.pathname = `/${locale}/stay/${slug}`;
+    logger.info(`[CustomDomain] Redirecting to ${redirectUrl.pathname} for host ${cleanHostname}`);
+    return NextResponse.redirect(redirectUrl, 302);
+  }
 
   const needsAuth = AUTH_REQUIRED.some((p) => barePath.startsWith(p));
   const token =

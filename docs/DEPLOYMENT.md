@@ -32,24 +32,24 @@ Before going live, verify each item:
 
 See `.env.example` for the complete template. Key variables for production:
 
-| Variable | Required | Source | Example |
-|----------|----------|--------|---------|
-| `NODE_ENV` | **Required** | Set manually | `production` |
-| `BETTER_AUTH_SECRET` | **Required** | Generate: `openssl rand -base64 32` | `uL3tT...8Zw==` |
-| `BETTER_AUTH_URL` | **Required** | Your domain | `https://sinaicamps.com` |
-| `DATABASE_URL` | **Required** | PostgreSQL connection string | `postgresql://user:pass@host:5432/campops` |
-| `NEXT_PUBLIC_BASE_DOMAIN` | **Required** | Your domain | `sinaicamps.com` |
-| `NEXT_PUBLIC_API_URL` | **Required** | Your API domain | `https://api.sinaicamps.com` |
-| `NEXT_PUBLIC_APP_URL` | **Required** | Your domain | `https://sinaicamps.com` |
-| `TRUSTED_ORIGINS` | **Required** | Comma-separated origins | `https://sinaicamps.com,https://api.sinaicamps.com` |
-| `AUTH_TRUST_HOST` | **Required** | Set to `true` | `true` |
-| `STRIPE_SECRET_KEY` | Optional (required for payments) | Stripe Dashboard | `sk_live_...` |
-| `STRIPE_WEBHOOK_SECRET` | Optional (required for payments) | Stripe Dashboard | `whsec_...` |
-| `MAILGUN_API_KEY` | Optional (required for email) | Mailgun Dashboard | `key-...` |
-| `MAILGUN_DOMAIN` | Optional (required for email) | Mailgun Dashboard | `mg.sinaicamps.com` |
-| `SENTRY_DSN` | Optional | Sentry Dashboard | `https://...@o....ingest.sentry.io` |
-| `REDIS_URL` | Optional | Redis provider | `redis://...:6379` |
-| `PORT` | Optional | Set manually | `3000` |
+| Variable                  | Required                         | Source                              | Example                                             |
+| ------------------------- | -------------------------------- | ----------------------------------- | --------------------------------------------------- |
+| `NODE_ENV`                | **Required**                     | Set manually                        | `production`                                        |
+| `BETTER_AUTH_SECRET`      | **Required**                     | Generate: `openssl rand -base64 32` | `uL3tT...8Zw==`                                     |
+| `BETTER_AUTH_URL`         | **Required**                     | Your domain                         | `https://sinaicamps.com`                            |
+| `DATABASE_URL`            | **Required**                     | PostgreSQL connection string        | `postgresql://user:pass@host:5432/campops`          |
+| `NEXT_PUBLIC_BASE_DOMAIN` | **Required**                     | Your domain                         | `sinaicamps.com`                                    |
+| `NEXT_PUBLIC_API_URL`     | **Required**                     | Your API domain                     | `https://api.sinaicamps.com`                        |
+| `NEXT_PUBLIC_APP_URL`     | **Required**                     | Your domain                         | `https://sinaicamps.com`                            |
+| `TRUSTED_ORIGINS`         | **Required**                     | Comma-separated origins             | `https://sinaicamps.com,https://api.sinaicamps.com` |
+| `AUTH_TRUST_HOST`         | **Required**                     | Set to `true`                       | `true`                                              |
+| `STRIPE_SECRET_KEY`       | Optional (required for payments) | Stripe Dashboard                    | `sk_live_...`                                       |
+| `STRIPE_WEBHOOK_SECRET`   | Optional (required for payments) | Stripe Dashboard                    | `whsec_...`                                         |
+| `MAILGUN_API_KEY`         | Optional (required for email)    | Mailgun Dashboard                   | `key-...`                                           |
+| `MAILGUN_DOMAIN`          | Optional (required for email)    | Mailgun Dashboard                   | `mg.sinaicamps.com`                                 |
+| `SENTRY_DSN`              | Optional                         | Sentry Dashboard                    | `https://...@o....ingest.sentry.io`                 |
+| `REDIS_URL`               | Optional                         | Redis provider                      | `redis://...:6379`                                  |
+| `PORT`                    | Optional                         | Set manually                        | `3000`                                              |
 
 ---
 

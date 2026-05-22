@@ -152,6 +152,25 @@ export default async function init(api: PluginAPI) {
 
         if (!result) return json({ error: 'Registration failed' }, 500);
 
+        {
+          const registrationPlan =
+            plan === 'subdomain' ? 'premium' : plan === 'custom_domain' ? 'ultimate' : plan;
+          const isPremium = registrationPlan === 'premium' || registrationPlan === 'ultimate';
+          const regSubdomain = isPremium ? slug : null;
+          const regCustomDomain = registrationPlan === 'ultimate' ? custom_domain || null : null;
+
+          if (isPremium) {
+            api.hooks.doAction('core:site:plan_upgraded', {
+              siteId: result.propertyId,
+              previousPlan: null,
+              newPlan: registrationPlan,
+              actorId: result.userId,
+              subdomain: regSubdomain,
+              customDomain: regCustomDomain,
+            });
+          }
+        }
+
         return json(
           {
             success: true,
@@ -282,6 +301,15 @@ export default async function init(api: PluginAPI) {
           'UPDATE sites SET plan = ? WHERE slug = (SELECT slug FROM properties WHERE id = ?)',
           [newPlan, siteId]
         );
+
+        api.hooks.doAction('core:site:plan_upgraded', {
+          siteId,
+          previousPlan: currentPlan,
+          newPlan,
+          actorId: session.user.id,
+          subdomain: subdomain ?? null,
+          customDomain: customDomain ?? null,
+        });
 
         return json({
           success: true,

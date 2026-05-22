@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import PWAServiceWorker from '@/components/PWAServiceWorker';
 import './globals.css';
 import PluginInitializer from '@/components/PluginInitializer';
+import { bootstrap } from '@/lib/bootstrap';
+
+// Bootstrap hook listeners once at module load (server-side only).
+bootstrap();
 
 export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',

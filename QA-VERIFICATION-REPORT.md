@@ -424,11 +424,11 @@ All 187 Playwright E2E tests pass including ultimate-redirect (previously exclud
 
 ### Lighthouse Scores (production build, 3-run average, Lighthouse v13.3)
 
-| URL | Perf | A11y | BP | SEO | PWA† |
-|-----|------|------|----|-----|------|
-| /en | **98** | **100** | **100** | **100** | N/A |
-| /en/login | **86** (range 80–98) | **100** | **100** | **100** | N/A |
-| /en/search | **86** (range 80–98) | **100** | **100** | **100** | N/A |
+| URL        | Perf                 | A11y    | BP      | SEO     | PWA† |
+| ---------- | -------------------- | ------- | ------- | ------- | ---- |
+| /en        | **98**               | **100** | **100** | **100** | N/A  |
+| /en/login  | **86** (range 80–98) | **100** | **100** | **100** | N/A  |
+| /en/search | **86** (range 80–98) | **100** | **100** | **100** | N/A  |
 
 † PWA category was removed from Lighthouse in v10. Manual PWA verification: manifest served at `/manifest.webmanifest` ✅, service worker files exist in `public/` ✅ (registration intentionally skipped on localhost by the PWA component), offline page at `/offline` ✅.
 
