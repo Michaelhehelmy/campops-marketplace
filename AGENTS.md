@@ -1,68 +1,54 @@
-# SinaiCamps — OpenCode Agent Rules
+# SinaiCamps — OpenCode Developer Guidelines
 
-> **This file is the authoritative system prompt for OpenCode agents working in this repository.**
-> Read this completely before writing a single line of code. Do not skip sections.
-
-**Project:** SinaiCamps
-**Developer:** Michael Helmy (GitHub: [Michael Helmy](https://github.com/Michaelhehelmy&#x2F;campops-marketplace))
-**Production:** https:&#x2F;&#x2F;sinaicamps.com
-**AI Environment:** [OpenCode](https://opencode.ai) — configured via `opencode.json`
+This file is the primary system prompt instruction manual for OpenCode agents working inside this project. Read this thoroughly before analyzing code or proposing changes.
 
 ---
 
-## 1. Project Overview
+## 1. Project Specifications
 
-Multi-tenant hospitality marketplace
-
-### Tech Stack
-
-| Layer          | Technology                                            |
-| -------------- | ----------------------------------------------------- |
-| Framework      | Next.js 14 App Router                                     |
-| Language       | TypeScript                                      |
-| Database       | SQLite                                      |
-| Styling        | Tailwind CSS v3                                       |
-| Unit Testing   | Vitest                                          |
-| E2E Testing    | Playwright                                           |
-| Package Mgr    | npm                                |
-
----
-
-## 2. Non-Negotiable Rules
-
-- Always run tests before marking any task complete
-- Never commit .env files or API keys
-- Always scope DB queries by tenant ID
+| Property | Value |
+| --- | --- |
+| **Project Name** | SinaiCamps |
+| **Developer** | Michael Helmy |
+| **Github** | [Michaelhehelmy&#x2F;campops-marketplace](https://github.com/Michaelhehelmy&#x2F;campops-marketplace) |
+| **Production URL** | [https:&#x2F;&#x2F;sinaicamps.com](https:&#x2F;&#x2F;sinaicamps.com) |
+| **Framework** | Next.js 14 App Router |
+| **Language** | TypeScript |
+| **Database** | SQLite |
+| **Styling** | Tailwind CSS v3 |
+| **Unit Test Framework** | Vitest |
+| **E2E Test Framework** | Playwright |
+| **Package Manager** | npm |
 
 ---
 
-## 3. OpenCode Configuration
+## 2. Dynamic Agent Hand-off and Selection
 
-This project uses **OpenCode** as the AI coding environment. Configuration is in `opencode.json`.
-
-### MCP Tools (from `opencode.json`)
-
-Standard Model Context Protocol servers are configured for this project. Proactively use them when applicable:
-- **filesystem**: Read and write files directly.
-- **sqlite** (if applicable): For querying the database `sinaicamps.db`.
-- **sequential-thinking**: Break complex multi-step reasoning steps down.
-- **playwright** (if E2E is set): Run browser tests and capture screenshots.
+This project defines specific agents configured in `opencode.json`. Refer to their dedicated system prompts for details:
+- **@deploy**: Specializes in local builds, environment packaging, and server deployment.
+- **@qa**: Focuses on test coverage execution, visual regression checkouts, and smoke testing.
+- **@db**: Responsible for migrations, indexes, schemas, and query optimization.
+- **@plugin-dev**: Creates modular features and scaffolds plugins/packages.
 
 ---
 
-## 4. Testing Requirements
+## 3. General Implementation Checklist
 
-### Commands
-
-| Command | Purpose |
-|---------|---------|
-| `npm run test` | Run all unit tests |
-| `npm run test:e2e` | Run E2E tests |
+When solving coding tasks, always structure your execution using this sequence:
+1. **Plan**: Run analytical checks and outline files to edit. Use `sequential-thinking` MCP to structure your execution plan.
+2. **Execute**: Modify target files or write new modules. Ensure proper encapsulation and follow the project design system.
+3. **Verify**: Run `run-tests` to ensure zero regressions.
+4. **Safety Verification**: Ensure no credentials, log directories, or secret tokens are left unstaged.
 
 ---
 
-## 5. Agent Behaviour Rules
+## 4. Persistent Memory and Logbook (`AGENT_LOGBOOK.md`)
 
-1. **Use `sequential-thinking` MCP** for complex multi-step tasks — plan before coding.
-2. **Never break passing tests.** If a change causes a test failure, fix it before continuing.
-3. **Log clearly.** Use appropriate logging for errors and warnings.
+This repository contains a file named `AGENT_LOGBOOK.md` in the project root.
+- **Rule**: You MUST read `AGENT_LOGBOOK.md` at the start of any work to check for recent changes or warnings left by previous agent sessions.
+- **Rule**: You MUST update the logbook when you finish a task, appending a log entry describing:
+  - Date
+  - Task done
+  - Files changed
+  - Learned lessons or codebase bugs/gotchas encountered during the task
+- **Rule**: If you discover a recurring codebase pattern, database locking issue, styling requirement, or gotcha, document it directly under the "Persistent Learnings & Codebase Gotchas" section in `AGENT_LOGBOOK.md`.
