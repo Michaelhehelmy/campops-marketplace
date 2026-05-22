@@ -35,11 +35,10 @@ git fetch origin "$BRANCH"
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse "origin/$BRANCH")
 
-if [ "$LOCAL" = "$REMOTE" ]; then
-  log "Already up to date — skipping build."
-  # Uncomment below to force redeploy even if no changes:
-  # log "No changes detected. Exiting."
-  # exit 0
+if [ "$LOCAL" = "$REMOTE" ] && [ "${FORCE:-0}" != "1" ]; then
+  log "✅ Already up to date. Nothing to deploy. (Run with FORCE=1 to redeploy anyway)"
+  pm2 list | tee -a "$LOG_FILE"
+  exit 0
 fi
 
 git pull origin "$BRANCH"
