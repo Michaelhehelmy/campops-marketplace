@@ -1,0 +1,21 @@
+{
+  "name": "sinaicamps-opencode-workspace",
+  "version": "1.0.0",
+  "description": "Vendored MCP servers and OpenCode workspace for SinaiCamps — by Michael Helmy",
+  "author": "Michael Helmy",
+  "private": true,
+  "dependencies": {
+    "@modelcontextprotocol/server-filesystem": "latest",
+    "@modelcontextprotocol/server-github": "latest",
+    "@modelcontextprotocol/server-sequential-thinking": "latest",
+    "@playwright/mcp": "latest",
+    "mcp-server-sqlite": "latest",
+    "tailwindcss-mcp": "latest",
+    "lucide-icons-mcp": "latest",
+    "next-devtools-mcp": "latest",
+    "@i18nexus/mcp": "latest"
+  },
+  "scripts": {
+    "setup": "npm install && echo '✅ OpenCode workspace ready'"
+  }
+}
