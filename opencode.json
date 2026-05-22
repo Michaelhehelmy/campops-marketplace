@@ -59,7 +59,8 @@
       "command": [
         "npx",
         "-y",
-        "lucide-icons-mcp@latest"
+        "lucide-icons-mcp@latest",
+        "--stdio"
       ],
       "enabled": true
     },
