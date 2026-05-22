@@ -8,7 +8,7 @@ const ADMIN_SPA_URL = process.env.ADMIN_SPA_URL ?? 'http://localhost:3000';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: undefined,
+  output: 'standalone',
   env: {
     NEXT_PUBLIC_API_URL: process.env.API_URL || API_URL,
     NEXT_PUBLIC_BASE_DOMAIN: process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com',

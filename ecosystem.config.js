@@ -3,8 +3,9 @@ module.exports = {
   apps: [
     {
       name: 'sinaicamps',
-      script: '/home/michael/Proj/node_modules/next/dist/bin/next',
-      args: 'start -p 3000',
+      script: 'node',
+      args: 'server.js',
+      cwd: '/home/ubuntu/marketplace',
       instances: 1,
       exec_mode: 'fork',
       max_memory_restart: '1G',
@@ -15,6 +16,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: '3000',
+        HOSTNAME: '0.0.0.0',
       },
       kill_timeout: 10000,
       listen_timeout: 30000,
