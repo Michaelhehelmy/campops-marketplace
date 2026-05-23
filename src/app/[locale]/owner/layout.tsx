@@ -41,6 +41,19 @@ function OwnerLayoutInner({ children }: { children: React.ReactNode }) {
     { href: `${base}/revenue`, label: 'Revenue', icon: <TrendingUp size={18} /> },
   ];
 
+  const [plan, setPlan] = useState<string>('basic');
+
+  useEffect(() => {
+    fetch('/api/owner/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.property?.plan) {
+          setPlan(data.property.plan);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = `/${locale}/login`;
@@ -101,12 +114,22 @@ function OwnerLayoutInner({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="px-4 py-4 border-t border-white/10 space-y-3">
-          <Link
-            href={`/${locale}/list-your-camp/plan`}
-            className="block w-full text-center text-xs bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
-          >
-            Upgrade to Operations Suite ↑
-          </Link>
+          {plan === 'basic' && (
+            <Link
+              href={`/${locale}/list-your-camp/plan`}
+              className="block w-full text-center text-xs bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
+            >
+              Upgrade to Operations Suite ↑
+            </Link>
+          )}
+          {plan === 'premium' && (
+            <Link
+              href={`/${locale}/owner/property`}
+              className="block w-full text-center text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
+            >
+              Upgrade to Ultimate ↑
+            </Link>
+          )}
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-3 py-2 text-sm text-white/50 hover:text-white w-full rounded-lg hover:bg-white/5 transition-colors"
