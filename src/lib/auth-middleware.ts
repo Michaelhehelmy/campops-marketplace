@@ -63,9 +63,22 @@ export async function requireListingAccess(req: Request, listingId: string, allo
     return NextResponse.json({ error: 'Forbidden', code: 'FORBIDDEN' }, { status: 403 });
   }
 
-  const listing = (await db
+  let listing = (await db
     .prepare('SELECT owner_id FROM properties WHERE id = ? OR slug = ?')
     .get(listingId, listingId)) as { owner_id: string } | undefined;
+
+  if (!listing) {
+    // Try looking up in posts table to see if it's a post UUID
+    const post = (await db
+      .prepare('SELECT post_slug FROM posts WHERE id = ?')
+      .get(listingId)) as { post_slug: string } | undefined;
+
+    if (post && post.post_slug) {
+      listing = (await db
+        .prepare('SELECT owner_id FROM properties WHERE slug = ?')
+        .get(post.post_slug)) as { owner_id: string } | undefined;
+    }
+  }
 
   if (!listing) {
     return NextResponse.json({ error: 'Listing not found' }, { status: 404 });

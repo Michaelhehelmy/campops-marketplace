@@ -961,6 +961,9 @@ function seedAvailablePlugins() {
         );
     }
 
+    // Force owner plugin to be active
+    getSqlite().prepare("UPDATE available_plugins SET is_active = 1 WHERE name = 'owner'").run();
+
     logger.info('[db] Plugin seeding complete');
   } catch (err) {
     logger.error('[db] Failed to seed available_plugins:', err);

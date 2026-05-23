@@ -36,11 +36,11 @@ export default function BookingFallback({
   }, [checkIn, checkOut]);
 
   useEffect(() => {
-    fetch(`/api/manage/${listingId}/plugins`, { cache: 'no-store' })
+    fetch(`/api/plugins/ui-registry?propertyId=${listingId}`, { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
-        const bp = (data.plugins ?? []).find((p: any) => p.name === 'booking');
-        setPluginEnabled(!!(bp?.isEnabled ?? bp?.is_enabled));
+        const hasBookingSlot = data.slots && data.slots['public.booking'] && data.slots['public.booking'].length > 0;
+        setPluginEnabled(!!hasBookingSlot);
       })
       .catch(() => setPluginEnabled(false));
   }, [listingId]);

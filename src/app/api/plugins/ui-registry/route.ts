@@ -8,9 +8,23 @@ export const dynamic = 'force-dynamic';
 import { UIRegistryService } from '@/lib/UIRegistryService';
 import { PluginRuntimeService } from '@/lib/PluginRuntimeService';
 
-async function getPropertyIdFromSlug(slug: string): Promise<string | null> {
-  const property = await db.queryOne('SELECT id FROM properties WHERE slug = ?', [slug]);
-  return (property as any)?.id || null;
+async function getPropertyIdFromSlug(slugOrId: string): Promise<string | null> {
+  // First try direct lookup by ID
+  let property = await db.queryOne('SELECT id FROM properties WHERE id = ?', [slugOrId]);
+  if (property) return (property as any).id;
+
+  // Try direct lookup by slug
+  property = await db.queryOne('SELECT id FROM properties WHERE slug = ?', [slugOrId]);
+  if (property) return (property as any).id;
+
+  // If it's a UUID, check if it's a post ID
+  const post = await db.queryOne('SELECT post_slug FROM posts WHERE id = ?', [slugOrId]);
+  if (post && (post as any).post_slug) {
+    property = await db.queryOne('SELECT id FROM properties WHERE slug = ?', [(post as any).post_slug]);
+    if (property) return (property as any).id;
+  }
+
+  return null;
 }
 
 export async function GET(req: NextRequest) {

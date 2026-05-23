@@ -332,6 +332,41 @@ export function makePluginAPI(
     registerRoute: (path, handler) => {
       requireCapability(pluginId, 'routes', capabilities);
       pluginLogger.info(`Registered route: ${path}`);
+
+      // Check if it's a Hono router (has routes array and fetch method)
+      if (
+        handler &&
+        (typeof handler === 'object' || typeof handler === 'function') &&
+        'routes' in handler &&
+        Array.isArray((handler as any).routes) &&
+        typeof (handler as any).fetch === 'function'
+      ) {
+        const honoApp = handler as any;
+        for (const route of honoApp.routes) {
+          const subPath = route.path === '/' ? '' : route.path;
+          const fullPath = `${path}${subPath}`;
+          pluginRouteRegistry.register(
+            pluginId,
+            fullPath,
+            route.method,
+            async (req: Request) => {
+              const url = new URL(req.url);
+              let subPath = url.pathname;
+              if (subPath.startsWith(path)) {
+                subPath = subPath.substring(path.length);
+              }
+              if (!subPath.startsWith('/')) {
+                subPath = '/' + subPath;
+              }
+              url.pathname = subPath;
+              const newReq = new Request(url.toString(), req);
+              return honoApp.fetch(newReq);
+            }
+          );
+        }
+        return;
+      }
+
       // Extract method from handler if it's an object with methods
       if (typeof handler === 'object' && handler !== null) {
         // Handler is a router-like object with methods
