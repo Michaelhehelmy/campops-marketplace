@@ -39,14 +39,14 @@ export interface BrandingConfig {
 }
 
 const buildTimeDefaults: BrandingConfig = {
-  appName: import.meta.env.VITE_APP_NAME || "SinaiCamps",
-  shortName: import.meta.env.VITE_APP_SHORT_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
-  companyName: import.meta.env.VITE_COMPANY_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
-  tagline: import.meta.env.VITE_APP_TAGLINE || "Hospitality Management",
-  logoUrl: import.meta.env.VITE_APP_LOGO_URL || "/logo.png",
+  appName: import.meta.env.VITE_SHOP_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
+  shortName: import.meta.env.VITE_SHOP_NAME || import.meta.env.VITE_APP_SHORT_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
+  companyName: import.meta.env.VITE_SHOP_NAME || import.meta.env.VITE_COMPANY_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps",
+  tagline: import.meta.env.VITE_TAGLINE || import.meta.env.VITE_APP_TAGLINE || "Hospitality Management",
+  logoUrl: import.meta.env.VITE_LOGO_URL || import.meta.env.VITE_APP_LOGO_URL || "/logo.png",
   faviconUrl: import.meta.env.VITE_APP_FAVICON_URL || "/favicon.ico",
-  primaryColor: import.meta.env.VITE_APP_PRIMARY_COLOR || "#0f172a",
-  accentColor: import.meta.env.VITE_APP_ACCENT_COLOR || "#0ea5e9",
+  primaryColor: import.meta.env.VITE_PRIMARY_COLOR || import.meta.env.VITE_APP_PRIMARY_COLOR || "#0f172a",
+  accentColor: import.meta.env.VITE_ACCENT_COLOR || import.meta.env.VITE_SECONDARY_COLOR || import.meta.env.VITE_APP_ACCENT_COLOR || "#0ea5e9",
   backgroundColor: import.meta.env.VITE_APP_BACKGROUND_COLOR || "#ffffff",
   contactEmail: import.meta.env.VITE_CONTACT_EMAIL || "",
   contactPhone: import.meta.env.VITE_CONTACT_PHONE || "",
@@ -54,7 +54,7 @@ const buildTimeDefaults: BrandingConfig = {
   domain: import.meta.env.VITE_DOMAIN || "",
   loginButtonLabel:
     import.meta.env.VITE_APP_LOGIN_LABEL ||
-    `Enter ${import.meta.env.VITE_APP_NAME || "SinaiCamps"}`,
+    `Enter ${import.meta.env.VITE_SHOP_NAME || import.meta.env.VITE_APP_NAME || "SinaiCamps"}`,
   // Dynamic Image Constants
   heroMain:
     import.meta.env.VITE_IMG_HERO_MAIN ||

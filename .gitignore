@@ -58,3 +58,6 @@ AGENT_TASK_PROMPT.md
 plugin_results*.log
 server.log
 server_out.log
+
+# Build outputs for shops
+builds/

@@ -1,5 +1,6 @@
 import React from "react";
 import { componentRegistry } from "@/lib/ComponentRegistry";
+import { useBranding } from "@/contexts/BrandingContext";
 
 /**
  * PWAInstallBanner
@@ -7,6 +8,7 @@ import { componentRegistry } from "@/lib/ComponentRegistry";
  * A banner that prompts the user to install the PWA.
  */
 export function PWAInstallBanner() {
+  const { appName } = useBranding();
   return (
     <div className="bg-brand-600 text-white p-4 rounded-2xl mb-6 flex items-center justify-between shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
       <div className="flex items-center gap-3">
@@ -21,7 +23,7 @@ export function PWAInstallBanner() {
           </svg>
         </div>
         <div>
-          <h4 className="font-bold">Install SinaiCamps App</h4>
+          <h4 className="font-bold">Install {appName} App</h4>
           <p className="text-white/80 text-sm">
             Access your dashboard faster and get offline support.
           </p>
