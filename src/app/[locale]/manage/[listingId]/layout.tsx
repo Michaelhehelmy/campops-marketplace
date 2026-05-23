@@ -59,6 +59,16 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
   const [property, setProperty] = useState<any>(null);
   const [pluginMenuItems, setPluginMenuItems] = useState<PluginMenuItem[]>([]);
+  const [isTenantDomain, setIsTenantDomain] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname.toLowerCase();
+      const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN || 'sinaicamps.com').toLowerCase();
+      const isMain = hostname === BASE_DOMAIN || hostname === `www.${BASE_DOMAIN}` || hostname === 'localhost';
+      setIsTenantDomain(!isMain || hostname === '127.0.0.1');
+    }
+  }, []);
 
   useEffect(() => {
     const resolveContext = async () => {
@@ -122,12 +132,21 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r border-gray-200 flex flex-col sticky top-0 h-screen">
           <div className="p-6 border-b border-gray-100">
-            <button
-              onClick={() => router.push(`/${locale}/search`)}
-              className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
-            >
-              <ChevronLeft className="h-3 w-3" /> Back to Market
-            </button>
+            {!isTenantDomain ? (
+              <button
+                onClick={() => router.push(`/${locale}/search`)}
+                className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
+              >
+                <ChevronLeft className="h-3 w-3" /> Back to Market
+              </button>
+            ) : (
+              <button
+                onClick={() => router.push(`/${locale}`)}
+                className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
+              >
+                <ChevronLeft className="h-3 w-3" /> Back to Site
+              </button>
+            )}
             <h2 className="font-black text-gray-900 truncate">{property.name}</h2>
             <span className="text-[10px] text-brand-600 font-bold uppercase tracking-widest">
               Listing Admin

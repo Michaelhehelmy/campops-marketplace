@@ -198,10 +198,60 @@ export default async function init(api: PluginAPI) {
 
         const { user } = session;
 
-        let property = await api.db.queryOne('SELECT * FROM properties WHERE owner_id = ?', [
-          user.id,
-        ]);
+        const hostHeader = req.headers.get('x-forwarded-host') || req.headers.get('host') || '';
+        const hostname = hostHeader.split(':')[0].replace(/^www\./, '').toLowerCase();
 
+        let property = null;
+
+        const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN || 'sinaicamps.com').toLowerCase();
+        const isSubdomain = hostname !== BASE_DOMAIN && hostname.endsWith(`.${BASE_DOMAIN}`);
+        const isCustomDomain = hostname && hostname !== BASE_DOMAIN && !isSubdomain;
+
+        if (isCustomDomain || isSubdomain) {
+          if (hostname === '127.0.0.1' || hostname === 'localhost') {
+            // Local dev test fallback for Acacia Camp (id: 3)
+            property = await api.db.queryOne('SELECT * FROM properties WHERE id = 3');
+          } else if (isCustomDomain) {
+            property = await api.db.queryOne(
+              `SELECT * FROM properties WHERE is_active = 1 AND (custom_domain = ? OR custom_domain = ?)`,
+              [hostname, `www.${hostname}`]
+            );
+          } else if (isSubdomain) {
+            const sub = hostname.slice(0, -(BASE_DOMAIN.length + 1));
+            property = await api.db.queryOne(
+              `SELECT * FROM properties WHERE is_active = 1 AND subdomain = ?`,
+              [sub]
+            );
+          }
+        }
+
+        // Verify permissions for the resolved tenant property
+        if (property) {
+          const isMaster = (user as any).role === 'master';
+          const isOwner = (property as any).owner_id === user.id;
+          let isStaff = false;
+          if (!isOwner && !isMaster) {
+            const staffRecord = await api.db.queryOne(
+              'SELECT 1 FROM property_staff WHERE user_id = ? AND property_id = ?',
+              [user.id, (property as any).id]
+            );
+            isStaff = !!staffRecord;
+          }
+
+          if (!isMaster && !isOwner && !isStaff) {
+            // If they are not authorized for this tenant property, do not return it
+            property = null;
+          }
+        }
+
+        // Fallback to their owned property if no tenant domain property matches or authorized
+        if (!property) {
+          property = await api.db.queryOne('SELECT * FROM properties WHERE owner_id = ?', [
+            user.id,
+          ]);
+        }
+
+        // Fallback to their staff property
         if (!property) {
           const staffRecord = await api.db.queryOne(
             'SELECT property_id FROM property_staff WHERE user_id = ?',

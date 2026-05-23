@@ -220,6 +220,15 @@ async function handleMiddleware(req: NextRequest) {
     }
   }
 
+  if (tenantPropertyId && barePath.startsWith('/admin')) {
+    const port = req.nextUrl.port;
+    const hostWithPort = port ? `${BASE_DOMAIN}:${port}` : BASE_DOMAIN;
+    const mainDomainUrl = new URL(pathname, `${req.nextUrl.protocol}//${hostWithPort}`);
+    req.nextUrl.searchParams.forEach((v, k) => mainDomainUrl.searchParams.set(k, v));
+    logger.info(`[Middleware] Redirecting platform admin route from tenant domain to main domain: ${mainDomainUrl.toString()}`);
+    return NextResponse.redirect(mainDomainUrl);
+  }
+
   if (tenantPlan === 'basic' && barePath.startsWith('/manage')) {
     const basicRestricted = ['/rooms', '/guests', '/finance', '/settings', '/plugins'];
     if (basicRestricted.some((r) => barePath.includes(r))) {
