@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
 
     if (!token) {
       token =
+        req.cookies.get('__Secure-better-auth.session_token')?.value ||
         req.cookies.get('better-auth.session_token')?.value ||
         req.cookies.get('better-auth.session-token')?.value ||
         req.cookies.get('sinaicamps_token')?.value ||

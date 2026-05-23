@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -15,11 +16,26 @@ import {
 
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
+import { authClient } from '@/lib/auth-client';
 
 export default function MasterLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const pathname = usePathname();
   const locale = params.locale as string;
+  const { data: session } = authClient.useSession();
+  const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
+
+  const shortName = platformName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'C';
+  const initials = session?.user?.name?.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'SM';
 
   return (
     <PluginRegistryProvider>
@@ -29,9 +45,9 @@ export default function MasterLayout({ children }: { children: React.ReactNode }
           <div className="p-6 border-b border-slate-800">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-purple-600 rounded-lg flex items-center justify-center font-black text-white">
-                C
+                {shortName.charAt(0)}
               </div>
-              <h2 className="font-black text-xl tracking-tight">SinaiCamps</h2>
+              <h2 className="font-black text-xl tracking-tight">{platformName.split(' ')[0]}</h2>
             </div>
             <span className="text-[10px] text-purple-400 font-bold uppercase tracking-widest">
               Marketplace Master
@@ -105,13 +121,17 @@ export default function MasterLayout({ children }: { children: React.ReactNode }
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="text-sm font-bold text-gray-900">System Master</div>
+                <div className="text-sm font-bold text-gray-900">{session?.user?.name || 'System Master'}</div>
                 <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  Global Super Admin
+                  {(session?.user as any)?.role || 'Global Super Admin'}
                 </div>
               </div>
               <div className="h-10 w-10 rounded-full bg-purple-100 border-2 border-white shadow-sm flex items-center justify-center text-purple-600 font-bold">
-                SM
+                {session?.user?.image ? (
+                  <img src={session.user.image} alt="" className="h-full w-full object-cover rounded-full" />
+                ) : (
+                  initials
+                )}
               </div>
             </div>
           </header>

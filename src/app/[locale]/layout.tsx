@@ -29,10 +29,28 @@ export async function generateMetadata(
       };
     }
   } catch {}
-  return {
-    title: 'SinaiCamps Marketplace',
-    description: 'Find and book your perfect camp stay',
-  };
+  // Fallback to platform name from marketplace settings for the marketplace itself
+  try {
+    const settings = await db
+      .prepare(
+        `
+        SELECT platform_name as "platformName"
+        FROM marketplace_settings
+        WHERE id = 'marketplace_settings'
+        `
+      )
+      .get();
+    const platformName = settings?.platformName ?? 'SinaiCamps Marketplace';
+    return {
+      title: platformName,
+      description: 'Find and book your perfect camp stay',
+    };
+  } catch {
+    return {
+      title: 'SinaiCamps Marketplace',
+      description: 'Find and book your perfect camp stay',
+    };
+  }
 }
 
 interface Props {
@@ -40,7 +58,7 @@ interface Props {
   params: { locale: string };
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
@@ -74,7 +92,7 @@ async function getTenantForHost(host: string) {
             OR COALESCE(json_extract(CASE WHEN json_valid(settings) THEN settings ELSE '{}' END, '$.customDomain'), '') = ?
           )
         LIMIT 1
-      `
+        `
       )
       .get(cleanHostname, cleanHostname)) as any;
 
@@ -88,7 +106,7 @@ async function getTenantForHost(host: string) {
           FROM properties
           WHERE is_active = true AND subdomain = ?
           LIMIT 1
-        `
+          `
         )
         .get(sub)) as any;
     }
@@ -120,6 +138,25 @@ export default async function LocaleLayout({ children, params }: Props) {
   const headerList = headers();
   const host = headerList.get('x-forwarded-host') || headerList.get('host') || '';
   const tenant = await getTenantForHost(host);
+  let platformName = 'SinaiCamps Marketplace';
+
+  // Fetch platform name for the marketplace itself (when no tenant)
+  if (!tenant) {
+    try {
+      const settings = await db
+        .prepare(
+          `
+          SELECT platform_name as "platformName"
+          FROM marketplace_settings
+          WHERE id = 'marketplace_settings'
+          `
+        )
+        .get();
+      platformName = settings?.platformName ?? 'SinaiCamps Marketplace';
+    } catch {
+      // Keep default
+    }
+  }
 
   if (tenant) {
     const colors = tenant.branding?.colors || {
@@ -133,12 +170,12 @@ export default async function LocaleLayout({ children, params }: Props) {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          :root {
-            --tenant-primary: ${colors.primary || '#0f172a'};
-            --tenant-secondary: ${colors.secondary || '#3b82f6'};
-            --tenant-accent: ${colors.accent || '#10b981'};
-          }
-        `,
+           :root {
+             --tenant-primary: ${colors.primary || '#0f172a'};
+             --tenant-secondary: ${colors.secondary || '#3b82f6'};
+             --tenant-accent: ${colors.accent || '#10b981'};
+           }
+         `,
           }}
         />
         <ShopfrontNav locale={locale} tenant={tenant} />
@@ -152,16 +189,16 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider messages={messages}>
       <Nav locale={locale} />
       <main className="min-h-[calc(100vh-64px)]">{children}</main>
-      <Footer />
+      <Footer platformName={platformName} />
     </NextIntlClientProvider>
   );
 }
 
-function Footer() {
+function Footer({ platformName }: { platformName: string }) {
   return (
     <footer className="bg-gray-900 text-gray-400 text-sm py-8 mt-16">
       <div className="max-w-7xl mx-auto px-4 text-center">
-        <p>© {new Date().getFullYear()} SinaiCamps. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} {platformName}. All rights reserved.</p>
       </div>
     </footer>
   );

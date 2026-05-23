@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 export function TestBanner() {
+  const t = useTranslations('property');
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Check if pwa-preview flag is set
     const previewFlag = localStorage.getItem('pwa-preview');
     setShowBanner(previewFlag === 'true');
   }, []);
@@ -17,7 +18,7 @@ export function TestBanner() {
 
   return (
     <div data-testid="pwa-install-banner" className="bg-blue-500 text-white p-4">
-      Install SinaiCamps App
+      {t('installApp')}
     </div>
   );
 }

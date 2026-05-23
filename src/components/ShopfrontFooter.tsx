@@ -1,5 +1,8 @@
 'use client';
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Mail, Phone, MapPin, Tent } from 'lucide-react';
 
 interface Props {
@@ -20,6 +23,16 @@ export function ShopfrontFooter({ tenant }: Props) {
 
   const contact = tenant.branding?.contact || {};
   const tagline = tenant.branding?.tagline || 'Experience Sinai like never before.';
+  const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer
@@ -99,7 +112,7 @@ export function ShopfrontFooter({ tenant }: Props) {
           </p>
           <p className="flex items-center gap-1">
             <span>Powered by</span>
-            <span className="font-bold text-zinc-400">SinaiCamps Marketplace</span>
+            <span className="font-bold text-zinc-400">{platformName}</span>
           </p>
         </div>
       </div>

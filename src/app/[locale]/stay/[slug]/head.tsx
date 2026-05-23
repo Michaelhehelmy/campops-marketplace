@@ -27,11 +27,14 @@ export default async function Head({ params }: { params: { slug: string } }) {
       : property?.settings || {};
   const colors = getBrandColors(settings);
 
+  const platformRow = db.prepare('SELECT platform_name FROM marketplace_settings LIMIT 1').get() as { platform_name: string } | undefined;
+  const platformName = platformRow?.platform_name || 'SinaiCamps';
+
   return (
     <>
       <style>{`:root{--tenant-primary:${colors.primary};--tenant-secondary:${colors.secondary};--tenant-accent:${colors.accent};}`}</style>
       <meta name="theme-color" content={colors.primary} />
-      <meta name="listing-name" content={property?.name || 'SinaiCamps Listing'} />
+      <meta name="listing-name" content={property?.name || `${platformName} Listing`} />
     </>
   );
 }

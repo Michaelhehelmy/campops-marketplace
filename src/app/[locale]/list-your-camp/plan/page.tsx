@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+
+const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com';
 
 interface Plan {
   id: 'basic' | 'premium' | 'ultimate';
@@ -13,49 +15,6 @@ interface Plan {
   note?: string;
 }
 
-const PLANS: Plan[] = [
-  {
-    id: 'basic',
-    name: 'Basic Listing',
-    price: 'Free forever',
-    features: [
-      'Public listing on SinaiCamps marketplace',
-      'View incoming bookings (read-only)',
-      'Edit property details, photos & amenities',
-      'Basic rate management',
-    ],
-  },
-  {
-    id: 'premium',
-    name: 'Operations Suite',
-    price: '$49 / month',
-    badge: 'Most Popular',
-    features: [
-      'Everything in Basic',
-      'Full Acacia Camp operations panel',
-      'POS, KDS, Housekeeping & Inventory',
-      'Loyalty & rewards program',
-      'Reports & analytics',
-      'Your own campname.sinaicamps.com subdomain',
-      'Plugin ecosystem access',
-    ],
-    note: '14-day free trial, cancel anytime',
-  },
-  {
-    id: 'ultimate',
-    name: 'White Label',
-    price: '$99 / month',
-    features: [
-      'Everything in Operations Suite',
-      'Your own domain (e.g. bookings.mycamp.com)',
-      'Custom branding (logo & colors)',
-      'SSL certificate — fully managed',
-      'Priority support',
-    ],
-    note: '14-day free trial, cancel anytime',
-  },
-];
-
 export default function Step3PlanPage() {
   const router = useRouter();
   const { locale } = useParams();
@@ -63,6 +22,59 @@ export default function Step3PlanPage() {
   const [customDomain, setCustomDomain] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [platformName, setPlatformName] = useState('SinaiCamps');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
+
+  const PLANS: Plan[] = [
+    {
+      id: 'basic',
+      name: 'Basic Listing',
+      price: 'Free forever',
+      features: [
+        `Public listing on ${platformName} marketplace`,
+        'View incoming bookings (read-only)',
+        'Edit property details, photos & amenities',
+        'Basic rate management',
+      ],
+    },
+    {
+      id: 'premium',
+      name: 'Operations Suite',
+      price: '$49 / month',
+      badge: 'Most Popular',
+      features: [
+        'Everything in Basic',
+        'Full operations panel',
+        'POS, KDS, Housekeeping & Inventory',
+        'Loyalty & rewards program',
+        'Reports & analytics',
+        `Your own subdomain (campname.${BASE_DOMAIN})`,
+        'Plugin ecosystem access',
+      ],
+      note: '14-day free trial, cancel anytime',
+    },
+    {
+      id: 'ultimate',
+      name: 'White Label',
+      price: '$99 / month',
+      features: [
+        'Everything in Operations Suite',
+        'Your own domain (e.g. bookings.mycamp.com)',
+        'Custom branding (logo & colors)',
+        'SSL certificate — fully managed',
+        'Priority support',
+      ],
+      note: '14-day free trial, cancel anytime',
+    },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +96,6 @@ export default function Step3PlanPage() {
     startTransition(() => {
       void (async () => {
         try {
-          // Get branding data from session if available
           const brandingData = sessionStorage.getItem('reg_branding');
           const branding = brandingData ? JSON.parse(brandingData) : {};
 
@@ -96,10 +107,10 @@ export default function Step3PlanPage() {
           };
           if (selected === 'ultimate') {
             body.custom_domain = customDomain.trim().toLowerCase();
-            body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
+            body.stripe_payment_method_id = 'pm_placeholder';
           }
           if (selected === 'premium') {
-            body.stripe_payment_method_id = 'pm_placeholder'; // swap for real Stripe flow
+            body.stripe_payment_method_id = 'pm_placeholder';
           }
 
           const res = await fetch('/api/owner/register', {
@@ -114,7 +125,6 @@ export default function Step3PlanPage() {
             return;
           }
 
-          // Store token as cookie via the auth callback route
           await fetch('/api/auth/callback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -199,7 +209,6 @@ export default function Step3PlanPage() {
                 </div>
               </div>
 
-              {/* Custom domain input shown inline */}
               {plan.id === 'ultimate' && selected === 'ultimate' && (
                 <div className="mt-4 pt-4 border-t border-brand-200">
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -215,7 +224,7 @@ export default function Step3PlanPage() {
                   />
                   <p className="text-xs text-gray-400 mt-1">
                     Point a CNAME record from this domain to{' '}
-                    <code className="bg-gray-100 px-1 rounded">sinaicamps.com</code> after
+                    <code className="bg-gray-100 px-1 rounded">{BASE_DOMAIN}</code> after
                     registering.
                   </p>
                 </div>

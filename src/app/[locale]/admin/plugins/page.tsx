@@ -53,6 +53,16 @@ export default function MasterPluginsPage() {
   const [plugins, setPlugins] = useState<Plugin[]>([]);
   const [propertyAssociations, setPropertyAssociations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [platformName, setPlatformName] = useState('SinaiCamps');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
   const [shopsLoaded, setShopsLoaded] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedProperty, setSelectedProperty] = useState<string>(() => {
@@ -371,7 +381,7 @@ export default function MasterPluginsPage() {
                         <div className="h-6 w-6 rounded-full bg-slate-900 flex items-center justify-center text-[10px] text-white font-bold">
                           C
                         </div>
-                        <span className="text-xs font-bold text-gray-600">SinaiCamps Registry</span>
+                        <span className="text-xs font-bold text-gray-600">{platformName} Registry</span>
                       </div>
                       <div className="flex gap-2">
                         {selectedProperty === 'all' && (

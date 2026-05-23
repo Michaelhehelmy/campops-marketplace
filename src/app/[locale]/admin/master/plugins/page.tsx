@@ -25,6 +25,7 @@ interface Plugin {
 }
 
 export default function MasterPluginsPage() {
+  const [platformName, setPlatformName] = useState('SinaiCamps');
   const [plugins, setPlugins] = useState<Plugin[]>([
     {
       id: 'plg-1',
@@ -37,7 +38,16 @@ export default function MasterPluginsPage() {
       version: '2.4.1',
     },
   ]);
-  const [loading, setLoading] = useState(false); // Disable loading for E2E
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
   const [search, setSearch] = useState('');
 
   const togglePlugin = (id: string) => {
@@ -171,7 +181,7 @@ export default function MasterPluginsPage() {
                   <div className="h-6 w-6 rounded-full bg-slate-900 flex items-center justify-center text-[10px] text-white font-bold">
                     C
                   </div>
-                  <span className="text-xs font-bold text-gray-600">SinaiCamps Registry</span>
+                  <span className="text-xs font-bold text-gray-600">{platformName} Registry</span>
                 </div>
                 <div className="flex gap-2">
                   <button

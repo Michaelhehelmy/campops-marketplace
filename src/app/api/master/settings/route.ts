@@ -7,32 +7,33 @@ export async function GET(request: Request) {
   try {
     const session = await requireRole(request, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
-    // In a real app, these might be in a 'settings' table
-    // For now, we'll try to fetch from a mock settings table or just return default values
-    // if the table doesn't exist yet.
 
-    let settings = {
-      platformName: 'SinaiCamps Marketplace',
-      supportEmail: 'support@sinaicamps.com',
-      currency: 'USD',
-      timezone: 'UTC',
-      commissionRate: 10.0,
-      minBookingFee: 1.5,
-    };
+    const settings = await db
+      .prepare(
+        `
+        SELECT 
+          platform_name as "platformName",
+          support_email as "supportEmail",
+          currency,
+          timezone,
+          commission_rate as "commissionRate",
+          min_booking_fee as "minBookingFee"
+        FROM marketplace_settings
+        WHERE id = 'marketplace_settings'
+        `
+      )
+      .get();
 
-    try {
-      const dbSettings = await db
-        .prepare("SELECT config FROM homepage_config WHERE id = 'marketplace_settings'")
-        .get();
-      if (dbSettings?.config) {
-        // Config is already parsed as JSON by the database wrapper
-        const parsedConfig =
-          typeof dbSettings.config === 'string' ? JSON.parse(dbSettings.config) : dbSettings.config;
-        settings = { ...settings, ...parsedConfig };
-      }
-    } catch (e: any) {
-      // Table might not exist or ID not found
-      console.error('[Settings API] Error fetching settings:', e.message);
+    if (!settings) {
+      // Fallback defaults if somehow no record exists
+      return NextResponse.json({
+        platformName: 'SinaiCamps Marketplace',
+        supportEmail: 'support@sinaicamps.com',
+        currency: 'USD',
+        timezone: 'UTC',
+        commissionRate: 10.0,
+        minBookingFee: 1.5,
+      });
     }
 
     return NextResponse.json(settings);
@@ -50,12 +51,25 @@ export async function POST(request: Request) {
     await db
       .prepare(
         `
-      INSERT INTO homepage_config (id, config)
-      VALUES (?, ?)
-      ON CONFLICT(id) DO UPDATE SET config = excluded.config
-    `
+        UPDATE marketplace_settings SET
+          platform_name = COALESCE(?, platform_name),
+          support_email = COALESCE(?, support_email),
+          currency = COALESCE(?, currency),
+          timezone = COALESCE(?, timezone),
+          commission_rate = COALESCE(?, commission_rate),
+          min_booking_fee = COALESCE(?, min_booking_fee),
+          updated_at = (strftime('%s', 'now') * 1000)
+        WHERE id = 'marketplace_settings'
+        `
       )
-      .run('marketplace_settings', JSON.stringify(body));
+      .run(
+        body.platformName,
+        body.supportEmail,
+        body.currency,
+        body.timezone,
+        body.commissionRate,
+        body.minBookingFee
+      );
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {

@@ -132,6 +132,7 @@ async function handleMiddleware(req: NextRequest) {
   const needsAuth = AUTH_REQUIRED.some((p) => barePath.startsWith(p));
   const token =
     req.cookies.get('sinaicamps_token')?.value ||
+    req.cookies.get('__Secure-better-auth.session_token')?.value ||
     req.cookies.get('better-auth.session_token')?.value ||
     req.cookies.get('better-auth.session-token')?.value;
 
@@ -150,7 +151,7 @@ async function handleMiddleware(req: NextRequest) {
     try {
       const redirectRes = await fetch(`${API_URL}/api/auth/redirect-check`, {
         headers: {
-          Cookie: `better-auth.session_token=${token}; better-auth.session-token=${token}; sinaicamps_token=${token}; sinaicamps_role=${req.cookies.get('sinaicamps_role')?.value || ''}`,
+          Cookie: `__Secure-better-auth.session_token=${token}; better-auth.session_token=${token}; better-auth.session-token=${token}; sinaicamps_token=${token}; sinaicamps_role=${req.cookies.get('sinaicamps_role')?.value || ''}`,
         },
       });
       if (redirectRes.ok) {
@@ -190,7 +191,7 @@ async function handleMiddleware(req: NextRequest) {
             `${API_URL}/api/listing-access?listing=${encodeURIComponent(listingSlug)}`,
             {
               headers: {
-                Cookie: `sinaicamps_token=${token}; better-auth.session_token=${token}; sinaicamps_role=${userRole || ''}`,
+                Cookie: `sinaicamps_token=${token}; __Secure-better-auth.session_token=${token}; better-auth.session_token=${token}; sinaicamps_role=${userRole || ''}`,
               },
             }
           );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { LayoutDashboard, LogOut, Search, Menu, X, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,16 @@ export function Nav({ locale }: { locale: string }) {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [platformName, setPlatformName] = useState('SinaiCamps');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -38,12 +48,12 @@ export function Nav({ locale }: { locale: string }) {
           <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-500/20 group-hover:border-amber-500/40 transition-colors duration-300">
             <img
               src="/sinaicamps.png"
-              alt="SinaiCamps Logo"
+              alt={`${platformName} Logo`}
               className="h-full w-full object-cover scale-[1.2]"
             />
           </div>
           <span className="text-xl font-black bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
-            SinaiCamps
+            {platformName}
           </span>
         </a>
 

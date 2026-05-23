@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import { LayoutDashboard, Building2, CalendarDays, LogOut, TrendingUp, Puzzle } from 'lucide-react';
@@ -22,6 +23,16 @@ function OwnerLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const base = `/${locale}/owner`;
   const pluginMenuItems = usePluginMenuItems();
+  const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   const nav = [
     { href: `${base}/dashboard`, label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
@@ -40,7 +51,7 @@ function OwnerLayoutInner({ children }: { children: React.ReactNode }) {
       <aside className="w-60 bg-gray-900 text-white flex flex-col shrink-0">
         <div className="px-6 py-6 border-b border-white/10">
           <Link href="/" className="block text-lg font-bold text-brand-400">
-            SinaiCamps
+            {platformName}
           </Link>
           <p className="text-xs text-white/40 mt-0.5">Owner Portal</p>
         </div>

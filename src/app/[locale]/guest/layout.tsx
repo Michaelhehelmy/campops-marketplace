@@ -1,14 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Home, Calendar, ShoppingBag, User, Heart, Bell, LogOut, ChevronLeft } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const pathname = usePathname();
   const router = useRouter();
   const locale = params.locale as string;
+  const { data: session } = authClient.useSession();
+  const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.refresh();
+    router.push(`/${locale}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -17,9 +36,9 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-2" onClick={() => router.push(`/${locale}/search`)}>
             <div className="h-8 w-8 bg-brand-600 rounded-lg flex items-center justify-center font-black text-white cursor-pointer">
-              C
+              {platformName.charAt(0)}
             </div>
-            <h2 className="font-black text-xl tracking-tight cursor-pointer">SinaiCamps</h2>
+            <h2 className="font-black text-xl tracking-tight cursor-pointer">{platformName}</h2>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -55,13 +74,17 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 pl-6 border-l border-gray-100"
           >
             <div className="text-right hidden sm:block">
-              <div className="text-sm font-bold text-gray-900">Michael Guest</div>
+              <div className="text-sm font-bold text-gray-900">{session?.user?.name || 'Guest'}</div>
               <div className="text-[10px] text-brand-600 font-bold uppercase tracking-widest">
                 Guest Member
               </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-brand-100 border-2 border-white shadow-sm flex items-center justify-center text-brand-600 font-bold overflow-hidden">
-              <User className="h-6 w-6" />
+              {session?.user?.image ? (
+                <img src={session.user.image} alt={session.user.name || ''} className="h-full w-full object-cover" />
+              ) : (
+                <User className="h-6 w-6" />
+              )}
             </div>
           </Link>
         </div>
@@ -72,7 +95,7 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
       <footer className="bg-white border-t border-gray-100 py-12 mt-20">
         <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
           <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-            © 2026 SinaiCamps Marketplace. All rights reserved.
+            © {new Date().getFullYear()} {platformName}. All rights reserved.
           </div>
           <div className="flex gap-8">
             <button className="text-[10px] text-gray-400 font-bold uppercase tracking-widest hover:text-brand-600 transition-all">
@@ -81,7 +104,10 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
             <button className="text-[10px] text-gray-400 font-bold uppercase tracking-widest hover:text-brand-600 transition-all">
               Privacy
             </button>
-            <button className="text-[10px] text-gray-400 font-bold uppercase tracking-widest hover:text-red-500 transition-all flex items-center gap-2">
+            <button
+              onClick={handleSignOut}
+              className="text-[10px] text-gray-400 font-bold uppercase tracking-widest hover:text-red-500 transition-all flex items-center gap-2"
+            >
               <LogOut className="h-3 w-3" /> Sign Out
             </button>
           </div>

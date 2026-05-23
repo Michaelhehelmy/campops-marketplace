@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Settings,
   Globe,
@@ -17,6 +17,15 @@ export default function MasterSettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
   const [saved, setSaved] = useState(false);
   const [platformName, setPlatformName] = useState('SinaiCamps Marketplace');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSave = () => {
     setSaved(true);

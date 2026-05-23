@@ -1,17 +1,15 @@
 import { MetadataRoute } from 'next';
+import { db } from '@/lib/db';
 
-/**
- * Static web manifest for the main marketplace platform (sinaicamps.com).
- *
- * This manifest is for the platform shell (master, admin, manager, guest roles).
- * Tenant custom-domain manifests are served dynamically from:
- *   GET /api/manifest.webmanifest?siteId=<id>
- */
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const row = db.prepare('SELECT platform_name FROM marketplace_settings LIMIT 1').get() as { platform_name: string } | undefined;
+  const platformName = row?.platform_name || 'SinaiCamps';
+  const shortName = platformName.split(' ')[0] || platformName;
+
   return {
-    name: 'SinaiCamps Marketplace',
-    short_name: 'SinaiCamps',
-    description: 'Find and book your perfect camp stay in the Sinai Peninsula',
+    name: `${platformName} Marketplace`,
+    short_name: shortName,
+    description: 'Find and book your perfect camp stay',
     start_url: '/',
     id: 'sinaicamps-marketplace',
     display: 'standalone',

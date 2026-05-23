@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
       // Fallback for manual test tokens or if session lookup fails in middleware fetch
       const token =
         req.cookies.get('sinaicamps_token')?.value ||
+        req.cookies.get('__Secure-better-auth.session_token')?.value ||
         req.cookies.get('better-auth.session_token')?.value;
       const roleCookie = req.cookies.get('sinaicamps_role')?.value;
 

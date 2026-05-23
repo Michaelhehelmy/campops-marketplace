@@ -50,6 +50,85 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
 
 let isSeeded = false;
 
+const defaultPluginDefs = [
+  {
+    name: 'booking',
+    displayName: 'Marketplace Booking',
+    category: 'commerce',
+    manifest: JSON.stringify({
+      slots: {
+        'public.booking': ['booking:PublicBookingWidget'],
+        'manager.bookings': ['booking:ManagerBookingsList'],
+        'owner.bookings': ['booking:ManagerBookingsList'],
+        'staff.checkins': ['booking:StaffCheckInPanel'],
+        'guest.dashboard': ['booking:GuestReservationsList'],
+        'guest.reservations': ['booking:GuestReservationsList'],
+      },
+    }),
+  },
+  {
+    name: 'crm',
+    displayName: 'Customer Relations',
+    category: 'marketing',
+    manifest: JSON.stringify({
+      slots: {
+        'listing.sidebar': ['crm:ActivityWidget'],
+        'manager.guests': ['crm:GuestHistory'],
+      },
+    }),
+  },
+  {
+    name: 'pwa',
+    displayName: 'Progressive Web App',
+    category: 'operations',
+    manifest: JSON.stringify({
+      slots: {
+        'listing.header': ['pwa:PWAInstallBanner'],
+        'guest.dashboard.bottom': ['pwa:PWAInstallButton'],
+      },
+    }),
+  },
+  { name: 'loyalty', displayName: 'Loyalty Program', category: 'marketing', manifest: '{}' },
+  {
+    name: 'stripe-payments',
+    displayName: 'Stripe Payments',
+    category: 'commerce',
+    manifest: '{}',
+  },
+  { name: 'ical', displayName: 'iCal Sync', category: 'operations', manifest: '{}' },
+  {
+    name: 'channel-manager',
+    displayName: 'Channel Manager',
+    category: 'operations',
+    manifest: '{}',
+  },
+  {
+    name: 'test-probe',
+    displayName: 'Test Probe',
+    category: 'testing',
+    manifest: JSON.stringify({
+      slots: {
+        DASHBOARD_WIDGETS: ['test-probe:ProbeWidget'],
+        'listing.sidebar': ['test-probe:ProbeSidebarWidget'],
+      },
+    }),
+  },
+  {
+    name: 'resource',
+    displayName: 'Resource Listings',
+    category: 'marketplace',
+    manifest: JSON.stringify({
+      slots: {
+        'public.homepage': ['resource:FeaturedListings'],
+        'public.search': ['resource:SearchBar'],
+        'public.listing-detail': ['resource:ListingDetail'],
+        'master.listings': ['resource:MasterListingsTable'],
+        'manage.property': ['resource:AdminEditForm'],
+      },
+    }),
+  },
+];
+
 export function getSqlite(): Database.Database {
   return sqliteDb!;
 }
@@ -779,145 +858,6 @@ class DrizzleDatabaseWrapper {
           .run(cat.id, cat.name, cat.slug, cat.icon, 0);
       }
 
-      // Seed available plugins
-      const defaultPlugins = [
-        {
-          name: 'booking',
-          displayName: 'Marketplace Booking',
-          category: 'commerce',
-          manifest: JSON.stringify({
-            slots: {
-              'public.booking': ['booking:PublicBookingWidget'],
-              'manager.bookings': ['booking:ManagerBookingsList'],
-              'owner.bookings': ['booking:ManagerBookingsList'],
-              'staff.checkins': ['booking:StaffCheckInPanel'],
-              'guest.dashboard': ['booking:GuestReservationsList'],
-              'guest.reservations': ['booking:GuestReservationsList'],
-            },
-          }),
-        },
-        {
-          name: 'crm',
-          displayName: 'Customer Relations',
-          category: 'marketing',
-          manifest: JSON.stringify({
-            slots: {
-              'listing.sidebar': ['crm:ActivityWidget'],
-              'manager.guests': ['crm:GuestHistory'],
-            },
-          }),
-        },
-        {
-          name: 'pwa',
-          displayName: 'Progressive Web App',
-          category: 'operations',
-          manifest: JSON.stringify({
-            slots: {
-              'listing.header': ['pwa:PWAInstallBanner'],
-              'guest.dashboard.bottom': ['pwa:PWAInstallButton'],
-            },
-          }),
-        },
-        { name: 'loyalty', displayName: 'Loyalty Program', category: 'marketing', manifest: '{}' },
-        {
-          name: 'stripe-payments',
-          displayName: 'Stripe Payments',
-          category: 'commerce',
-          manifest: '{}',
-        },
-        { name: 'ical', displayName: 'iCal Sync', category: 'operations', manifest: '{}' },
-        {
-          name: 'channel-manager',
-          displayName: 'Channel Manager',
-          category: 'operations',
-          manifest: '{}',
-        },
-        {
-          name: 'test-probe',
-          displayName: 'Test Probe',
-          category: 'testing',
-          manifest: JSON.stringify({
-            slots: {
-              DASHBOARD_WIDGETS: ['test-probe:ProbeWidget'],
-              'listing.sidebar': ['test-probe:ProbeSidebarWidget'],
-            },
-          }),
-        },
-        {
-          name: 'resource',
-          displayName: 'Resource Listings',
-          category: 'marketplace',
-          manifest: JSON.stringify({
-            slots: {
-              'public.homepage': ['resource:FeaturedListings'],
-              'public.search': ['resource:SearchBar'],
-              'public.listing-detail': ['resource:ListingDetail'],
-              'master.listings': ['resource:MasterListingsTable'],
-              'manage.property': ['resource:AdminEditForm'],
-            },
-          }),
-        },
-      ];
-
-      // Dynamic Plugin Discovery
-      const pluginsDir = path.join(process.cwd(), 'plugins');
-      if (fs.existsSync(pluginsDir)) {
-        const discovered = fs
-          .readdirSync(pluginsDir)
-          .filter((f) => fs.statSync(path.join(pluginsDir, f)).isDirectory());
-
-        for (const pluginId of discovered) {
-          const manifestPath = path.join(pluginsDir, pluginId, 'package.json');
-          let manifest = {};
-          let displayName = pluginId.charAt(0).toUpperCase() + pluginId.slice(1);
-
-          if (fs.existsSync(manifestPath)) {
-            try {
-              const pkg = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-              manifest = pkg.sinaicamps || {};
-              if (pkg.description) displayName = pkg.description;
-            } catch (e) {}
-          }
-
-          const special = defaultPlugins.find((p) => p.name === pluginId);
-          const finalManifest = special ? special.manifest : JSON.stringify(manifest);
-          const finalDisplayName = special ? special.displayName : displayName;
-
-          getSqlite()
-            .prepare(
-              'INSERT OR IGNORE INTO available_plugins (id, name, display_name, category, is_official, is_active, manifest, entry_point_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-            )
-            .run(
-              pluginId,
-              pluginId,
-              finalDisplayName,
-              special?.category || 'utility',
-              1,
-              1,
-              finalManifest,
-              `/plugins/${pluginId}/index.js`
-            );
-        }
-      }
-
-      // Ensure all default (official) plugins are seeded even if not discovered in filesystem
-      for (const p of defaultPlugins) {
-        getSqlite()
-          .prepare(
-            'INSERT OR IGNORE INTO available_plugins (id, name, display_name, category, is_official, is_active, manifest, entry_point_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-          )
-          .run(
-            p.name,
-            p.name,
-            p.displayName,
-            p.category || 'utility',
-            1,
-            1,
-            p.manifest || '{}',
-            `/plugins/${p.name}/index.js`
-          );
-      }
-
       getSqlite()
         .prepare(
           'INSERT OR REPLACE INTO property_plugins (id, property_id, plugin_name, is_enabled) VALUES (?, ?, ?, ?)'
@@ -935,6 +875,9 @@ class DrizzleDatabaseWrapper {
           'INSERT OR REPLACE INTO property_plugins (id, property_id, plugin_name, is_enabled) VALUES (?, ?, ?, ?)'
         )
         .run('pp-pwa', '1', 'pwa', 1);
+
+      // Re-seed available_plugins after table recreation
+      seedAvailablePlugins();
     } catch (err) {
       logger.warn('resetMockStore failed:', err);
     }
@@ -948,6 +891,83 @@ db.createTable(
   'idempotency_keys',
   'key TEXT PRIMARY KEY, response TEXT NOT NULL, created_at INTEGER'
 ).catch((e) => logger.error('Failed to create idempotency_keys table:', e));
+
+// Seed available_plugins on every startup (safe in production — uses INSERT OR IGNORE)
+function seedAvailablePlugins() {
+  if (!sqliteDb) return;
+  try {
+    const row = getSqlite()
+      .prepare("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='available_plugins'")
+      .get() as any;
+    if (!row || row.count === 0) return;
+
+    logger.info('[db] Seeding available_plugins from filesystem (INSERT OR IGNORE — safe)');
+
+    const pluginsDir = path.join(process.cwd(), 'plugins');
+    if (fs.existsSync(pluginsDir)) {
+      const discovered = fs
+        .readdirSync(pluginsDir)
+        .filter((f) => fs.statSync(path.join(pluginsDir, f)).isDirectory());
+
+      for (const pluginId of discovered) {
+        const manifestPath = path.join(pluginsDir, pluginId, 'package.json');
+        let manifest = {};
+        let displayName = pluginId.charAt(0).toUpperCase() + pluginId.slice(1);
+
+        if (fs.existsSync(manifestPath)) {
+          try {
+            const pkg = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            manifest = pkg.sinaicamps || {};
+            if (pkg.description) displayName = pkg.description;
+          } catch (e) {}
+        }
+
+        const special = defaultPluginDefs.find((p) => p.name === pluginId);
+        const finalManifest = special ? special.manifest : JSON.stringify(manifest);
+        const finalDisplayName = special ? special.displayName : displayName;
+
+        getSqlite()
+          .prepare(
+            'INSERT OR IGNORE INTO available_plugins (id, name, display_name, category, is_official, is_active, manifest, entry_point_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+          )
+          .run(
+            pluginId,
+            pluginId,
+            finalDisplayName,
+            special?.category || 'utility',
+            1,
+            1,
+            finalManifest,
+            `/plugins/${pluginId}/index.js`
+          );
+      }
+    }
+
+    // Ensure all default (official) plugins are seeded even if not discovered in filesystem
+    for (const p of defaultPluginDefs) {
+      getSqlite()
+        .prepare(
+          'INSERT OR IGNORE INTO available_plugins (id, name, display_name, category, is_official, is_active, manifest, entry_point_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        )
+        .run(
+          p.name,
+          p.name,
+          p.displayName,
+          p.category || 'utility',
+          1,
+          1,
+          p.manifest || '{}',
+          `/plugins/${p.name}/index.js`
+        );
+    }
+
+    logger.info('[db] Plugin seeding complete');
+  } catch (err) {
+    logger.error('[db] Failed to seed available_plugins:', err);
+  }
+}
+
+seedAvailablePlugins();
 
 // For unit tests
 export const resetMockStore = () => {

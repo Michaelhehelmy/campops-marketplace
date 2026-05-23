@@ -16,6 +16,11 @@ rsync -avz -e "ssh -i $SSH_KEY" .next/standalone/ $REMOTE_USER@$VM_IP:$REMOTE_PA
 rsync -avz -e "ssh -i $SSH_KEY" .next/static/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/.next/static/
 rsync -avz -e "ssh -i $SSH_KEY" public/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/public/
 rsync -avz -e "ssh -i $SSH_KEY" plugins/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/plugins/
+rsync -avz --exclude='node_modules' -e "ssh -i $SSH_KEY" packages/ $REMOTE_USER@$VM_IP:$REMOTE_PATH/packages/
+# Copy plugin runtime npm packages (server can't build)
+rsync -avz -e "ssh -i $SSH_KEY" node_modules/hono $REMOTE_USER@$VM_IP:$REMOTE_PATH/node_modules/
+rsync -avz -e "ssh -i $SSH_KEY" node_modules/zod $REMOTE_USER@$VM_IP:$REMOTE_PATH/node_modules/
+rsync -avz -e "ssh -i $SSH_KEY" node_modules/plugin-engine $REMOTE_USER@$VM_IP:$REMOTE_PATH/node_modules/
 scp -i $SSH_KEY .env.production nginx-unified.conf scripts/boot.sh ecosystem.config.js $REMOTE_USER@$VM_IP:$REMOTE_PATH/
 
 # 2. Restart Services on VM

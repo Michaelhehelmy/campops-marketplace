@@ -4,8 +4,9 @@
     "next-devtools": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/next-devtools-mcp/dist/index.js"
+        "npx",
+        "-y",
+        "next-devtools-mcp@latest"
       ],
       "enabled": true
     },
@@ -47,16 +48,18 @@
     "tailwindcss": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/tailwindcss-mcp/dist/index.js"
+        "npx",
+        "-y",
+        "tailwindcss-mcp@latest"
       ],
       "enabled": true
     },
     "lucide-icons": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/lucide-icons-mcp/build/entry.js",
+        "npx",
+        "-y",
+        "lucide-icons-mcp@latest",
         "--stdio"
       ],
       "enabled": true
@@ -64,16 +67,17 @@
     "next-intl": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/@i18nexus/mcp/dist/index.js"
+        "npx",
+        "-y",
+        "@i18nexus/mcp@latest"
       ],
       "enabled": true
     },
     "lighthouse": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/tsx/dist/cli.mjs",
+        "npx",
+        "tsx",
         "packages/mcp-server-lighthouse/src/index.ts"
       ],
       "enabled": true
@@ -81,8 +85,8 @@
     "better-auth": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/tsx/dist/cli.mjs",
+        "npx",
+        "tsx",
         "packages/better-auth-mcp/src/index.ts"
       ],
       "enabled": true
@@ -90,8 +94,8 @@
     "email": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/tsx/dist/cli.mjs",
+        "npx",
+        "tsx",
         "packages/mcp-server-mailgun/src/index.ts"
       ],
       "enabled": true
@@ -99,40 +103,45 @@
     "git": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/@cyanheads/git-mcp-server/dist/index.js"
+        "npx",
+        "-y",
+        "@cyanheads/git-mcp-server@latest"
       ],
       "enabled": true
     },
     "fetch": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/markfetch/dist/index.js"
+        "npx",
+        "-y",
+        "markfetch@latest"
       ],
       "enabled": true
     },
     "ripgrep": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/ripgrep-mcp/dist/index.js"
+        "npx",
+        "-y",
+        "ripgrep-mcp@latest"
       ],
       "enabled": true
     },
     "everything": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/@modelcontextprotocol/server-everything/dist/index.js"
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-everything@latest"
       ],
       "enabled": true
     },
     "pdf": {
       "type": "local",
       "command": [
-        "node",
-        ".opencode/node_modules/@modelcontextprotocol/server-pdf/dist/index.js",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-pdf@latest",
         "--stdio"
       ],
       "enabled": true
@@ -154,6 +163,10 @@
     "plugin-dev": {
       "description": "SinaiCamps plugin developer — scaffold and build new plugins",
       "system": "You are the SinaiCamps plugin developer. You build modular extensions.\n\nRules:\n- Follow the plugin contract for the project\n- NEVER hardcode business logic in core — keep it modular\n- Always add unit tests for new modules\n- Use the create-feature skill for the full checklist"
+    },
+    "frontend": {
+      "description": "SinaiCamps frontend developer — design responsive, dynamic pages and settings, logical UI rendering, and CRUD API validation",
+      "system": "You are the SinaiCamps frontend and UI agent. Your job is designing high-end, responsive, state-driven interfaces with absolutely zero hardcoded data.\n\nRules:\n- Always handle auth and session states logically (e.g. no login buttons when authenticated)\n- Make all titles, text, colors, and layout configurations dynamic and editable from settings screens\n- Cooperate with database/backend agents or build proper API routes to save/fetch settings\n- Check all APIs for validation, tenant scoping, and authorization checks\n- Use the frontend-feature skill for step-by-step guidance"
     }
   },
   "lsp": {
@@ -218,5 +231,12 @@
       ]
     }
   },
-  "plugin": []
+  "plugin": [
+    "opencode-agent-memory",
+    "opencode-background-agents",
+    "opencode-handoff",
+    "opencode-skills",
+    "opencode-websearch-cited",
+    "opencode-pty"
+  ]
 }

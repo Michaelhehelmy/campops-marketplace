@@ -29,6 +29,7 @@ This project defines specific agents configured in `opencode.json`. Refer to the
 - **@qa**: Focuses on test coverage execution, visual regression checkouts, and smoke testing.
 - **@db**: Responsible for migrations, indexes, schemas, and query optimization.
 - **@plugin-dev**: Creates modular features and scaffolds plugins/packages.
+- **@frontend**: Designs responsive pages and forms, handles dynamic configurations, ensures auth-aware logical rendering, and creates supporting backend routes/APIs.
 
 ---
 

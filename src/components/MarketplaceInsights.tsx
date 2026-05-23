@@ -13,6 +13,16 @@ interface MarketplaceStats {
 export function MarketplaceInsights({ propertyId }: { propertyId: string }) {
   const [stats, setStats] = useState<MarketplaceStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [platformName, setPlatformName] = useState('SinaiCamps');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     async function fetchStats() {
@@ -57,7 +67,7 @@ export function MarketplaceInsights({ propertyId }: { propertyId: string }) {
           <h3 className="text-2xl font-black text-gray-900 tracking-tight">
             Marketplace Performance
           </h3>
-          <p className="text-gray-500 text-sm mt-1">Direct insights from the SinaiCamps network</p>
+          <p className="text-gray-500 text-sm mt-1">Direct insights from the {platformName} network</p>
         </div>
         <div className="bg-brand-50 p-2 rounded-xl text-brand-600">
           <TrendingUp className="h-5 w-5" />

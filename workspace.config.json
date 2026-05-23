@@ -50,7 +50,8 @@
     "deploy": true,
     "qa": true,
     "db": true,
-    "plugin-dev": true
+    "plugin-dev": true,
+    "frontend": true
   },
   "rules": [
     "Always run tests before marking any task complete",

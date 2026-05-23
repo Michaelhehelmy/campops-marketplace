@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Globe } from 'lucide-react';
@@ -11,6 +12,16 @@ export default function SuccessPage() {
   const params = useSearchParams();
   const plan = params.get('plan') ?? 'basic';
   const slug = params.get('slug') ?? '';
+  const [platformName, setPlatformName] = useState('SinaiCamps');
+
+  useEffect(() => {
+    fetch('/api/public/platform-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.platformName) setPlatformName(data.platformName);
+      })
+      .catch(() => {});
+  }, []);
 
   const isPremium = plan === 'subdomain' || plan === 'custom_domain';
   const dashboardUrl =
@@ -30,7 +41,7 @@ export default function SuccessPage() {
       <p className="text-gray-500 text-lg mb-8">
         {isPremium
           ? 'Your Operations Suite is ready. Head to your admin panel to set up rooms, rates, and more.'
-          : 'Your property is listed on SinaiCamps. You can manage it from your owner dashboard.'}
+          : `Your property is listed on ${platformName}. You can manage it from your owner dashboard.`}
       </p>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 text-left max-w-sm mx-auto">
