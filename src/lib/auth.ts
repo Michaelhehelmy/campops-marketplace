@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { drizzle } from './db';
 import * as schema from '../db/schema';
 import { logger } from './logger';
+import { nextCookies } from 'better-auth/next-js';
 
 const STATIC_TRUSTED_ORIGINS = [
   'http://localhost:3000',
@@ -47,7 +48,6 @@ export const auth = betterAuth({
   },
   advanced: {
     useSecureCookies: process.env.NODE_ENV === 'production',
-    crossSubdomainActivate: true,
   },
   database: drizzleAdapter(drizzle, {
     provider:
@@ -74,8 +74,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    // Better Auth doesn't have a built-in 'roles' plugin that exactly matches the request,
-    // but we can use the 'user' additionalFields and then define our roles logic.
+    nextCookies(),
   ],
 });
 
