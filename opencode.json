@@ -45,6 +45,14 @@
       ],
       "enabled": true
     },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+      ],
+      "enabled": true
+    },
     "tailwindcss": {
       "type": "local",
       "command": [
