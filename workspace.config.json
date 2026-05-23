@@ -41,7 +41,7 @@
     "email": true,
     "git": true,
     "fetch": true,
-    "docker": true,
+    "docker": false,
     "ripgrep": true,
     "everything": true,
     "pdf": true

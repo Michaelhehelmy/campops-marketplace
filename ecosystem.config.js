@@ -3,8 +3,7 @@ module.exports = {
   apps: [
     {
       name: 'sinaicamps',
-      script: 'node',
-      args: 'server.js',
+      script: 'server.js',
       cwd: '/home/ubuntu/marketplace',
       instances: 1,
       exec_mode: 'fork',

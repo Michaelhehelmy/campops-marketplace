@@ -4,9 +4,8 @@
     "next-devtools": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "next-devtools-mcp@latest"
+        "node",
+        ".opencode/node_modules/next-devtools-mcp/dist/index.js"
       ],
       "enabled": true
     },
@@ -48,18 +47,16 @@
     "tailwindcss": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "tailwindcss-mcp@latest"
+        "node",
+        ".opencode/node_modules/tailwindcss-mcp/dist/index.js"
       ],
       "enabled": true
     },
     "lucide-icons": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "lucide-icons-mcp@latest",
+        "node",
+        ".opencode/node_modules/lucide-icons-mcp/build/entry.js",
         "--stdio"
       ],
       "enabled": true
@@ -67,17 +64,16 @@
     "next-intl": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@i18nexus/mcp@latest"
+        "node",
+        ".opencode/node_modules/@i18nexus/mcp/dist/index.js"
       ],
       "enabled": true
     },
     "lighthouse": {
       "type": "local",
       "command": [
-        "npx",
-        "tsx",
+        "node",
+        ".opencode/node_modules/tsx/dist/cli.mjs",
         "packages/mcp-server-lighthouse/src/index.ts"
       ],
       "enabled": true
@@ -85,8 +81,8 @@
     "better-auth": {
       "type": "local",
       "command": [
-        "npx",
-        "tsx",
+        "node",
+        ".opencode/node_modules/tsx/dist/cli.mjs",
         "packages/better-auth-mcp/src/index.ts"
       ],
       "enabled": true
@@ -94,8 +90,8 @@
     "email": {
       "type": "local",
       "command": [
-        "npx",
-        "tsx",
+        "node",
+        ".opencode/node_modules/tsx/dist/cli.mjs",
         "packages/mcp-server-mailgun/src/index.ts"
       ],
       "enabled": true
@@ -103,54 +99,41 @@
     "git": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@cyanheads/git-mcp-server@latest"
+        "node",
+        ".opencode/node_modules/@cyanheads/git-mcp-server/dist/index.js"
       ],
       "enabled": true
     },
     "fetch": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "markfetch@latest"
-      ],
-      "enabled": true
-    },
-    "docker": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@thelord/mcp-server-docker-npx@latest"
+        "node",
+        ".opencode/node_modules/markfetch/dist/index.js"
       ],
       "enabled": true
     },
     "ripgrep": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "ripgrep-mcp@latest"
+        "node",
+        ".opencode/node_modules/ripgrep-mcp/dist/index.js"
       ],
       "enabled": true
     },
     "everything": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-everything@latest"
+        "node",
+        ".opencode/node_modules/@modelcontextprotocol/server-everything/dist/index.js"
       ],
       "enabled": true
     },
     "pdf": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-pdf@latest"
+        "node",
+        ".opencode/node_modules/@modelcontextprotocol/server-pdf/dist/index.js",
+        "--stdio"
       ],
       "enabled": true
     }
@@ -235,12 +218,5 @@
       ]
     }
   },
-  "plugin": [
-    "opencode-agent-memory",
-    "opencode-background-agents",
-    "opencode-handoff",
-    "opencode-skills",
-    "opencode-websearch-cited",
-    "opencode-pty"
-  ]
+  "plugin": []
 }

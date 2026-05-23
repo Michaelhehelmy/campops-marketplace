@@ -1,16 +1,16 @@
 import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { drizzle } from '@/lib/db';
-import { users, userRoles } from '@/db/schema';
-import { eq, or, and } from 'drizzle-orm';
+import { users, userRoles, accounts } from '@/db/schema';
+import { eq, or } from 'drizzle-orm';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import bcrypt from 'bcryptjs';
 
 export async function GET(request: Request) {
   try {
     const session = await requireRole(request, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
 
-    const { searchParams } = new URL(request.url);
     const adminUsers = await drizzle
       .select({
         id: users.id,
@@ -30,7 +30,6 @@ export async function GET(request: Request) {
         )
       );
 
-    // Map to the format expected by the frontend
     const formattedAdmins = adminUsers.map((user: any) => ({
       id: user.id,
       name: user.name || 'Unknown',
@@ -54,7 +53,7 @@ export async function POST(request: Request) {
     const session = await requireRole(request, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     const body = await request.json();
-    const { name, email, role } = body;
+    const { name, email, role, password } = body;
 
     console.log('[Admin API] Creating admin:', { name, email, role });
 
@@ -62,23 +61,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email and role are required' }, { status: 400 });
     }
 
-    const id = Math.random().toString(36).substring(2, 11);
+    if (!password || password.length < 6) {
+      return NextResponse.json(
+        { error: 'Password is required and must be at least 6 characters' },
+        { status: 400 }
+      );
+    }
 
-    // Insert into users table
+    const id = Math.random().toString(36).substring(2, 11);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await drizzle.insert(users).values({
       id,
       name,
       email,
+      password: hashedPassword,
       role,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
+    // Insert accounts record so better-auth can verify credentials
+    await drizzle.insert(accounts).values({
+      id: `${id}-account`,
+      userId: id,
+      accountId: id,
+      providerId: 'credential',
+      password: hashedPassword,
+    });
+
     console.log('[Admin API] Admin created successfully:', id);
 
-    // Also insert into user_roles for compatibility if needed
     await drizzle.insert(userRoles).values({
-      id: Math.random().toString(36).substring(2, 11),
+      id: `${id}-role`,
       userId: id,
       role,
       permissions: JSON.stringify(['admin_access']),
