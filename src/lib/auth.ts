@@ -1,15 +1,40 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { eq } from 'drizzle-orm';
 import { drizzle } from './db';
 import * as schema from '../db/schema';
 import { logger } from './logger';
 
+const STATIC_TRUSTED_ORIGINS = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://*.sinaicamps.com',
+  ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
+];
+
+async function getCustomDomainOrigins(): Promise<string[]> {
+  try {
+    const rows = await drizzle
+      .select({ customDomain: schema.sites.customDomain })
+      .from(schema.sites)
+      .where(eq(schema.sites.domainVerified, true));
+    const origins: string[] = [];
+    for (const row of rows) {
+      if (row.customDomain) {
+        origins.push(`https://${row.customDomain}`, `http://${row.customDomain}`);
+      }
+    }
+    return origins;
+  } catch (e) {
+    logger.warn('Failed to load custom domain trusted origins', e);
+    return [];
+  }
+}
+
 export const auth = betterAuth({
-  trustedOrigins: [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'https://*.sinaicamps.com',
-    ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
+  trustedOrigins: async () => [
+    ...STATIC_TRUSTED_ORIGINS,
+    ...(await getCustomDomainOrigins()),
   ],
   session: {
     cookie: {
