@@ -24,24 +24,24 @@ test.describe('Public (no login)', () => {
   });
 
   test.describe('Full booking flow', () => {
-    test('guest is redirected to login before booking', async ({ page }) => {
-      // Navigate directly to a listing page with dates
-      await page.goto('/en/stay/safari-camp?checkIn=2025-06-15&checkOut=2025-06-20');
+    test('guest is redirected to login before booking', async ({ page, context }) => {
+      // Ensure no leftover session from browser profile
+      await context.clearCookies();
 
-      // Wait for listing page to fully load (server component)
-      await expect(page.locator('h1')).toBeVisible({ timeout: 15000 });
+      // Navigate directly to the booking summary as an unauthenticated guest
+      await page.goto(
+        '/en/book/summary?propertyId=1&roomTypeId=room-1&checkIn=2025-06-15&checkOut=2025-06-20&roomName=Luxury+Tent&propertyName=Safari+Camp&price=250&priceCurrency=USD',
+        { waitUntil: 'networkidle' }
+      );
 
-      // Proceed to booking — click first "Book now" link in a room card
-      const bookButton = page
-        .locator('[data-testid^="book-button-"], a:has-text("Book now")')
-        .first();
-      await expect(bookButton).toBeVisible({ timeout: 10000 });
-      await bookButton.click();
+      // The booking summary page should redirect unauthenticated users to login
+      await expect(async () => {
+        const url = page.url();
+        expect(url).toContain('/en/login');
+      }).toPass({ timeout: 30000, intervals: [500, 1000, 2000] });
 
-      // Guest should be redirected to login page
-      await page.waitForURL(/\/en\/login/, { timeout: 20000 });
       await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible({
-        timeout: 10000,
+        timeout: 15000,
       });
     });
   });

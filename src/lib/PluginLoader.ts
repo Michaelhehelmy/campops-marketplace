@@ -25,6 +25,7 @@ export interface PluginManifest {
   entry?: string;
   uiEntry?: string;
   platformVersion?: string;
+  campopsVersion?: string;
   planRequirement?: 'basic' | 'premium' | 'ultimate';
   postTypes?: PostTypeDefinition[];
   slots?: Record<string, string[]>;
@@ -161,20 +162,20 @@ export class PluginLoader {
       try {
         db.prepare(
           `
-          INSERT INTO available_plugins
-            (id, name, display_name, description, is_official, is_active, manifest,
-             version, plan_requirement, post_types, platform_version, review_status)
-          VALUES (?, ?, ?, ?, 1, 1, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(id) DO UPDATE SET
-            display_name     = excluded.display_name,
-            description      = excluded.description,
-            manifest         = excluded.manifest,
-            version          = excluded.version,
-            plan_requirement = excluded.plan_requirement,
-            post_types       = excluded.post_types,
-            platform_version  = excluded.platform_version,
-            review_status    = excluded.review_status,
-            updated_at       = unixepoch()
+           INSERT INTO available_plugins
+             (id, name, display_name, description, is_official, is_active, manifest,
+              version, plan_requirement, post_types, campops_version, review_status)
+           VALUES (?, ?, ?, ?, 1, 1, ?, ?, ?, ?, ?, ?)
+           ON CONFLICT(id) DO UPDATE SET
+             display_name     = excluded.display_name,
+             description      = excluded.description,
+             manifest         = excluded.manifest,
+             version          = excluded.version,
+             plan_requirement = excluded.plan_requirement,
+             post_types       = excluded.post_types,
+             campops_version   = excluded.campops_version,
+             review_status    = excluded.review_status,
+             updated_at       = unixepoch()
         `
         ).run(
           manifest.id,
@@ -185,7 +186,7 @@ export class PluginLoader {
           manifest.version,
           manifest.planRequirement ?? 'basic',
           manifest.postTypes ? JSON.stringify(manifest.postTypes) : null,
-          manifest.platformVersion ?? null,
+          manifest.campopsVersion ?? null,
           manifest.reviewStatus ?? 'approved'
         );
         registered.push(manifest);

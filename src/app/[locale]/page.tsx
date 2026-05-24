@@ -5,6 +5,7 @@ import FeaturedListings from '@/components/homepage/FeaturedListings';
 import Categories from '@/components/homepage/Categories';
 import ListingDetailView from '@/components/ListingDetailView';
 import { getTenantListing } from '@/lib/api';
+import { getTenantFromHeaders } from '@/lib/tenant-context';
 import { getSqlite } from '@/lib/db';
 import { PostQuery, type Post } from '@/lib/PostQuery';
 import React from 'react';
@@ -32,9 +33,14 @@ async function getHomepageConfig() {
 export default async function HomePage({ params, searchParams }: Props) {
   const { locale } = params;
   const { checkIn, checkOut, currency = 'USD' } = searchParams;
-  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
 
-  // Mode 1: Universal Listing Template (Cloudflare Deployment for a specific tenant)
+  // Runtime tenant detection via middleware headers (set by middleware.ts)
+  const tenant = await getTenantFromHeaders();
+
+  // Fallback: build-time env var for single-tenant deployments
+  const tenantId = tenant?.id || process.env.NEXT_PUBLIC_TENANT_ID;
+
+  // Mode 1: Tenant-specific listing view
   if (tenantId) {
     try {
       const { property, room_types } = await getTenantListing(
@@ -57,11 +63,10 @@ export default async function HomePage({ params, searchParams }: Props) {
       );
     } catch (error) {
       console.error('[HomePage] Tenant lookup failed:', error);
-      // Fallback to marketplace if tenant not found or error
     }
   }
 
-  // Mode 2: Standard Marketplace Frontend (Oracle Deployment)
+  // Mode 2: Standard Marketplace Frontend
   const config = await getHomepageConfig();
 
   // Pre-fetch featured listings server-side to avoid client waterfall.

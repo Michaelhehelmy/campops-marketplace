@@ -31,6 +31,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'No associated property found' }, { status: 404 });
     }
 
+    const parseJson = (val: unknown) => {
+      if (!val) return null;
+      if (typeof val === 'string') { try { return JSON.parse(val); } catch { return val; } }
+      return val;
+    };
+
     return NextResponse.json({
       user: {
         id: user.id,
@@ -43,7 +49,12 @@ export async function GET(req: NextRequest) {
         name: (property as any).name,
         slug: (property as any).slug,
         plan: (property as any).plan || 'basic',
+        subdomain: (property as any).subdomain || null,
+        customDomain: (property as any).custom_domain || null,
+        domainVerified: !![false, 0, '0'].includes((property as any).domain_verified),
         isActive: (property as any).is_active === 1,
+        branding: parseJson((property as any).branding),
+        settings: parseJson((property as any).settings),
       },
     });
   } catch (err: any) {

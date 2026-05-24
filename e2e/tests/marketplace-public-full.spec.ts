@@ -12,7 +12,7 @@ test.describe('Marketplace Public Full Journey', () => {
     await listingPage.goto('safari-camp');
 
     // 3. Listing detail renders with room types
-    await expect(page.getByText(/Room types/i)).toBeVisible();
+    await expect(page.getByText(/Available Units/i)).toBeVisible();
 
     // 4. Rooms from seed data are shown
     await listingPage.expectRoomAvailable('room-1');

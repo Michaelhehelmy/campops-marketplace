@@ -47,7 +47,10 @@ async function handleMiddleware(req: NextRequest) {
     `[Middleware] pathname: ${pathname}, hostname: ${req.headers.get('x-forwarded-host') ?? req.nextUrl.hostname}, url: ${req.url}`
   );
 
-  // 1. Rate-limit all API prefixes before anything else.
+  // 1. Rate-limit all API prefixes before anything else (skip in dev/E2E).
+  if (process.env.SKIP_RATE_LIMIT === 'true') {
+    logger.info('[Middleware] Rate limiting disabled via SKIP_RATE_LIMIT env var');
+  } else {
   const RATE_LIMITED_PREFIXES = [
     '/api/auth/',
     '/api/payments/',
@@ -74,6 +77,7 @@ async function handleMiddleware(req: NextRequest) {
       response.headers.set('X-RateLimit-Remaining', '0');
       return withSecurityHeaders(response);
     }
+  }
   }
 
   // Immediately bypass internal Next.js static asset and API paths

@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // 2. Subdomain Match
+    // 2. Subdomain Match (also fall back to slug for test environments)
     let resolvedProperty = property;
     if (!resolvedProperty && hostname.endsWith(`.${BASE_DOMAIN}`)) {
       const sub = hostname.slice(0, -(BASE_DOMAIN.length + 1));
@@ -72,11 +72,21 @@ export async function GET(req: NextRequest) {
           `
         SELECT id, name, slug, plan, subdomain, settings
         FROM properties
-        WHERE is_active = true AND subdomain = ?
+        WHERE is_active = true AND (subdomain = ? OR slug = ?)
         LIMIT 1
       `
         )
-        .get(sub)) as any;
+        .get(sub, sub)) as any;
+
+      // Basic plan tenants cannot use subdomains — they must stay on the marketplace
+      if (resolvedProperty && resolvedProperty.plan === 'basic') {
+        return NextResponse.json({ property: null }, { status: 404 });
+      }
+    }
+
+    // Custom domain match: Basic/Standard plan tenants cannot use custom domains
+    if (resolvedProperty && resolvedProperty.plan === 'basic' && !hostname.endsWith(`.${BASE_DOMAIN}`)) {
+      return NextResponse.json({ property: null }, { status: 404 });
     }
 
     if (!resolvedProperty) {

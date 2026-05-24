@@ -47,7 +47,7 @@ export function ShopfrontNav({ locale, tenant }: Props) {
     if (!session?.user) return null;
     const role = (session.user as any).role;
     if (role === 'master' || role === 'marketplace_master') return `/${locale}/admin/plugins`;
-    if (role === 'manager') return `/${locale}/owner/dashboard`;
+    if (role === 'manager') return `/${locale}/manage/${tenant.slug}`;
     return `/${locale}/guest`;
   };
 

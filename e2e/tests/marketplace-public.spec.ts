@@ -3,6 +3,10 @@ import { PublicListingPage } from '../pages/PublicListingPage';
 import { LoginPage } from '../pages/LoginPage';
 
 test.describe('Marketplace Public (unauthenticated)', () => {
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
   test('Browse homepage and view search results', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/SinaiCamps/i);
@@ -42,8 +46,8 @@ test.describe('Marketplace Public (unauthenticated)', () => {
     // Wait for the page to load (plugin widget or static fallback)
     await listingPage.waitForLoaded();
 
-    // The listing detail always shows room types (from page or plugin)
-    await expect(page.getByText(/Room types/i)).toBeVisible();
+    // The listing detail shows available units (from theme template)
+    await expect(page.getByText(/Available Units/i)).toBeVisible();
 
     // Rooms from seed data are present
     await listingPage.expectRoomAvailable('room-1');

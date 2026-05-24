@@ -62,6 +62,9 @@ export const auth = betterAuth({
       ...schema,
     },
   }),
+  rateLimit: {
+    enabled: !(process.env.SKIP_RATE_LIMIT === 'true' || process.env.NODE_ENV === 'test'),
+  },
   emailAndPassword: {
     enabled: true,
   },

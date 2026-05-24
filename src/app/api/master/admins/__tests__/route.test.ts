@@ -64,6 +64,7 @@ describe('Master Admins API Route', () => {
         name: 'New Admin',
         email: 'new@example.com',
         role: 'support',
+        password: 'password123',
       }),
     });
 
@@ -75,8 +76,8 @@ describe('Master Admins API Route', () => {
     expect(data.name).toBe('New Admin');
     expect(data.id).toBeDefined();
 
-    // insert should be called twice (users and user_roles tables)
-    expect(drizzle.insert).toHaveBeenCalledTimes(2);
+    // insert should be called 3 times (users, accounts, user_roles tables)
+    expect(drizzle.insert).toHaveBeenCalledTimes(3);
   });
 
   it('POST should return 400 if required fields are missing', async () => {
@@ -106,6 +107,7 @@ describe('Master Admins API Route', () => {
         name: 'New Admin',
         email: 'new@example.com',
         role: 'support',
+        password: 'password123',
       }),
     });
 

@@ -52,17 +52,21 @@ async function handleRequest(req: NextRequest, pathSegments: string[], method: s
   }
 
   // Rate limiting
-  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
-  try {
-    const rateInfo = apiRateLimiter.check(ip);
-    // Rate limit headers will be set on the response below
-  } catch (err: any) {
-    const retryAfter = err.details?.retryAfter ?? 60;
-    const response = errorResponse(err);
-    response.headers.set('Retry-After', String(retryAfter));
-    response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
-    response.headers.set('X-RateLimit-Remaining', '0');
-    return response;
+  if (process.env.SKIP_RATE_LIMIT === 'true') {
+    logger.info('[CatchAll] Rate limiting disabled via SKIP_RATE_LIMIT env var');
+  } else {
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
+    try {
+      const rateInfo = apiRateLimiter.check(ip);
+      // Rate limit headers will be set on the response below
+    } catch (err: any) {
+      const retryAfter = err.details?.retryAfter ?? 60;
+      const response = errorResponse(err);
+      response.headers.set('Retry-After', String(retryAfter));
+      response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
+      response.headers.set('X-RateLimit-Remaining', '0');
+      return response;
+    }
   }
 
   // Ensure plugins are initialized before handling requests
