@@ -85,7 +85,11 @@ export async function GET(req: NextRequest) {
     }
 
     // Custom domain match: Basic/Standard plan tenants cannot use custom domains
-    if (resolvedProperty && resolvedProperty.plan === 'basic' && !hostname.endsWith(`.${BASE_DOMAIN}`)) {
+    if (
+      resolvedProperty &&
+      resolvedProperty.plan === 'basic' &&
+      !hostname.endsWith(`.${BASE_DOMAIN}`)
+    ) {
       return NextResponse.json({ property: null }, { status: 404 });
     }
 

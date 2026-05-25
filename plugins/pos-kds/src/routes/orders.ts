@@ -4,9 +4,15 @@ import { PluginAPI } from '../../../../packages/plugin-sdk/src/types.js';
 export const orderRouter = (api: PluginAPI) => {
   const app = new Hono();
 
+  app.use('*', async (c, next) => {
+    const session = await api.auth.getSession(c.req.raw);
+    if (!session) return c.json({ error: 'Unauthorized' }, 401);
+    await next();
+  });
+
   app.get('/', async (c) => {
     const status = c.req.query('status');
-    let sql = 'SELECT * FROM orders WHERE 1=1';
+    let sql = 'SELECT * FROM plugin_pos_orders WHERE 1=1';
     const params = [];
 
     if (status) {
@@ -15,8 +21,8 @@ export const orderRouter = (api: PluginAPI) => {
     }
 
     sql += ' ORDER BY created_at DESC';
-    const orders = await api.db.query(sql, params);
-    return c.json({ data: orders });
+    const plugin_pos_orders = await api.db.query(sql, params);
+    return c.json({ data: plugin_pos_orders });
   });
 
   app.post('/', async (c) => {
@@ -27,7 +33,7 @@ export const orderRouter = (api: PluginAPI) => {
     // Simplified insertion for example
     await api.db.execute(
       `
-      INSERT INTO orders (id, order_number, status, total, items, created_at, updated_at)
+      INSERT INTO plugin_pos_orders (id, order_number, status, total, items, created_at, updated_at)
       VALUES ($1, $2, 'placed', $3, $4, NOW(), NOW())
     `,
       [id, orderNumber, body.total, JSON.stringify(body.items)]
@@ -40,7 +46,7 @@ export const orderRouter = (api: PluginAPI) => {
     const id = c.req.param('id');
     const { status } = await c.req.json();
 
-    await api.db.execute('UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2', [
+    await api.db.execute('UPDATE plugin_pos_orders SET status = $1, updated_at = NOW() WHERE id = $2', [
       status,
       id,
     ]);

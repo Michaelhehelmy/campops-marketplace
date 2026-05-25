@@ -109,7 +109,7 @@ export class PluginRuntimeService {
       });
 
       // Import the plugin using jiti for .ts support at runtime
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const createJiti = require('jiti');
       const jiti = createJiti(__filename, {
         cache: false,

@@ -15,9 +15,7 @@ interface Props {
   searchParams: { checkIn?: string; checkOut?: string; currency?: string };
 }
 
-async function loadViaPostQuery(
-  slug: string
-): Promise<{ post: Post; roomTypes: any[] } | null> {
+async function loadViaPostQuery(slug: string): Promise<{ post: Post; roomTypes: any[] } | null> {
   try {
     const db = getSqlite();
 
@@ -100,21 +98,25 @@ async function loadViaPostQuery(
         settings: property.settings ?? null,
         city: property.city ?? null,
         country: property.country ?? null,
-        amenities: property.amenities ? (typeof property.amenities === 'string' ? property.amenities : JSON.stringify(property.amenities)) : null,
+        amenities: property.amenities
+          ? typeof property.amenities === 'string'
+            ? property.amenities
+            : JSON.stringify(property.amenities)
+          : null,
         rating: property.rating != null ? String(property.rating) : null,
       },
     };
 
     try {
       if (property.room_types) {
-        roomTypes = typeof property.room_types === 'string'
-          ? JSON.parse(property.room_types)
-          : property.room_types;
+        roomTypes =
+          typeof property.room_types === 'string'
+            ? JSON.parse(property.room_types)
+            : property.room_types;
       }
     } catch {}
 
     return { post: fallbackPost, roomTypes };
-
   } catch (err) {
     console.error('[loadViaPostQuery] Error:', err);
     return null;
@@ -151,10 +153,15 @@ export default async function PropertyPage({ params, searchParams }: Props) {
         createdAt: null,
         updatedAt: null,
         meta: {
-          settings: typeof property.settings === 'string' ? property.settings : JSON.stringify(property.settings ?? {}),
+          settings:
+            typeof property.settings === 'string'
+              ? property.settings
+              : JSON.stringify(property.settings ?? {}),
           city: property.city ?? null,
           country: property.country ?? null,
-          amenities: Array.isArray(property.amenities) ? JSON.stringify(property.amenities) : property.amenities ?? null,
+          amenities: Array.isArray(property.amenities)
+            ? JSON.stringify(property.amenities)
+            : (property.amenities ?? null),
           rating: property.rating != null ? String(property.rating) : null,
         },
       };

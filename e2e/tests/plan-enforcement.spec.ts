@@ -22,7 +22,10 @@ test.describe('Plan Enforcement & Branding', () => {
     return match ? match[1] : '';
   }
 
-  async function authHeaders(request: import('@playwright/test').APIRequestContext, email: string): Promise<Record<string, string>> {
+  async function authHeaders(
+    request: import('@playwright/test').APIRequestContext,
+    email: string
+  ): Promise<Record<string, string>> {
     const res = await signIn(request, email);
     const csrf = extractCsrf(res);
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };

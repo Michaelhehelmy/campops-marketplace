@@ -9,10 +9,9 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import { randomUUID } from 'crypto';
 
-const dbPath =
-  process.env.DATABASE_URL?.startsWith('file:')
-    ? process.env.DATABASE_URL.replace('file:', '')
-    : path.join(process.cwd(), 'sinaicamps.db');
+const dbPath = process.env.DATABASE_URL?.startsWith('file:')
+  ? process.env.DATABASE_URL.replace('file:', '')
+  : path.join(process.cwd(), 'sinaicamps.db');
 
 const sqlite = new Database(dbPath);
 sqlite.pragma('journal_mode = WAL');
@@ -22,17 +21,13 @@ function uuid() {
 }
 
 // 1. Seed sites from properties
-const properties = sqlite
-  .prepare('SELECT * FROM properties WHERE is_active = 1')
-  .all() as any[];
+const properties = sqlite.prepare('SELECT * FROM properties WHERE is_active = 1').all() as any[];
 
 console.log(`Found ${properties.length} active properties`);
 
 for (const p of properties) {
   // Upsert site
-  const existingSite = sqlite
-    .prepare('SELECT id FROM sites WHERE slug = ?')
-    .get(p.slug) as any;
+  const existingSite = sqlite.prepare('SELECT id FROM sites WHERE slug = ?').get(p.slug) as any;
 
   const siteId = existingSite?.id || uuid();
   const now = Math.floor(Date.now() / 1000);
@@ -53,7 +48,7 @@ for (const p of properties) {
         p.domain_verified ? 1 : 0,
         p.owner_id || '',
         now,
-        now,
+        now
       );
     console.log(`  Created site: ${p.name} (${siteId})`);
   } else {
@@ -69,7 +64,7 @@ for (const p of properties) {
         p.domain_verified ? 1 : 0,
         p.owner_id || '',
         now,
-        siteId,
+        siteId
       );
     console.log(`  Updated site: ${p.name} (${siteId})`);
   }
@@ -87,21 +82,11 @@ for (const p of properties) {
         `INSERT INTO posts (id, site_id, post_type, post_status, post_slug, post_title, post_content, created_at, updated_at)
          VALUES (?, ?, 'listing', 'publish', ?, ?, ?, ?, ?)`
       )
-      .run(
-        postId,
-        siteId,
-        p.slug,
-        p.name,
-        p.description || '',
-        now,
-        now,
-      );
+      .run(postId, siteId, p.slug, p.name, p.description || '', now, now);
     console.log(`  Created post: ${p.name} (${postId})`);
   } else {
     sqlite
-      .prepare(
-        `UPDATE posts SET post_title = ?, post_content = ?, updated_at = ? WHERE id = ?`
-      )
+      .prepare(`UPDATE posts SET post_title = ?, post_content = ?, updated_at = ? WHERE id = ?`)
       .run(p.name, p.description || '', now, postId);
     console.log(`  Updated post: ${p.name} (${postId})`);
   }
@@ -153,7 +138,9 @@ for (const p of properties) {
       .run(postId, branding);
   }
 
-  console.log(`  Seeded ${Object.keys(metaFields).filter((k) => metaFields[k] !== null).length} meta fields for ${p.name}`);
+  console.log(
+    `  Seeded ${Object.keys(metaFields).filter((k) => metaFields[k] !== null).length} meta fields for ${p.name}`
+  );
 }
 
 const postCount = sqlite.prepare('SELECT COUNT(*) as c FROM posts').get() as any;

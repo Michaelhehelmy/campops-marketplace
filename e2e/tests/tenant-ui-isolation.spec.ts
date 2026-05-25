@@ -18,7 +18,9 @@ test.describe('Tenant UI Isolation', () => {
     await expect(page.locator('text=Browse by Category').first()).toBeVisible({ timeout: 15000 });
   });
 
-  test('Tenant subdomain root rewrites to stay page (internal rewrite, URL unchanged)', async ({ page }) => {
+  test('Tenant subdomain root rewrites to stay page (internal rewrite, URL unchanged)', async ({
+    page,
+  }) => {
     await page.goto(`${TENANT_DOMAIN}/en`);
 
     // Middleware rewrites /en → /en/stay/safari-camp (internal — URL stays the same)

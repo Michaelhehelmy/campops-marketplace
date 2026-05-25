@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { AuditService } from '@/lib/audit';
 
 /**
  * GET /api/master/listings/[id]
@@ -140,6 +141,17 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     values.push(id);
     await db.prepare(`UPDATE properties SET ${fields.join(', ')} WHERE id = ?`).run(...values);
 
+    AuditService.log({
+      userId: (session.user as any).id || 'unknown',
+      action: 'property.update',
+      resource: 'properties',
+      resourceId: id,
+      details: {
+        updatedFields: Object.fromEntries(fields.map((f, i) => [f.replace(' = ?', ''), values[i]])),
+      },
+      ipAddress: req.headers.get('x-forwarded-for') || undefined,
+    });
+
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error('[Master Listings Update API] Error:', err);
@@ -181,18 +193,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     // Delete the property itself
     await db.prepare('DELETE FROM properties WHERE id = ?').run(id);
 
-    // Audit log entry
-    try {
-      const userEmail = (session.user as any).email || 'unknown';
-      const auditNote = `Property "${property.name}" (${property.slug}, id: ${id}) deleted by ${userEmail}`;
-      await db
-        .prepare(
-          'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
-        )
-        .run('DELETE', 'property', id, auditNote, userEmail);
-    } catch {
-      // audit logging is best-effort
-    }
+    AuditService.log({
+      userId: (session.user as any).id || 'unknown',
+      action: 'property.delete',
+      resource: 'properties',
+      resourceId: id,
+      details: { name: property.name, slug: property.slug },
+      ipAddress: req.headers.get('x-forwarded-for') || undefined,
+    });
 
     return NextResponse.json({ ok: true, deleted: property.name });
   } catch (err: any) {
@@ -216,10 +224,24 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     if (action === 'activate') {
       await db.prepare('UPDATE properties SET is_active = 1 WHERE id = ?').run(id);
+      AuditService.log({
+        userId: (session.user as any).id || 'unknown',
+        action: 'property.activate',
+        resource: 'properties',
+        resourceId: id,
+        ipAddress: req.headers.get('x-forwarded-for') || undefined,
+      });
       return NextResponse.json({ ok: true, is_active: true });
     }
     if (action === 'deactivate') {
       await db.prepare('UPDATE properties SET is_active = 0 WHERE id = ?').run(id);
+      AuditService.log({
+        userId: (session.user as any).id || 'unknown',
+        action: 'property.deactivate',
+        resource: 'properties',
+        resourceId: id,
+        ipAddress: req.headers.get('x-forwarded-for') || undefined,
+      });
       return NextResponse.json({ ok: true, is_active: false });
     }
 
@@ -228,21 +250,23 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       let order = featured_order;
       if (order == null) {
         const maxRow = (await db
-          .prepare('SELECT COALESCE(MAX(featured_order), 0) as max_order FROM properties WHERE is_featured = 1')
+          .prepare(
+            'SELECT COALESCE(MAX(featured_order), 0) as max_order FROM properties WHERE is_featured = 1'
+          )
           .get()) as any;
         order = (maxRow?.max_order ?? 0) + 1;
       }
       await db
         .prepare('UPDATE properties SET is_featured = 1, featured_order = ? WHERE id = ?')
         .run(order, id);
-      try {
-        const userEmail = (session.user as any).email || 'unknown';
-        await db
-          .prepare(
-            'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
-          )
-          .run('FEATURE', 'property', id, `Featured with order ${order}`, userEmail);
-      } catch { /* audit is best-effort */ }
+      AuditService.log({
+        userId: (session.user as any).id || 'unknown',
+        action: 'property.feature',
+        resource: 'properties',
+        resourceId: id,
+        details: { featured_order: order },
+        ipAddress: req.headers.get('x-forwarded-for') || undefined,
+      });
       return NextResponse.json({ ok: true, is_featured: true, featured_order: order });
     }
 
@@ -250,14 +274,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       await db
         .prepare('UPDATE properties SET is_featured = NULL, featured_order = NULL WHERE id = ?')
         .run(id);
-      try {
-        const userEmail = (session.user as any).email || 'unknown';
-        await db
-          .prepare(
-            'INSERT INTO audit_logs (action, entity_type, entity_id, details, created_by) VALUES (?, ?, ?, ?, ?)'
-          )
-          .run('UNFEATURE', 'property', id, 'Removed from featured', userEmail);
-      } catch { /* audit is best-effort */ }
+      AuditService.log({
+        userId: (session.user as any).id || 'unknown',
+        action: 'property.unfeature',
+        resource: 'properties',
+        resourceId: id,
+        ipAddress: req.headers.get('x-forwarded-for') || undefined,
+      });
       return NextResponse.json({ ok: true, is_featured: false, featured_order: null });
     }
 

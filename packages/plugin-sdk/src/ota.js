@@ -11,15 +11,15 @@
  * during initialization so the core OtaSyncQueue can discover them.
  */
 export const OTAAdapterRegistry = {
-    adapters: new Map(),
-    register(adapter) {
-        this.adapters.set(adapter.id, adapter);
-    },
-    get(id) {
-        return this.adapters.get(id);
-    },
-    getAll() {
-        return Array.from(this.adapters.values());
-    },
+  adapters: new Map(),
+  register(adapter) {
+    this.adapters.set(adapter.id, adapter);
+  },
+  get(id) {
+    return this.adapters.get(id);
+  },
+  getAll() {
+    return Array.from(this.adapters.values());
+  },
 };
 //# sourceMappingURL=ota.js.map

@@ -33,7 +33,6 @@ export default async function init(api: PluginAPI) {
           name: s.name || 'Unknown Staff',
           role: s.role,
           status: 'on_duty',
-          phone: '+1 234 567 890',
           email: s.email,
         }));
 
@@ -42,7 +41,7 @@ export default async function init(api: PluginAPI) {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error: any) {
-        console.error('[StaffPlugin] Failed to fetch staff:', error);
+        api.logger.error('[StaffPlugin] Failed to fetch staff:', error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
       }
     },

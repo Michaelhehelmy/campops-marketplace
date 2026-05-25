@@ -60,15 +60,13 @@ export default function LoyaltyPage({ params }: { params: { locale: string } }) 
                 Unlock Elite Campsite Rewards
               </h1>
               <p className="text-slate-400 text-lg leading-relaxed">
-                Earn Beats points on every night stayed. Redeem points for free stays, exclusive experiences, and premium amenities.
+                Earn Beats points on every night stayed. Redeem points for free stays, exclusive
+                experiences, and premium amenities.
               </p>
             </div>
-            
+
             <div className="w-full md:w-80">
-              <PluginShell
-                name="loyalty.dashboard"
-                fallback={<PointsWidgetFallback />}
-              />
+              <PluginShell name="loyalty.dashboard" fallback={<PointsWidgetFallback />} />
             </div>
           </div>
         </div>
@@ -81,7 +79,8 @@ export default function LoyaltyPage({ params }: { params: { locale: string } }) 
             </div>
             <h3 className="text-xl font-bold">Earn Points</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Receive 10 Beats points for every $1 spent on accommodation, equipment rentals, and activities.
+              Receive 10 Beats points for every $1 spent on accommodation, equipment rentals, and
+              activities.
             </p>
           </div>
 
@@ -91,7 +90,8 @@ export default function LoyaltyPage({ params }: { params: { locale: string } }) 
             </div>
             <h3 className="text-xl font-bold">Tier Perks</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Advance from Silver to Gold and Platinum tiers. Elite tiers unlock early check-in, late check-out, and welcome gifts.
+              Advance from Silver to Gold and Platinum tiers. Elite tiers unlock early check-in,
+              late check-out, and welcome gifts.
             </p>
           </div>
 
@@ -101,7 +101,8 @@ export default function LoyaltyPage({ params }: { params: { locale: string } }) 
             </div>
             <h3 className="text-xl font-bold">Redeem Beats</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Use your points at checkout to discount your booking. 100 Beats points count as $1.00 of real value.
+              Use your points at checkout to discount your booking. 100 Beats points count as $1.00
+              of real value.
             </p>
           </div>
         </div>

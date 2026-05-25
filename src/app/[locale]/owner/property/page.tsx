@@ -2,8 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Save, Loader2, ArrowUpCircle, CheckCircle, XCircle, Palette, Globe,
-  Settings2, Image, Type, Phone, Mail, MapPin,
+  Save,
+  Loader2,
+  ArrowUpCircle,
+  CheckCircle,
+  XCircle,
+  Palette,
+  Globe,
+  Settings2,
+  Image as ImageIcon,
+  Type,
+  Phone,
+  Mail,
+  MapPin,
+  AlertCircle,
 } from 'lucide-react';
 
 interface PropertyForm {
@@ -51,7 +63,12 @@ const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa']
 export default function OwnerPropertyPage() {
   const [data, setData] = useState<PropertyData | null>(null);
   const [form, setForm] = useState<PropertyForm>({
-    name: '', description: '', city: '', country: '', currency_code: 'USD', type: 'camp',
+    name: '',
+    description: '',
+    city: '',
+    country: '',
+    currency_code: 'USD',
+    type: 'camp',
   });
   const [branding, setBranding] = useState<Branding>({});
   const [loading, setLoading] = useState(true);
@@ -68,7 +85,10 @@ export default function OwnerPropertyPage() {
 
   // Domain check
   const [domainCheck, setDomainCheck] = useState<string>('');
-  const [domainCheckResult, setDomainCheckResult] = useState<{ available: boolean; reason?: string } | null>(null);
+  const [domainCheckResult, setDomainCheckResult] = useState<{
+    available: boolean;
+    reason?: string;
+  } | null>(null);
   const [domainChecking, setDomainChecking] = useState(false);
 
   useEffect(() => {
@@ -89,7 +109,9 @@ export default function OwnerPropertyPage() {
           });
           if (p.branding) setBranding(p.branding);
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       setLoading(false);
     })();
   }, []);
@@ -107,10 +129,17 @@ export default function OwnerPropertyPage() {
         body: JSON.stringify(body),
       });
       const result = await res.json();
-      if (!res.ok) { setError(result.error ?? 'Failed to save.'); }
-      else { setSaved(true); setTimeout(() => setSaved(false), 3000); }
-    } catch { setError('Network error.'); }
-    finally { setSaving(false); }
+      if (!res.ok) {
+        setError(result.error ?? 'Failed to save.');
+      } else {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch {
+      setError('Network error.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const doUpgrade = async (newPlan: string) => {
@@ -125,16 +154,31 @@ export default function OwnerPropertyPage() {
         if (upgradeCustomDomain.trim()) body.customDomain = upgradeCustomDomain.trim();
       }
       const res = await fetch('/api/owner/upgrade', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
       const result = await res.json();
-      if (!res.ok) { setUpgradeError(result.error); }
-      else {
-        setData({ ...data, plan: newPlan, subdomain: result.subdomain ?? data.subdomain, customDomain: result.customDomain ?? data.customDomain });
-        setUpgradeSuccess(newPlan === 'premium' ? 'Upgraded to Premium! Subdomain is ready.' : 'Upgraded to Ultimate! Point your CNAME to sinaicamps.com.');
+      if (!res.ok) {
+        setUpgradeError(result.error);
+      } else {
+        setData({
+          ...data,
+          plan: newPlan,
+          subdomain: result.subdomain ?? data.subdomain,
+          customDomain: result.customDomain ?? data.customDomain,
+        });
+        setUpgradeSuccess(
+          newPlan === 'premium'
+            ? 'Upgraded to Premium! Subdomain is ready.'
+            : 'Upgraded to Ultimate! Point your CNAME to sinaicamps.com.'
+        );
       }
-    } catch { setUpgradeError('Upgrade failed.'); }
-    finally { setUpgrading(false); }
+    } catch {
+      setUpgradeError('Upgrade failed.');
+    } finally {
+      setUpgrading(false);
+    }
   };
 
   const checkDomain = async () => {
@@ -142,11 +186,16 @@ export default function OwnerPropertyPage() {
     setDomainChecking(true);
     setDomainCheckResult(null);
     try {
-      const res = await fetch(`/api/owner/domains/check?domain=${encodeURIComponent(domainCheck.trim())}`);
+      const res = await fetch(
+        `/api/owner/domains/check?domain=${encodeURIComponent(domainCheck.trim())}`
+      );
       const result = await res.json();
       setDomainCheckResult(result);
-    } catch { setDomainCheckResult({ available: false, reason: 'Check failed.' }); }
-    finally { setDomainChecking(false); }
+    } catch {
+      setDomainCheckResult({ available: false, reason: 'Check failed.' });
+    } finally {
+      setDomainChecking(false);
+    }
   };
 
   const updateBranding = (key: keyof Branding, value: string) => {
@@ -155,8 +204,9 @@ export default function OwnerPropertyPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin" />
+      <div className="flex justify-center py-20" role="status" aria-live="polite">
+        <Loader2 className="w-10 h-10 animate-spin text-brand-600" />
+        <span className="sr-only">Loading property data...</span>
       </div>
     );
   }
@@ -168,7 +218,9 @@ export default function OwnerPropertyPage() {
       basic: 'bg-slate-100 text-slate-700',
     };
     return (
-      <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${styles[plan] ?? 'bg-slate-100 text-slate-700'}`}>
+      <span
+        className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${styles[plan] ?? 'bg-slate-100 text-slate-700'}`}
+      >
         {plan} plan
       </span>
     );
@@ -193,12 +245,19 @@ export default function OwnerPropertyPage() {
             Upgrade your plan
           </h2>
           {upgradeError && (
-            <div className="flex items-center gap-2 text-red-700 bg-red-50 rounded-lg px-4 py-3 text-sm mb-4">
+            <div
+              className="flex items-center gap-2 text-red-700 bg-red-50 rounded-lg px-4 py-3 text-sm mb-4"
+              role="alert"
+            >
               <XCircle className="w-4 h-4 shrink-0" /> {upgradeError}
             </div>
           )}
           {upgradeSuccess && (
-            <div className="flex items-center gap-2 text-green-700 bg-green-50 rounded-lg px-4 py-3 text-sm mb-4">
+            <div
+              className="flex items-center gap-2 text-green-700 bg-green-50 rounded-lg px-4 py-3 text-sm mb-4"
+              role="status"
+              aria-live="polite"
+            >
               <CheckCircle className="w-4 h-4 shrink-0" /> {upgradeSuccess}
             </div>
           )}
@@ -206,9 +265,14 @@ export default function OwnerPropertyPage() {
             {data.plan === 'basic' && (
               <div className="rounded-xl border border-amber-200 p-4">
                 <p className="font-medium text-gray-900 mb-1">
-                  Operations Suite <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full ml-1">Premium</span>
+                  Operations Suite{' '}
+                  <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full ml-1">
+                    Premium
+                  </span>
                 </p>
-                <p className="text-sm text-gray-500 mb-3">$49/mo — full ops panel, plugins & your own subdomain.</p>
+                <p className="text-sm text-gray-500 mb-3">
+                  $49/mo — full ops panel, plugins & your own subdomain.
+                </p>
                 {data.subdomain && (
                   <p className="text-xs text-amber-700 bg-amber-50 rounded px-3 py-2 mb-3">
                     Your subdomain: <strong>{data.subdomain}.sinaicamps.com</strong>
@@ -226,23 +290,34 @@ export default function OwnerPropertyPage() {
                   onClick={() => doUpgrade('premium')}
                   className="w-full bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg flex items-center justify-center gap-2"
                 >
-                  {upgrading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpCircle className="w-4 h-4" />}
+                  {upgrading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <ArrowUpCircle className="w-4 h-4" />
+                  )}
                   Upgrade to Premium
                 </button>
               </div>
             )}
             <div className="rounded-xl border border-purple-200 p-4">
               <p className="font-medium text-gray-900 mb-1">
-                White Label <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full ml-1">Ultimate</span>
+                White Label{' '}
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full ml-1">
+                  Ultimate
+                </span>
               </p>
-              <p className="text-sm text-gray-500 mb-3">$99/mo — custom domain, branding & priority support.</p>
+              <p className="text-sm text-gray-500 mb-3">
+                $99/mo — custom domain, branding & priority support.
+              </p>
               {data.plan === 'ultimate' && data.customDomain && (
                 <p className="text-xs text-purple-700 bg-purple-50 rounded px-3 py-2 mb-3">
                   Custom domain: <strong>{data.customDomain}</strong>
                   {data.domainVerified ? (
                     <span className="text-green-600 ml-2">(verified)</span>
                   ) : (
-                    <span className="text-amber-600 ml-2">(not verified — point CNAME to sinaicamps.com)</span>
+                    <span className="text-amber-600 ml-2">
+                      (not verified — point CNAME to sinaicamps.com)
+                    </span>
                   )}
                 </p>
               )}
@@ -258,7 +333,11 @@ export default function OwnerPropertyPage() {
                 onClick={() => doUpgrade('ultimate')}
                 className="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg flex items-center justify-center gap-2"
               >
-                {upgrading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpCircle className="w-4 h-4" />}
+                {upgrading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ArrowUpCircle className="w-4 h-4" />
+                )}
                 {data.plan === 'ultimate' ? 'Update Custom Domain' : 'Upgrade to Ultimate'}
               </button>
             </div>
@@ -286,16 +365,26 @@ export default function OwnerPropertyPage() {
               onClick={checkDomain}
               className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2"
             >
-              {domainChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+              {domainChecking ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Globe className="w-4 h-4" />
+              )}
               Check
             </button>
           </div>
           {domainCheckResult && (
-            <div className={`mt-3 text-sm flex items-center gap-2 ${domainCheckResult.available ? 'text-green-700' : 'text-red-700'}`}>
-              {domainCheckResult.available ? <CheckCircle className="w-4 h-4 shrink-0" /> : <XCircle className="w-4 h-4 shrink-0" />}
+            <div
+              className={`mt-3 text-sm flex items-center gap-2 ${domainCheckResult.available ? 'text-green-700' : 'text-red-700'}`}
+            >
+              {domainCheckResult.available ? (
+                <CheckCircle className="w-4 h-4 shrink-0" />
+              ) : (
+                <XCircle className="w-4 h-4 shrink-0" />
+              )}
               {domainCheckResult.available
                 ? 'Domain is available! Set it in the upgrade panel above.'
-                : domainCheckResult.reason ?? 'Domain is not available.'}
+                : (domainCheckResult.reason ?? 'Domain is not available.')}
             </div>
           )}
         </div>
@@ -312,17 +401,25 @@ export default function OwnerPropertyPage() {
             {data.subdomain && (
               <div className="flex items-center gap-2">
                 <span className="text-gray-500">Subdomain:</span>
-                <a href={`https://${data.subdomain}.sinaicamps.com`} target="_blank" rel="noreferrer"
-                   className="text-blue-600 hover:underline font-mono">{data.subdomain}.sinaicamps.com</a>
+                <a
+                  href={`https://${data.subdomain}.sinaicamps.com`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline font-mono"
+                >
+                  {data.subdomain}.sinaicamps.com
+                </a>
               </div>
             )}
             {data.customDomain && (
               <div className="flex items-center gap-2">
                 <span className="text-gray-500">Custom domain:</span>
                 <span className="font-mono">{data.customDomain}</span>
-                {data.domainVerified
-                  ? <CheckCircle className="w-4 h-4 text-green-500" />
-                  : <XCircle className="w-4 h-4 text-amber-500" />}
+                {data.domainVerified ? (
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                ) : (
+                  <XCircle className="w-4 h-4 text-amber-500" />
+                )}
               </div>
             )}
           </div>
@@ -338,41 +435,91 @@ export default function OwnerPropertyPage() {
             Basic Information
           </h2>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">{error}</div>
+            <div
+              className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3"
+              role="alert"
+            >
+              {error}
+            </div>
           )}
           {saved && (
-            <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">Changes saved successfully.</div>
+            <div
+              className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3"
+              role="status"
+              aria-live="polite"
+            >
+              Changes saved successfully.
+            </div>
           )}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Property name</label>
-            <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input" />
+            <input
+              type="text"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="input"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
-            <textarea rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Tell guests what makes your property special…" className="input resize-none" />
+            <textarea
+              rows={4}
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              placeholder="Tell guests what makes your property special…"
+              className="input resize-none"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
-              <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="input" />
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                className="input"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Country</label>
-              <input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input" />
+              <input
+                type="text"
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
+                className="input"
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Property type</label>
-              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="input capitalize">
-                {PROPERTY_TYPES.map((t) => (<option key={t} value={t} className="capitalize">{t}</option>))}
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Property type
+              </label>
+              <select
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="input capitalize"
+              >
+                {PROPERTY_TYPES.map((t) => (
+                  <option key={t} value={t} className="capitalize">
+                    {t}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Currency</label>
-              <select value={form.currency_code} onChange={(e) => setForm({ ...form, currency_code: e.target.value })} className="input">
-                {CURRENCIES.map((c) => (<option key={c} value={c}>{c}</option>))}
+              <select
+                value={form.currency_code}
+                onChange={(e) => setForm({ ...form, currency_code: e.target.value })}
+                className="input"
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -387,40 +534,84 @@ export default function OwnerPropertyPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-                <Image className="w-4 h-4 text-gray-400" /> Logo URL
+                <ImageIcon className="w-4 h-4 text-gray-400" aria-hidden="true" /> Logo URL
               </label>
-              <input type="text" placeholder="https://example.com/logo.png"
-                value={branding.logo ?? ''} onChange={(e) => updateBranding('logo', e.target.value)} className="input" />
+              <input
+                type="text"
+                placeholder="https://example.com/logo.png"
+                value={branding.logo ?? ''}
+                onChange={(e) => updateBranding('logo', e.target.value)}
+                className="input"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-                <Image className="w-4 h-4 text-gray-400" /> Hero Image URL
+                <ImageIcon className="w-4 h-4 text-gray-400" aria-hidden="true" /> Hero Image URL
               </label>
-              <input type="text" placeholder="https://example.com/hero.jpg"
-                value={branding.heroImage ?? ''} onChange={(e) => updateBranding('heroImage', e.target.value)} className="input" />
+              <input
+                type="text"
+                placeholder="https://example.com/hero.jpg"
+                value={branding.heroImage ?? ''}
+                onChange={(e) => updateBranding('heroImage', e.target.value)}
+                className="input"
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-                <span className="inline-block w-4 h-4 rounded border border-gray-300" style={{ backgroundColor: branding.primaryColor || '#cccccc' }} /> Primary Color
+              <label
+                htmlFor="primary-color"
+                className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5"
+              >
+                <span
+                  className="inline-block w-4 h-4 rounded border border-gray-300"
+                  style={{ backgroundColor: branding.primaryColor || '#cccccc' }}
+                />{' '}
+                Primary Color
               </label>
               <div className="flex gap-2">
-                <input type="color" value={branding.primaryColor || '#2563eb'}
-                  onChange={(e) => updateBranding('primaryColor', e.target.value)} className="w-10 h-10 rounded border border-gray-200 cursor-pointer" />
-                <input type="text" placeholder="#2563eb" value={branding.primaryColor ?? ''}
-                  onChange={(e) => updateBranding('primaryColor', e.target.value)} className="input flex-1 font-mono text-sm" />
+                <input
+                  id="primary-color"
+                  type="color"
+                  value={branding.primaryColor || '#2563eb'}
+                  onChange={(e) => updateBranding('primaryColor', e.target.value)}
+                  className="w-10 h-10 rounded border border-gray-200 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  placeholder="#2563eb"
+                  value={branding.primaryColor ?? ''}
+                  onChange={(e) => updateBranding('primaryColor', e.target.value)}
+                  className="input flex-1 font-mono text-sm"
+                />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
-                <span className="inline-block w-4 h-4 rounded border border-gray-300" style={{ backgroundColor: branding.secondaryColor || '#cccccc' }} /> Secondary Color
+              <label
+                htmlFor="secondary-color"
+                className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5"
+              >
+                <span
+                  className="inline-block w-4 h-4 rounded border border-gray-300"
+                  style={{ backgroundColor: branding.secondaryColor || '#cccccc' }}
+                />{' '}
+                Secondary Color
               </label>
               <div className="flex gap-2">
-                <input type="color" value={branding.secondaryColor || '#7c3aed'}
-                  onChange={(e) => updateBranding('secondaryColor', e.target.value)} className="w-10 h-10 rounded border border-gray-200 cursor-pointer" />
-                <input type="text" placeholder="#7c3aed" value={branding.secondaryColor ?? ''}
-                  onChange={(e) => updateBranding('secondaryColor', e.target.value)} className="input flex-1 font-mono text-sm" />
+                <input
+                  id="secondary-color"
+                  type="color"
+                  value={branding.secondaryColor || '#7c3aed'}
+                  onChange={(e) => updateBranding('secondaryColor', e.target.value)}
+                  className="w-10 h-10 rounded border border-gray-200 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  placeholder="#7c3aed"
+                  value={branding.secondaryColor ?? ''}
+                  onChange={(e) => updateBranding('secondaryColor', e.target.value)}
+                  className="input flex-1 font-mono text-sm"
+                />
               </div>
             </div>
           </div>
@@ -429,13 +620,23 @@ export default function OwnerPropertyPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                 <Type className="w-4 h-4 text-gray-400" /> Font Family
               </label>
-              <input type="text" placeholder="Inter, sans-serif"
-                value={branding.fontFamily ?? ''} onChange={(e) => updateBranding('fontFamily', e.target.value)} className="input" />
+              <input
+                type="text"
+                placeholder="Inter, sans-serif"
+                value={branding.fontFamily ?? ''}
+                onChange={(e) => updateBranding('fontFamily', e.target.value)}
+                className="input"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Tagline</label>
-              <input type="text" placeholder="Experience the wild…"
-                value={branding.tagline ?? ''} onChange={(e) => updateBranding('tagline', e.target.value)} className="input" />
+              <input
+                type="text"
+                placeholder="Experience the wild…"
+                value={branding.tagline ?? ''}
+                onChange={(e) => updateBranding('tagline', e.target.value)}
+                className="input"
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -443,37 +644,69 @@ export default function OwnerPropertyPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                 <Mail className="w-4 h-4 text-gray-400" /> Contact Email
               </label>
-              <input type="email" placeholder="camp@example.com"
-                value={branding.contactEmail ?? ''} onChange={(e) => updateBranding('contactEmail', e.target.value)} className="input" />
+              <input
+                type="email"
+                placeholder="camp@example.com"
+                value={branding.contactEmail ?? ''}
+                onChange={(e) => updateBranding('contactEmail', e.target.value)}
+                className="input"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
                 <Phone className="w-4 h-4 text-gray-400" /> Contact Phone
               </label>
-              <input type="text" placeholder="+1 234 567 890"
-                value={branding.contactPhone ?? ''} onChange={(e) => updateBranding('contactPhone', e.target.value)} className="input" />
+              <input
+                type="text"
+                placeholder="+1 234 567 890"
+                value={branding.contactPhone ?? ''}
+                onChange={(e) => updateBranding('contactPhone', e.target.value)}
+                className="input"
+              />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
               <MapPin className="w-4 h-4 text-gray-400" /> Address
             </label>
-            <input type="text" placeholder="123 Camp Road, Wilderness"
-              value={branding.address ?? ''} onChange={(e) => updateBranding('address', e.target.value)} className="input" />
+            <input
+              type="text"
+              placeholder="123 Camp Road, Wilderness"
+              value={branding.address ?? ''}
+              onChange={(e) => updateBranding('address', e.target.value)}
+              className="input"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
               <Globe className="w-4 h-4 text-gray-400" /> Social Links (JSON)
             </label>
-            <input type="text" placeholder='{"instagram":"...","facebook":"..."}'
-              value={branding.socialLinks ?? ''} onChange={(e) => updateBranding('socialLinks', e.target.value)} className="input font-mono text-sm" />
+            <input
+              type="text"
+              placeholder='{"instagram":"...","facebook":"..."}'
+              value={branding.socialLinks ?? ''}
+              onChange={(e) => updateBranding('socialLinks', e.target.value)}
+              className="input font-mono text-sm"
+            />
           </div>
         </div>
 
         {/* Submit */}
         <div className="flex justify-end pt-2">
-          <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2 px-6">
-            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : <><Save className="w-4 h-4" /> Save changes</>}
+          <button
+            type="submit"
+            disabled={saving}
+            className="btn-primary flex items-center gap-2 px-6"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Saving…
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Save changes
+              </>
+            )}
           </button>
         </div>
       </form>

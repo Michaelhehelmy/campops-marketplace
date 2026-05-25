@@ -3,14 +3,16 @@ import { GET, POST } from '../route';
 import { NextRequest } from 'next/server';
 
 const mockRun = vi.hoisted(() => vi.fn());
-const mockGet = vi.hoisted(() => vi.fn().mockReturnValue({
-  platformName: 'Custom Marketplace',
-  supportEmail: 'support@sinaicamps.com',
-  currency: 'USD',
-  timezone: 'UTC',
-  commissionRate: 15.0,
-  minBookingFee: 1.5,
-}));
+const mockGet = vi.hoisted(() =>
+  vi.fn().mockReturnValue({
+    platformName: 'Custom Marketplace',
+    supportEmail: 'support@sinaicamps.com',
+    currency: 'USD',
+    timezone: 'UTC',
+    commissionRate: 15.0,
+    minBookingFee: 1.5,
+  })
+);
 const mockPrepare = vi.hoisted(() => vi.fn().mockReturnThis());
 
 vi.mock('@/lib/db', async (importOriginal) => {

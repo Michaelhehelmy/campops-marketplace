@@ -74,14 +74,20 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 pl-6 border-l border-gray-100"
           >
             <div className="text-right hidden sm:block">
-              <div className="text-sm font-bold text-gray-900">{session?.user?.name || 'Guest'}</div>
+              <div className="text-sm font-bold text-gray-900">
+                {session?.user?.name || 'Guest'}
+              </div>
               <div className="text-[10px] text-brand-600 font-bold uppercase tracking-widest">
                 Guest Member
               </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-brand-100 border-2 border-white shadow-sm flex items-center justify-center text-brand-600 font-bold overflow-hidden">
               {session?.user?.image ? (
-                <img src={session.user.image} alt={session.user.name || ''} className="h-full w-full object-cover" />
+                <img
+                  src={session.user.image}
+                  alt={session.user.name || ''}
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <User className="h-6 w-6" />
               )}

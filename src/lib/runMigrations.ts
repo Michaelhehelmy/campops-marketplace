@@ -9,6 +9,11 @@ export interface MigrationResult {
   error?: string;
 }
 
+export interface MigrationOptions {
+  direction?: 'up' | 'down';
+  target?: string;
+}
+
 /**
  * Runs SQL migration files from src/db/migrations/ in ascending filename order.
  * Tracks applied migrations in schema_migrations table (idempotent).
@@ -18,7 +23,8 @@ export interface MigrationResult {
  */
 export function runMigrations(
   sqliteDb: import('better-sqlite3').Database,
-  migrationsOverride?: string
+  migrationsOverride?: string,
+  options?: MigrationOptions
 ): MigrationResult[] {
   const results: MigrationResult[] = [];
 
@@ -38,6 +44,39 @@ export function runMigrations(
 
   if (!fs.existsSync(migrationsDir)) {
     logger.info('[runMigrations] No migrations directory found, skipping.');
+    return results;
+  }
+
+  const dir = options?.direction ?? 'up';
+
+  if (dir === 'down') {
+    const applied = sqliteDb
+      .prepare('SELECT version FROM schema_migrations ORDER BY applied_at DESC')
+      .all() as { version: string }[];
+
+    for (const row of applied) {
+      if (options?.target && row.version <= options.target) break;
+
+      const rollbackFile = path.join(migrationsDir, `${row.version}.rollback.sql`);
+      if (!fs.existsSync(rollbackFile)) {
+        logger.warn(`[runMigrations] No rollback file for ${row.version}, skipping.`);
+        results.push({ version: row.version, applied: false, skipped: true });
+        continue;
+      }
+
+      const sql = fs.readFileSync(rollbackFile, 'utf-8');
+      try {
+        sqliteDb.exec(sql);
+        sqliteDb.prepare('DELETE FROM schema_migrations WHERE version = ?').run(row.version);
+        logger.info(`[runMigrations] Rolled back: ${row.version}`);
+        results.push({ version: row.version, applied: true, skipped: false });
+      } catch (err: any) {
+        logger.error(`[runMigrations] Failed to roll back ${row.version}:`, err.message);
+        results.push({ version: row.version, applied: false, skipped: false, error: err.message });
+        break;
+      }
+    }
+
     return results;
   }
 
@@ -61,13 +100,9 @@ export function runMigrations(
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
 
     try {
-      // Migrations containing ALTER TABLE need per-statement execution so that
-      // "duplicate column name" errors can be caught and skipped gracefully.
-      // All other migrations are executed atomically via exec() for safety.
       const needsPerStatement = /ALTER\s+TABLE/i.test(sql);
 
       if (needsPerStatement) {
-        // Strip full-line comments, then split on semicolons.
         const stripped = sql
           .split('\n')
           .filter((line) => !line.trim().startsWith('--'))
@@ -83,7 +118,6 @@ export function runMigrations(
             sqliteDb.exec(stmt + ';');
           } catch (stmtErr: any) {
             const msg: string = stmtErr.message ?? '';
-            // ALTER TABLE ADD COLUMN fails if column already exists — safe to ignore.
             if (msg.includes('duplicate column name') || msg.includes('already exists')) {
               logger.info(`[runMigrations] Skipping duplicate column in ${version}: ${msg}`);
             } else {

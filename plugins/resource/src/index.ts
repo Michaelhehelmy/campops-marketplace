@@ -50,6 +50,9 @@ export default async function init(api: PluginAPI) {
   // ── 2. Routes ──────────────────────────────────────────────────────────────
   registerRoutes(api);
 
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_resource_listings_tenant ON plugin_resource_listings(tenant_id, is_active)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_resource_listings_featured ON plugin_resource_listings(is_featured, is_active)');
+
   // ── 3. UI Slots ────────────────────────────────────────────────────────────
   api.ui.addSlotComponent('public.homepage', 'resource:FeaturedListings');
   api.ui.addSlotComponent('public.search', 'resource:SearchBar');

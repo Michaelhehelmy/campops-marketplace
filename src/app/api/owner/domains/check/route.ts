@@ -85,7 +85,9 @@ export async function GET(req: NextRequest) {
       available: valid,
       checkedWithCloudflare: false,
       domain,
-      note: valid ? 'Domain format is valid. Set up DNS to verify ownership.' : 'Invalid domain format',
+      note: valid
+        ? 'Domain format is valid. Set up DNS to verify ownership.'
+        : 'Invalid domain format',
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Domain check failed' }, { status: 500 });

@@ -381,7 +381,9 @@ export default function MasterPluginsPage() {
                         <div className="h-6 w-6 rounded-full bg-slate-900 flex items-center justify-center text-[10px] text-white font-bold">
                           C
                         </div>
-                        <span className="text-xs font-bold text-gray-600">{platformName} Registry</span>
+                        <span className="text-xs font-bold text-gray-600">
+                          {platformName} Registry
+                        </span>
                       </div>
                       <div className="flex gap-2">
                         {selectedProperty === 'all' && (

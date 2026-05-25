@@ -22,7 +22,7 @@ export function initErrorTracking() {
 
   if (dsn.startsWith('https://') && dsn.includes('@sentry')) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const Sentry = require('@sentry/nextjs');
       Sentry.init({
         dsn,

@@ -5,6 +5,14 @@
 @layer base {
   :root {
     --brand: 22 163 74;
+    --brand-primary: #0f172a;
+    --brand-secondary: #f59e0b;
+    --brand-accent: #10b981;
+    --brand-neutral: #f8fafc;
+    --brand-muted: #94a3b8;
+    --brand-background: #ffffff;
+    --brand-border: #e2e8f0;
+    --brand-card: #ffffff;
   }
 
   html {
@@ -18,6 +26,10 @@
   input[type='date']::-webkit-calendar-picker-indicator {
     opacity: 0.5;
     cursor: pointer;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-amber-500;
   }
 }
 

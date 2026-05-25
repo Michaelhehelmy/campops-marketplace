@@ -32,14 +32,14 @@ describe('Financial Ops Billing Router', () => {
         payments: mockPayments,
       });
 
-      expect(mockApi.db.queryOne).toHaveBeenCalledWith('SELECT * FROM guest_folios WHERE id = $1', [
+      expect(mockApi.db.queryOne).toHaveBeenCalledWith('SELECT * FROM plugin_folios WHERE id = ?', [
         'folio-123',
       ]);
       expect(mockApi.db.query).toHaveBeenCalledWith(
-        'SELECT * FROM folio_charges WHERE folio_id = $1',
+        'SELECT * FROM plugin_folio_charges WHERE folio_id = ?',
         ['folio-123']
       );
-      expect(mockApi.db.query).toHaveBeenCalledWith('SELECT * FROM payments WHERE folio_id = $1', [
+      expect(mockApi.db.query).toHaveBeenCalledWith('SELECT * FROM plugin_payments WHERE folio_id = ?', [
         'folio-123',
       ]);
     });
@@ -87,18 +87,16 @@ describe('Financial Ops Billing Router', () => {
       expect(body.success).toBe(true);
       expect(body.id).toBeDefined();
 
-      // Check payment creation statement
       expect(mockApi.db.execute).toHaveBeenNthCalledWith(
         1,
-        expect.stringContaining('INSERT INTO payments'),
-        [body.id, 'folio-123', 500, 'credit_card']
+        expect.stringContaining('INSERT INTO plugin_payments'),
+        [body.id, 'folio-123', 500, 'credit_card', expect.any(Number)]
       );
 
-      // Check folio balance update statement
       expect(mockApi.db.execute).toHaveBeenNthCalledWith(
         2,
-        expect.stringContaining('UPDATE guest_folios'),
-        [500, 'folio-123']
+        expect.stringContaining('UPDATE plugin_folios'),
+        [500, expect.any(Number), 'folio-123']
       );
     });
   });

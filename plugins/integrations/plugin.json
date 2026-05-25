@@ -1,0 +1,21 @@
+{
+  "id": "integrations",
+  "name": "External Integrations",
+  "version": "1.0.0",
+  "description": "Connect with external calendars, OTAs, and third-party services via iCal sync and API integrations.",
+  "author": "SinaiCamps Core",
+  "category": "Integrations",
+  "entry": "src/index.ts",
+  "uiEntry": "src/ui.tsx",
+  "slots": {
+    "manager.settings": ["integrations:CalendarSyncSettings"]
+  },
+  "menuItems": [
+    {
+      "id": "integrations-calendars",
+      "label": "Integrations",
+      "path": "/manage/:listingId/settings/integrations",
+      "order": 50
+    }
+  ]
+}

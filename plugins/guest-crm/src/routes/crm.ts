@@ -4,6 +4,12 @@ import { PluginAPI } from '../../../../packages/plugin-sdk/src/types.js';
 export const crmRouter = (api: PluginAPI) => {
   const app = new Hono();
 
+  app.use('*', async (c, next) => {
+    const session = await api.auth.getSession(c.req.raw);
+    if (!session) return c.json({ error: 'Unauthorized' }, 401);
+    await next();
+  });
+
   app.get('/guests', async (c) => {
     const search = c.req.query('search');
     let sql = 'SELECT * FROM guests';

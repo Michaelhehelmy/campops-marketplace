@@ -94,14 +94,16 @@ export default function SingleListing({
       <div
         data-testid="pwa-install-banner"
         style={{ display: 'none' }}
-        className="bg-brand-600 text-white rounded-xl p-4 mb-6 items-center justify-between"
+        className="bg-[var(--tenant-primary)] text-white rounded-xl p-4 mb-6 items-center justify-between"
         id="pwa-banner-fallback"
       >
         <div className="flex items-center gap-3">
           <Download className="w-5 h-5" />
           <div>
             <p className="font-bold">Install App</p>
-            <p className="text-sm text-brand-100">Add to your home screen for the best experience</p>
+            <p className="text-sm text-brand-100">
+              Add to your home screen for the best experience
+            </p>
           </div>
         </div>
         <button className="bg-white text-brand-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-50">
@@ -130,9 +132,7 @@ export default function SingleListing({
             <span>{[m.city, m.country].filter(Boolean).join(', ')}</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">{post.postTitle}</h2>
-          {post.postContent && (
-            <p className="mt-3 text-gray-600 max-w-2xl">{post.postContent}</p>
-          )}
+          {post.postContent && <p className="mt-3 text-gray-600 max-w-2xl">{post.postContent}</p>}
         </div>
       </div>
 
@@ -178,7 +178,7 @@ export default function SingleListing({
               <div
                 key={rt.id}
                 data-testid={`room-item-${rt.id}`}
-                className="bg-white border border-gray-200 rounded-xl p-5 hover:border-brand-400 transition-colors"
+                className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[var(--tenant-primary)] transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -204,14 +204,14 @@ export default function SingleListing({
                   <Link
                     href={`/${locale}/book/summary?propertyId=${post.id}&roomTypeId=${rt.id}&checkIn=${checkIn}&checkOut=${checkOut}&currency=${currency}&roomName=${encodeURIComponent(rt.name)}&propertyName=${encodeURIComponent(post.postTitle)}&price=${roomPrice}&priceCurrency=${roomCurrency}`}
                     data-testid={`book-button-${rt.id}`}
-                    className="block w-full text-center bg-brand-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
+                    className="block w-full text-center bg-[var(--tenant-primary)] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--tenant-secondary)] transition-colors"
                   >
                     Book Now
                   </Link>
                 ) : (
                   <Link
                     href={`/${locale}/search`}
-                    className="block w-full text-center border border-brand-600 text-brand-600 py-2.5 rounded-lg text-sm font-medium hover:bg-brand-50 transition-colors"
+                    className="block w-full text-center border border-[var(--tenant-primary)] text-[var(--tenant-primary)] py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--tenant-primary)]/5 transition-colors"
                   >
                     Check Availability
                   </Link>

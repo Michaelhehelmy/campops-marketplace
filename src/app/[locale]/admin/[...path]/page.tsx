@@ -37,7 +37,8 @@ export default function GenericPluginAdminPage() {
   const handlePing = async () => {
     setPingLoading(true);
     try {
-      const url = pluginId === 'test-dock' ? '/api/test-dock/ping' : '/api/test-probe/ping?slug=acacia';
+      const url =
+        pluginId === 'test-dock' ? '/api/test-dock/ping' : '/api/test-probe/ping?slug=acacia';
       const res = await fetch(url);
       const data = await res.json();
       setPingResult(data);
@@ -112,7 +113,8 @@ export default function GenericPluginAdminPage() {
             Test Probe Dashboard
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Sandbox console for testing multi-tenant isolation, hook execution, and database schema migrations.
+            Sandbox console for testing multi-tenant isolation, hook execution, and database schema
+            migrations.
           </p>
         </div>
 
@@ -230,7 +232,9 @@ export default function GenericPluginAdminPage() {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-xs text-gray-900">ID: {row.id}</span>
-                            <span className="text-[9px] font-mono text-gray-400">Key: {row.key}</span>
+                            <span className="text-[9px] font-mono text-gray-400">
+                              Key: {row.key}
+                            </span>
                           </div>
                           <pre className="text-[11px] text-gray-600 font-mono bg-gray-50 p-2 rounded-lg max-w-md overflow-x-auto">
                             {JSON.stringify(parsedVal, null, 2)}
@@ -248,9 +252,7 @@ export default function GenericPluginAdminPage() {
                               Leak Risk
                             </span>
                           )}
-                          <span className="text-[9px] text-gray-400">
-                            {row.created_at || '—'}
-                          </span>
+                          <span className="text-[9px] text-gray-400">{row.created_at || '—'}</span>
                         </div>
                       </div>
                     );
@@ -277,7 +279,8 @@ export default function GenericPluginAdminPage() {
             Test Dock Dashboard
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Sandbox workspace for testing dynamic UI slots registration and payment hooks integration.
+            Sandbox workspace for testing dynamic UI slots registration and payment hooks
+            integration.
           </p>
         </div>
 
@@ -358,7 +361,9 @@ export default function GenericPluginAdminPage() {
   return (
     <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <h2 className="text-xl font-bold text-gray-900">Plugin Portal: {pluginId}</h2>
-      <p className="text-gray-500 mt-2 text-sm">This plugin does not expose a custom admin console interface.</p>
+      <p className="text-gray-500 mt-2 text-sm">
+        This plugin does not expose a custom admin console interface.
+      </p>
     </div>
   );
 }

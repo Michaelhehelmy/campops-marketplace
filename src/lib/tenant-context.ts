@@ -59,7 +59,10 @@ export async function getTenantFromHeaders(): Promise<TenantInfo | null> {
 
 export async function getTenantForHost(host: string): Promise<TenantInfo | null> {
   if (!host) return null;
-  const cleanHostname = host.split(':')[0].toLowerCase().replace(/^www\./, '');
+  const cleanHostname = host
+    .split(':')[0]
+    .toLowerCase()
+    .replace(/^www\./, '');
   const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com').toLowerCase();
 
   try {

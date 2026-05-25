@@ -18,8 +18,15 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
   const [guests, setGuests] = useState('2');
   const t = useTranslations('hero');
 
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
+    if (checkIn && checkOut && new Date(checkOut) <= new Date(checkIn)) {
+      setValidationError('Check-out date must be after check-in date.');
+      return;
+    }
     const params = new URLSearchParams();
     if (destination) params.set('destination', destination);
     if (checkIn) params.set('checkIn', checkIn);
@@ -32,6 +39,10 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
     <section
       aria-label="Hero search section"
       className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-zinc-950 text-white py-24 px-4 overflow-hidden border-b border-slate-800/80"
+      style={{
+        borderImage:
+          'linear-gradient(to right, rgba(255,255,255,0.03), rgba(255,255,255,0.08), rgba(255,255,255,0.03)) 1',
+      }}
     >
       {/* Premium ambient glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none" />
@@ -76,6 +87,16 @@ export default function HeroSection({ locale = 'en' }: HeroSectionProps) {
             })}
           </p>
         </div>
+
+        {/* Validation Error Banner */}
+        {validationError && (
+          <div
+            className="max-w-4xl mx-auto mb-4 bg-red-500/10 border border-red-500/30 backdrop-blur-md rounded-2xl p-3 text-red-300 text-sm text-center"
+            role="alert"
+          >
+            {validationError}
+          </div>
+        )}
 
         {/* Glassmorphic Search Form */}
         <form

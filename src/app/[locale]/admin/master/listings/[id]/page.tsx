@@ -218,14 +218,17 @@ export default function ListingDetailsPage() {
           <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
             <div className="flex items-center gap-3 mb-6">
               <div className={`p-2 rounded-xl ${isFeatured ? 'bg-yellow-50' : 'bg-gray-100'}`}>
-                <Star className={`h-5 w-5 ${isFeatured ? 'text-yellow-500 fill-yellow-400' : 'text-gray-400'}`} />
+                <Star
+                  className={`h-5 w-5 ${isFeatured ? 'text-yellow-500 fill-yellow-400' : 'text-gray-400'}`}
+                />
               </div>
               <h3 className="text-lg font-black text-gray-900">Homepage Feature</h3>
             </div>
 
             <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-              Featured listings appear in the <span className="font-bold text-gray-700">"Featured Stays"</span> carousel
-              on the sinaicamps.com homepage. Only the master operator can control this.
+              Featured listings appear in the{' '}
+              <span className="font-bold text-gray-700">"Featured Stays"</span> carousel on the
+              sinaicamps.com homepage. Only the master operator can control this.
             </p>
 
             {featureError && (
@@ -275,13 +278,17 @@ export default function ListingDetailsPage() {
 
             {isFeatured && (
               <div className="flex items-center gap-3">
-                <label className="text-sm font-bold text-gray-600 whitespace-nowrap">Display order</label>
+                <label className="text-sm font-bold text-gray-600 whitespace-nowrap">
+                  Display order
+                </label>
                 <input
                   data-testid="featured-order-input"
                   type="number"
                   min={1}
                   value={featuredOrder ?? ''}
-                  onChange={(e) => setFeaturedOrder(e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    setFeaturedOrder(e.target.value ? parseInt(e.target.value) : null)
+                  }
                   onBlur={async () => {
                     if (featuredOrder == null) return;
                     setFeatureLoading(true);
@@ -307,9 +314,11 @@ export default function ListingDetailsPage() {
               </div>
             )}
 
-            <div className={`mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
-              isFeatured ? 'text-yellow-600' : 'text-gray-400'
-            }`}>
+            <div
+              className={`mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
+                isFeatured ? 'text-yellow-600' : 'text-gray-400'
+              }`}
+            >
               <Star className={`h-3 w-3 ${isFeatured ? 'fill-yellow-400' : ''}`} />
               {isFeatured ? `Featured — position #${featuredOrder ?? '–'}` : 'Not featured'}
             </div>

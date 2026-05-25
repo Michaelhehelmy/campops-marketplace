@@ -7,11 +7,21 @@ describe('Branding Validation', () => {
     const propertyId = uuidv4();
     const ownerId = uuidv4();
 
-    await db.prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)').run(ownerId, `branding-${propertyId}@test.com`, 'pass');
+    await db
+      .prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)')
+      .run(ownerId, `branding-${propertyId}@test.com`, 'pass');
 
     await db
-      .prepare('INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)')
-      .run(propertyId, ownerId, 'Branding Test', `branding-test-${propertyId.slice(0, 8)}`, 'premium');
+      .prepare(
+        'INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)'
+      )
+      .run(
+        propertyId,
+        ownerId,
+        'Branding Test',
+        `branding-test-${propertyId.slice(0, 8)}`,
+        'premium'
+      );
 
     const brandingData = {
       logo: 'https://example.com/logo.png',
@@ -30,8 +40,11 @@ describe('Branding Validation', () => {
       .prepare('UPDATE properties SET branding = $1 WHERE id = $2')
       .run(JSON.stringify(brandingData), propertyId);
 
-    const updated = (await db.prepare('SELECT branding FROM properties WHERE id = $1').get(propertyId)) as any;
-    const saved = typeof updated.branding === 'string' ? JSON.parse(updated.branding) : updated.branding;
+    const updated = (await db
+      .prepare('SELECT branding FROM properties WHERE id = $1')
+      .get(propertyId)) as any;
+    const saved =
+      typeof updated.branding === 'string' ? JSON.parse(updated.branding) : updated.branding;
 
     expect(saved.primaryColor).toBe('#2563eb');
     expect(saved.logo).toBe('https://example.com/logo.png');
@@ -43,21 +56,28 @@ describe('Branding Validation', () => {
     const propertyId = uuidv4();
     const ownerId = uuidv4();
 
-    await db.prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)').run(ownerId, `partial-${propertyId}@test.com`, 'pass');
     await db
-      .prepare('INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)')
+      .prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)')
+      .run(ownerId, `partial-${propertyId}@test.com`, 'pass');
+    await db
+      .prepare(
+        'INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)'
+      )
       .run(propertyId, ownerId, 'Partial Brand', `partial-${propertyId.slice(0, 8)}`, 'premium');
 
     await db
-      .prepare("UPDATE properties SET branding = $1 WHERE id = $2")
+      .prepare('UPDATE properties SET branding = $1 WHERE id = $2')
       .run(JSON.stringify({ primaryColor: '#ff0000', tagline: 'Original' }), propertyId);
 
     await db
-      .prepare("UPDATE properties SET branding = $1 WHERE id = $2")
+      .prepare('UPDATE properties SET branding = $1 WHERE id = $2')
       .run(JSON.stringify({ tagline: 'Updated' }), propertyId);
 
-    const updated = (await db.prepare('SELECT branding FROM properties WHERE id = $1').get(propertyId)) as any;
-    const saved = typeof updated.branding === 'string' ? JSON.parse(updated.branding) : updated.branding;
+    const updated = (await db
+      .prepare('SELECT branding FROM properties WHERE id = $1')
+      .get(propertyId)) as any;
+    const saved =
+      typeof updated.branding === 'string' ? JSON.parse(updated.branding) : updated.branding;
 
     // Partial update replaces the whole column — only the new data exists
     expect(saved.tagline).toBe('Updated');
@@ -87,12 +107,18 @@ describe('Branding Validation', () => {
     const propertyId = uuidv4();
     const ownerId = uuidv4();
 
-    await db.prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)').run(ownerId, `nullbrand-${propertyId}@test.com`, 'pass');
     await db
-      .prepare('INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)')
+      .prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)')
+      .run(ownerId, `nullbrand-${propertyId}@test.com`, 'pass');
+    await db
+      .prepare(
+        'INSERT INTO properties (id, owner_id, name, slug, plan, is_active) VALUES ($1, $2, $3, $4, $5, true)'
+      )
       .run(propertyId, ownerId, 'Null Brand', `nullbrand-${propertyId.slice(0, 8)}`, 'basic');
 
-    const prop = (await db.prepare('SELECT branding FROM properties WHERE id = $1').get(propertyId)) as any;
+    const prop = (await db
+      .prepare('SELECT branding FROM properties WHERE id = $1')
+      .get(propertyId)) as any;
     expect(prop.branding).toBeNull();
   });
 });
@@ -120,13 +146,19 @@ describe('Plan Upgrade Validation', () => {
     const invalid = ['MyCamp', 'my camp', 'my_camp', 'camp.123', 'camp@test'];
 
     for (const s of valid) {
-      const clean = s.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+      const clean = s
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '');
       expect(clean).toBe(s);
       expect(clean.length).toBeGreaterThan(0);
     }
 
     for (const s of invalid) {
-      const clean = s.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+      const clean = s
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '');
       expect(clean).not.toBe(s);
     }
   });
@@ -136,12 +168,18 @@ describe('Plan Upgrade Validation', () => {
     const invalid = ['not-a-domain', 'noextension'];
 
     for (const d of valid) {
-      const clean = d.trim().toLowerCase().replace(/^https?:\/\//, '');
+      const clean = d
+        .trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//, '');
       expect(clean.includes('.')).toBe(true);
     }
 
     for (const d of invalid) {
-      const clean = d.trim().toLowerCase().replace(/^https?:\/\//, '');
+      const clean = d
+        .trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//, '');
       expect(clean.includes('.')).toBe(false);
     }
   });
@@ -153,12 +191,21 @@ describe('Plan Upgrade Validation', () => {
     const owner2 = uuidv4();
     const subdomain = 'duplicate-check';
 
-    await db.prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)').run(owner1, `dup1-${id1}@test.com`, 'pass');
-    await db.prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)').run(owner2, `dup2-${id2}@test.com`, 'pass');
-    await db.prepare('INSERT INTO properties (id, owner_id, name, slug, plan, is_active, subdomain) VALUES ($1, $2, $3, $4, $5, true, $6)')
+    await db
+      .prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)')
+      .run(owner1, `dup1-${id1}@test.com`, 'pass');
+    await db
+      .prepare('INSERT INTO users (id, email, password) VALUES ($1, $2, $3)')
+      .run(owner2, `dup2-${id2}@test.com`, 'pass');
+    await db
+      .prepare(
+        'INSERT INTO properties (id, owner_id, name, slug, plan, is_active, subdomain) VALUES ($1, $2, $3, $4, $5, true, $6)'
+      )
       .run(id1, owner1, 'First', `first-${id1.slice(0, 6)}`, 'premium', subdomain);
 
-    const existing = (await db.prepare('SELECT id FROM properties WHERE subdomain = ? AND id != ?').get(subdomain, id2)) as any;
+    const existing = (await db
+      .prepare('SELECT id FROM properties WHERE subdomain = ? AND id != ?')
+      .get(subdomain, id2)) as any;
     expect(existing).toBeDefined();
     expect(existing.id).toBe(id1);
   });

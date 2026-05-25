@@ -20,6 +20,10 @@ export default async function init(api: PluginAPI) {
   `
   );
 
+  // Create indexes after table creation
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_crm_activities_email ON plugin_crm_activities(guest_email)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_crm_activities_type ON plugin_crm_activities(activity_type, created_at DESC)');
+
   // 2. Register UI components
   api.ui.addSlotComponent('guest.dashboard.bottom', 'crm:ActivityWidget');
   api.ui.addSettingsPage({

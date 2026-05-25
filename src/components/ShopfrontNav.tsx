@@ -46,7 +46,22 @@ export function ShopfrontNav({ locale, tenant }: Props) {
   const getDashboardLink = () => {
     if (!session?.user) return null;
     const role = (session.user as any).role;
-    if (role === 'master' || role === 'marketplace_master') return `/${locale}/admin/plugins`;
+    // Check for active impersonation — masters impersonating a listing
+    // should see the manage dashboard link, not their own admin panel.
+    if (role === 'master' || role === 'marketplace_master') {
+      try {
+        const match = document.cookie.match(/(?:^|;\s*)sinaicamps_impersonating=([^;]*)/);
+        if (match) {
+          const data = JSON.parse(decodeURIComponent(match[1]));
+          if (data.propertySlug && data.expiresAt > Date.now()) {
+            return `/${locale}/manage/${data.propertySlug}`;
+          }
+        }
+      } catch {
+        /* invalid or expired cookie — fall through to default link */
+      }
+      return `/${locale}/admin/plugins`;
+    }
     if (role === 'manager') return `/${locale}/manage/${tenant.slug}`;
     return `/${locale}/guest`;
   };
@@ -100,28 +115,28 @@ export function ShopfrontNav({ locale, tenant }: Props) {
         <div className="hidden md:flex items-center gap-6">
           <a
             href={`/${locale}`}
-            className="text-zinc-400 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
+            className="text-zinc-300 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
           >
             <Home className="w-4 h-4" />
             Home
           </a>
           <a
             href={`/${locale}#rooms`}
-            className="text-zinc-400 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
+            className="text-zinc-300 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
           >
             <BedDouble className="w-4 h-4" />
             Rooms
           </a>
           <a
             href={session ? `/${locale}/guest` : `/${locale}/login`}
-            className="text-zinc-400 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
+            className="text-zinc-300 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
           >
             <Calendar className="w-4 h-4" />
             Bookings
           </a>
           <a
             href={`/${locale}#contact`}
-            className="text-zinc-400 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
+            className="text-zinc-300 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
           >
             <Mail className="w-4 h-4" />
             Contact
@@ -137,7 +152,7 @@ export function ShopfrontNav({ locale, tenant }: Props) {
                   {dashboardLink && (
                     <a
                       href={dashboardLink}
-                      className="text-zinc-400 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
+                      className="text-zinc-300 hover:text-white transition-colors font-bold text-sm flex items-center gap-1.5"
                     >
                       <LayoutDashboard className="w-4 h-4" />
                       Dashboard
@@ -191,6 +206,9 @@ export function ShopfrontNav({ locale, tenant }: Props) {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 text-zinc-400 hover:text-white transition-colors bg-slate-900 border border-slate-800 rounded-xl"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -199,7 +217,10 @@ export function ShopfrontNav({ locale, tenant }: Props) {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-900 bg-slate-950 px-4 pt-4 pb-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div
+          id="mobile-menu"
+          className="md:hidden border-t border-slate-900 bg-slate-950 px-4 pt-4 pb-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300"
+        >
           <div className="space-y-2">
             <a
               href={`/${locale}`}

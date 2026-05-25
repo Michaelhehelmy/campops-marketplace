@@ -10,7 +10,7 @@ let redisClient: any = null;
 
 if (typeof process !== 'undefined' && process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Redis = require('ioredis');
     redisClient = new Redis(process.env.REDIS_URL);
     logger.info('Redis rate limiter client initialized successfully.');

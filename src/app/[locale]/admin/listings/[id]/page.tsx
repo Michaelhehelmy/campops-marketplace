@@ -196,17 +196,32 @@ export default function ListingDetailsPage() {
     }
   };
 
-  const handleLoginAsOwner = () => {
+  const handleLoginAsOwner = async () => {
     setActiveQuickAction('login_owner');
-    setTimeout(() => {
-      showToast('Authorized secure session token successfully ✅', 'success');
-      setTimeout(() => {
-        showToast('Swapping authentication context to Owner...', 'info');
+    try {
+      const res = await fetch('/api/admin/impersonate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-csrf-token': getCsrfToken(),
+        },
+        body: JSON.stringify({ propertyId: id, locale }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        showToast(`Logged in as owner of ${shop?.name || 'property'}`, 'success');
         setTimeout(() => {
-          router.push(`/${locale}/owner/dashboard`);
-        }, 1500);
-      }, 1200);
-    }, 1000);
+          router.push(data.redirectUrl);
+        }, 800);
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to impersonate', 'error');
+        setActiveQuickAction(null);
+      }
+    } catch {
+      showToast('Network error during impersonation', 'error');
+      setActiveQuickAction(null);
+    }
   };
 
   const handleViewAuditLogs = () => {

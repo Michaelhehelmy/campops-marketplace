@@ -30,29 +30,39 @@ describe('middleware tenant rewrites', () => {
     process.env.NEXT_PUBLIC_BASE_DOMAIN = originalPublicBaseDomain;
   });
 
-  it('rewrites the tenant root host to the white-labeled listing page', async () => {
+  it('rewrites the premium tenant root to the tenant website route', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({ property: { id: 'prop-premium', slug: 'premium-camp', plan: 'premium' } }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      )
+    );
+
     const req = new NextRequest('http://localhost/', {
-      headers: { 'x-forwarded-host': 'safari-camp.sinaicamps.localhost' },
+      headers: { 'x-forwarded-host': 'premium-camp.sinaicamps.localhost' },
     });
 
     const res = await middleware(req);
 
-    expect(res.headers.get('x-middleware-rewrite')).toContain('/en/stay/safari-camp');
-    expect(res.headers.get('x-tenant-property-id')).toBe('prop-1');
-    expect(res.headers.get('x-tenant-plan')).toBe('basic');
-    expect(res.headers.get('x-tenant-slug')).toBe('safari-camp');
+    expect(res.headers.get('x-middleware-rewrite')).toContain('/en/premium-camp');
+    expect(res.headers.get('x-tenant-property-id')).toBe('prop-premium');
+    expect(res.headers.get('x-tenant-plan')).toBe('premium');
+    expect(res.headers.get('x-tenant-slug')).toBe('premium-camp');
     expect(global.fetch).toHaveBeenCalled();
   });
 
-  it('treats a localhost custom domain as a tenant host in tests', async () => {
+  it('redirects basic plan tenant root to main domain listing', async () => {
     const req = new NextRequest('http://localhost/', {
-      headers: { 'x-forwarded-host': 'theirown.localhost' },
+      headers: { 'x-forwarded-host': 'basic-camp.sinaicamps.localhost' },
     });
 
     const res = await middleware(req);
 
     expect(res.status).toBe(302);
-    expect(res.headers.get('location')).toContain('/en/stay/');
+    expect(res.headers.get('location')).toContain('/en/stay/safari-camp');
   });
 
   it('redirects unauthenticated manage requests to login', async () => {

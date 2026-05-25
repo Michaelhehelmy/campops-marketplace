@@ -4,6 +4,12 @@ import { PluginAPI } from '../../../../packages/plugin-sdk/src/types.js';
 export const rosterRouter = (api: PluginAPI) => {
   const app = new Hono();
 
+  app.use('*', async (c, next) => {
+    const session = await api.auth.getSession(c.req.raw);
+    if (!session) return c.json({ error: 'Unauthorized' }, 401);
+    await next();
+  });
+
   app.get('/', async (c) => {
     const { start, end } = c.req.query();
     if (!start || !end) return c.json({ error: 'start and end dates are required' }, 400);

@@ -65,7 +65,8 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname.toLowerCase();
       const BASE_DOMAIN = (process.env.NEXT_PUBLIC_BASE_DOMAIN || 'sinaicamps.com').toLowerCase();
-      const isMain = hostname === BASE_DOMAIN || hostname === `www.${BASE_DOMAIN}` || hostname === 'localhost';
+      const isMain =
+        hostname === BASE_DOMAIN || hostname === `www.${BASE_DOMAIN}` || hostname === 'localhost';
       setIsTenantDomain(!isMain || hostname === '127.0.0.1');
     }
   }, []);
@@ -244,6 +245,7 @@ function SidebarLink({
   return (
     <Link
       href={href}
+      aria-current={active ? 'page' : undefined}
       className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${
         active
           ? 'bg-brand-600 text-white shadow-lg shadow-brand-100'

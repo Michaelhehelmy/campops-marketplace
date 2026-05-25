@@ -9,17 +9,34 @@ system events — all without modifying the core framework.
 ## Quick Start
 
 ```bash
+# Copy the starter template
 cp -r packages/plugin-starter plugins/my-plugin
 cd plugins/my-plugin
 npm install
-# Edit src/index.ts, then start the dev server
+
+# Create plugin.json (required for auto-discovery — see below)
+cat > plugin.json <<'EOF'
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "version": "1.0.0",
+  "description": "Description of what your plugin does",
+  "apiVersion": "^2.0.0",
+  "entry": "src/index.ts"
+}
+EOF
+
+# Then edit src/index.ts and start the dev server
 ```
+
+> **Important**: The starter does not include `plugin.json`. You must create it (see below) for the system to discover your plugin at startup.
 
 ## Required Files
 
 ```
 plugins/<plugin-id>/
-  package.json          # Plugin identity, capabilities, dependencies
+  plugin.json           # Runtime manifest — read by PluginLoader.scan()
+  package.json          # NPM package identity, capabilities, dependencies
   src/
     index.ts            # Entry point — default export init(api)
     ui.tsx              # (optional) React components for UI slots
@@ -27,18 +44,49 @@ plugins/<plugin-id>/
     index.test.ts       # (optional) Tests
 ```
 
+The system uses a **dual manifest** approach:
+
+| File           | Discovered by                       | Purpose                                               |
+| -------------- | ----------------------------------- | ----------------------------------------------------- |
+| `plugin.json`  | `PluginLoader.scan()` at startup    | Registers plugin in `available_plugins` table         |
+| `package.json` | `PluginRuntimeService.loadPlugin()` | Reads `sinaicamps.capabilities`, loads `src/index.ts` |
+
+Both files are required for a plugin to work at runtime.
+
+### `plugin.json`
+
+```json
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "version": "1.0.0",
+  "description": "Description of what your plugin does",
+  "apiVersion": "^2.0.0",
+  "entry": "src/index.ts"
+}
+```
+
+| Field         | Required | Description                                               |
+| ------------- | -------- | --------------------------------------------------------- |
+| `id`          | Yes      | Unique plugin identifier (becomes `available_plugins.id`) |
+| `name`        | Yes      | Display name                                              |
+| `version`     | Yes      | Semver version                                            |
+| `description` | No       | Short description                                         |
+| `apiVersion`  | No       | Semver range for the SDK version required                 |
+| `entry`       | Yes      | Relative path to the entry point from plugin root         |
+| `slots`       | No       | Map of slot names to component keys (see UI Slots)        |
+
 ### `package.json`
 
 ```json
 {
   "name": "@sinaicamps/plugin-my-plugin",
   "version": "1.0.0",
+  "description": "Descriptive name (used as fallback display name in DB seed)",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
   "sinaicamps": {
-    "pluginId": "my-plugin",
-    "sinaicampsVersion": ">=2.0.0",
     "capabilities": ["database", "hooks", "routes", "ui"]
   },
   "devDependencies": {
@@ -47,12 +95,11 @@ plugins/<plugin-id>/
 }
 ```
 
-| Field                          | Required | Description                                               |
-| ------------------------------ | -------- | --------------------------------------------------------- |
-| `name`                         | Yes      | npm-style package name                                    |
-| `sinaicamps.pluginId`          | Yes      | Unique plugin identifier used in DB and routing           |
-| `sinaicamps.sinaicampsVersion` | Yes      | Semver range the plugin requires                          |
-| `sinaicamps.capabilities`      | No       | Array of capabilities the plugin uses. Omit to grant all. |
+| Field                     | Required | Description                                               |
+| ------------------------- | -------- | --------------------------------------------------------- |
+| `name`                    | Yes      | npm-style package name                                    |
+| `description`             | No       | Used as display name by the filesystem DB seeder          |
+| `sinaicamps.capabilities` | No       | Array of capabilities the plugin uses. Omit to grant all. |
 
 ### Entry Point — `src/index.ts`
 
@@ -181,6 +228,38 @@ await api.db.transaction(async (tx) => {
 All tables created via `api.db.createTable()` are automatically namespaced
 with `plugin_<pluginId>_` to prevent collisions.
 
+## Idempotency Helpers
+
+For webhook handlers that may receive duplicate events, use the built-in idempotency helpers
+(available on `PluginAPI` without any capability declaration):
+
+```typescript
+// At the top of your webhook handler:
+const key = `my-webhook-${eventId}`;
+const cached = await api.checkIdempotency(key);
+if (cached) {
+  return Response.json(cached, { status: 200 });
+}
+
+// ... process the event ...
+
+// Store the result before returning:
+await api.storeIdempotency(key, { status: 'completed', id: recordId });
+```
+
+Keys are auto-expired by the system; no TTL management is needed.
+
+## Configuration & Environment
+
+Access environment variables via `process.env` or `api.config`:
+
+```typescript
+const apiKey = process.env.MY_PLUGIN_API_KEY || api.config.myPluginApiKey || '';
+```
+
+Per-property configuration is stored in `property_plugins.config` (JSON) and surfaced via `api.config`
+when the plugin is loaded for a specific property.
+
 ## Inter-Plugin Communication
 
 ```typescript
@@ -202,14 +281,14 @@ if (pluginA) {
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { createMockPluginAPI } from '@sinaicamps/plugin-testing';
+import { createMockPluginAPI } from '../../packages/plugin-testing/src/index.js';
 import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import init from '../src/index.js';
 
 describe('my-plugin', () => {
   it('registers hooks', async () => {
     const api = createMockPluginAPI('my-plugin') as PluginAPI;
-    api.registerHook = vi.fn();
+    api.registerHook = vi.fn(api.registerHook);
     await init(api);
     expect(api.registerHook).toHaveBeenCalledWith('BOOKING_CREATED', expect.any(Function));
   });
@@ -225,4 +304,5 @@ describe('my-plugin', () => {
 5. **Do not modify core tables** — `properties`, `users`, etc. are owned by the framework.
 6. **Register, don't hardcode** — use `api.registerRoute()`, `api.ui.addSlotComponent()`, etc.
 7. **No `.js` + `.ts` duplicates** — source is `.ts`, build output goes to `dist/`.
-8. **One `package.json`** — no separate `plugin.json` needed.
+8. **Both `plugin.json` and `package.json` required** — one for DB discovery, one for runtime loading.
+9. **Use `api.checkIdempotency()` / `api.storeIdempotency()`** for safe webhook retries — they wrap the `idempotency_keys` table.

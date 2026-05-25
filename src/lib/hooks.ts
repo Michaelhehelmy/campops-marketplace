@@ -53,13 +53,13 @@ export const Hooks = {
   /** Action: fired after a site's plan is upgraded. Payload: { siteId, previousPlan, newPlan }. */
   CORE_SITE_PLAN_UPGRADED: 'core:site:plan_upgraded',
 
-  // ── Backward-compat aliases (deprecated — will be removed in v3) ──────────
-  /** @deprecated Use ENTITY_DEPARTED */
-  GUEST_CHECKED_OUT: 'entity:departed',
+  // ── Booking/framework hook names — match what plugins actually fire ──────
+  /** Booking created event — booking plugin fires 'BOOKING_CREATED' */
+  BOOKING_CREATED: 'BOOKING_CREATED',
+  /** Checkout completed event — booking plugin fires 'CHECKOUT_COMPLETED' */
+  GUEST_CHECKED_OUT: 'CHECKOUT_COMPLETED',
   /** @deprecated Use RESOURCE_PAGE_LOAD */
   LISTING_PAGE_LOAD: 'resource:page_load',
-  /** @deprecated Use TRANSACTION_CREATED */
-  BOOKING_CREATED: 'transaction:created',
 } as const;
 
 export type HookHandler = (data: any) => any | Promise<any>;

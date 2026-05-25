@@ -91,8 +91,9 @@ export default function FeaturedListings({
 
   if (loading) {
     return (
-      <div className="flex justify-center py-24">
+      <div className="flex justify-center py-24" role="status" aria-live="polite">
         <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+        <span className="sr-only">Loading featured properties...</span>
       </div>
     );
   }
@@ -126,11 +127,14 @@ export default function FeaturedListings({
         </div>
 
         {/* Listings Grid */}
-        <div role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div
+          role="list"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8"
+        >
           {listings.map((listing) => (
             <article
               key={listing.id}
-              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1.5"
+              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1.5 focus-within:ring-2 focus-within:ring-amber-500 focus-within:ring-offset-2"
             >
               {/* Image & Badges */}
               <div className="h-56 bg-slate-100 overflow-hidden relative shrink-0">
@@ -142,7 +146,7 @@ export default function FeaturedListings({
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-tr from-amber-50 to-amber-100 flex items-center justify-center">
-                    <span className="text-5xl" aria-hidden="true">
+                    <span className="text-5xl" role="img" aria-hidden="true">
                       ✨
                     </span>
                   </div>

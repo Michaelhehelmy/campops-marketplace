@@ -35,7 +35,7 @@ const API_URL =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.API_URL || `http://localhost:${process.env.PORT || '3001'}`;
 
-const AUTH_REQUIRED = ['/owner', '/admin', '/guest', '/manage', '/admin/settings', '/admin/setup'];
+const AUTH_REQUIRED = ['/owner', '/admin', '/manage', '/admin/settings', '/admin/setup'];
 const PREMIUM_ONLY = ['/admin'];
 const LISTING_ACCESS_REQUIRED = ['/manage'];
 
@@ -51,33 +51,33 @@ async function handleMiddleware(req: NextRequest) {
   if (process.env.SKIP_RATE_LIMIT === 'true') {
     logger.info('[Middleware] Rate limiting disabled via SKIP_RATE_LIMIT env var');
   } else {
-  const RATE_LIMITED_PREFIXES = [
-    '/api/auth/',
-    '/api/payments/',
-    '/api/manage/',
-    '/api/master/',
-    '/api/owner/',
-    '/api/admin/',
-    '/api/site/',
-    '/api/public/',
-    '/api/plugins/submit',
-  ];
-  if (RATE_LIMITED_PREFIXES.some((p) => pathname.startsWith(p))) {
-    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'anonymous';
-    try {
-      await apiRateLimiter.check(ip);
-    } catch (err: any) {
-      const retryAfter = err.details?.retryAfter ?? 60;
-      const response = NextResponse.json(
-        { error: 'Too many requests', code: 'RATE_LIMIT', retryAfter },
-        { status: 429 }
-      );
-      response.headers.set('Retry-After', String(retryAfter));
-      response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
-      response.headers.set('X-RateLimit-Remaining', '0');
-      return withSecurityHeaders(response);
+    const RATE_LIMITED_PREFIXES = [
+      '/api/auth/',
+      '/api/payments/',
+      '/api/manage/',
+      '/api/master/',
+      '/api/owner/',
+      '/api/admin/',
+      '/api/site/',
+      '/api/public/',
+      '/api/plugins/submit',
+    ];
+    if (RATE_LIMITED_PREFIXES.some((p) => pathname.startsWith(p))) {
+      const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'anonymous';
+      try {
+        await apiRateLimiter.check(ip);
+      } catch (err: any) {
+        const retryAfter = err.details?.retryAfter ?? 60;
+        const response = NextResponse.json(
+          { error: 'Too many requests', code: 'RATE_LIMIT', retryAfter },
+          { status: 429 }
+        );
+        response.headers.set('Retry-After', String(retryAfter));
+        response.headers.set('X-RateLimit-Limit', String(apiRateLimiter.maxRequests));
+        response.headers.set('X-RateLimit-Remaining', '0');
+        return withSecurityHeaders(response);
+      }
     }
-  }
   }
 
   // Immediately bypass internal Next.js static asset and API paths
@@ -122,15 +122,36 @@ async function handleMiddleware(req: NextRequest) {
   const barePath = localeMatch ? pathname.replace(/^\/[a-z]{2}/, '') || '/' : pathname;
   const locale = localeMatch?.[1] ?? 'en';
 
-  // 2. If it is a verified custom domain, redirect to the SSR listing page.
-  //    Use the original scheme and host from headers (not req.url which may be the proxy URL).
-  if (tenantPropertyId && isCustomDomain && barePath === '/') {
-    const slug = tenantSlug || 'acacia';
-    const scheme = req.headers.get('x-forwarded-proto') || 'https';
-    const host = cleanHostname;
-    const redirectUrl = `${scheme}://${host}/${locale}/stay/${slug}`;
-    logger.info(`[CustomDomain] Redirecting to ${redirectUrl} for host ${cleanHostname}`);
-    return NextResponse.redirect(redirectUrl, 302);
+  // 2. Tenant domain routing: serve custom website pages for premium/ultimate,
+  //    redirect basic-plan tenants to the main marketplace listing.
+  const TENANT_SUBPAGES = ['/about', '/services', '/gallery', '/rooms', '/room-types', '/contact', '/book'];
+  if (tenantPropertyId && tenantSlug) {
+    const isTenantRoot = barePath === '/' || barePath === `/${locale}` || barePath === `/${locale}/`;
+    const isTenantSubpage = TENANT_SUBPAGES.some((p) => barePath === p || barePath === `/${locale}${p}`);
+    if (isTenantRoot || isTenantSubpage) {
+      if (tenantPlan === 'basic') {
+        const scheme = req.headers.get('x-forwarded-proto') || 'https';
+        const port = req.nextUrl.port;
+        const hostWithPort = port ? `${BASE_DOMAIN}:${port}` : BASE_DOMAIN;
+        const redirectUrl = `${scheme}://${hostWithPort}/${locale}/stay/${tenantSlug}`;
+        logger.info(`[Tenant] Basic plan redirect to main domain: ${redirectUrl}`);
+        return NextResponse.redirect(redirectUrl, 302);
+      }
+      const rewriteUrl = req.nextUrl.clone();
+      if (isTenantRoot) {
+        rewriteUrl.pathname = `/${locale}/${tenantSlug}`;
+      } else {
+        rewriteUrl.pathname = `/${locale}/${tenantSlug}${barePath}`;
+      }
+      logger.info(`[Tenant] Rewriting to tenant website: ${rewriteUrl.toString()}`);
+      const response = NextResponse.rewrite(rewriteUrl);
+      response.headers.set('x-tenant-property-id', tenantPropertyId);
+      response.headers.set('x-tenant-plan', tenantPlan ?? 'basic');
+      response.headers.set('x-tenant-slug', tenantSlug);
+      response.headers.set('X-Next-Intl-Locale', locale);
+      response.headers.set('x-next-intl-locale', locale);
+      return response;
+    }
   }
 
   const needsAuth = AUTH_REQUIRED.some((p) => barePath.startsWith(p));
@@ -229,7 +250,9 @@ async function handleMiddleware(req: NextRequest) {
     const hostWithPort = port ? `${BASE_DOMAIN}:${port}` : BASE_DOMAIN;
     const mainDomainUrl = new URL(pathname, `${req.nextUrl.protocol}//${hostWithPort}`);
     req.nextUrl.searchParams.forEach((v, k) => mainDomainUrl.searchParams.set(k, v));
-    logger.info(`[Middleware] Redirecting platform admin route from tenant domain to main domain: ${mainDomainUrl.toString()}`);
+    logger.info(
+      `[Middleware] Redirecting platform admin route from tenant domain to main domain: ${mainDomainUrl.toString()}`
+    );
     return NextResponse.redirect(mainDomainUrl);
   }
 
@@ -244,30 +267,9 @@ async function handleMiddleware(req: NextRequest) {
     }
   }
 
-  if (tenantPropertyId && tenantSlug) {
-    const isTenantRoot =
-      barePath === '/' || barePath === `/${locale}` || barePath === `/${locale}/`;
-    if (isTenantRoot) {
-      const rewriteUrl = req.nextUrl.clone();
-      rewriteUrl.pathname = `/${locale}/stay/${tenantSlug}`;
-      logger.info(
-        `[Middleware] Rewriting tenant root to: ${rewriteUrl.toString()} (tenantSlug: ${tenantSlug})`
-      );
-      req.nextUrl.searchParams.forEach((v, k) => rewriteUrl.searchParams.set(k, v));
-      const response = NextResponse.rewrite(rewriteUrl);
-      response.headers.set('x-tenant-property-id', tenantPropertyId);
-      response.headers.set('x-tenant-plan', tenantPlan ?? 'basic');
-      response.headers.set('x-tenant-slug', tenantSlug);
-      response.headers.set('X-Next-Intl-Locale', locale);
-      response.headers.set('x-next-intl-locale', locale);
-      return response;
-    }
-  }
-
   // Root slug rewrite
   // Reserved path prefixes — these are never treated as tenant slugs.
   // /list-your-space is the generic onboarding path (formerly /list-your-camp).
-  // /resource is the generic resource/listing detail rewrite target.
   const RESERVED_PREFIXES = [
     '/admin',
     '/guest',
@@ -295,7 +297,7 @@ async function handleMiddleware(req: NextRequest) {
   if (!isReserved && barePath !== '/' && !barePath.includes('.')) {
     // Rewrite short slug paths to the generic resource detail page.
     // Previously hard-coded as /stay; now uses /resource for vertical-agnostic routing.
-    const rewriteUrl = new URL(`/${locale}/resource${barePath}`, req.url);
+    const rewriteUrl = new URL(`/${locale}/stay${barePath}`, req.url);
     req.nextUrl.searchParams.forEach((v, k) => rewriteUrl.searchParams.set(k, v));
     return NextResponse.rewrite(rewriteUrl);
   }

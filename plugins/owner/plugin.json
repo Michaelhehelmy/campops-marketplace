@@ -1,0 +1,9 @@
+{
+  "name": "owner",
+  "version": "1.0.0",
+  "description": "Property owner portal and management dashboard",
+  "entry": "src/index.ts",
+  "capabilities": ["api", "auth", "ui"],
+  "hooks": [],
+  "slots": []
+}

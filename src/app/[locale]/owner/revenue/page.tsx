@@ -11,7 +11,9 @@ export default function OwnerRevenuePage() {
         fallback={
           <div className="p-8">
             <h1 className="text-2xl font-bold mb-4">Revenue</h1>
-            <p className="text-gray-500">Revenue reports will appear here once the feature is enabled.</p>
+            <p className="text-gray-500">
+              Revenue reports will appear here once the feature is enabled.
+            </p>
           </div>
         }
       />

@@ -28,13 +28,11 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (error: any) {
-    return NextResponse.json(
-      {
-        platformName: 'SinaiCamps Marketplace',
-        supportEmail: 'support@sinaicamps.com',
-        currency: 'USD',
-        timezone: 'UTC',
-      }
-    );
+    return NextResponse.json({
+      platformName: 'SinaiCamps Marketplace',
+      supportEmail: 'support@sinaicamps.com',
+      currency: 'USD',
+      timezone: 'UTC',
+    });
   }
 }

@@ -61,3 +61,10 @@ server_out.log
 
 # Build outputs for shops
 builds/
+
+# OpenCode Workspace Runtime Files
+.opencode/node_modules/
+.opencode/package-lock.json
+.opencode/bun.lock
+.opencode/ocx.jsonc
+.opencode/vendor/node_modules/.cache/

@@ -105,11 +105,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         )
         .run(shopId);
 
-      // Log the admin action in audit_logs
       await tx
         .prepare(
           `
-        INSERT INTO audit_logs (user_id, action, resource_type, resource_id, payload, created_at)
+        INSERT INTO audit_logs (user_id, action, resource, resource_id, details, created_at)
         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
       `
         )
@@ -209,11 +208,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         )
         .run(...values);
 
-      // Log the admin action
       await tx
         .prepare(
           `
-        INSERT INTO audit_logs (user_id, action, resource_type, resource_id, payload, created_at)
+        INSERT INTO audit_logs (user_id, action, resource, resource_id, details, created_at)
         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
       `
         )
@@ -275,11 +273,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         )
         .run(shopId);
 
-      // Log the admin action
       await tx
         .prepare(
           `
-        INSERT INTO audit_logs (user_id, action, resource_type, resource_id, payload, created_at)
+        INSERT INTO audit_logs (user_id, action, resource, resource_id, details, created_at)
         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
       `
         )

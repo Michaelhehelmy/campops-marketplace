@@ -4,8 +4,14 @@ import { PluginAPI } from '../../../../packages/plugin-sdk/src/types.js';
 export const inventoryRouter = (api: PluginAPI) => {
   const app = new Hono();
 
+  app.use('*', async (c, next) => {
+    const session = await api.auth.getSession(c.req.raw);
+    if (!session) return c.json({ error: 'Unauthorized' }, 401);
+    await next();
+  });
+
   app.get('/', async (c) => {
-    const items = await api.db.query('SELECT * FROM inventory_items ORDER BY name ASC');
+    const items = await api.db.query('SELECT * FROM plugin_inventory_items ORDER BY name ASC');
     return c.json({ data: items });
   });
 
@@ -15,7 +21,7 @@ export const inventoryRouter = (api: PluginAPI) => {
 
     await api.db.execute(
       `
-      INSERT INTO inventory_items (id, name, category, unit, quantity, par_level, reorder_point, cost)
+      INSERT INTO plugin_inventory_items (id, name, category, unit, quantity, par_level, reorder_point, cost)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `,
       [

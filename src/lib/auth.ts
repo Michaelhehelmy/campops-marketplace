@@ -33,10 +33,7 @@ async function getCustomDomainOrigins(): Promise<string[]> {
 }
 
 export const auth = betterAuth({
-  trustedOrigins: async () => [
-    ...STATIC_TRUSTED_ORIGINS,
-    ...(await getCustomDomainOrigins()),
-  ],
+  trustedOrigins: async () => [...STATIC_TRUSTED_ORIGINS, ...(await getCustomDomainOrigins())],
   session: {
     cookie: {
       secure: process.env.NODE_ENV === 'production',
@@ -76,9 +73,7 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [
-    nextCookies(),
-  ],
+  plugins: [nextCookies()],
 });
 
 export type Session = typeof auth.$Infer.Session;

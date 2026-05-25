@@ -99,7 +99,7 @@ describe('runMigrations', () => {
 
   // Placeholder: runMigrations currently only applies forward (no rollback).
   // Un-skip this test once direction: 'down' is implemented.
-  it.skip('applies and rolls back a migration successfully', () => {
+  it('applies and rolls back a migration successfully', () => {
     fs.writeFileSync(
       path.join(tmpDir, '001_create_test.sql'),
       'CREATE TABLE rollback_test (id INTEGER PRIMARY KEY, name TEXT);'

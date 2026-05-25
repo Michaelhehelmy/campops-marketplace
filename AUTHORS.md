@@ -3,6 +3,7 @@
 ## Lead Developer
 
 **Michael Helmy**
+
 - GitHub: [@Michaelhehelmy](https://github.com/Michaelhehelmy)
 - Role: Architect & Lead Developer
 

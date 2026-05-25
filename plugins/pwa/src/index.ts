@@ -35,6 +35,8 @@ export default async function init(api: PluginAPI): Promise<void> {
   );
 
   // ── Hook Registration ──────────────────────────────────────────────────────
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_pwa_subs_guest ON plugin_pwa_subscriptions(guest_id, is_active)');
+
   // Register a hook to log when a public page is loaded (for analytics/PWA stats)
   api.registerHook(
     'listing.public_page_loaded',

@@ -12,10 +12,17 @@ import type { OTAAdapter } from './types.js';
  * during initialization so the core OtaSyncQueue can discover them.
  */
 export declare const OTAAdapterRegistry: {
-    adapters: Map<string, OTAAdapter>;
-    register(adapter: OTAAdapter): void;
-    get(id: string): OTAAdapter | undefined;
-    getAll(): OTAAdapter[];
+  adapters: Map<string, OTAAdapter>;
+  register(adapter: OTAAdapter): void;
+  get(id: string): OTAAdapter | undefined;
+  getAll(): OTAAdapter[];
 };
-export type { RoomMapping, RateMapping, ChannelReservation, OTAAdapter, InventorySyncResult, RateSyncResult, } from './types.js';
+export type {
+  RoomMapping,
+  RateMapping,
+  ChannelReservation,
+  OTAAdapter,
+  InventorySyncResult,
+  RateSyncResult,
+} from './types.js';
 //# sourceMappingURL=ota.d.ts.map

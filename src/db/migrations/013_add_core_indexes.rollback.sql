@@ -1,0 +1,22 @@
+-- Rollback migration 013: Drop core table indexes
+DROP INDEX IF EXISTS idx_marketplace_bookings_property;
+DROP INDEX IF EXISTS idx_marketplace_bookings_created;
+DROP INDEX IF EXISTS idx_properties_owner;
+DROP INDEX IF EXISTS idx_properties_active;
+DROP INDEX IF EXISTS idx_properties_featured;
+DROP INDEX IF EXISTS idx_sites_owner;
+DROP INDEX IF EXISTS idx_sites_active;
+DROP INDEX IF EXISTS idx_posts_site_type_status;
+DROP INDEX IF EXISTS idx_posts_parent;
+DROP INDEX IF EXISTS idx_postmeta_post;
+DROP INDEX IF EXISTS idx_options_site_autoload;
+DROP INDEX IF EXISTS idx_audit_logs_user;
+DROP INDEX IF EXISTS idx_audit_logs_resource;
+DROP INDEX IF EXISTS idx_build_queue_site_status;
+DROP INDEX IF EXISTS idx_accounts_user;
+DROP INDEX IF EXISTS idx_verifications_expires;
+DROP INDEX IF EXISTS idx_property_plugins_property;
+DROP INDEX IF EXISTS idx_plugin_analytics_property_event;
+DROP INDEX IF EXISTS idx_commission_rates_property;
+DROP INDEX IF EXISTS idx_stripe_connect_property;
+DROP INDEX IF EXISTS idx_marketplace_settings_id;

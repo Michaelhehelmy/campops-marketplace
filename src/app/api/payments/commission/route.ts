@@ -164,6 +164,18 @@ export async function POST(req: NextRequest) {
   try {
     const session = await requireSession(req);
     if (isErrorResponse(session)) return session;
+
+    // Idempotency check
+    const idempotencyKey = req.headers.get('Idempotency-Key') || req.headers.get('idempotency-key');
+    if (idempotencyKey) {
+      const existing = await db.queryOne('SELECT response FROM idempotency_keys WHERE key = ?', [
+        idempotencyKey,
+      ]);
+      if (existing) {
+        return NextResponse.json(JSON.parse(existing.response), { status: 200 });
+      }
+    }
+
     const body = await req.json();
     const { bookingId, stripeAccountId, platformFeeCents = 0 } = body;
 
@@ -189,25 +201,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // Check if commission already recorded
-    const existing = await db
-      .prepare(
-        `
-      SELECT id FROM commission_transactions WHERE booking_id = $1
-    `
-      )
-      .get(bookingId);
-
-    if (existing) {
-      return NextResponse.json(
-        {
-          error: 'Commission already recorded for this booking',
-          transactionId: existing.id,
-        },
-        { status: 409 }
-      );
-    }
-
     // Calculate commission
     const { rate, commissionCents, netPayoutCents } = await calculateCommission(
       booking.property_id,
@@ -215,46 +208,79 @@ export async function POST(req: NextRequest) {
       booking.booking_type
     );
 
-    // Create commission transaction
-    const result = await db
-      .prepare(
-        `
-      INSERT INTO commission_transactions 
-      (booking_id, property_id, stripe_account_id, total_amount_cents, commission_rate_used,
-       commission_amount_cents, platform_fee_cents, net_payout_cents, currency, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id
-    `
-      )
-      .run(
-        bookingId,
-        booking.property_id,
-        stripeAccountId,
-        booking.total_amount_cents,
-        rate,
-        commissionCents,
-        platformFeeCents,
-        netPayoutCents,
-        booking.currency,
-        'pending'
+    // Guard: check for existing commission before entering transaction
+    const existing = await db.queryOne(
+      'SELECT id FROM commission_transactions WHERE booking_id = ?',
+      [bookingId]
+    );
+    if (existing) {
+      return NextResponse.json(
+        { error: 'Commission already recorded for this booking', transactionId: existing.id },
+        { status: 409 }
       );
+    }
 
-    const transactionId = result.lastInsertRowid;
+    // Create commission transaction and persist idempotency key inside a transaction
+    let transaction: any = null;
+    const txOk = await db.transaction(async (tx) => {
+      const res = await tx
+        .prepare(
+          `
+        INSERT INTO commission_transactions 
+        (booking_id, property_id, stripe_account_id, total_amount_cents, commission_rate_used,
+         commission_amount_cents, platform_fee_cents, net_payout_cents, currency, status)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING id
+      `
+        )
+        .run(
+          bookingId,
+          booking.property_id,
+          stripeAccountId,
+          booking.total_amount_cents,
+          rate,
+          commissionCents,
+          platformFeeCents,
+          netPayoutCents,
+          booking.currency,
+          'pending'
+        );
 
-    // Fetch created transaction
-    const transaction = await db
-      .prepare(
-        `
-      SELECT * FROM commission_transactions WHERE id = $1
-    `
-      )
-      .get(transactionId);
+      transaction = await tx
+        .prepare('SELECT * FROM commission_transactions WHERE id = $1')
+        .get(res.lastInsertRowid);
+
+      // Persist idempotency key inside the same transaction
+      if (idempotencyKey) {
+        const responsePayload = {
+          success: true,
+          transaction,
+          calculation: {
+            rate,
+            totalAmountCents: booking.total_amount_cents,
+            commissionCents,
+            platformFeeCents,
+            netPayoutCents,
+          },
+          message: 'Commission recorded successfully',
+        };
+        await tx
+          .prepare(
+            'INSERT OR IGNORE INTO idempotency_keys (key, response, created_at) VALUES ($1, $2, $3)'
+          )
+          .run(idempotencyKey, JSON.stringify(responsePayload), Math.floor(Date.now() / 1000));
+      }
+    });
+
+    if (!txOk) {
+      return NextResponse.json({ error: 'Transaction failed' }, { status: 500 });
+    }
 
     AuditService.log({
       userId: session.user.id,
       action: 'commission.recorded',
       resource: 'commission_transactions',
-      resourceId: transactionId?.toString(),
+      resourceId: transaction?.id?.toString(),
       propertyId: booking.property_id,
       details: { bookingId, rate, commissionCents, netPayoutCents },
       ipAddress: req.headers.get('x-forwarded-for') || undefined,

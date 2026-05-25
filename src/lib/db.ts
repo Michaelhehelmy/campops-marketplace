@@ -23,9 +23,9 @@ let pgPool: any = null;
 
 if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres')) {
   logger.info(`Using PostgreSQL database from DATABASE_URL`);
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Pool } = require('pg');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { drizzle: drizzlePg } = require('drizzle-orm/node-postgres');
 
   pgPool = new Pool({
@@ -429,6 +429,12 @@ class DrizzleDatabaseWrapper {
                   return { changes: res.rowCount, lastInsertRowid: null };
                 },
               }) as any,
+          },
+          exec: {
+            value: async (sql: string, params: any[] = []) => {
+              const { finalSql, finalParams } = this._transformSql(sql, params);
+              return client.query(finalSql, finalParams);
+            },
           },
         });
         const result = await callback(scopedTx);
@@ -897,7 +903,9 @@ function seedAvailablePlugins() {
   if (!sqliteDb) return;
   try {
     const row = getSqlite()
-      .prepare("SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='available_plugins'")
+      .prepare(
+        "SELECT count(*) as count FROM sqlite_master WHERE type='table' AND name='available_plugins'"
+      )
       .get() as any;
     if (!row || row.count === 0) return;
 

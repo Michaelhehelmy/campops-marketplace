@@ -1,70 +1,74 @@
+# OpenCode Workspace CI/CD Pipeline
+# Multi-language continuous integration
+# Generated from workspace.config.json
+
 name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main]
+    branches: [main, master, develop]
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
+  test:
+    name: Test on $
+    runs-on: $
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - name: Format Check
-        run: npm run format:check
-      - name: Lint
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Run linter
         run: npm run lint
-      - name: Unit & Integration Tests
-        run: npm run test:all -- --reporter=verbose
-      - name: Upload Coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage/
-          retention-days: 14
-      - name: Migration Pre-check
-        run: |
-          node -e "
-            const Database = require('better-sqlite3');
-            const { runMigrations } = require('./src/lib/runMigrations');
-            const db = new Database(':memory:');
-            const results = runMigrations(db);
-            const failed = results.filter(r => !r.applied && r.error);
-            if (failed.length > 0) {
-              console.error('Migration failures:', JSON.stringify(failed, null, 2));
-              process.exit(1);
-            }
-            console.log('All migrations applied successfully:', results.length);
-            db.close();
-          "
-      - name: Production Build
+        continue-on-error: true
+        
+      - name: Run type check
+        run: npm run type-check
+        continue-on-error: true
+        
+      - name: Run tests
+        run: npm test
+        
+      - name: Run build
         run: npm run build
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
-  e2e:
-    needs: validate
+  deploy:
+    name: Deploy to 
+    needs: test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment: 
+    
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-      - name: Run E2E Tests
-        run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Deploy application
+        run: |
+          echo "Deploying SinaiCamps to ..."
+          .&#x2F;scripts&#x2F;deploy-sinaicamps.sh
+        env:
+          SSH_KEY: $

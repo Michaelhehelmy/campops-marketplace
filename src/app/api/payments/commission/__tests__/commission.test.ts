@@ -21,6 +21,13 @@ vi.mock('@/lib/db', () => {
     run: runMock,
   }));
 
+  const txRunMock = vi.fn();
+  const txGetMock = vi.fn();
+  const txPrepareMock = vi.fn().mockImplementation(() => ({
+    get: txGetMock,
+    run: txRunMock,
+  }));
+
   return {
     db: {
       prepare: prepareMock,
@@ -28,6 +35,18 @@ vi.mock('@/lib/db', () => {
       all: allMock,
       run: runMock,
       execute: vi.fn().mockResolvedValue(undefined),
+      queryOne: vi.fn().mockResolvedValue(null),
+      transaction: vi.fn().mockImplementation(async (cb) => {
+        const scopedTx = {
+          prepare: txPrepareMock,
+          get: txGetMock,
+          query: vi.fn(),
+          queryOne: vi.fn(),
+          execute: vi.fn(),
+        };
+        await cb(scopedTx);
+        return true;
+      }),
     },
   };
 });
@@ -153,11 +172,13 @@ describe('Payments Commission API Route', () => {
 
     it('should return 409 if commission already recorded', async () => {
       const prepareMock = vi.mocked(db.prepare);
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValueOnce({ id: 'existing-tx' });
+
       prepareMock.mockReturnValue({
         get: vi
           .fn()
-          .mockResolvedValueOnce({ id: 'b-1', property_id: 'prop-1', total_amount_cents: 1000 }) // booking details
-          .mockResolvedValueOnce({ id: 'existing-tx' }), // existing recorded check
+          .mockResolvedValue({ id: 'b-1', property_id: 'prop-1', total_amount_cents: 1000 }),
         all: vi.fn(),
         run: vi.fn(),
       });
@@ -191,22 +212,36 @@ describe('Payments Commission API Route', () => {
       const mockTx = {
         id: 'tx-new',
         booking_id: 'b-1',
-        commission_amount_cents: 1350, // 10000 * 0.12 = 1200 + 150 = 1350
+        commission_amount_cents: 1350,
       };
 
+      // prepare.get: booking (1), rate (2)
       const prepareMock = vi.mocked(db.prepare);
-      const getMock = vi
-        .fn()
-        .mockResolvedValueOnce(mockBooking) // 1. fetch booking
-        .mockResolvedValueOnce(null) // 2. check existing (none)
-        .mockResolvedValueOnce(mockRate) // 3. fetch commission rate (in calculateCommission)
-        .mockResolvedValueOnce(mockTx); // 4. fetch inserted transaction
+      const getMock = vi.fn().mockResolvedValueOnce(mockBooking).mockResolvedValueOnce(mockRate);
       const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
 
       prepareMock.mockReturnValue({
         get: getMock,
         all: vi.fn(),
         run: runMock,
+      });
+
+      // queryOne: conflict check returns null
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValue(null);
+
+      // tx.get for read-back inside transaction
+      const txGetMock = vi.fn().mockResolvedValue(mockTx);
+      const txRunMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
+      const txPrepareMock = vi.fn().mockImplementation(() => ({
+        get: txGetMock,
+        run: txRunMock,
+      }));
+      const txSpy = vi.mocked(db.transaction);
+      txSpy.mockImplementation(async (cb: any) => {
+        const scopedTx = { prepare: txPrepareMock, get: txGetMock };
+        await cb(scopedTx);
+        return true;
       });
 
       const req = new NextRequest('http://localhost/api/payments/commission', {
@@ -224,28 +259,12 @@ describe('Payments Commission API Route', () => {
       expect(data.calculation.netPayoutCents).toBe(8650); // 10000 - 1350 = 8650
     });
 
-    it('should respect minimum constraint in commission calculation', async () => {
-      const mockBooking = {
-        id: 'b-1',
-        property_id: 'prop-1',
-        total_amount_cents: 1000, // Very low revenue
-        booking_type: 'cabin',
-        currency: 'USD',
-      };
-      const mockRate = {
-        rate_percentage: 10.0,
-        flat_fee_cents: 0,
-        minimum_commission_cents: 500, // Minimum is 500 cents
-        maximum_commission_cents: null,
-      };
-
+    function setupPostTest(mockBooking: any, mockRateOrNull: any, mockTx: any) {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
         .mockResolvedValueOnce(mockBooking)
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(mockRate)
-        .mockResolvedValueOnce({ id: 'tx-new' });
+        .mockResolvedValueOnce(mockRateOrNull);
       const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
 
       prepareMock.mockReturnValue({
@@ -253,6 +272,40 @@ describe('Payments Commission API Route', () => {
         all: vi.fn(),
         run: runMock,
       });
+
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValue(null);
+
+      const txGetMock = vi.fn().mockResolvedValue(mockTx);
+      const txRunMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
+      const txPrepareMock = vi.fn().mockImplementation(() => ({
+        get: txGetMock,
+        run: txRunMock,
+      }));
+      const txSpy = vi.mocked(db.transaction);
+      txSpy.mockImplementation(async (cb: any) => {
+        const scopedTx = { prepare: txPrepareMock, get: txGetMock };
+        await cb(scopedTx);
+        return true;
+      });
+    }
+
+    it('should respect minimum constraint in commission calculation', async () => {
+      const mockBooking = {
+        id: 'b-1',
+        property_id: 'prop-1',
+        total_amount_cents: 1000,
+        booking_type: 'cabin',
+        currency: 'USD',
+      };
+      const mockRate = {
+        rate_percentage: 10.0,
+        flat_fee_cents: 0,
+        minimum_commission_cents: 500,
+        maximum_commission_cents: null,
+      };
+
+      setupPostTest(mockBooking, mockRate, { id: 'tx-new' });
 
       const req = new NextRequest('http://localhost/api/payments/commission', {
         method: 'POST',
@@ -262,15 +315,15 @@ describe('Payments Commission API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(201);
-      expect(data.calculation.commissionCents).toBe(500); // Bumped to min
-      expect(data.calculation.netPayoutCents).toBe(500); // 1000 - 500 = 500
+      expect(data.calculation.commissionCents).toBe(500);
+      expect(data.calculation.netPayoutCents).toBe(500);
     });
 
     it('should respect maximum constraint in commission calculation', async () => {
       const mockBooking = {
         id: 'b-1',
         property_id: 'prop-1',
-        total_amount_cents: 100000, // High revenue
+        total_amount_cents: 100000,
         booking_type: 'cabin',
         currency: 'USD',
       };
@@ -278,23 +331,10 @@ describe('Payments Commission API Route', () => {
         rate_percentage: 15.0,
         flat_fee_cents: 0,
         minimum_commission_cents: 0,
-        maximum_commission_cents: 5000, // Maximum is 5000 cents (50 USD)
+        maximum_commission_cents: 5000,
       };
 
-      const prepareMock = vi.mocked(db.prepare);
-      const getMock = vi
-        .fn()
-        .mockResolvedValueOnce(mockBooking)
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(mockRate)
-        .mockResolvedValueOnce({ id: 'tx-new' });
-      const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
-
-      prepareMock.mockReturnValue({
-        get: getMock,
-        all: vi.fn(),
-        run: runMock,
-      });
+      setupPostTest(mockBooking, mockRate, { id: 'tx-new' });
 
       const req = new NextRequest('http://localhost/api/payments/commission', {
         method: 'POST',
@@ -304,8 +344,8 @@ describe('Payments Commission API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(201);
-      expect(data.calculation.commissionCents).toBe(5000); // Capped at max
-      expect(data.calculation.netPayoutCents).toBe(95000); // 100000 - 5000 = 95000
+      expect(data.calculation.commissionCents).toBe(5000);
+      expect(data.calculation.netPayoutCents).toBe(95000);
     });
 
     it('should fall back to default rate if no rate configuration is active', async () => {
@@ -317,20 +357,7 @@ describe('Payments Commission API Route', () => {
         currency: 'USD',
       };
 
-      const prepareMock = vi.mocked(db.prepare);
-      const getMock = vi
-        .fn()
-        .mockResolvedValueOnce(mockBooking)
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null) // Rate query returns null (fallback triggered)
-        .mockResolvedValueOnce({ id: 'tx-new' });
-      const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
-
-      prepareMock.mockReturnValue({
-        get: getMock,
-        all: vi.fn(),
-        run: runMock,
-      });
+      setupPostTest(mockBooking, null, { id: 'tx-new' });
 
       const req = new NextRequest('http://localhost/api/payments/commission', {
         method: 'POST',
@@ -340,8 +367,8 @@ describe('Payments Commission API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(201);
-      expect(data.calculation.rate).toBe(10.0); // Fallback rate
-      expect(data.calculation.commissionCents).toBe(1000); // 10000 * 0.10 = 1000
+      expect(data.calculation.rate).toBe(10.0);
+      expect(data.calculation.commissionCents).toBe(1000);
     });
 
     it('should return 500 on database error during calculate/record', async () => {
@@ -359,6 +386,86 @@ describe('Payments Commission API Route', () => {
 
       expect(res.status).toBe(500);
       expect(data.error).toBe('Database insert failed');
+    });
+
+    it('should return cached response on idempotent POST request', async () => {
+      const cachedPayload = {
+        success: true,
+        transaction: { id: 'tx-cached' },
+        calculation: { rate: 12.0, commissionCents: 1200 },
+      };
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValue({ response: JSON.stringify(cachedPayload) });
+
+      const req = new NextRequest('http://localhost/api/payments/commission', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': 'idem-comm-001' },
+        body: JSON.stringify({ bookingId: 'b-1', stripeAccountId: 'acct-1' }),
+      });
+      const res = await POST(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data).toEqual(cachedPayload);
+    });
+
+    it('should process normally when Idempotency-Key is present but no cached response', async () => {
+      const mockBooking = {
+        id: 'b-1',
+        property_id: 'prop-1',
+        total_amount_cents: 10000,
+        booking_type: 'cabin',
+        currency: 'USD',
+      };
+      const mockRate = {
+        rate_percentage: 12.0,
+        flat_fee_cents: 150,
+        minimum_commission_cents: 500,
+        maximum_commission_cents: 5000,
+      };
+      const mockTx = {
+        id: 'tx-new',
+        booking_id: 'b-1',
+        commission_amount_cents: 1350,
+      };
+
+      const prepareMock = vi.mocked(db.prepare);
+      const getMock = vi.fn().mockResolvedValueOnce(mockBooking).mockResolvedValueOnce(mockRate);
+      const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
+
+      prepareMock.mockReturnValue({
+        get: getMock,
+        all: vi.fn(),
+        run: runMock,
+      });
+
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValue(null);
+
+      const txGetMock = vi.fn().mockResolvedValue(mockTx);
+      const txRunMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'tx-new' });
+      const txPrepareMock = vi.fn().mockImplementation(() => ({
+        get: txGetMock,
+        run: txRunMock,
+      }));
+      const txSpy = vi.mocked(db.transaction);
+      txSpy.mockImplementation(async (cb: any) => {
+        const scopedTx = { prepare: txPrepareMock, get: txGetMock };
+        await cb(scopedTx);
+        return true;
+      });
+
+      const req = new NextRequest('http://localhost/api/payments/commission', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': 'idem-comm-002' },
+        body: JSON.stringify({ bookingId: 'b-1', stripeAccountId: 'acct-1', platformFeeCents: 50 }),
+      });
+      const res = await POST(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(201);
+      expect(data.success).toBe(true);
+      expect(data.transaction).toEqual(mockTx);
     });
   });
 

@@ -11,9 +11,58 @@ export async function GET(req: NextRequest) {
 
     const { user } = session;
 
-    let property = await db.queryOne('SELECT * FROM properties WHERE owner_id = ?', [
-      user.id,
-    ]);
+    // Check for active impersonation session
+    const impersonatingCookie = req.cookies.get('sinaicamps_impersonating')?.value;
+    if (impersonatingCookie) {
+      try {
+        const data = JSON.parse(impersonatingCookie);
+        if (data.propertyId && data.expiresAt > Date.now()) {
+          const impersonatedProperty = await db.queryOne('SELECT * FROM properties WHERE id = ?', [
+            data.propertyId,
+          ]);
+          if (impersonatedProperty) {
+            const prop = impersonatedProperty as any;
+            const parseJson = (val: unknown) => {
+              if (!val) return null;
+              if (typeof val === 'string') {
+                try {
+                  return JSON.parse(val);
+                } catch {
+                  return val;
+                }
+              }
+              return val;
+            };
+            return NextResponse.json({
+              user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: (user as any).role,
+                impersonating: true,
+                impersonatingProperty: data.propertyName,
+              },
+              property: {
+                id: prop.id,
+                name: prop.name,
+                slug: prop.slug,
+                plan: prop.plan || 'basic',
+                subdomain: prop.subdomain || null,
+                customDomain: prop.custom_domain || null,
+                domainVerified: !![false, 0, '0'].includes(prop.domain_verified),
+                isActive: prop.is_active === 1,
+                branding: parseJson(prop.branding),
+                settings: parseJson(prop.settings),
+              },
+            });
+          }
+        }
+      } catch {
+        // Invalid or expired impersonation cookie — fall through to normal lookup
+      }
+    }
+
+    let property = await db.queryOne('SELECT * FROM properties WHERE owner_id = ?', [user.id]);
 
     if (!property) {
       const staffRecord = await db.queryOne(
@@ -33,7 +82,13 @@ export async function GET(req: NextRequest) {
 
     const parseJson = (val: unknown) => {
       if (!val) return null;
-      if (typeof val === 'string') { try { return JSON.parse(val); } catch { return val; } }
+      if (typeof val === 'string') {
+        try {
+          return JSON.parse(val);
+        } catch {
+          return val;
+        }
+      }
       return val;
     };
 
@@ -58,9 +113,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || 'Failed to fetch profile' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: err.message || 'Failed to fetch profile' }, { status: 500 });
   }
 }

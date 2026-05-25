@@ -16,7 +16,7 @@ describe('CRM Plugin', () => {
   it('initializes and registers hook listener', async () => {
     const mockApi = {
       logger: { info: vi.fn() },
-      db: { createTable: vi.fn().mockResolvedValue(undefined) },
+      db: { createTable: vi.fn().mockResolvedValue(undefined), execute: vi.fn().mockResolvedValue(undefined) },
       ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
       registerHook: vi.fn(),
       registerRoute: vi.fn(),
@@ -62,6 +62,7 @@ describe('CRM Plugin', () => {
       logger: { info: vi.fn() },
       db: {
         createTable: vi.fn().mockResolvedValue(undefined),
+        execute: vi.fn().mockResolvedValue(undefined),
         query: mockQuery,
       },
       auth: {
@@ -89,13 +90,13 @@ describe('CRM Plugin', () => {
       let routeHandler: any;
       const mockApi = {
         logger: { info: vi.fn() },
-        db: { createTable: vi.fn().mockResolvedValue(undefined) },
-        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
-        registerHook: vi.fn(),
-        registerRoute: (path: string, handlers: any) => {
-          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
-        },
-        auth: { getSession: vi.fn().mockResolvedValue(null) },
+      db: { createTable: vi.fn().mockResolvedValue(undefined), execute: vi.fn().mockResolvedValue(undefined) },
+      ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+      registerHook: vi.fn(),
+      registerRoute: (path: string, handlers: any) => {
+        if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+      },
+      auth: { getSession: vi.fn().mockResolvedValue(null) },
       };
 
       await init(mockApi as any);
@@ -114,6 +115,7 @@ describe('CRM Plugin', () => {
         logger: { info: vi.fn() },
         db: {
           createTable: vi.fn().mockResolvedValue(undefined),
+          execute: vi.fn().mockResolvedValue(undefined),
           query: mockQuery,
         },
         ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
@@ -145,24 +147,25 @@ describe('CRM Plugin', () => {
       const mockQuery = vi.fn().mockResolvedValue([]);
       const mockApi = {
         logger: { info: vi.fn() },
-        db: {
-          createTable: vi.fn().mockResolvedValue(undefined),
-          query: mockQuery,
-        },
-        ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
-        registerHook: vi.fn(),
-        registerRoute: (path: string, handlers: any) => {
-          if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
-        },
-        auth: {
-          getSession: vi
-            .fn()
-            .mockResolvedValue({ user: { role: 'manager', email: 'manager@example.com' } }),
-        },
-      };
+      db: {
+        createTable: vi.fn().mockResolvedValue(undefined),
+        execute: vi.fn().mockResolvedValue(undefined),
+        query: mockQuery,
+      },
+      ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
+      registerHook: vi.fn(),
+      registerRoute: (path: string, handlers: any) => {
+        if (path === '/api/p/crm/activities') routeHandler = handlers.GET;
+      },
+      auth: {
+        getSession: vi
+          .fn()
+          .mockResolvedValue({ user: { role: 'manager', email: 'manager@example.com' } }),
+      },
+    };
 
-      await init(mockApi as any);
-      const req = makeRequest('/api/p/crm/activities?guest_email=john@example.com');
+    await init(mockApi as any);
+    const req = makeRequest('/api/p/crm/activities?guest_email=john@example.com');
       const res = await routeHandler(req);
       const data = await res.json();
 
@@ -179,6 +182,7 @@ describe('CRM Plugin', () => {
         logger: { info: vi.fn() },
         db: {
           createTable: vi.fn().mockResolvedValue(undefined),
+          execute: vi.fn().mockResolvedValue(undefined),
           query: mockQuery,
         },
         ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },
@@ -210,6 +214,7 @@ describe('CRM Plugin', () => {
         logger: { info: vi.fn() },
         db: {
           createTable: vi.fn().mockResolvedValue(undefined),
+          execute: vi.fn().mockResolvedValue(undefined),
           query: vi.fn().mockRejectedValue(new Error('Query failed')),
         },
         ui: { addSlotComponent: vi.fn(), addSettingsPage: vi.fn() },

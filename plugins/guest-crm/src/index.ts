@@ -50,7 +50,7 @@ export default async function init(api: PluginAPI) {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (err: any) {
-        console.error('[GuestCRM] Error fetching guests:', err);
+        api.logger.error('[GuestCRM] Error fetching guests:', err);
         return new Response(JSON.stringify({ error: err.message }), { status: 500 });
       }
     },
@@ -99,7 +99,7 @@ export default async function init(api: PluginAPI) {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (err: any) {
-        console.error('[CRM Plugin] Stats error:', err);
+        api.logger.error('[CRM Plugin] Stats error:', err);
         return new Response(JSON.stringify({ error: err.message }), { status: 500 });
       }
     },

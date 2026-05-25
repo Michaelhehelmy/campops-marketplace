@@ -5,10 +5,15 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 const ADMIN_SPA_URL = process.env.ADMIN_SPA_URL ?? 'http://localhost:3000';
 
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? (await import('@next/bundle-analyzer')).default({ enabled: true })
+  : (config) => config;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  compress: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -22,6 +27,9 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [{ protocol: 'https', hostname: '**' }],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   async rewrites() {
     return [
@@ -56,4 +64,4 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withBundleAnalyzer(withNextIntl(nextConfig));

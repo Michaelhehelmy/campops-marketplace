@@ -39,7 +39,8 @@ export default function BookingFallback({
     fetch(`/api/plugins/ui-registry?propertyId=${listingId}`, { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
-        const hasBookingSlot = data.slots && data.slots['public.booking'] && data.slots['public.booking'].length > 0;
+        const hasBookingSlot =
+          data.slots && data.slots['public.booking'] && data.slots['public.booking'].length > 0;
         setPluginEnabled(!!hasBookingSlot);
       })
       .catch(() => setPluginEnabled(false));

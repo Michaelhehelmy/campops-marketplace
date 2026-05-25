@@ -199,7 +199,10 @@ export default async function init(api: PluginAPI) {
         const { user } = session;
 
         const hostHeader = req.headers.get('x-forwarded-host') || req.headers.get('host') || '';
-        const hostname = hostHeader.split(':')[0].replace(/^www\./, '').toLowerCase();
+        const hostname = hostHeader
+          .split(':')[0]
+          .replace(/^www\./, '')
+          .toLowerCase();
 
         let property = null;
 

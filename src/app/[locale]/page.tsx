@@ -100,7 +100,7 @@ export default async function HomePage({ params, searchParams }: Props) {
 
   return (
     <PluginRegistryProvider>
-      <main className="space-y-16 py-8">
+      <main className="py-8">
         <PluginShell name="public.homepage" props={{ locale }} fallback={null} />
         <PluginShell name="public.search" props={{ locale }} fallback={null} />
         {config.sections.map((sectionName: string) => (

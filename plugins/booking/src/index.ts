@@ -99,6 +99,13 @@ export default async function init(api: PluginAPI) {
     `);
   }
 
+  // Create indexes after table seeding
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_bookings_listing_checkin ON plugin_booking_bookings(listing_id, check_in)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_bookings_listing_status ON plugin_booking_bookings(listing_id, status)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_bookings_guest_email ON plugin_booking_bookings(guest_email)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_bookings_dates ON plugin_booking_bookings(check_in, check_out)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_avail_room_date ON plugin_booking_room_availability(room_id, date)');
+
   // 2. Register API routes
   const { bookingService, roomService } = registerRoutes(api);
 

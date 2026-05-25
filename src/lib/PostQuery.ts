@@ -371,9 +371,12 @@ export class PostQuery {
       params.push(authorId);
     }
     if (parentId !== undefined) {
-      parentId === null
-        ? conditions.push('p.parent_id IS NULL')
-        : (conditions.push('p.parent_id = ?'), params.push(parentId));
+      if (parentId === null) {
+        conditions.push('p.parent_id IS NULL');
+      } else {
+        conditions.push('p.parent_id = ?');
+        params.push(parentId);
+      }
     }
     if (search) {
       conditions.push('(p.post_title LIKE ? OR p.post_content LIKE ?)');

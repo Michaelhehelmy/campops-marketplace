@@ -30,7 +30,20 @@ export function Nav({ locale }: { locale: string }) {
   const getDashboardLink = () => {
     if (!session?.user) return null;
     const role = (session.user as any).role;
-    if (role === 'master' || role === 'marketplace_master') return `/${locale}/admin/plugins`;
+    if (role === 'master' || role === 'marketplace_master') {
+      try {
+        const match = document.cookie.match(/(?:^|;\s*)sinaicamps_impersonating=([^;]*)/);
+        if (match) {
+          const data = JSON.parse(decodeURIComponent(match[1]));
+          if (data.propertySlug && data.expiresAt > Date.now()) {
+            return `/${locale}/manage/${data.propertySlug}`;
+          }
+        }
+      } catch {
+        /* invalid or expired cookie — fall through */
+      }
+      return `/${locale}/admin/plugins`;
+    }
     if (role === 'manager') return `/${locale}/owner/dashboard`;
     return `/${locale}/guest`;
   };
@@ -62,7 +75,7 @@ export function Nav({ locale }: { locale: string }) {
           <LanguageSwitcher locale={locale} />
           <a
             href={`/${locale}/search`}
-            className="text-zinc-400 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
+            className="text-zinc-300 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
           >
             <Search className="w-4 h-4 text-amber-500/80" />
             Search
@@ -75,7 +88,7 @@ export function Nav({ locale }: { locale: string }) {
                   {dashboardLink && (
                     <a
                       href={dashboardLink}
-                      className="text-zinc-400 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
+                      className="text-zinc-300 hover:text-amber-400 transition-colors font-bold text-sm flex items-center gap-1.5"
                     >
                       <LayoutDashboard className="w-4 h-4 text-amber-500/80" />
                       Dashboard
@@ -118,6 +131,7 @@ export function Nav({ locale }: { locale: string }) {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
           aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -125,7 +139,7 @@ export function Nav({ locale }: { locale: string }) {
 
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-900 bg-slate-950">
+        <div id="mobile-menu" className="lg:hidden border-t border-slate-900 bg-slate-950">
           <div className="px-4 py-3 space-y-1">
             <a
               href={`/${locale}`}

@@ -2,23 +2,19 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
-import { auth } from '@/lib/auth';
+import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
 
 /**
  * POST /api/manage/[listingId]/plugins/toggle
  *
  * Enables or disables a plugin for a specific listing.
+ * Requires listing-level access (manager or marketplace_master).
  */
 export async function POST(req: NextRequest, { params }: { params: { listingId: string } }) {
   try {
     const { listingId } = params;
-    const session = await auth.api.getSession({
-      headers: req.headers,
-    });
-
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const session = await requireListingAccess(req, listingId, ['manager', 'marketplace_master']);
+    if (isErrorResponse(session)) return session;
 
     const body = await req.json();
     const { pluginName, isEnabled } = body;

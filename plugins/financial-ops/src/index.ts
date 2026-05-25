@@ -1,4 +1,5 @@
 import type { PluginAPI } from '@sinaicamps/plugin-sdk';
+import { billingRouter } from './routes/billing.js';
 
 export default async function init(api: PluginAPI) {
   api.logger.info('Initializing Financial Operations Plugin...');
@@ -16,6 +17,52 @@ export default async function init(api: PluginAPI) {
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     `
   );
+
+  await api.db.createTable(
+    'folios',
+    `
+    id TEXT PRIMARY KEY,
+    listing_id TEXT,
+    guest_name TEXT,
+    total_amount REAL DEFAULT 0,
+    currency TEXT DEFAULT 'USD',
+    status TEXT DEFAULT 'open',
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+    `
+  );
+
+  await api.db.createTable(
+    'folio_charges',
+    `
+    id TEXT PRIMARY KEY,
+    folio_id TEXT NOT NULL,
+    description TEXT,
+    amount REAL NOT NULL,
+    charge_type TEXT,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (folio_id) REFERENCES plugin_folios(id)
+    `
+  );
+
+  await api.db.createTable(
+    'payments',
+    `
+    id TEXT PRIMARY KEY,
+    folio_id TEXT NOT NULL,
+    amount REAL NOT NULL,
+    method TEXT NOT NULL,
+    status TEXT DEFAULT 'completed',
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (folio_id) REFERENCES plugin_folios(id)
+    `
+  );
+
+  // Create indexes after table creation
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_finops_comm_booking ON plugin_financial_ops_commissions(booking_id)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_finops_folios_guest ON plugin_financial_ops_folios(guest_name)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_finops_charges_folio ON plugin_financial_ops_folio_charges(folio_id)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_finops_payments_folio ON plugin_financial_ops_payments(folio_id)');
 
   // 2. Listen to hooks
   api.registerHook('BOOKING_CREATED', async (data: any) => {
@@ -115,6 +162,9 @@ export default async function init(api: PluginAPI) {
       }
     },
   });
+
+  // Register billing router (Hono-based) at /api/p/finance/billing
+  api.registerRoute('/api/p/finance/billing', billingRouter(api));
 
   api.registerRoute('/api/p/finance/commissions', {
     GET: async (req: Request) => {

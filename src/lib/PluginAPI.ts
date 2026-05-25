@@ -345,24 +345,19 @@ export function makePluginAPI(
         for (const route of honoApp.routes) {
           const subPath = route.path === '/' ? '' : route.path;
           const fullPath = `${path}${subPath}`;
-          pluginRouteRegistry.register(
-            pluginId,
-            fullPath,
-            route.method,
-            async (req: Request) => {
-              const url = new URL(req.url);
-              let subPath = url.pathname;
-              if (subPath.startsWith(path)) {
-                subPath = subPath.substring(path.length);
-              }
-              if (!subPath.startsWith('/')) {
-                subPath = '/' + subPath;
-              }
-              url.pathname = subPath;
-              const newReq = new Request(url.toString(), req);
-              return honoApp.fetch(newReq);
+          pluginRouteRegistry.register(pluginId, fullPath, route.method, async (req: Request) => {
+            const url = new URL(req.url);
+            let subPath = url.pathname;
+            if (subPath.startsWith(path)) {
+              subPath = subPath.substring(path.length);
             }
-          );
+            if (!subPath.startsWith('/')) {
+              subPath = '/' + subPath;
+            }
+            url.pathname = subPath;
+            const newReq = new Request(url.toString(), req);
+            return honoApp.fetch(newReq);
+          });
         }
         return;
       }

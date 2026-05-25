@@ -13,6 +13,7 @@ describe('PWA Plugin', () => {
       },
       db: {
         createTable: vi.fn().mockResolvedValue(undefined),
+        execute: vi.fn().mockResolvedValue(undefined),
       },
       ui: {
         addSlotComponent: vi.fn(),

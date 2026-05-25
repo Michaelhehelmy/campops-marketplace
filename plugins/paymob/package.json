@@ -1,0 +1,22 @@
+{
+  "name": "@sinaicamps/plugin-paymob",
+  "version": "1.0.0",
+  "description": "Paymob Payments",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "sinaicamps": {
+    "pluginId": "paymob",
+    "sinaicampsVersion": ">=2.0.0",
+    "capabilities": [
+      "payment",
+      "network",
+      "database",
+      "routes",
+      "hooks"
+    ]
+  },
+  "devDependencies": {
+    "@sinaicamps/plugin-sdk": "*"
+  }
+}

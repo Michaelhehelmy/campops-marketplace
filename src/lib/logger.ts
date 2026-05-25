@@ -14,7 +14,7 @@ function getAsyncLocalStorage(): any {
   // Only attempt to require async_hooks in Node.js environments
   if (typeof window === 'undefined') {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       _AsyncLocalStorage = require('async_hooks').AsyncLocalStorage;
     } catch {
       _AsyncLocalStorage = undefined;

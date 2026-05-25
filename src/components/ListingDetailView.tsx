@@ -38,7 +38,8 @@ export default function ListingDetailView({
     createdAt: null,
     updatedAt: null,
     meta: {
-      settings: typeof property.settings === 'string' ? property.settings : JSON.stringify(settings),
+      settings:
+        typeof property.settings === 'string' ? property.settings : JSON.stringify(settings),
       room_types: Array.isArray(property.room_types)
         ? JSON.stringify(property.room_types)
         : JSON.stringify(room_types),
@@ -47,7 +48,7 @@ export default function ListingDetailView({
       country: property.country ?? null,
       amenities: Array.isArray(property.amenities)
         ? JSON.stringify(property.amenities)
-        : property.amenities ?? null,
+        : (property.amenities ?? null),
       rating: String(property.rating ?? ''),
       price_per_night: property.price_per_night ?? null,
     },

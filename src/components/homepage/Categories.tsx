@@ -48,8 +48,9 @@ export default function Categories({ locale = 'en' }: CategoriesProps) {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
+      <div className="flex justify-center py-20" role="status" aria-live="polite">
         <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+        <span className="sr-only">Loading categories...</span>
       </div>
     );
   }

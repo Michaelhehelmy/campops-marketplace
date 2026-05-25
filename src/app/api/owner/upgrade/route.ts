@@ -36,7 +36,8 @@ export async function POST(req: NextRequest) {
       .get(siteId, user.id)) as any;
 
     const isOwner = property.owner_id === user.id;
-    const isManager = staffRecord && (staffRecord.role === 'manager' || staffRecord.role === 'master');
+    const isManager =
+      staffRecord && (staffRecord.role === 'manager' || staffRecord.role === 'master');
     if (!isOwner && !isManager && (user as any).role !== 'master') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -50,9 +51,15 @@ export async function POST(req: NextRequest) {
     const updateFields: Record<string, any> = { plan: newPlan };
     if (newPlan === 'premium') {
       if (!subdomain || !subdomain.trim()) {
-        return NextResponse.json({ error: 'subdomain is required for Premium plan' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'subdomain is required for Premium plan' },
+          { status: 400 }
+        );
       }
-      const cleanSub = subdomain.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+      const cleanSub = subdomain
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '');
       if (!cleanSub) {
         return NextResponse.json({ error: 'Invalid subdomain' }, { status: 400 });
       }
@@ -67,7 +74,10 @@ export async function POST(req: NextRequest) {
 
     if (newPlan === 'ultimate') {
       if (customDomain && customDomain.trim()) {
-        const cleanDomain = customDomain.trim().toLowerCase().replace(/^https?:\/\//, '');
+        const cleanDomain = customDomain
+          .trim()
+          .toLowerCase()
+          .replace(/^https?:\/\//, '');
         if (!cleanDomain.includes('.')) {
           return NextResponse.json({ error: 'Invalid custom domain' }, { status: 400 });
         }

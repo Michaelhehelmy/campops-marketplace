@@ -69,9 +69,9 @@ export async function requireListingAccess(req: Request, listingId: string, allo
 
   if (!listing) {
     // Try looking up in posts table to see if it's a post UUID
-    const post = (await db
-      .prepare('SELECT post_slug FROM posts WHERE id = ?')
-      .get(listingId)) as { post_slug: string } | undefined;
+    const post = (await db.prepare('SELECT post_slug FROM posts WHERE id = ?').get(listingId)) as
+      | { post_slug: string }
+      | undefined;
 
     if (post && post.post_slug) {
       listing = (await db

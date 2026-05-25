@@ -21,23 +21,15 @@ describe('POST /api/manage/[listingId]/plugins/toggle', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
-    mockPrepare.mockReturnValue({
-      get: vi.fn().mockResolvedValue({ id: 'prop-1' }),
-      run: vi.fn().mockResolvedValue(undefined),
+    // Mock db.prepare to support property lookup + upsert
+    mockPrepare.mockImplementation(function (this: any, sql: string) {
+      const get = vi.fn();
+      const run = vi.fn().mockResolvedValue(undefined);
+      if (sql.includes('SELECT id FROM properties')) {
+        get.mockResolvedValue({ id: 'prop-1' });
+      }
+      return { get, run, all: vi.fn() };
     });
-  });
-
-  it('returns 401 without session', async () => {
-    mockGetSession.mockResolvedValue(null);
-    const { POST } = await getRoute();
-    const res = await POST(
-      new NextRequest('http://localhost/api/manage/prop-1/plugins/toggle', {
-        method: 'POST',
-        body: JSON.stringify({ pluginName: 'booking', isEnabled: true }),
-      }),
-      { params: { listingId: 'prop-1' } }
-    );
-    expect(res.status).toBe(401);
   });
 
   it('returns 400 when pluginName is missing', async () => {

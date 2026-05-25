@@ -146,6 +146,11 @@ export function registerRoutes(api: PluginAPI) {
   // Master creates a new listing.
   api.registerRoute('/api/p/resource/master/listings', {
     POST: async (req: Request) => {
+      const session = await api.auth.getSession(req);
+      if (!session || !['master', 'marketplace_master'].includes(session.user.role)) {
+        return json({ error: 'Unauthorized' }, 401);
+      }
+
       const body = await req.json().catch(() => null);
       if (!body) return json({ error: 'Invalid JSON body' }, 400);
 
@@ -262,6 +267,11 @@ export function registerRoutes(api: PluginAPI) {
   // Master updates any field on any listing.
   api.registerRoute('/api/p/resource/master/listings/:id', {
     PATCH: async (req: Request) => {
+      const session = await api.auth.getSession(req);
+      if (!session || !['master', 'marketplace_master'].includes(session.user.role)) {
+        return json({ error: 'Unauthorized' }, 401);
+      }
+
       const url = new URL(req.url);
       const id = url.searchParams.get(':id') ?? url.pathname.split('/').pop();
       if (!id) return json({ error: 'id is required' }, 400);
@@ -351,6 +361,9 @@ export function registerRoutes(api: PluginAPI) {
   // Tenant-admin updates limited fields; must match tenant_id.
   api.registerRoute('/api/p/resource/manage/listings/:id', {
     PATCH: async (req: Request) => {
+      const session = await api.auth.getSession(req);
+      if (!session) return json({ error: 'Unauthorized' }, 401);
+
       const url = new URL(req.url);
       const id = url.searchParams.get(':id') ?? url.pathname.split('/').pop();
       if (!id) return json({ error: 'id is required' }, 400);

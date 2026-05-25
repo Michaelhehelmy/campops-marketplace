@@ -210,6 +210,20 @@ export async function POST(req: NextRequest) {
 // PUT /api/payments/connect - Update Stripe Connect account status (webhook handler)
 export async function PUT(req: NextRequest) {
   try {
+    // Idempotency check: skip processing if this event was already handled
+    const idempotencyKey =
+      req.headers.get('Idempotency-Key') ||
+      req.headers.get('idempotency-key') ||
+      req.headers.get('Stripe-Idempotency-Key');
+    if (idempotencyKey) {
+      const existing = await db.queryOne('SELECT response FROM idempotency_keys WHERE key = ?', [
+        idempotencyKey,
+      ]);
+      if (existing) {
+        return NextResponse.json(JSON.parse(existing.response), { status: 200 });
+      }
+    }
+
     const signature = req.headers.get('stripe-signature');
     const secret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -265,7 +279,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'stripeAccountId is required' }, { status: 400 });
     }
 
-    // Update account status in a transaction
+    // Update account status and record idempotency in a transaction
     let account: any = null;
     const txOk = await db.transaction(async (tx) => {
       await tx
@@ -296,6 +310,19 @@ export async function PUT(req: NextRequest) {
         )
         .get(stripeAccountId);
 
+      // Persist idempotency key inside the same transaction
+      if (idempotencyKey) {
+        await tx
+          .prepare(
+            'INSERT OR IGNORE INTO idempotency_keys (key, response, created_at) VALUES ($1, $2, $3)'
+          )
+          .run(
+            idempotencyKey,
+            JSON.stringify({ success: true, account, message: 'Stripe Connect account updated' }),
+            Math.floor(Date.now() / 1000)
+          );
+      }
+
       return true;
     });
 
@@ -306,6 +333,14 @@ export async function PUT(req: NextRequest) {
     if (!account) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
+
+    AuditService.log({
+      userId: 'system',
+      action: 'stripe_connect.webhook_updated',
+      resource: 'stripe_connect_accounts',
+      resourceId: stripeAccountId,
+      details: { chargesEnabled, payoutsEnabled, onboardingComplete },
+    });
 
     return NextResponse.json({
       success: true,

@@ -27,7 +27,9 @@ export default async function Head({ params }: { params: { slug: string } }) {
       : property?.settings || {};
   const colors = getBrandColors(settings);
 
-  const platformRow = db.prepare('SELECT platform_name FROM marketplace_settings LIMIT 1').get() as { platform_name: string } | undefined;
+  const platformRow = db.prepare('SELECT platform_name FROM marketplace_settings LIMIT 1').get() as
+    | { platform_name: string }
+    | undefined;
   const platformName = platformRow?.platform_name || 'SinaiCamps';
 
   return (

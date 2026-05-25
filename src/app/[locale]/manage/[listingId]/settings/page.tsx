@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { PluginShell } from '@/app/PluginShell';
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
-import { Settings, User, Bell, Shield, ChevronRight, Wrench } from 'lucide-react';
+import { Settings, User, Bell, Shield, ChevronRight, Wrench, Globe, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 
 export default function SettingsPage() {
   const searchParams = useSearchParams();
@@ -99,6 +99,7 @@ export default function SettingsPage() {
   const tabs = [
     { id: 'general', label: 'General', icon: Settings },
     { id: 'marketplace', label: 'Marketplace', icon: Settings },
+    { id: 'website', label: 'Website', icon: Settings },
     { id: 'plugins', label: 'Extensions', icon: Wrench },
     { id: 'users', label: 'Team', icon: User },
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -277,6 +278,7 @@ export default function SettingsPage() {
               </div>
             )}
 
+            {currentTab === 'website' && <WebsiteCMS listingId={listingId} locale={locale} />}
             {currentTab === 'plugins' && <PluginManagement listingId={listingId} />}
 
             {/* Booking Management Tab */}
@@ -447,6 +449,102 @@ function PluginManagement({ listingId }: { listingId: string }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function WebsiteCMS({ listingId, locale }: { listingId: string; locale: string }) {
+  const [pages, setPages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadPages = () => {
+    fetch(`/api/tenant/pages?propertyId=${listingId}`)
+      .then((r) => (r.ok ? r.json() : { pages: [] }))
+      .then((d) => setPages(d.pages ?? []))
+      .catch(() => setError('Failed to load pages'))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { loadPages(); }, [listingId]);
+
+  const togglePublish = async (page: any) => {
+    await fetch(`/api/tenant/pages/${page.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...page, isPublished: page.is_published ? 0 : 1 }),
+    });
+    loadPages();
+  };
+
+  const deletePage = async (id: string) => {
+    if (!confirm('Delete this page?')) return;
+    await fetch(`/api/tenant/pages/${id}`, { method: 'DELETE' });
+    loadPages();
+  };
+
+  if (loading) return <div className="p-8 text-center text-gray-500">Loading website pages...</div>;
+  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-black text-gray-900">Website Pages</h2>
+          <p className="text-sm text-gray-500">Manage pages for your tenant website.</p>
+        </div>
+        <a
+          href={`/${locale}/manage/${listingId}/settings?tab=website-editor`}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition-all"
+        >
+          <Plus className="h-4 w-4" /> Add Page
+        </a>
+      </div>
+
+      {pages.length === 0 ? (
+        <div className="text-center py-12 bg-gray-50 rounded-2xl border border-gray-100">
+          <Globe className="h-12 w-12 text-gray-200 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-gray-900 mb-2">No website pages yet</h3>
+          <p className="text-sm text-gray-500 max-w-xs mx-auto">
+            Create your first page to start building your tenant website.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {pages.map((page) => (
+            <div
+              key={page.id}
+              className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 bg-white"
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className={`h-2 w-2 rounded-full ${page.is_published ? 'bg-green-500' : 'bg-gray-300'}`}
+                />
+                <div>
+                  <div className="font-bold text-gray-900 text-sm">{page.title}</div>
+                  <div className="text-xs text-gray-400">/{page.slug}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => togglePublish(page)}
+                  className="p-2 text-gray-400 hover:text-brand-600 transition-all rounded-xl hover:bg-gray-50"
+                  title={page.is_published ? 'Unpublish' : 'Publish'}
+                >
+                  {page.is_published ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                </button>
+                <button
+                  onClick={() => deletePage(page.id)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-all rounded-xl hover:bg-red-50"
+                  title="Delete"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

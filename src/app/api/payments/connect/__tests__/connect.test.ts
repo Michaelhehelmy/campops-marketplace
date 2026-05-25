@@ -28,6 +28,7 @@ vi.mock('@/lib/db', () => {
       all: allMock,
       run: runMock,
       execute: vi.fn().mockResolvedValue(undefined),
+      queryOne: vi.fn().mockResolvedValue(null),
       transaction: vi.fn().mockImplementation(async (callback) => {
         return callback({
           prepare: prepareMock,
@@ -430,6 +431,55 @@ describe('Payments Connect API Route', () => {
 
       constructSpy.mockRestore();
       delete process.env.STRIPE_WEBHOOK_SECRET;
+    });
+
+    it('should return cached response on idempotent PUT request', async () => {
+      const cachedResponse = {
+        success: true,
+        account: { stripe_account_id: 'acct-123', charges_enabled: 1 },
+      };
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValueOnce({ response: JSON.stringify(cachedResponse) });
+
+      const req = new NextRequest('http://localhost/api/payments/connect', {
+        method: 'PUT',
+        headers: { 'Idempotency-Key': 'idem-001' },
+        body: JSON.stringify({ stripeAccountId: 'acct-123' }),
+      });
+      const res = await PUT(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data).toEqual(cachedResponse);
+    });
+
+    it('should process normally when Idempotency-Key is present but no cached response', async () => {
+      const queryOneMock = vi.mocked(db.queryOne);
+      queryOneMock.mockResolvedValue(null);
+
+      const mockAccount = { stripe_account_id: 'acct-123', charges_enabled: 1, payouts_enabled: 1 };
+      const prepareMock = vi.mocked(db.prepare);
+      prepareMock.mockReturnValue({
+        get: vi.fn().mockResolvedValue(mockAccount),
+        all: vi.fn(),
+        run: vi.fn().mockResolvedValue({ changes: 1 }),
+      });
+
+      const req = new NextRequest('http://localhost/api/payments/connect', {
+        method: 'PUT',
+        headers: { 'Idempotency-Key': 'idem-002' },
+        body: JSON.stringify({
+          stripeAccountId: 'acct-123',
+          chargesEnabled: true,
+          payoutsEnabled: true,
+        }),
+      });
+      const res = await PUT(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(data.account).toEqual(mockAccount);
     });
   });
 });

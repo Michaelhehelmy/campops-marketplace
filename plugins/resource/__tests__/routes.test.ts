@@ -54,6 +54,9 @@ function buildMockApi(dbOverrides: Record<string, unknown> = {}) {
       addSettingsPage: vi.fn(),
     },
     config: {},
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ user: { id: 'user-1', role: 'master' } }),
+    },
   };
 }
 

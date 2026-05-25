@@ -25,18 +25,30 @@ This file is the primary system prompt instruction manual for OpenCode agents wo
 ## 2. Dynamic Agent Hand-off and Selection
 
 This project defines specific agents configured in `opencode.json`. Refer to their dedicated system prompts for details:
-- **@deploy**: Specializes in local builds, environment packaging, and server deployment.
-- **@qa**: Focuses on test coverage execution, visual regression checkouts, and smoke testing.
-- **@db**: Responsible for migrations, indexes, schemas, and query optimization.
-- **@plugin-dev**: Creates modular features and scaffolds plugins/packages.
-- **@frontend**: Designs responsive pages and forms, handles dynamic configurations, ensures auth-aware logical rendering, and creates supporting backend routes/APIs.
+- **@frontend_marketplace**: Marketplace Frontend Agent — public UI, responsive design, translations, PWA
+- **@frontend_dashboards**: Dashboards Frontend Agent — manager and admin panels, forms, charts, role-based views
+- **@backend_architect**: Core Framework Architect Agent — plugin engine, multi‑tenancy, hooks, context
+- **@auth_agent**: Authentication &amp; Authorization Agent — Better Auth, RBAC, session management, middleware guards
+- **@plugin_payments**: Transactions &amp; Payments Plugin Agent — Stripe, webhooks, commissions, checkout
+- **@plugin_operations**: Operations Plugin Agent — housekeeping, maintenance, roster, POS
+- **@plugin_crm**: Guest Experience &amp; CRM Plugin Agent — loyalty, marketing automation, guest journeys
+- **@plugin_integrations**: Integrations Plugin Agent — iCal, OTA managers, third-party sync
+- **@db_architect**: Database Architect Agent — schema, ORM, migrations, queries, backup
+- **@devops**: DevOps &amp; Infrastructure Agent — CI&#x2F;CD, deployment, servers, Docker, PM2
+- **@qa**: QA &amp; Test Automation Agent — Playwright, Vitest, load testing, coverage
+- **@security**: Security Engineer Agent — audit logs, vulnerabilities, headers, rate limits
+- **@theme_designer**: Theme &amp; UI Designer Agent — theme specification, design tokens, visual consistency
+- **@tech_writer**: Technical Writer Agent — API docs, developer guides, user guides
+- **@pm**: Product Manager (AI) Agent — backlog, user stories, priorities
+- **@ux_designer**: UX Designer Agent — wireframes, prototypes, accessibility audits
+- **@scrum_master**: Project Manager &amp; Scrum Master Agent — sprints, blockers, timelines
 
 ---
 
 ## 3. General Implementation Checklist
 
 When solving coding tasks, always structure your execution using this sequence:
-1. **Plan**: Run analytical checks and outline files to edit. Use `sequential-thinking` MCP to structure your execution plan.
+1. **Plan**: Run analytical checks and outline files to edit. Use the `sequential-thinking` MCP to structure your execution plan, and leverage `context-mode` and `context7` MCPs for deep codebase context gathering.
 2. **Execute**: Modify target files or write new modules. Ensure proper encapsulation and follow the project design system.
 3. **Verify**: Run `run-tests` to ensure zero regressions.
 4. **Safety Verification**: Ensure no credentials, log directories, or secret tokens are left unstaged.

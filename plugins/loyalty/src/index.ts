@@ -43,6 +43,10 @@ export default async function init(api: PluginAPI): Promise<void> {
   `
   );
 
+  // ── Indexes ─────────────────────────────────────────────────────────────────
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_loyalty_pt_guest ON plugin_loyalty_point_transactions(guest_id)');
+  await api.db.execute('CREATE INDEX IF NOT EXISTS idx_loyalty_er_currency ON plugin_loyalty_exchange_rates(currency_code)');
+
   // ── payment.on_success → award points ──────────────────────────────────────
   api.registerHook(
     Hooks.PAYMENT_ON_SUCCESS,

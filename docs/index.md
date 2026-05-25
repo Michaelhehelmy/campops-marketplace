@@ -55,7 +55,7 @@ New to the platform?
 | Document                           | Description                                           |
 | ---------------------------------- | ----------------------------------------------------- |
 | [../FRAMEWORK.md](../FRAMEWORK.md) | Core framework: schema, Plugin API, middleware, hooks |
-| [../TESTING.md](../TESTING.md)     | Test suite guide (Vitest + Playwright, 337 tests)     |
+| [../TESTING.md](../TESTING.md)     | Test suite guide (Vitest + Playwright, 1102+ tests)   |
 
 ### Release & History
 
