@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto';
 import type {
   PaymobConfig,
   PaymobAuthResponse,
@@ -98,10 +99,47 @@ export class PaymobService {
     return `https://accept.paymob.com/api/acceptance/iframes/${this.config.iframeId}?payment_token=${paymentToken}`;
   }
 
-  /** Verify HMAC signature on a webhook payload. */
-  verifyHmac(transaction: PaymobTransaction, hmacHeader: string): boolean {
-    if (!this.config.hmacSecret) return true;
-    return hmacHeader === transaction.hmac;
+  /** Verify HMAC signature on a webhook payload via timing-safe comparison. */
+  verifyHmac(transaction: PaymobTransaction, receivedHmac: string): boolean {
+    if (!this.config.hmacSecret) {
+      if (process.env.NODE_ENV === 'production') return false;
+      return true;
+    }
+    if (!receivedHmac) return false;
+
+    const concatenated = [
+      String(transaction.amount_cents),
+      transaction.created_at,
+      transaction.currency,
+      String(transaction.error_occured),
+      String(transaction.has_parent_transaction),
+      String(transaction.id),
+      String(transaction.integration_id),
+      String(transaction.is_3d_secure),
+      String(transaction.is_auth),
+      String(transaction.is_capture),
+      String(transaction.is_refund),
+      String(transaction.is_standalone_payment),
+      String(transaction.is_void),
+      String(transaction.order?.id ?? ''),
+      String(transaction.owner),
+      String(transaction.pending),
+      transaction.source_data?.pan ?? 'N/A',
+      transaction.source_data?.sub_type ?? 'N/A',
+      transaction.source_data?.type ?? 'N/A',
+      String(transaction.success),
+    ].join('');
+
+    const expected = createHmac('sha512', this.config.hmacSecret)
+      .update(concatenated)
+      .digest('hex');
+
+    if (expected.length !== receivedHmac.length) return false;
+    let diff = 0;
+    for (let i = 0; i < expected.length; i++) {
+      diff |= expected.charCodeAt(i) ^ receivedHmac.charCodeAt(i);
+    }
+    return diff === 0;
   }
 
   /** Determine the local status from a Paymob transaction. */
@@ -111,13 +149,6 @@ export class PaymobService {
     if (txn.pending) return 'pending';
     if (txn.error_occured) return 'failed';
     return 'unknown';
-  }
-
-  /** Process a completed payment webhook. */
-  async processWebhook(transaction: PaymobTransaction): Promise<void> {
-    const status = this.resolveStatus(transaction);
-    const paymentRef = transaction.id.toString();
-    const orderId = transaction.order?.id?.toString() || paymentRef;
   }
 
   /** Full payment intent creation flow. */
@@ -135,5 +166,39 @@ export class PaymobService {
       paymentKey: pkRes.token,
       orderId: order.id,
     };
+  }
+
+  /** Look up a transaction by ID via Paymob Transaction Inquiry API. */
+  async getTransaction(token: string, transactionId: string): Promise<PaymobTransaction> {
+    const res = await fetch(`${PAYMOB_BASE}/acceptance/transactions/${transactionId}`, {
+      headers: createAuthHeaders(token),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Paymob inquiry failed (${res.status}): ${body}`);
+    }
+    return res.json();
+  }
+
+  /** Refund a transaction via Paymob Refund API. */
+  async refundTransaction(
+    token: string,
+    transactionId: number,
+    amountCents: number
+  ): Promise<{ id: number; pending: boolean; success: boolean }> {
+    const res = await fetch(`${PAYMOB_BASE}/acceptance/void_refund/refund`, {
+      method: 'POST',
+      headers: createAuthHeaders(token),
+      body: JSON.stringify({
+        auth_token: token,
+        transaction_id: transactionId,
+        amount_cents: amountCents,
+      }),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Paymob refund failed (${res.status}): ${body}`);
+    }
+    return res.json();
   }
 }

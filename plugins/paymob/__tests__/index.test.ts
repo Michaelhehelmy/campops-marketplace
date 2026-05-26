@@ -51,13 +51,14 @@ describe('paymob plugin', () => {
     expect(api.registerHook).toHaveBeenCalledWith('payment:success', expect.any(Function));
   });
 
-  it('registers three API routes', async () => {
+  it('registers four API routes', async () => {
     await init(api);
     const routeCalls = (api.registerRoute as ReturnType<typeof vi.fn>).mock.calls;
     const paths = routeCalls.map((c: any[]) => c[0]);
     expect(paths).toContain('/api/p/paymob/create-payment');
     expect(paths).toContain('/api/p/paymob/webhook');
     expect(paths).toContain('/api/p/paymob/return');
+    expect(paths).toContain('/api/p/paymob/refund');
   });
 
   it('payment:collect_methods hook adds paymob to methods', async () => {

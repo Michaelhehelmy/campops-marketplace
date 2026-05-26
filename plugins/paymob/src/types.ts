@@ -29,9 +29,8 @@ export interface PaymobTransaction {
   amount_cents: number;
   currency: string;
   created_at: string;
-  source_data: { type: string; pan: string };
+  source_data: { type: string; pan: string; sub_type: string };
   payment_method: string;
-  hmac: string;
   is_void: boolean;
   is_refund: boolean;
   is_auth: boolean;
@@ -39,6 +38,9 @@ export interface PaymobTransaction {
   is_standalone_payment: boolean;
   is_3d_secure: boolean;
   error_occured: boolean;
+  has_parent_transaction: boolean;
+  integration_id: number;
+  owner: number;
   data: Record<string, string>;
 }
 

@@ -5,5 +5,13 @@
   "description": "Paymob payment gateway integration for accepting payments via credit card, mobile wallet, and installments.",
   "author": "SinaiCamps Core",
   "apiVersion": "^2.0.0",
+  "campopsVersion": "^1.0.0",
+  "reviewStatus": "stable",
+  "hooks": {
+    "provides": [
+      "payment:collect_methods",
+      "payment:success"
+    ]
+  },
   "entry": "src/index.ts"
 }

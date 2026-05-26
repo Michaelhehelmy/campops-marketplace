@@ -29,6 +29,9 @@ export function registerRoutes(api: PluginAPI): void {
 
   api.registerRoute('/api/p/paymob/create-payment', {
     POST: async (req: Request) => {
+      const session = await api.auth.getSession();
+      if (!session) return json({ error: 'Unauthorized' }, 401);
+
       try {
         const body = await req.json();
         const { bookingId, amountCents, currency = 'EGP', billingData } = body;
@@ -87,8 +90,9 @@ export function registerRoutes(api: PluginAPI): void {
           return json({ error: 'Invalid JSON' }, 400);
         }
 
-        const hmacHeader = req.headers.get('hmac') || req.headers.get('x-hmac') || '';
-        if (!paymob.verifyHmac(parsed.obj, hmacHeader)) {
+        const url = new URL(req.url);
+        const hmac = url.searchParams.get('hmac') || '';
+        if (!paymob.verifyHmac(parsed.obj, hmac)) {
           return json({ error: 'Invalid HMAC signature' }, 401);
         }
 
@@ -141,16 +145,63 @@ export function registerRoutes(api: PluginAPI): void {
   api.registerRoute('/api/p/paymob/return', {
     GET: async (req: Request) => {
       const url = new URL(req.url);
-      const success = url.searchParams.get('success') === 'true';
       const paymentKey = url.searchParams.get('payment_token') || '';
       const orderId = url.searchParams.get('order') || '';
 
-      if (success) {
-        api.logger.info(`[paymob] Payment return success for order ${orderId}`);
-        return json({ success: true, message: 'Payment completed successfully', orderId });
+      if (!paymentKey && !orderId) {
+        return json({ success: false, message: 'Missing payment_token or order' }, 400);
       }
 
-      return json({ success: false, message: 'Payment was not completed', orderId });
+      try {
+        const token = await paymob.getAuthToken();
+        const transaction = await paymob.getTransaction(token, orderId);
+        const status = paymob.resolveStatus(transaction);
+
+        if (status === 'completed') {
+          api.logger.info(`[paymob] Payment return success for order ${orderId}`);
+          return json({ success: true, message: 'Payment completed successfully', orderId, status });
+        }
+
+        return json({ success: false, message: 'Payment was not completed', orderId, status });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        api.logger.error(`[paymob] return inquiry failed: ${msg}`);
+        return json({ success: false, message: 'Payment verification failed', orderId, details: msg });
+      }
+    },
+  });
+
+  api.registerRoute('/api/p/paymob/refund', {
+    POST: async (req: Request) => {
+      const session = await api.auth.getSession();
+      if (!session) return json({ error: 'Unauthorized' }, 401);
+      if (!['manager', 'owner', 'admin'].includes(session.user.role)) {
+        return json({ error: 'Forbidden' }, 403);
+      }
+
+      try {
+        const body = await req.json();
+        const { transactionId, amountCents } = body;
+
+        if (!transactionId || !amountCents) {
+          return json({ error: 'transactionId and amountCents are required' }, 400);
+        }
+
+        const token = await paymob.getAuthToken();
+        const result = await paymob.refundTransaction(token, transactionId, amountCents);
+
+        await api.db.execute(
+          `UPDATE plugin_paymob_transactions SET status = 'refunded', updated_at = ? WHERE order_id = ?`,
+          [new Date().toISOString(), transactionId.toString()]
+        );
+
+        api.logger.info(`[paymob] Refund processed for transaction ${transactionId}`);
+        return json({ success: true, refund: result });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        api.logger.error(`[paymob] refund failed: ${msg}`);
+        return json({ error: 'Refund failed', details: msg }, 500);
+      }
     },
   });
 }

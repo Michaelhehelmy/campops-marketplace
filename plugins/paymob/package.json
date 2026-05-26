@@ -10,6 +10,7 @@
     "sinaicampsVersion": ">=2.0.0",
     "capabilities": [
       "payment",
+      "auth",
       "network",
       "database",
       "routes",
