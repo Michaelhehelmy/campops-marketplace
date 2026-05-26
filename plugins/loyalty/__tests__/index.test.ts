@@ -148,7 +148,7 @@ describe('Loyalty Plugin', () => {
     expect(api.db.queryOne).not.toHaveBeenCalled();
   });
 
-  it('handles notification.send hook', async () => {
+  it('handles notification:send hook', async () => {
     const api = createMockPluginAPI();
     await init(api as any);
 
@@ -165,7 +165,7 @@ describe('Loyalty Plugin', () => {
     const result = await handler(testData);
     expect(result).toEqual(testData);
     expect(api.logger.info).toHaveBeenCalledWith(
-      expect.stringContaining('notification.send type=welcome guest=guest-1 channel=sms')
+      expect.stringContaining('notification:send type=welcome guest=guest-1 channel=sms')
     );
   });
 });

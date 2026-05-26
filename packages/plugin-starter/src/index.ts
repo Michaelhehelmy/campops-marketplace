@@ -4,16 +4,16 @@ export default async function init(api: PluginAPI): Promise<void> {
   api.logger.info('[my-plugin] Initialising…');
 
   api.registerHook(
-    'payment.on_success',
+    'payment:success',
     async (data) => {
-      api.logger.info(`[my-plugin] payment.on_success: guest=${data.guestId}`);
+      api.logger.info(`[my-plugin] payment:success: guest=${data.guestId}`);
       return data;
     },
     50
   );
 
   api.registerHook(
-    'pricing.calculate',
+    'pricing:calculate',
     async (data) => {
       if (data.price > 100) {
         return { ...data, price: data.price - 5 };

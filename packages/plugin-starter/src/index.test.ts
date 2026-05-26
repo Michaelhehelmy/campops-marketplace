@@ -18,8 +18,8 @@ describe('my-plugin init', () => {
     const registeredNames = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.map(
       (c: any[]) => c[0]
     );
-    expect(registeredNames).toContain('payment.on_success');
-    expect(registeredNames).toContain('pricing.calculate');
+    expect(registeredNames).toContain('payment:success');
+    expect(registeredNames).toContain('pricing:calculate');
   });
 
   it('adds a menu item', async () => {
@@ -32,7 +32,7 @@ describe('my-plugin init', () => {
   it('pricing hook applies early-bird discount for price > 100', async () => {
     await init(api);
     const pricingCall = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.find(
-      (c: any[]) => c[0] === 'pricing.calculate'
+      (c: any[]) => c[0] === 'pricing:calculate'
     );
     const handler = pricingCall?.[1];
     expect(handler).toBeDefined();
@@ -44,7 +44,7 @@ describe('my-plugin init', () => {
   it('pricing hook does NOT discount for price <= 100', async () => {
     await init(api);
     const pricingCall = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.find(
-      (c: any[]) => c[0] === 'pricing.calculate'
+      (c: any[]) => c[0] === 'pricing:calculate'
     );
     const handler = pricingCall?.[1];
     const result = await handler({ price: 80, guestId: 'guest-2' });

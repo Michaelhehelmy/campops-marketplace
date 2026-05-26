@@ -17,12 +17,12 @@ describe('iCal Sync Plugin', () => {
 
     expect(mockApi.registerHook).toHaveBeenCalledTimes(3);
     expect(mockApi.registerHook).toHaveBeenCalledWith(
-      'reservations.after_create',
+      'reservation:after_create',
       expect.any(Function),
       10
     );
     expect(mockApi.registerHook).toHaveBeenCalledWith(
-      'reservations.after_cancel',
+      'reservation:after_cancel',
       expect.any(Function),
       10
     );
@@ -39,14 +39,14 @@ describe('iCal Sync Plugin', () => {
     });
   });
 
-  it('publishes reservation:created event when reservations.after_create hook is called', async () => {
+  it('publishes reservation:created event when reservation:after_create hook is called', async () => {
     let createHandler: any;
     const mockApi = {
       logger: { info: vi.fn(), debug: vi.fn(), error: vi.fn() },
       ui: { addDashboardWidget: vi.fn() },
       publish: vi.fn(),
       registerHook: (name: string, handler: any) => {
-        if (name === 'reservations.after_create') createHandler = handler;
+        if (name === 'reservation:after_create') createHandler = handler;
       },
     };
 
@@ -72,14 +72,14 @@ describe('iCal Sync Plugin', () => {
     });
   });
 
-  it('publishes reservation:cancelled event when reservations.after_cancel hook is called', async () => {
+  it('publishes reservation:cancelled event when reservation:after_cancel hook is called', async () => {
     let cancelHandler: any;
     const mockApi = {
       logger: { info: vi.fn(), debug: vi.fn(), error: vi.fn() },
       ui: { addDashboardWidget: vi.fn() },
       publish: vi.fn(),
       registerHook: (name: string, handler: any) => {
-        if (name === 'reservations.after_cancel') cancelHandler = handler;
+        if (name === 'reservation:after_cancel') cancelHandler = handler;
       },
     };
 

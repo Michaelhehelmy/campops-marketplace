@@ -75,7 +75,7 @@ describe('guest-crm plugin init', () => {
       expect.anything()
     );
     expect(api.hooks.register).toHaveBeenCalledWith(
-      'reservations.after_create',
+      'reservation:after_create',
       expect.any(Function)
     );
   });
@@ -103,11 +103,11 @@ describe('housekeeping plugin init', () => {
     );
   });
 
-  it('registers reservations.after_checkout hook', async () => {
+  it('registers reservation:after_checkout hook', async () => {
     const api = buildMockApi();
     await housekeepingInit(api as any);
     expect(api.hooks.register).toHaveBeenCalledWith(
-      'reservations.after_checkout',
+      'reservation:after_checkout',
       expect.any(Function)
     );
   });

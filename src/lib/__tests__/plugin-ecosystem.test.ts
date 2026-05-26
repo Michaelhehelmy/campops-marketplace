@@ -479,7 +479,7 @@ describe('Marketplace Plugin Ecosystem', () => {
           `
         SELECT * FROM plugin_analytics 
         WHERE plugin_name = $1 AND property_id = $2
-        ORDER BY created_at
+        ORDER BY rowid
       `
         )
         .all(pluginName, propertyId);

@@ -42,6 +42,12 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
   logger.info(`SQLite journal_mode: ${JSON.stringify(journalMode)}`);
   getSqlite().pragma('busy_timeout = 10000');
   getSqlite().pragma('synchronous = NORMAL');
+  getSqlite().pragma('wal_autocheckpoint = 1000');
+  getSqlite().pragma('cache_size = -65536');
+  getSqlite().pragma('temp_store = MEMORY');
+  getSqlite().pragma('mmap_size = 268435456');
+  getSqlite().pragma('foreign_keys = ON');
+  getSqlite().pragma('optimize');
   drizzle = drizzleSqlite(getSqlite(), { schema });
   if (dbFile !== ':memory:') {
     runMigrations(getSqlite());

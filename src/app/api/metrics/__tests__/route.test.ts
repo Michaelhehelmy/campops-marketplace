@@ -1,31 +1,36 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { GET } from '../route';
-import { incrementCounter, resetMetrics } from '@/lib/metrics';
+import { httpRequestsTotal, registry, resetMetrics } from '@/lib/metrics';
 
 describe('GET /api/metrics', () => {
   beforeEach(() => {
     resetMetrics();
   });
 
-  it('should return metrics object with counter data', async () => {
-    incrementCounter('requests_total');
-    incrementCounter('bookings_created');
-    incrementCounter('auth_failures');
+  it('should return metrics in prometheus text format', async () => {
+    httpRequestsTotal.inc({ method: 'GET', status: '200', path: '/api/test' });
 
-    const res = await GET();
+    const req = new Request('http://localhost:3000/api/metrics');
+    const res = await GET(req as any);
     expect(res.status).toBe(200);
-    const data = await res.json();
+    const text = await res.text();
 
-    expect(data).toHaveProperty('counter_requests_total');
-    expect(data.counter_requests_total).toBeGreaterThanOrEqual(1);
-    expect(data.counter_bookings_created).toBeGreaterThanOrEqual(1);
-    expect(data.counter_auth_failures).toBeGreaterThanOrEqual(1);
+    expect(text).toContain('sinaicamps_http_requests_total');
   });
 
-  it('should return 200 with counters even when no metrics were recorded', async () => {
-    const res = await GET();
+  it('should return 200 with metrics even when none were recorded', async () => {
+    const req = new Request('http://localhost:3000/api/metrics');
+    const res = await GET(req as any);
     expect(res.status).toBe(200);
-    const data = await res.json();
-    expect(typeof data).toBe('object');
+    const text = await res.text();
+    expect(typeof text).toBe('string');
+  });
+
+  it('should reject unauthorized requests when METRICS_TOKEN is set', async () => {
+    process.env.METRICS_TOKEN = 'secret';
+    const req = new Request('http://localhost:3000/api/metrics');
+    const res = await GET(req as any);
+    expect(res.status).toBe(401);
+    delete process.env.METRICS_TOKEN;
   });
 });

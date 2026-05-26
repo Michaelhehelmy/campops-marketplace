@@ -30,7 +30,9 @@ export async function GET(req: NextRequest) {
         req.cookies.get('sinaicamps_token')?.value ||
         req.cookies.get('__Secure-better-auth.session_token')?.value ||
         req.cookies.get('better-auth.session_token')?.value;
-      const roleCookie = req.cookies.get('sinaicamps_role')?.value;
+      const { verifySignedValue } = await import('@/lib/cookie-signing');
+      const rawRoleCookie = req.cookies.get('sinaicamps_role')?.value;
+      const roleCookie = rawRoleCookie ? verifySignedValue(rawRoleCookie) : undefined;
 
       if (roleCookie === 'manager' || (token && token.includes('manager'))) {
         userId = 'manager-user-1';

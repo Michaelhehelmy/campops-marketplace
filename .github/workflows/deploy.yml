@@ -30,6 +30,15 @@ jobs:
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" plugins/ ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/plugins/
           scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no .env.production nginx-unified.conf scripts/boot.sh scripts/deploy-prod.sh ecosystem.config.js ubuntu@${{ secrets.ORACLE_IP }}:~/marketplace/
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.ORACLE_IP }} "cd ~/marketplace && bash scripts/deploy-prod.sh && bash scripts/backup-s3.sh"
+      - name: Post-deploy health check
+        run: |
+          for i in {1..15}; do
+            HTTP=$(curl -s -o /dev/null -w "%{http_code}" https://sinaicamps.com/api/health)
+            [ "$HTTP" = "200" ] && echo "✅ Health check passed" && exit 0
+            echo "Attempt $i: HTTP $HTTP, retrying..."
+            sleep 5
+          done
+          echo "❌ Health check failed" && exit 1
 
   deploy-cloudflare:
     if: startsWith(github.ref, 'refs/heads/tenant/')

@@ -63,6 +63,19 @@ else
   if command -v sqlite3 >/dev/null 2>&1; then
     sqlite3 "$DB_FILE" ".backup '$BACKUP_FILE'"
     echo "SQLite backup successfully completed: $BACKUP_FILE"
+
+    # Verify backup integrity
+    echo "Verifying backup integrity..."
+    INTEGRITY=$(sqlite3 "$BACKUP_FILE" "PRAGMA integrity_check" 2>&1)
+    if [ "$INTEGRITY" != "ok" ]; then
+      echo "❌ BACKUP INTEGRITY CHECK FAILED: $INTEGRITY" >&2
+      if [ -n "${ALERT_EMAIL:-}" ]; then
+        echo "SinaiCamps backup integrity check FAILED on $(hostname) at $(date)" | \
+          mail -s "🚨 BACKUP FAILURE: sinaicamps.db" "$ALERT_EMAIL" 2>/dev/null || true
+      fi
+      exit 1
+    fi
+    echo "✅ Backup integrity check passed"
   else
     # Fallback copy if sqlite3 CLI is not installed
     cp "$DB_FILE" "$BACKUP_FILE"
@@ -70,7 +83,7 @@ else
   fi
 fi
 
-# Clean up older backups (keep last 10)
-echo "Cleaning up old backups (keeping top 10)..."
-ls -tp "$BACKUPS_DIR"/backup-* 2>/dev/null | tail -n +11 | xargs -I {} rm -- {} || true
+# Clean up older backups (keep last 30)
+echo "Cleaning up old backups (keeping top 30)..."
+ls -tp "$BACKUPS_DIR"/backup-* 2>/dev/null | tail -n +31 | xargs -I {} rm -- {} || true
 echo "Backup routine finished."

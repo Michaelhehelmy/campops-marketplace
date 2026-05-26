@@ -22,10 +22,10 @@ export default async function init(api) {
   // Fires after every successful payment. Return the (possibly modified) data
   // object to pass it down the hook chain.
   api.registerHook(
-    'payment.on_success',
+    'payment:success',
     async (data) => {
       api.logger.info(
-        `[${PLUGIN_ID}] payment.on_success: guest=${data.guestId} amount=${data.amountUsd}`
+        `[${PLUGIN_ID}] payment:success: guest=${data.guestId} amount=${data.amountUsd}`
       );
       // TODO: your logic here (e.g. send webhook, award custom points, …)
       return data;
@@ -37,7 +37,7 @@ export default async function init(api) {
   //
   // Fires during booking price calculation. You can adjust data.price.
   api.registerHook(
-    'pricing.calculate',
+    'pricing:calculate',
     async (data) => {
       // Example: apply a flat $5 early-bird discount when price > $100
       if (data.price > 100) {

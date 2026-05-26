@@ -1,9 +1,16 @@
 {
-  "name": "owner",
+  "id": "owner",
+  "name": "Property Owner",
   "version": "1.0.0",
-  "description": "Property owner portal and management dashboard",
+  "description": "Enables property owner registration, profile management, and plan upgrades.",
+  "author": "SinaiCamps Core",
+  "apiVersion": "^2.0.0",
+  "campopsVersion": "^1.0.0",
   "entry": "src/index.ts",
-  "capabilities": ["api", "auth", "ui"],
-  "hooks": [],
-  "slots": []
+  "planRequirement": "basic",
+  "reviewStatus": "approved",
+  "slots": {
+    "owner.dashboard": ["owner:OwnerDashboard"],
+    "marketplace.nav": ["owner:OwnerNav"]
+  }
 }

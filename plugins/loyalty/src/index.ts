@@ -5,10 +5,10 @@
  * the SinaiCamps plugin system.
  *
  * Hooks registered:
- *   payment.on_success  (priority 20) — award points proportional to payment amount
- *   pricing.calculate   (priority 30) — apply points discount if ctx.redeemPoints set
- *   guest.checked_out   (priority 10) — trigger tier check + schedule review request
- *   notification.send   (priority 50) — log notification (replace with email adapter)
+ *   payment:success     (priority 20) — award points proportional to payment amount
+ *   pricing:calculate   (priority 30) — apply points discount if ctx.redeemPoints set
+ *   CHECKOUT_COMPLETED  (priority 10) — trigger tier check + schedule review request
+ *   notification:send   (priority 50) — log notification (replace with email adapter)
  *
  * Requires crm_marketing feature flag.
  * Registered in plugin-manifest.json as "loyalty".
@@ -47,7 +47,7 @@ export default async function init(api: PluginAPI): Promise<void> {
   await api.db.execute('CREATE INDEX IF NOT EXISTS idx_loyalty_pt_guest ON plugin_loyalty_point_transactions(guest_id)');
   await api.db.execute('CREATE INDEX IF NOT EXISTS idx_loyalty_er_currency ON plugin_loyalty_exchange_rates(currency_code)');
 
-  // ── payment.on_success → award points ──────────────────────────────────────
+  // ── payment:success → award points ────────────────────────────────────────
   api.registerHook(
     Hooks.PAYMENT_ON_SUCCESS,
     async (data: {
@@ -84,7 +84,7 @@ export default async function init(api: PluginAPI): Promise<void> {
           api.logger.info(`[loyalty] Awarded ${points} points to guest ${data.guestId}`);
         }
       } catch (err: any) {
-        api.logger.info(`[loyalty] payment.on_success error: ${err.message}`);
+        api.logger.info(`[loyalty] payment:success error: ${err.message}`);
       }
 
       return data;
@@ -92,7 +92,7 @@ export default async function init(api: PluginAPI): Promise<void> {
     20
   );
 
-  // ── pricing.calculate → apply points redemption discount ──────────────────
+  // ── pricing:calculate → apply points redemption discount ──────────────────
   api.registerHook(
     Hooks.PRICING_CALCULATE,
     async (data: { price: number; guestId?: string; redeemPoints?: number }) => {
@@ -126,7 +126,7 @@ export default async function init(api: PluginAPI): Promise<void> {
 
         return { ...data, price: newPrice, pointsRedeemed: toRedeem };
       } catch (err: any) {
-        api.logger.info(`[loyalty] pricing.calculate error: ${err.message}`);
+        api.logger.info(`[loyalty] pricing:calculate error: ${err.message}`);
         return data;
       }
     },
@@ -165,7 +165,7 @@ export default async function init(api: PluginAPI): Promise<void> {
     10
   );
 
-  // ── guest.checked_out → tier check + schedule review request ──────────────
+  // ── CHECKOUT_COMPLETED → tier check + schedule review request ──────────────
   api.registerHook(
     Hooks.GUEST_CHECKED_OUT,
     async (data: {
@@ -215,10 +215,10 @@ export default async function init(api: PluginAPI): Promise<void> {
         });
 
         api.logger.info(
-          `[loyalty] guest.checked_out processed for ${data.guestId}; review request scheduled at ${reviewAt}`
+          `[loyalty] CHECKOUT_COMPLETED processed for ${data.guestId}; review request scheduled at ${reviewAt}`
         );
       } catch (err: any) {
-        api.logger.info(`[loyalty] guest.checked_out error: ${err.message}`);
+        api.logger.info(`[loyalty] CHECKOUT_COMPLETED error: ${err.message}`);
       }
 
       return data;
@@ -226,7 +226,7 @@ export default async function init(api: PluginAPI): Promise<void> {
     10
   );
 
-  // ── notification.send → log handler (replace with email adapter in prod) ──
+  // ── notification:send → log handler (replace with email adapter in prod) ──
   api.registerHook(
     Hooks.NOTIFICATION_SEND,
     async (data: {
@@ -237,7 +237,7 @@ export default async function init(api: PluginAPI): Promise<void> {
       [key: string]: any;
     }) => {
       api.logger.info(
-        `[loyalty] notification.send type=${data.type} guest=${data.guestId} ` +
+        `[loyalty] notification:send type=${data.type} guest=${data.guestId} ` +
           `channel=${data.channel ?? 'email'} scheduledAt=${data.scheduledAt ?? 'immediate'}`
       );
       return data;

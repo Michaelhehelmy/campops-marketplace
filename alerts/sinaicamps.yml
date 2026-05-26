@@ -1,0 +1,61 @@
+groups:
+  - name: sinaicamps_platform
+    rules:
+      - alert: AppDown
+        expr: up{job="sinaicamps"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SinaiCamps application is down"
+          description: "The application has been unreachable for 1 minute."
+
+      - alert: HighErrorRate
+        expr: |
+          rate(sinaicamps_http_requests_total{status=~"5.."}[5m])
+          / rate(sinaicamps_http_requests_total[5m]) > 0.02
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate above 2%"
+          description: "HTTP 5xx error rate is {{ $value | humanizePercentage }} over last 5m."
+
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(sinaicamps_http_duration_ms_bucket[5m])
+          ) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 latency above 1000ms"
+          description: "95th percentile response time is {{ $value }}ms."
+
+      - alert: HighRateLimitHits
+        expr: rate(sinaicamps_rate_limit_hits_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High rate limit activity"
+          description: "Rate limiter is blocking {{ $value }} req/s — possible DDoS."
+
+      - alert: HighAuthFailures
+        expr: rate(sinaicamps_auth_failures_total[5m]) > 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Auth failures at {{ $value }} per second — possible brute force."
+
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes{job="sinaicamps"} > 838860800
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage (>800MB)"
+          description: "App memory is {{ $value | humanize }} — PM2 restart threshold near."

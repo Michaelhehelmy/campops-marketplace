@@ -105,7 +105,7 @@ export default async function init(api: PluginAPI) {
     },
   });
 
-  api.hooks.register('reservations.after_create', async (data: any) => {
+  api.hooks.register('reservation:after_create', async (data: any) => {
     api.logger.info(`Updating guest profile for reservation: ${data.id}`);
     return data;
   });

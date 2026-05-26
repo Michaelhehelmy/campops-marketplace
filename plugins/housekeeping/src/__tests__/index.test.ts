@@ -52,7 +52,7 @@ describe('housekeeping plugin: init()', () => {
 
   it('registers the after_checkout hook', () => {
     expect(api.hooks.register).toHaveBeenCalledWith(
-      'reservations.after_checkout',
+      'reservation:after_checkout',
       expect.any(Function)
     );
   });

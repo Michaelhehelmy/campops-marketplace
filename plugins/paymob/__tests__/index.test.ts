@@ -41,14 +41,14 @@ describe('paymob plugin', () => {
     expect(api.db.createTable).not.toHaveBeenCalled();
   });
 
-  it('registers payment.collect_methods hook', async () => {
+  it('registers payment:collect_methods hook', async () => {
     await init(api);
-    expect(api.registerHook).toHaveBeenCalledWith('payment.collect_methods', expect.any(Function));
+    expect(api.registerHook).toHaveBeenCalledWith('payment:collect_methods', expect.any(Function));
   });
 
-  it('registers payment.on_success hook', async () => {
+  it('registers payment:success hook', async () => {
     await init(api);
-    expect(api.registerHook).toHaveBeenCalledWith('payment.on_success', expect.any(Function));
+    expect(api.registerHook).toHaveBeenCalledWith('payment:success', expect.any(Function));
   });
 
   it('registers three API routes', async () => {
@@ -60,10 +60,10 @@ describe('paymob plugin', () => {
     expect(paths).toContain('/api/p/paymob/return');
   });
 
-  it('payment.collect_methods hook adds paymob to methods', async () => {
+  it('payment:collect_methods hook adds paymob to methods', async () => {
     await init(api);
     const hookCall = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.find(
-      (c: any[]) => c[0] === 'payment.collect_methods'
+      (c: any[]) => c[0] === 'payment:collect_methods'
     );
     expect(hookCall).toBeDefined();
     const handler = hookCall![1];
@@ -72,10 +72,10 @@ describe('paymob plugin', () => {
     expect(result.methods[1]).toMatchObject({ id: 'paymob', name: 'Paymob' });
   });
 
-  it('payment.on_success hook logs for paymob gateway', async () => {
+  it('payment:success hook logs for paymob gateway', async () => {
     await init(api);
     const hookCall = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.find(
-      (c: any[]) => c[0] === 'payment.on_success'
+      (c: any[]) => c[0] === 'payment:success'
     );
     expect(hookCall).toBeDefined();
     const handler = hookCall![1];
@@ -83,10 +83,10 @@ describe('paymob plugin', () => {
     expect(result).toEqual({ gateway: 'paymob', bookingId: 'b-1' });
   });
 
-  it('payment.on_success hook passes through non-paymob data unchanged', async () => {
+  it('payment:success hook passes through non-paymob data unchanged', async () => {
     await init(api);
     const hookCall = (api.registerHook as ReturnType<typeof vi.fn>).mock.calls.find(
-      (c: any[]) => c[0] === 'payment.on_success'
+      (c: any[]) => c[0] === 'payment:success'
     );
     expect(hookCall).toBeDefined();
     const handler = hookCall![1];

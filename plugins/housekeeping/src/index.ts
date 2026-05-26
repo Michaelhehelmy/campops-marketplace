@@ -24,7 +24,7 @@ export default async function init(api: PluginAPI) {
 
   api.registerRoute('/api/p/housekeeping', housekeepingRouter(api));
 
-  api.hooks.register('reservations.after_checkout', async (data: any) => {
+  api.hooks.register('reservation:after_checkout', async (data: any) => {
     api.logger.info(`Creating cleaning task for room: ${data.room_id}`);
     const id = crypto.randomUUID();
     await api.db.query(

@@ -3,7 +3,8 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { locales } from '@/i18n/request';
 import { logger, runWithRequestId, getRequestId } from '@/lib/logger';
 import { apiRateLimiter } from '@/lib/rateLimit';
-import { incrementCounter, recordHistogram } from '@/lib/metrics';
+import { httpRequestsTotal, httpDurationMs, csrfBlockedTotal } from '@/lib/metrics';
+import { verifySignedValue } from '@/lib/cookie-signing';
 import { initErrorTracking, captureError } from '@/lib/error-tracking';
 
 const intlMiddleware = createMiddleware({
@@ -12,21 +13,41 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'always',
 });
 
-function withSecurityHeaders(res: Response | NextResponse): NextResponse {
+function withSecurityHeaders(res: Response | NextResponse, nonce?: string): NextResponse {
   const response = res as NextResponse;
   const isProd = process.env.NODE_ENV === 'production';
   const connectSrc = isProd
     ? 'https://*.sinaicamps.com'
     : 'https://*.sinaicamps.com http://localhost:3001 http://127.0.0.1:3001';
+
+  const scriptSrc = nonce
+    ? `'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://static.cloudflareinsights.com`
+    : `'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com`;
+
   response.headers.set(
     'Content-Security-Policy',
-    `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://static.cloudflareinsights.com ${connectSrc};`
+    [
+      `default-src 'self'`,
+      `script-src ${scriptSrc}`,
+      `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+      `img-src 'self' data: https:`,
+      `font-src 'self' data: https://fonts.gstatic.com`,
+      `frame-src 'self' https://challenges.cloudflare.com`,
+      `connect-src 'self' https://static.cloudflareinsights.com ${connectSrc}`,
+      `object-src 'none'`,
+      `base-uri 'self'`,
+      `form-action 'self'`,
+    ].join('; ')
   );
+
   response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+
   return response;
 }
 
@@ -61,6 +82,8 @@ async function handleMiddleware(req: NextRequest) {
       '/api/site/',
       '/api/public/',
       '/api/plugins/submit',
+      '/api/p/',
+      '/api/tenant/',
     ];
     if (RATE_LIMITED_PREFIXES.some((p) => pathname.startsWith(p))) {
       const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'anonymous';
@@ -201,7 +224,8 @@ async function handleMiddleware(req: NextRequest) {
     const pathParts = barePath.split('/');
     if (pathParts.length >= 3) {
       const listingSlug = pathParts[2];
-      const userRole = req.cookies.get('sinaicamps_role')?.value;
+      const rawRoleCookie = req.cookies.get('sinaicamps_role')?.value;
+      const userRole = rawRoleCookie ? verifySignedValue(rawRoleCookie) : undefined;
       // Staff restrictions on their own listing (done before external check)
       if (userRole === 'staff') {
         const restricted = ['/finance', '/settings', '/plugins'];
@@ -334,7 +358,8 @@ export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
     const method = req.method;
 
-    incrementCounter('requests_total');
+    const pathKey = pathname.split('/').slice(0, 3).join('/');
+    httpRequestsTotal.inc({ method, status: '', path: pathKey });
 
     initErrorTracking();
 
@@ -343,7 +368,7 @@ export async function middleware(req: NextRequest) {
     const isApi = pathname.startsWith('/api/');
 
     if (isApi && isMutating) {
-      incrementCounter('mutating_requests');
+      httpRequestsTotal.inc({ method: 'MUTATE', status: '', path: pathKey });
     }
     const isExcluded =
       pathname.startsWith('/api/auth/') ||
@@ -364,7 +389,7 @@ export async function middleware(req: NextRequest) {
         logger.warn(
           `[CSRF] Blocked mutating request to ${pathname}. Cookie: ${csrfCookie}, Header: ${csrfHeader}`
         );
-        incrementCounter('csrf_blocked');
+        csrfBlockedTotal.inc();
         return withSecurityHeaders(
           NextResponse.json({ error: 'CSRF token validation failed' }, { status: 403 })
         );
@@ -386,9 +411,11 @@ export async function middleware(req: NextRequest) {
     }
 
     const duration = Date.now() - startTime;
+    const statusCode = response.status;
+    httpRequestsTotal.inc({ method, status: String(statusCode), path: pathKey });
+    httpDurationMs.observe({ method, status: String(statusCode), path: pathKey }, duration);
     response.headers.set('x-request-id', requestId);
     response.headers.set('x-response-time', `${duration}ms`);
-    recordHistogram('response_time_ms', duration);
 
     return withSecurityHeaders(response);
   });

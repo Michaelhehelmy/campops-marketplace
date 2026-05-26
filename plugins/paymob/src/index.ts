@@ -26,7 +26,7 @@ export default async function init(api: PluginAPI): Promise<void> {
     api.logger.info('[paymob] Created plugin_paymob_transactions table');
   }
 
-  api.registerHook('payment.collect_methods', async (data: any) => {
+  api.registerHook('payment:collect_methods', async (data: any) => {
     const methods = Array.isArray(data.methods) ? data.methods : [];
     return {
       ...data,
@@ -34,7 +34,7 @@ export default async function init(api: PluginAPI): Promise<void> {
     };
   });
 
-  api.registerHook('payment.on_success', async (data: any) => {
+  api.registerHook('payment:success', async (data: any) => {
     if (data.gateway === 'paymob') {
       api.logger.info(`[paymob] Payment success for booking ${data.bookingId}`);
     }

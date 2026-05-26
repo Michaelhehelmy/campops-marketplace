@@ -10,6 +10,7 @@ import { PluginEngine } from 'plugin-engine';
 export const Hooks = {
   // ── Generic / framework hooks (use these in new plugins) ──────────────────
   PAYMENT_ON_SUCCESS: 'payment:success',
+  PAYMENT_COLLECT_METHODS: 'payment:collect_methods',
   PRICING_CALCULATE: 'pricing:calculate',
   NOTIFICATION_SEND: 'notification:send',
   /** Generic: any entity/user departure event (e.g. guest checkout, user logout). */
@@ -18,6 +19,20 @@ export const Hooks = {
   RESOURCE_PAGE_LOAD: 'resource:page_load',
   /** Generic: a new transaction/order/booking was created. */
   TRANSACTION_CREATED: 'transaction:created',
+  /** Generic: a reservation was created. */
+  RESERVATION_AFTER_CREATE: 'reservation:after_create',
+  /** Generic: a reservation was cancelled. */
+  RESERVATION_AFTER_CANCEL: 'reservation:after_cancel',
+  /** Generic: a folio charge was added. */
+  FOLIO_PRE_ADD_CHARGE: 'folio:pre_add_charge',
+  /** Generic: a POS order was completed. */
+  POS_ORDER_COMPLETED: 'pos:order_completed',
+  /** Generic: a guest was reviewed. */
+  GUEST_REVIEWED: 'guest:reviewed',
+  /** Generic: admin menu items filter. */
+  ADMIN_MENU_ITEMS: 'admin:menu_items',
+  /** Generic: public footer sections filter. */
+  PUBLIC_FOOTER_SECTIONS: 'public:footer_sections',
 
   // ── Core lifecycle actions (Phase 3) ──────────────────────────────────────
   /** Fired once per request after site is resolved. Payload: { siteId, plan }. */
