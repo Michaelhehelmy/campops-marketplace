@@ -102,6 +102,58 @@ describe('Tenant Resolve API', () => {
     expect(res.status).toBe(404);
     expect(data.error).toBe('Domain not yet verified');
   });
+
+  it('returns 400 when host param is missing', async () => {
+    const req = new NextRequest('http://localhost/api/tenant/resolve');
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toMatch(/host.*required/i);
+  });
+
+  it('returns 404 for basic plan on subdomain', async () => {
+    const ownerId = uuidv4();
+    const listingId = uuidv4();
+    const slug = `tenant-resolve-basic-${Date.now()}`;
+
+    await db.prepare('INSERT INTO users (id, email, password) VALUES (?, ?, ?)').run(ownerId, 'tenant-resolve-basic@test.com', 'password');
+    await db.prepare(
+      'INSERT INTO properties (id, owner_id, name, slug, plan, is_active, subdomain) VALUES (?, ?, ?, ?, \'basic\', true, ?)'
+    ).run(listingId, ownerId, 'Basic Plan Camp', slug, slug);
+
+    const req = new NextRequest(`http://localhost/api/tenant/resolve?host=${slug}.sinaicamps.localhost`);
+    const res = await GET(req);
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 403 for non-ultimate plan on custom domain', async () => {
+    const ownerId = uuidv4();
+    const listingId = uuidv4();
+    const slug = `tenant-resolve-premium-cd-${Date.now()}`;
+
+    await db.prepare('INSERT INTO users (id, email, password) VALUES (?, ?, ?)').run(ownerId, 'tenant-resolve-premium-cd@test.com', 'password');
+    await db.prepare(
+      'INSERT INTO properties (id, owner_id, name, slug, plan, is_active, custom_domain, domain_verified) VALUES (?, ?, ?, ?, \'premium\', true, ?, true)'
+    ).run(listingId, ownerId, 'Premium Custom Domain', slug, 'premium-custom.localhost');
+
+    const req = new NextRequest('http://localhost/api/tenant/resolve?host=premium-custom.localhost');
+    const res = await GET(req);
+    const data = await res.json();
+    expect(res.status).toBe(403);
+    expect(data.error).toMatch(/ultimate/i);
+  });
+
+  it('does NOT apply 127.0.0.1 bypass when NODE_ENV=production', async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    try {
+      const req = new NextRequest('http://localhost/api/tenant/resolve?host=127.0.0.1');
+      const res = await GET(req);
+      expect(res.status).toBe(404);
+    } finally {
+      process.env.NODE_ENV = originalEnv;
+    }
+  });
 });
 
 afterAll(() => {
