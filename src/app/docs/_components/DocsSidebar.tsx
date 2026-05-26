@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import type { DocMeta } from '@/lib/docs';
-import { getCategoryLabel } from '@/lib/docs';
+import { getCategoryLabel } from '@/lib/docs-utils';
 
 interface DocsSidebarProps {
   docs: DocMeta[];
