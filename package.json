@@ -44,7 +44,7 @@
     "lighthouse": "^13.3.0",
     "lucide-react": "^0.511.0",
     "lunr": "^2.3.9",
-    "mailgun.js": "^13.0.1",
+    "mailgun.js": "^13.1.0",
     "next": "14.2.29",
     "next-intl": "^3.26.3",
     "next-mdx-remote": "^6.0.0",
