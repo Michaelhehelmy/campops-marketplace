@@ -27,7 +27,7 @@ export default function GuestReservationDetailsPage() {
     const fetchReservation = async () => {
       if (!session?.user?.id) return;
       try {
-        const response = await fetch(`/api/guest/reservations/${id}?userId=${session.user.id}`);
+        const response = await fetch(`/api/guest/reservations/${id}`);
         if (response.ok) {
           const data = await response.json();
           setReservation(data);

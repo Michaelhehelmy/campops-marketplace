@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
   try {
     // 1. Resolve Tenant Domain
     // Local dev shortcut: 127.0.0.1 always resolves to Acacia Camp (ultimate tier demo)
-    if (hostname === '127.0.0.1') {
+    if (process.env.NODE_ENV !== 'production' && hostname === '127.0.0.1') {
       const localProperty = (await db
         .prepare(
           `SELECT id, slug, plan, custom_domain, domain_verified, settings FROM properties WHERE id = '3' AND is_active = true LIMIT 1`

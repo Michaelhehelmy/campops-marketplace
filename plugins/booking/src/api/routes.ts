@@ -425,13 +425,13 @@ export function registerRoutes(api: PluginAPI) {
   api.registerRoute('/api/guest/reservations/:id', {
     GET: async (req: Request) => {
       try {
+        const session = await api.auth.getSession(req);
+        if (!session) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        }
+
         const url = new URL(req.url);
         const reservationId = url.searchParams.get(':id') ?? url.pathname.split('/').pop();
-        const userId = url.searchParams.get('userId');
-
-        if (!userId) {
-          return new Response(JSON.stringify({ error: 'userId is required' }), { status: 400 });
-        }
 
         const reservation = await api.db.queryOne(
           `SELECT r.id, r.property_id, p.name AS property_name, p.slug AS property_slug,
@@ -440,7 +440,7 @@ export function registerRoutes(api: PluginAPI) {
           LEFT JOIN properties p ON r.property_id = p.id
           WHERE r.id = ? AND r.user_id = ?
           LIMIT 1`,
-          [reservationId, userId]
+          [reservationId, session.user.id]
         );
 
         if (!reservation) {

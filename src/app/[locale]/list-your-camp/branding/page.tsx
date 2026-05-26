@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Palette, Image, Type, Globe, Phone, MapPin } from 'lucide-react';
 import { toSlug } from '@/lib/slug';
@@ -35,6 +35,13 @@ const DEFAULT_COLORS = {
 export default function StepBrandingPage() {
   const router = useRouter();
   const { locale } = useParams();
+
+  useEffect(() => {
+    const step1 = sessionStorage.getItem('reg_step1');
+    if (!step1) {
+      router.replace(`/${locale}/list-your-camp`);
+    }
+  }, [locale, router]);
 
   const [activeTab, setActiveTab] = useState<'identity' | 'visual' | 'contact' | 'business'>(
     'identity'
@@ -77,6 +84,8 @@ export default function StepBrandingPage() {
   });
 
   const [slugEdited, setSlugEdited] = useState(false);
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [checkingSlug, setCheckingSlug] = useState(false);
 
   const handleNameChange = (v: string) => {
     setForm((f) => ({
@@ -96,8 +105,25 @@ export default function StepBrandingPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSlugError(null);
+    setCheckingSlug(true);
+    try {
+      const checkRes = await fetch(`/api/domains/check?domain=${encodeURIComponent(form.slug)}`);
+      const checkData = await checkRes.json();
+      if (!checkData.available) {
+        setSlugError('This slug is already taken. Please choose another.');
+        setCheckingSlug(false);
+        return;
+      }
+    } catch {
+      setSlugError('Could not verify slug availability. Please try again.');
+      setCheckingSlug(false);
+      return;
+    }
+    setCheckingSlug(false);
+
     // Save to session and go to plan selection
     sessionStorage.setItem(
       'reg_step2',
@@ -240,6 +266,9 @@ export default function StepBrandingPage() {
                   className="input rounded-l-none flex-1"
                 />
               </div>
+              {slugError && (
+                <p className="text-sm text-red-600 mt-1">{slugError}</p>
+              )}
             </div>
 
             <div>
@@ -650,8 +679,8 @@ export default function StepBrandingPage() {
               Next →
             </button>
           ) : (
-            <button type="submit" className="btn-primary flex-1">
-              Continue to plan →
+            <button type="submit" disabled={checkingSlug} className="btn-primary flex-1">
+              {checkingSlug ? 'Checking slug availability…' : 'Continue to plan →'}
             </button>
           )}
         </div>

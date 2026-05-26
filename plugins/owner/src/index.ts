@@ -87,6 +87,14 @@ export default async function init(api: PluginAPI) {
 
         const normalizedEmail = email.toLowerCase().trim();
 
+        const existingSlug = await api.db.queryOne(
+          'SELECT id FROM properties WHERE slug = ? OR subdomain = ? OR custom_domain = ? LIMIT 1',
+          [slug, slug, slug]
+        );
+        if (existingSlug) {
+          return json({ error: 'Slug or subdomain already taken', code: 'SLUG_TAKEN' }, 409);
+        }
+
         const result = await api.db.transaction(async (tx: any) => {
           const existing = await tx.queryOne('SELECT id FROM users WHERE email = ?', [
             normalizedEmail,
@@ -132,7 +140,7 @@ export default async function init(api: PluginAPI) {
               true,
               resolvedSubdomain,
               resolvedCustomDomain,
-              normalisedPlan === 'ultimate' ? true : resolvedSubdomain ? true : false,
+              0, // domain_verified — DNS propagation is async; verified out-of-band
               type || 'camp',
               city || '',
               country || '',
@@ -309,6 +317,12 @@ export default async function init(api: PluginAPI) {
         }
 
         const { siteId, newPlan, subdomain, customDomain } = parsed.data;
+
+        if (newPlan !== 'basic' && process.env.SKIP_PAYMENT_GATE !== 'true') {
+          if (!body.stripe_payment_method_id || body.stripe_payment_method_id === 'pm_placeholder') {
+            return json({ error: 'Payment method required to upgrade plan' }, 402);
+          }
+        }
 
         const property = (await api.db.queryOne(
           'SELECT id, owner_id, plan, subdomain, custom_domain FROM properties WHERE id = ?',

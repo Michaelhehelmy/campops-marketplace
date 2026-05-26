@@ -89,6 +89,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   } catch (err) {
     console.error('[Listing Access API] Error:', err);
-    return NextResponse.json({ ok: true }); // Fallback to allow if error
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

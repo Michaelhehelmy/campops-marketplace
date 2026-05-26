@@ -122,7 +122,7 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
              plan = ?,
              subdomain = CASE WHEN ? IS NOT NULL THEN ? ELSE subdomain END,
              custom_domain = CASE WHEN ? IS NOT NULL THEN ? ELSE custom_domain END,
-             domain_verified = 1
+             domain_verified = 0
          WHERE id = ?`
       )
       .run(
@@ -154,6 +154,8 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
       domain,
       plan: targetPlan,
       dnsRecordId: provisioningResult.dnsRecordId,
+      pending: true,
+      message: 'DNS record created. Domain verification may take 5–15 minutes to propagate.',
       warning: provisioningResult.error || undefined,
     });
   } catch (err: any) {

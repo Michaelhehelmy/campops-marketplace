@@ -3,6 +3,7 @@
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com';
 
@@ -19,6 +20,14 @@ export default function Step3PlanPage() {
   const router = useRouter();
   const { locale } = useParams();
   const [selected, setSelected] = useState<Plan['id']>('basic');
+
+  useEffect(() => {
+    const step1 = sessionStorage.getItem('reg_step1');
+    const step2 = sessionStorage.getItem('reg_step2');
+    if (!step1 || !step2) {
+      router.replace(`/${locale}/list-your-camp`);
+    }
+  }, [locale, router]);
   const [customDomain, setCustomDomain] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -125,14 +134,14 @@ export default function Step3PlanPage() {
             return;
           }
 
-          await fetch('/api/auth/callback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: data.token }),
+          await authClient.signIn.email({
+            email: step1.email,
+            password: step1.password,
           });
 
           sessionStorage.removeItem('reg_step1');
           sessionStorage.removeItem('reg_step2');
+          sessionStorage.removeItem('reg_branding');
 
           router.push(`/${locale}/list-your-camp/success?plan=${selected}&slug=${step2.slug}`);
         } catch {

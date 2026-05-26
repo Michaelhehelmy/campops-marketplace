@@ -18,6 +18,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'siteId and newPlan are required' }, { status: 400 });
     }
 
+    if (newPlan !== 'basic' && process.env.SKIP_PAYMENT_GATE !== 'true') {
+      if (!body.stripe_payment_method_id || body.stripe_payment_method_id === 'pm_placeholder') {
+        return NextResponse.json({ error: 'Payment method required to upgrade plan' }, { status: 402 });
+      }
+    }
+
     if (!VALID_PLANS.includes(newPlan)) {
       return NextResponse.json({ error: `Invalid plan: ${newPlan}` }, { status: 400 });
     }

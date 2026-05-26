@@ -10,6 +10,14 @@ interface TenantData {
   plan: string;
 }
 
+function tenantHref(locale: string, tenant: TenantData, path: string) {
+  return `/${locale}/${tenant.slug}${path}`;
+}
+
+function bookingHref(locale: string, tenant: TenantData) {
+  return `/${locale}/book/${tenant.id}`;
+}
+
 interface Props {
   tenant: TenantData;
   locale: string;
@@ -41,14 +49,14 @@ export function TenantHomePage({ tenant, locale }: Props) {
           )}
           <div className="mt-8 flex gap-4 justify-center">
             <a
-              href={`/${locale}/book`}
+              href={bookingHref(locale, tenant)}
               className="px-8 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--tenant-primary)' }}
             >
               Book Now
             </a>
             <a
-              href={`/${locale}/contact`}
+              href={tenantHref(locale, tenant, '/contact')}
               className="px-8 py-3 rounded-xl font-bold text-zinc-300 border border-zinc-700 hover:border-zinc-500 transition-all"
             >
               Contact Us
@@ -66,11 +74,11 @@ export function TenantHomePage({ tenant, locale }: Props) {
               {tenant.description || 'Discover the beauty of Sinai with us.'}
             </p>
             <a
-              href={`/${locale}/about`}
+              href={tenantHref(locale, tenant, '/about')}
               className="inline-flex items-center gap-2 font-bold text-white hover:opacity-80 transition-opacity"
               style={{ color: 'var(--tenant-secondary)' }}
             >
-              Learn more &rarr;
+              Learn more →
             </a>
           </div>
           <div className="h-80 rounded-2xl bg-zinc-800/50 flex items-center justify-center text-zinc-600">
@@ -105,11 +113,11 @@ export function TenantHomePage({ tenant, locale }: Props) {
           </div>
           <div className="text-center mt-8">
             <a
-              href={`/${locale}/rooms`}
+              href={tenantHref(locale, tenant, '/rooms')}
               className="inline-flex items-center gap-2 font-bold hover:opacity-80 transition-opacity"
               style={{ color: 'var(--tenant-secondary)' }}
             >
-              View all rooms &rarr;
+              View all rooms →
             </a>
           </div>
         </div>
@@ -127,7 +135,7 @@ export function TenantHomePage({ tenant, locale }: Props) {
           </p>
           <div className="text-center">
             <a
-              href={`/${locale}/contact`}
+              href={tenantHref(locale, tenant, '/contact')}
               className="inline-block px-8 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--tenant-primary)' }}
             >

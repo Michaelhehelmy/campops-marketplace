@@ -21,14 +21,18 @@ export default function SuccessPage() {
         if (data.platformName) setPlatformName(data.platformName);
       })
       .catch(() => {});
+
+    sessionStorage.removeItem('reg_step1');
+    sessionStorage.removeItem('reg_step2');
+    sessionStorage.removeItem('reg_branding');
   }, []);
 
-  const isPremium = plan === 'subdomain' || plan === 'custom_domain';
+  const isPremium = plan === 'premium' || plan === 'ultimate';
   const dashboardUrl =
-    plan === 'subdomain'
+    plan === 'premium' && slug
       ? `https://${slug}.${BASE_DOMAIN}/admin/dashboard`
-      : plan === 'custom_domain'
-        ? `/admin/dashboard`
+      : plan === 'ultimate'
+        ? `/${locale}/manage/${slug || ''}`
         : `/${locale}/owner/dashboard`;
 
   return (
@@ -47,7 +51,7 @@ export default function SuccessPage() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 text-left max-w-sm mx-auto">
         <h2 className="font-semibold text-gray-900 mb-4">What's next</h2>
         <ul className="space-y-3 text-sm text-gray-600">
-          {plan === 'subdomain' && (
+          {plan === 'premium' && (
             <li className="flex items-start gap-2">
               <Globe className="w-4 h-4 text-brand-500 mt-0.5 shrink-0" />
               Your subdomain:{' '}
@@ -56,7 +60,7 @@ export default function SuccessPage() {
               </strong>
             </li>
           )}
-          {plan === 'custom_domain' && (
+          {plan === 'ultimate' && (
             <li className="flex items-start gap-2">
               <Globe className="w-4 h-4 text-brand-500 mt-0.5 shrink-0" />
               Point your domain's CNAME to{' '}

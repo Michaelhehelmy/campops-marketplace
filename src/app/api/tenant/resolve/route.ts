@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   const hostname = host.split(':')[0].replace(/^www\./, '');
 
-  if (hostname === '127.0.0.1') {
+  if (process.env.NODE_ENV !== 'production' && hostname === '127.0.0.1') {
     return NextResponse.json({
       property: { id: '3', name: 'Acacia Camp', slug: 'acacia', plan: 'ultimate' },
     });
@@ -84,13 +84,18 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Custom domain match: Basic/Standard plan tenants cannot use custom domains
+    // Only ultimate plan tenants can use custom domains
     if (
       resolvedProperty &&
-      resolvedProperty.plan === 'basic' &&
-      !hostname.endsWith(`.${BASE_DOMAIN}`)
+      !hostname.endsWith(`.${BASE_DOMAIN}`) &&
+      hostname !== 'localhost' &&
+      hostname !== '127.0.0.1' &&
+      resolvedProperty.plan !== 'ultimate'
     ) {
-      return NextResponse.json({ property: null }, { status: 404 });
+      return NextResponse.json(
+        { property: null, error: 'Custom domain requires ultimate plan' },
+        { status: 403 }
+      );
     }
 
     if (!resolvedProperty) {

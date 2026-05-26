@@ -1,6 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { TenantHomePage } from '@/components/tenant/TenantHomePage';
 import { TenantAboutPage } from '@/components/tenant/TenantAboutPage';
@@ -64,10 +65,34 @@ const PAGE_ROUTES: Record<string, React.ComponentType<{ tenant: TenantData; loca
   contact: TenantContactPage,
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const tenant = resolveTenantBySlug(params.tenantSlug);
+  if (!tenant) return {};
+
+  const pageSlug = params.slug?.[0] ?? '';
+  const pageTitle = pageSlug
+    ? `${pageSlug.charAt(0).toUpperCase() + pageSlug.slice(1)} — ${tenant.name}`
+    : tenant.name;
+
+  return {
+    title: pageTitle,
+    description: tenant.description ?? `${tenant.name} — ${tenant.city}, ${tenant.country}`,
+    openGraph: {
+      title: pageTitle,
+      description: tenant.description ?? undefined,
+      siteName: tenant.name,
+    },
+  };
+}
+
 export default async function TenantPage({ params, searchParams }: Props & { searchParams: any }) {
   const { locale, tenantSlug, slug } = params;
   const tenant = resolveTenantBySlug(tenantSlug);
   if (!tenant) notFound();
+
+  if (tenant.plan === 'basic') {
+    redirect(`/${locale}/stay/${tenant.slug}`);
+  }
 
   const t = await getTranslations('tenant');
 

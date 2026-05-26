@@ -1,4 +1,5 @@
 interface TenantData {
+  id: string;
   name: string;
   branding: any;
 }
@@ -8,7 +9,11 @@ interface Props {
   locale: string;
 }
 
-export function TenantRoomsPage({ tenant }: Props) {
+function bookingHref(locale: string, tenant: TenantData) {
+  return `/${locale}/book/${tenant.id}`;
+}
+
+export function TenantRoomsPage({ tenant, locale }: Props) {
   return (
     <main className="min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4">
@@ -26,7 +31,7 @@ export function TenantRoomsPage({ tenant }: Props) {
                 <h3 className="text-lg font-bold text-white mb-2">Room Type {i}</h3>
                 <p className="text-sm text-zinc-500 mb-4">Details coming soon.</p>
                 <a
-                  href="/book"
+                  href={`/${locale}/book/${tenant.id}`}
                   className="inline-block px-6 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
                   style={{ backgroundColor: 'var(--tenant-primary)' }}
                 >

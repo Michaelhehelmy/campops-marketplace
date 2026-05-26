@@ -2,6 +2,13 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+const RESERVED_SLUGS = new Set([
+  'admin', 'api', 'manage', 'owner', 'guest', 'book', 'stay',
+  'login', 'logout', 'auth', 'search', 'docs', 'health',
+  'metrics', 'status', 'support', 'help', 'www', 'app',
+  'dashboard', 'settings', 'plugins', 'stripe', 'paymob',
+]);
+
 function normalizeDomain(domain: string) {
   return domain
     .toLowerCase()
@@ -19,6 +26,14 @@ export async function GET(req: NextRequest) {
 
   const normalized = normalizeDomain(domain);
 
+  if (RESERVED_SLUGS.has(normalized)) {
+    return NextResponse.json({ available: false, reason: 'reserved' });
+  }
+
+  if (!/^[a-z0-9][a-z0-9.-]{1,48}[a-z0-9]$/.test(normalized)) {
+    return NextResponse.json({ available: false, reason: 'invalid_format' });
+  }
+
   try {
     const candidates = (await db
       .prepare(
@@ -34,7 +49,7 @@ export async function GET(req: NextRequest) {
       const settings =
         typeof row.settings === 'string' ? JSON.parse(row.settings || '{}') : row.settings || {};
       const customDomain = row.custom_domain || settings.customDomain;
-      return customDomain === normalized || row.subdomain === normalized;
+      return customDomain === normalized || row.subdomain === normalized || row.slug === normalized;
     });
 
     if (taken) {
