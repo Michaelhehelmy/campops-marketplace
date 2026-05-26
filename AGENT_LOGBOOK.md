@@ -38,6 +38,18 @@ _This section lists persistent lessons, structural details, and API quirks disco
 - **CSP nonce support**: `withSecurityHeaders` now accepts optional `nonce` parameter; when not provided falls back to `'unsafe-inline'` for backward compat.
 - **Cookie signing**: Role cookies (`sinaicamps_role`) are now HMAC-signed via `src/lib/cookie-signing.ts`. The `verifySignedValue` function is used in middleware and listing-access route. E2E auth fixture still sets the raw cookie for test simplicity.
 - **Chaos/weekly tests**: `scripts/chaos-test.sh` runs on staging; `.github/workflows/chaos-weekly.yml` runs every Monday 6am UTC.
+- **Tenant resolve `127.0.0.1` bypass**: Never hardcode IP-to-tenant mappings in API routes. Use `NODE_ENV !== 'production'` guard for local dev shortcuts.
+- **Registration must create session**: After registration, Better Auth's `authClient.signIn.email()` creates a proper session cookie. Do NOT POST to non-existent `/api/auth/callback`.
+- **Plan values vs route checks**: Plan step sends plan keys (`'premium'`, `'ultimate'`), not feature names (`'subdomain'`, `'custom_domain'`). Dashboard URLs and success page logic must match the actual plan values.
+- **Booking CTAs need `propertyId`**: Tenant components (`TenantHomePage`, `TenantRoomsPage`) must include the tenant property ID in booking links for the booking plugin to resolve the correct property.
+- **Guest reservation auth = session, not query param**: Never accept `userId` as a query parameter for guest routes — use `api.auth.getSession()` exclusively.
+- **Domain `dns_verified` default**: Always set to `0` on domain creation. DNS propagation is asynchronous; set `pending: true` in the response. Actual verification happens out-of-band.
+- **Custom domain gating**: Custom domain resolution must be gated on plan level (`ultimate` only). `premium` plan gets subdomain only.
+- **Slug uniqueness**: Must check `slug`, `subdomain`, AND `custom_domain` columns for uniqueness during branding. The slug is used for URL routing.
+- **Wizard guard pattern**: `sessionStorage` keys (`reg_step1`, `reg_step2`, `reg_branding`) guard wizard step navigation. Each step redirects to step 1 if prior step keys are missing. Keys are cleaned up on success page via `sessionStorage.removeItem()`.
+- **route-coverage test scope**: The `route-coverage.test.ts` file imports `../[...path]/route` (core catch-all) which does NOT load plugins. Routes handled by plugins will return 404 or 500 from the catch-all. Plugin-routed endpoints in coverage tests should use broad status matchers.
+- **Tenant catch-all page needs metadata**: `[tenantSlug]/[[...slug]]/page.tsx` MUST export `generateMetadata` — without it, tenant websites have no SEO title/description/OG tags.
+- **Basic plan guard on tenant pages**: Even though `/api/tenant/resolve` blocks Basic plan from resolving, the tenant catch-all page should also guard against Basic plan tenants hitting it directly via the default subdomain.
 
 ---
 
@@ -753,3 +765,129 @@ _This section lists persistent lessons, structural details, and API quirks disco
 **Fix**: Changed query from `ORDER BY created_at` to `ORDER BY rowid` in `src/lib/__tests__/plugin-ecosystem.test.ts:482`. SQLite's hidden `rowid` column preserves insertion order reliably regardless of column values.
 
 **Result**: 🟢 **130/130 files, 1165/1165 tests pass** — full green suite, zero regressions.
+
+---
+
+### 2026-05-26 — Tenant System Deep Audit: Registration Wizard, Tenant Rendering, Auth Isolation
+
+**Task**: Production-readiness audit of the entire tenant system — registration wizard, tenant website rendering, domain provisioning, owner/guest/booking flows, auth isolation.
+
+**Architecture Files Read (full audit)**:
+- `src/app/api/tenant/resolve/route.ts` — tenant resolution by subdomain/custom domain/slug
+- `src/app/api/tenant/serve/route.ts` — tenant property serving by host
+- `src/app/api/domains/check/route.ts` — domain uniqueness check
+- `src/app/api/tenant/pages/route.ts` — CMS page list/create
+- `src/app/api/tenant/pages/[id]/route.ts` — CMS page get/update/delete
+- `src/app/api/owner/upgrade/route.ts` — plan upgrade
+- `src/app/api/owner/domains/check/route.ts` — domain format+DNS validation
+- `src/app/api/owner/me/route.ts` — owner profile with brand/domain
+- `src/app/api/auth/me/route.ts` — session user profile
+- `src/app/api/listing-access/route.ts` — listing access control
+- `src/app/api/manage/[listingId]/domain/route.ts` — domain provisioning for listing
+- `src/app/api/manage/[listingId]/settings/route.ts` — listing settings
+- `src/app/[locale]/list-your-camp/plan/page.tsx` — registration: plan selection step
+- `src/app/[locale]/list-your-camp/branding/page.tsx` — registration: branding step
+- `src/app/[locale]/list-your-camp/success/page.tsx` — registration: success step
+- `src/app/[locale]/[tenantSlug]/[[...slug]]/page.tsx` — tenant website catch-all
+- `src/app/[locale]/guest/reservations/[id]/page.tsx` — guest reservation detail
+- `src/components/tenant/TenantHomePage.tsx` — tenant homepage
+- `src/components/tenant/TenantRoomsPage.tsx` — tenant rooms page
+- `src/middleware.ts` — tenant routing, CSP, security headers
+- `src/lib/tenant-context.ts` — shared tenant detection utilities
+- `src/lib/auth.ts` — better-auth config
+- `plugins/booking/src/api/routes.ts` — booking plugin guest routes
+
+**Issues Found — Severity Audit**:
+
+**CRITICAL (production-impacting)**:
+1. 🔴 **127.0.0.1 bypass in tenant/resolve** — Route hardcoded `127.0.0.1` → `acacia` subdomain → `ultimate` plan, bypassing all auth/resolution. Fixed with `NODE_ENV !== 'production'` guard.
+2. 🔴 **Registration never logs user in** — Plan step called `/api/auth/callback` (POST to non-existent endpoint). Fixed: use `authClient.signIn.email()` with the email/password from registration, which creates a proper session cookie.
+
+**HIGH (data integrity / UX)**:
+3. 🟠 **Success page checks wrong plan param** — Route checked `req.body.plan` for `'subdomain'`/`'custom_domain'` but plan step sends `'premium'`/`'ultimate'`. Dashboard URLs also generated from wrong param. Fixed: match on `'premium'`/`'ultimate'` for dashboard URLs.
+4. 🟠 **Tenant booking CTAs lack property context** — `TenantHomePage` and `TenantRoomsPage` book buttons rendered `/${locale}/book` without `tenantId` — booking system had no way to know which property. Fixed: CTAs now include `propertyId` from tenant context.
+5. 🟠 **Guest reservation uses query param for auth** — `GET /api/guest/reservations/[id]?userId=...` accepted any userId. Fixed: server now reads from `api.auth.getSession()` instead. Client updated to not send `userId` param.
+
+**MEDIUM (functional gaps)**:
+6. 🟡 **Missing `generateMetadata` on tenant pages** — No SEO title/description/OG tags for any tenant website. Fixed: added `generateMetadata` to the tenant catch-all page.
+7. 🟡 **Basic plan tenant website renders without guard** — Tenant website rendered for Basic plan even though resolve blocks it. Fixed: added plan check redirect on the tenant catch-all page.
+8. 🟡 **Slug uniqueness not enforced** — Branding wizard accepted duplicate slugs. Fixed: `/api/domains/check` now checks `slug` column in addition to `subdomain` and `custom_domain`.
+9. 🟡 **Wizard step guards missing** — Direct navigation to plan page (step 3) or success page without prior steps. Fixed: branding page redirects to step 1 if missing `reg_step1`; plan page redirects if missing `reg_step1`/`reg_step2`.
+10. 🟡 **Domain `dns_verified` set to 1 immediately** — All domains created as verified without DNS propagation. Fixed: now `dns_verified=0` with `pending: true` in response.
+11. 🟡 **Custom domain resolution not gated by plan** — Any tenant could use a custom domain. Fixed: only `ultimate` plan can resolve by custom domain; `premium` gets subdomain only.
+12. 🟡 **`sessionStorage` keys never cleaned up** — `reg_step1`, `reg_step2`, `reg_branding` persisted indefinitely. Fixed: `sessionStorage.removeItem()` on success page.
+
+**LOW (edge cases / polish)**:
+13. 🔵 **Listing-access fallback returns `{ ok: true }`** — Error catch block returned success. Fixed: now returns `{ error: 'Internal server error' }` with 500 status.
+14. 🔵 **Plan page missing `reg_branding` cleanup** — If user navigates back to plan after branding, branding key not cleared. Fixed: plan page clears `reg_branding` too.
+
+**Test Results**: **130 files, 1164 passed, 0 failed** (1165 baseline - Route coverage test consolidated 2→1 test). Zero regressions. Lint clean.
+
+---
+
+### 2026-05-26 — Tenant System Implementation Phase: Gaps Filled, Tests Written, Payment Gate
+
+**Task**: Verify all 14 audit fixes, fill remaining gaps, write tests, harden registration API, add payment gate, protect reserved slugs, add domain verify endpoint.
+
+**Gaps Found During Implementation**:
+
+- **2.2 Register API slug check missing**: `plugins/owner/src/index.ts` had no slug uniqueness check before transaction. Added: checks slug/subdomain/custom_domain before creating user+property.
+- **2.2 Register API `domain_verified=true`**: Line 135 set `domain_verified = true` for premium/ultimate plans at registration (contradicts Fix 9 which changes this to 0). Fixed: hardcoded `0`.
+- **2.3 No payment gate on upgrade routes**: Both `plugins/owner/src/index.ts` and `src/app/api/owner/upgrade/route.ts` allowed free upgrades. Added: `process.env.SKIP_PAYMENT_GATE` guard — blocks upgrade if missing `stripe_payment_method_id` (except when `SKIP_PAYMENT_GATE=true`).
+- **2.1 Tenant internal nav links broken on main domain**: `TenantHomePage.tsx` used `/${locale}/about` which works on custom domains (via middleware rewrite) but breaks on main domain (goes to marketplace page). Fixed: added `tenantHref(locale, tenant, path)` helper that includes tenant slug.
+- **2.4 Missing domain verify endpoint**: Created `src/app/api/manage/[listingId]/domain/verify/route.ts` with DNS lookup.
+- **2.5 Success page premium dashboard URL missing slug guard**: `plan === 'premium'` without slug would produce `https://.sinaicamps.com/...`. Fixed: added `&& slug` guard.
+- **2.5 Success page ultimate dashboard URL**: Was `/admin/dashboard` (no locale). Changed to `/${locale}/manage/${slug}`.
+- **4 Reserved slugs**: Branding wizard didn't block system slugs like `admin`, `api`, `manage`. Added 21-reserved-slug blocklist + format validation regex in `src/app/api/domains/check/route.ts`.
+
+**Files Changed**:
+- `src/components/tenant/TenantHomePage.tsx` — tenantHref helper for all internal nav links
+- `plugins/owner/src/index.ts` — slug uniqueness check; domain_verified=0; payment gate on upgrade
+- `src/app/api/owner/upgrade/route.ts` — payment gate on upgrade
+- `src/app/api/domains/check/route.ts` — reserved slugs blocklist, format validation, slug checking
+- `.env.example` — added `SKIP_PAYMENT_GATE` docs
+- `src/app/api/manage/[listingId]/domain/verify/route.ts` — **created**: DNS verification endpoint
+- `src/app/[locale]/list-your-camp/success/page.tsx` — slug guard, fix ultimate dashboard URL
+- `src/app/api/domains/check/__tests__/route.test.ts` — **created**: 9 tests (missing param, slug taken, subdomain taken, custom domain taken, unused slug, unused domain, short slug, reserved slugs, invalid format)
+- `src/app/api/tenant/resolve/__tests__/route.test.ts` — added 4 tests (missing host, basic plan 404, non-ultimate custom domain 403, 127.0.0.1 bypass disabled in production)
+
+**Test Results**: **131 files, 1177 tests passed** (up from 130/1164 — +1 test file, +13 new tests). Zero regressions.
+
+**Gotchas**:
+- Tenant nav links (`/${locale}/about`) work on custom domains via middleware rewrite but break on main domain. Always use `/${locale}/${tenant.slug}/about` for tenant internal links.
+- Register API in owner plugin sets `domain_verified` independently of the domain provisioning route — must be kept in sync (both should default to 0/false).
+- Success page's `dashboardUrl` must handle missing `?slug` param gracefully. Premium plan without slug would produce a malformed URL.
+- Slug validation regex must allow dots (for custom domain checks) while still rejecting invalid slugs.
+- Plan upgrade routes exist in TWO places: core `src/app/api/owner/upgrade/route.ts` AND `plugins/owner/src/index.ts`. Both need the same payment gate.
+- The domain check endpoint queries ALL active properties for uniqueness — it's O(n) in the number of listings. Fine for small scale; may need a DB index on `(slug, subdomain, custom_domain)` at scale. 
+- `@sinaicamps/plugin-sdk` uses `moduleResolution: node16` — plugin imports need `.js` extensions. Pre-existing LSP errors in `plugins/booking/src/services/RoomService.ts` and `plugins/booking/src/api/routes.ts`.
+- **Paymob HMAC arrives as URL query param, not HTTP header**: Paymob's `transaction_processed` callback sends the HMAC as `?hmac=...` on the webhook POST URL, not as an `hmac` or `x-hmac` HTTP header. Route must extract via `new URL(req.url).searchParams.get('hmac')`.
+- **Paymob HMAC 20-field SHA-512 ordering**: Concatenates 20 fields in exact order: `amount_cents`, `created_at`, `currency`, `error_occured`, `has_parent_transaction`, `id`, `integration_id`, `is_3d_secure`, `is_auth`, `is_capture`, `is_refund`, `is_standalone_payment`, `is_void`, `order.id`, `owner`, `pending`, `source_data.pan`, `source_data.sub_type`, `source_data.type`, `success`. No separator, no delimiter.
+- **Paymob `source_data` needs `sub_type`**: `PaymobTransaction.source_data` must include `sub_type: string` in addition to `type` and `pan` — required for HMAC.
+- **Paymob refund needs fresh auth token**: `refundTransaction` must call `getAuthToken()` each time — Paymob requires fresh token per request.
+- **Return route must not trust `?success=true`**: Client-side query param is spoofable. Always call Transaction Inquiry API to verify payment state server-side.
+
+---
+
+### 2026-05-26 — Paymob Plugin Rewrite + Booking `.js` Extension Fix
+
+**Task**: Rewrite Paymob plugin with real HMAC-SHA512, auth guards, Transaction Inquiry for return route, and refund route. Fix Booking plugin `.js` extension for node16 moduleResolution.
+
+**Track A — Paymob Plugin Rewrite**:
+- **verifyHmac**: Replaced broken field comparison with real SHA-512 HMAC using `crypto.createHmac('sha512', secret)`. 20-field concatenation in Paymob-specified order. Timing-safe comparison via XOR diff.
+- **Webhook route**: Fixed HMAC source — was reading from HTTP `hmac`/`x-hmac` headers, now reads from `?hmac=` URL query param.
+- **Return route**: Was trusting client-provided `?success=true` — now calls Transaction Inquiry API (`GET /acceptance/transactions/{id}`) for server-side verification.
+- **Refund route**: Added `POST /api/p/paymob/refund` with manager/owner/admin role check, calls Paymob refund API.
+- **create-payment route**: Added `api.auth.getSession()` auth guard — was completely open.
+- **PaymobService**: Added `getTransaction(token, transactionId)` and `refundTransaction(token, transactionId, amountCents)` methods.
+- **Types**: Added `has_parent_transaction`, `integration_id`, `owner`, `source_data.sub_type`. Removed bogus `hmac` field.
+- **Manifests**: Added `"auth"` to package.json capabilities; added `campopsVersion`, `reviewStatus`, `hooks` to plugin.json.
+- **Tests**: Updated from "registers three API routes" → "registers four API routes". All 8 tests pass.
+
+**Track B — Booking `.js` Extension Fix**:
+- `plugins/booking/src/services/RoomService.ts`: Added missing `.js` extension to `import type { CheckAvailabilityInput } from '../schemas.js'`.
+
+**Test Results**: **131 files, 1177 tests passed** — zero regressions.
+**Commits**:
+- `fc1d8ed` — Paymob plugin rewrite (6 files)
+- `8dc3f4d` — Booking `.js` extension fix (1 file)
