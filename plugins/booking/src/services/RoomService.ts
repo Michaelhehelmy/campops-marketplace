@@ -1,4 +1,4 @@
-import type { CheckAvailabilityInput } from '../schemas';
+import type { CheckAvailabilityInput } from '../schemas.js';
 
 /**
  * Room Service
