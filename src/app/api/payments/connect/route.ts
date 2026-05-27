@@ -5,6 +5,16 @@ import Stripe from 'stripe';
 import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const connectPostSchema = z.object({
+  userId: z.string().min(1),
+  propertyId: z.string().min(1),
+  stripeAccountId: z.string().min(1),
+  accountType: z.string().optional(),
+  country: z.string().optional(),
+  currency: z.string().optional(),
+});
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
   apiVersion: '2023-10-16' as any,
@@ -95,7 +105,11 @@ export async function POST(req: NextRequest) {
   try {
     const sessionRes = await requireSession(req);
     if (isErrorResponse(sessionRes)) return sessionRes;
-    const body = await req.json();
+    const parsed = connectPostSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const {
       userId,
       propertyId,

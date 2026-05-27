@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
@@ -127,10 +128,20 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const bulkUpdateShopsSchema = z.object({
+  adminId: z.string(),
+  shopIds: z.array(z.string()),
+  action: z.string(),
+});
+
 // PUT /api/admin/shops - Bulk update shops (activate/deactivate multiple)
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = bulkUpdateShopsSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId, shopIds, action } = body;
 
     if (!adminId || !shopIds || !Array.isArray(shopIds) || !action) {

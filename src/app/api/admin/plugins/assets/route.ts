@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -65,18 +66,32 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const createAssetSchema = z.object({
+  adminId: z.string(),
+  pluginName: z.string(),
+  assetType: z.string(),
+  assetUrl: z.string(),
+  targetLocation: z.string().optional(),
+  loadOrder: z.number().optional().default(0),
+  cacheDurationSeconds: z.number().optional().default(3600),
+});
+
 // POST /api/admin/plugins/assets - Add a new asset to a plugin
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = createAssetSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const {
       adminId,
       pluginName,
       assetType,
       assetUrl,
       targetLocation,
-      loadOrder = 0,
-      cacheDurationSeconds = 3600,
+      loadOrder,
+      cacheDurationSeconds,
     } = body;
 
     if (!adminId || !pluginName || !assetType || !assetUrl) {
@@ -160,10 +175,20 @@ export async function POST(req: NextRequest) {
   }
 }
 
+const updateAssetSchema = z.object({
+  adminId: z.string(),
+  assetId: z.union([z.string(), z.number()]),
+  updates: z.record(z.string(), z.any()),
+});
+
 // PUT /api/admin/plugins/assets - Update an asset
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = updateAssetSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId, assetId, updates } = body;
 
     if (!adminId || !assetId || !updates) {

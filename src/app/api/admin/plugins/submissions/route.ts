@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { getSqlite } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { hookManager, Hooks } from '@/lib/hooks';
+import { z } from 'zod';
 
 type SubmissionStatus = 'pending' | 'approved' | 'rejected';
 
@@ -84,6 +85,12 @@ export async function GET(req: NextRequest) {
  *   is_active=1, version from submission, manifest from submission.
  * Fires: core:plugin:activated (on approval) with { pluginId, version, reviewedBy }.
  */
+const reviewSubmissionSchema = z.object({
+  id: z.string(),
+  action: z.enum(['approve', 'reject']),
+  reviewNotes: z.string().optional(),
+});
+
 export async function PATCH(req: NextRequest) {
   const session = await requireMaster(req);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -95,12 +102,13 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { id, action, reviewNotes } = body;
-
-  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
-  if (action !== 'approve' && action !== 'reject') {
-    return NextResponse.json({ error: 'action must be approve or reject' }, { status: 400 });
+  const parsed = reviewSubmissionSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
   }
+  body = parsed.data;
+
+  const { id, action, reviewNotes } = body;
 
   const db = getSqlite();
   const sub = db.prepare('SELECT * FROM plugin_submissions WHERE id = ?').get(id) as any;

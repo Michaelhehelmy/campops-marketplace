@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSqlite } from '@/lib/db';
 import { auth } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,6 +68,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const enqueueBuildSchema = z.object({
+  siteId: z.string(),
+});
+
 export async function POST(req: NextRequest) {
   if (!(await requireMaster(req))) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -78,6 +83,12 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
+
+  const parsed = enqueueBuildSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+  }
+  body = parsed.data;
 
   const { siteId } = body;
   if (!siteId) {

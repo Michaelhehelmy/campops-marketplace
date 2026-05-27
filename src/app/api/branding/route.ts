@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const brandingPutSchema = z.object({
+  propertyId: z.string().optional(),
+  slug: z.string().optional(),
+  branding: z.record(z.string(), z.any()).optional(),
+  userId: z.string().min(1, 'userId is required'),
+  isMaster: z.boolean().optional(),
+});
 
 // Full branding configuration structure
 export interface BrandingConfig {
@@ -320,8 +329,11 @@ export async function GET(req: NextRequest) {
 // Update branding (owner or master admin)
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { propertyId, slug, branding, userId, isMaster } = body;
+    const parsed = brandingPutSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const { propertyId, slug, branding, userId, isMaster } = parsed.data;
 
     if (!propertyId && !slug) {
       return NextResponse.json({ error: 'propertyId or slug required' }, { status: 400 });

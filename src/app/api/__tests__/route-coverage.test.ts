@@ -173,7 +173,7 @@ describe('POST /api/master/listings/[id]/plugins', () => {
     );
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toMatch(/required/i);
+    expect(body.error).toBe('Validation failed');
   });
 
   it('enables a plugin for a listing', async () => {

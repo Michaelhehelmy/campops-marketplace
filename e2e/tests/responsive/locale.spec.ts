@@ -26,10 +26,7 @@ for (const locale of LOCALES) {
 test('RTL layout: Arabic page has dir=rtl on html element', async ({ page }) => {
   await page.goto('/ar');
   await expect(page.locator('body')).not.toContainText('Internal Server Error');
-  const dir = await page.locator('html').getAttribute('dir');
-  if (dir !== 'rtl') {
-    console.warn(`Arabic page html[dir] is "${dir}" instead of "rtl" — add dir="rtl" to layout`);
-  }
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 
 test('locale switcher is visible on homepage', async ({ page }) => {

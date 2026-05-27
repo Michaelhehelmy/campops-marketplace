@@ -180,7 +180,7 @@ describe('POST /api/master/plugins/toggle', () => {
     const data = await res.json();
 
     expect(res.status).toBe(400);
-    expect(data.error).toBe('pluginId, propertyId, and enabled are required');
+    expect(data.error).toBe('Validation failed');
   });
 
   it('should handle database errors gracefully', async () => {
@@ -241,6 +241,6 @@ describe('POST /api/master/plugins/toggle', () => {
     const data = await res.json();
 
     expect(res.status).toBe(400);
-    expect(data.error).toBe('pluginId, propertyId, and enabled are required');
+    expect(data.error).toBe('Validation failed');
   });
 });

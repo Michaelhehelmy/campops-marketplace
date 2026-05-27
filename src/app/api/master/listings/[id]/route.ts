@@ -4,6 +4,24 @@ import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const listingUpdateSchema = z.object({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  plan: z.string().optional(),
+  isActive: z.boolean().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+  subdomain: z.string().optional(),
+  custom_domain: z.string().optional(),
+  owner_id: z.string().optional(),
+});
+
+const listingPatchSchema = z.object({
+  action: z.enum(['activate', 'deactivate', 'feature', 'unfeature']),
+  featured_order: z.number().int().nonnegative().optional(),
+});
 
 /**
  * GET /api/master/listings/[id]
@@ -91,7 +109,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     const { id } = params;
-    const body = await req.json();
+    const parsed = listingUpdateSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { name, slug, plan, isActive, city, country, subdomain, custom_domain, owner_id } = body;
 
     if (!name || !slug) {
@@ -220,7 +242,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     const { id } = params;
-    const body = await req.json();
+    const parsed = listingPatchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { action, featured_order } = body;
 
     if (action === 'activate') {

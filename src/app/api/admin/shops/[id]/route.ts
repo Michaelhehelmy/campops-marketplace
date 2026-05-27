@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -69,11 +70,20 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+const deactivateShopSchema = z.object({
+  adminId: z.string(),
+  reason: z.string().optional(),
+});
+
 // POST /api/admin/shops/:id/deactivate - Deactivate a shop
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const shopId = params.id;
-    const body = await req.json();
+    const parsed = deactivateShopSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId, reason } = body;
 
     if (!adminId) {
@@ -134,11 +144,20 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 }
 
+const overrideShopSchema = z.object({
+  adminId: z.string(),
+  overrides: z.record(z.string(), z.any()),
+});
+
 // PUT /api/admin/shops/:id/override - Override shop listing data
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const shopId = params.id;
-    const body = await req.json();
+    const parsed = overrideShopSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId, overrides } = body;
 
     if (!adminId || !overrides || typeof overrides !== 'object') {
@@ -237,11 +256,19 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+const activateShopSchema = z.object({
+  adminId: z.string(),
+});
+
 // PATCH /api/admin/shops/:id/activate - Activate a shop
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const shopId = params.id;
-    const body = await req.json();
+    const parsed = activateShopSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId } = body;
 
     if (!adminId) {

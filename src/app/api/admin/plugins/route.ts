@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -106,30 +107,56 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const createPluginSchema = z.object({
+  adminId: z.string(),
+  name: z.string(),
+  displayName: z.string(),
+  description: z.string().optional(),
+  version: z.string().optional().default('1.0.0'),
+  author: z.string().optional(),
+  category: z.string().optional().default('general'),
+  iconUrl: z.string().optional(),
+  isOfficial: z.boolean().optional().default(false),
+  isPremium: z.boolean().optional().default(false),
+  priceCents: z.number().optional(),
+  billingInterval: z.string().optional(),
+  manifest: z.record(z.string(), z.any()).optional().default({}),
+  entryPointUrl: z.string().optional(),
+  cssUrl: z.string().optional(),
+  configSchema: z.record(z.string(), z.any()).optional().default({}),
+  requiredRoles: z.array(z.string()).optional().default([]),
+  minPropertyPlan: z.string().optional().default('basic'),
+  dependencies: z.array(z.string()).optional().default([]),
+});
+
 // POST /api/admin/plugins - Add a new plugin to the marketplace catalog
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = createPluginSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const {
       adminId,
       name,
       displayName,
       description,
-      version = '1.0.0',
+      version,
       author,
-      category = 'general',
+      category,
       iconUrl,
-      isOfficial = false,
-      isPremium = false,
+      isOfficial,
+      isPremium,
       priceCents,
       billingInterval,
-      manifest = {},
+      manifest,
       entryPointUrl,
       cssUrl,
-      configSchema = {},
-      requiredRoles = [],
-      minPropertyPlan = 'basic',
-      dependencies = [],
+      configSchema,
+      requiredRoles,
+      minPropertyPlan,
+      dependencies,
     } = body;
 
     if (!adminId || !name || !displayName) {
@@ -216,10 +243,20 @@ export async function POST(req: NextRequest) {
   }
 }
 
+const updatePluginSchema = z.object({
+  adminId: z.string(),
+  pluginName: z.string(),
+  updates: z.record(z.string(), z.any()),
+});
+
 // PUT /api/admin/plugins - Update a plugin in the catalog
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = updatePluginSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { adminId, pluginName, updates } = body;
 
     if (!adminId || !pluginName || !updates) {

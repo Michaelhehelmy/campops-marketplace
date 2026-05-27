@@ -150,7 +150,9 @@ describe('PATCH /api/admin/plugins/submissions', () => {
       })
     );
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/approve or reject/);
+    const body = await res.json();
+    expect(body.error).toBe('Validation failed');
+    expect(body.details).toBeDefined();
   });
 
   it('returns 404 for missing submission', async () => {

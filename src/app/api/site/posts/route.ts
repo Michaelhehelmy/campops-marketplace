@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { getSqlite } from '@/lib/db';
 import { PostQuery } from '@/lib/PostQuery';
@@ -94,6 +95,16 @@ export async function GET(req: NextRequest) {
  *
  * Fires core:post:before_save filter and core:post:after_save action.
  */
+const createPostSchema = z.object({
+  siteId: z.string().min(1, 'siteId is required'),
+  postType: z.string().min(1, 'postType is required'),
+  postTitle: z.string().optional(),
+  postContent: z.string().optional(),
+  postSlug: z.string().optional(),
+  postStatus: z.string().optional(),
+  meta: z.record(z.string(), z.string()).optional(),
+});
+
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -105,10 +116,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { siteId: rawSiteId, postType, postTitle, postContent, postSlug, postStatus, meta } = body;
+  const parsed = createPostSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+  }
 
-  if (!rawSiteId) return NextResponse.json({ error: 'siteId is required' }, { status: 400 });
-  if (!postType) return NextResponse.json({ error: 'postType is required' }, { status: 400 });
+  const { siteId: rawSiteId, postType, postTitle, postContent, postSlug, postStatus, meta } = parsed.data;
 
   const db = getSqlite();
   const siteId = resolveSiteId(db, rawSiteId);
@@ -120,8 +133,8 @@ export async function POST(req: NextRequest) {
       siteId,
       postType,
       postTitle: postTitle ?? '',
-      postContent: postContent ?? null,
-      postSlug: postSlug ?? null,
+      postContent: postContent,
+      postSlug: postSlug,
       postStatus: postStatus ?? 'publish',
       authorId: session.user.id,
       meta: meta ?? {},

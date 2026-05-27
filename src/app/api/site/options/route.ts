@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { getSqlite } from '@/lib/db';
 import { OptionsRepository } from '@/lib/OptionsRepository';
@@ -64,6 +65,11 @@ export async function PUT(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const updateOptionsSchema = z.object({
+    siteId: z.string().min(1, 'siteId is required'),
+    options: z.record(z.string(), z.string().nullable()),
+  });
+
   let body: any;
   try {
     body = await req.json();
@@ -71,11 +77,12 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { siteId: rawSiteId, options } = body;
-  if (!rawSiteId) return NextResponse.json({ error: 'siteId is required' }, { status: 400 });
-  if (!options || typeof options !== 'object' || Array.isArray(options)) {
-    return NextResponse.json({ error: 'options must be an object' }, { status: 400 });
+  const parsed = updateOptionsSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
   }
+
+  const { siteId: rawSiteId, options } = parsed.data;
 
   const db = getSqlite();
   const siteId = resolveSiteId(db, rawSiteId);

@@ -2,11 +2,22 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const toggleMasterPluginSchema = z.object({
+  adminId: z.string(),
+  pluginName: z.string(),
+  enabled: z.boolean().optional(),
+});
 
 // POST /api/admin/master-plugins - Toggle a plugin for the master dashboard
 export async function POST(req: NextRequest) {
   try {
-    const { adminId, pluginName, enabled } = await req.json();
+    const parsed = toggleMasterPluginSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const { adminId, pluginName, enabled } = parsed.data;
 
     if (!adminId || !pluginName) {
       return NextResponse.json({ error: 'adminId and pluginName are required' }, { status: 400 });

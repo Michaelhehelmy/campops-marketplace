@@ -971,4 +971,24 @@ _This section lists persistent lessons, structural details, and API quirks disco
 - **Persistent Learnings**:
   - `delegation` with `explore` agent timed out after 60 min for large searches — use direct grep/ripgrep for focused searches instead.
   - RTL dir attribute was the most impactful 2-line fix (affects all Arabic-language pages across the entire app).
-  - The Logger class at `src/lib/logger.ts` was already well-architected but most code bypassed it — the bulk of this session was plumbing it in.
+   - The Logger class at `src/lib/logger.ts` was already well-architected but most code bypassed it — the bulk of this session was plumbing it in.
+
+---
+
+### [2026-05-27] Zod Input Validation — 8 Admin API Route Files
+
+- **Task**: Add Zod input validation schemas to 8 admin API route files, replacing manual body destructuring and inline checks.
+- **Changes**:
+  - `src/app/api/admin/plugins/route.ts` — added `createPluginSchema` (18 fields) and `updatePluginSchema` for POST/PUT
+  - `src/app/api/admin/plugins/assets/route.ts` — added `createAssetSchema` and `updateAssetSchema` for POST/PUT
+  - `src/app/api/admin/plugins/submissions/route.ts` — added `reviewSubmissionSchema` for PATCH (kept existing try/catch for JSON parse)
+  - `src/app/api/admin/master-plugins/route.ts` — added `toggleMasterPluginSchema` for POST
+  - `src/app/api/admin/shops/route.ts` — added `bulkUpdateShopsSchema` for PUT
+  - `src/app/api/admin/shops/[id]/route.ts` — added `deactivateShopSchema`, `overrideShopSchema`, `activateShopSchema` for POST/PUT/PATCH
+  - `src/app/api/admin/build-queue/route.ts` — added `enqueueBuildSchema` for POST (kept existing try/catch for JSON parse)
+  - `src/app/api/admin/impersonate/route.ts` — added `impersonateSchema` for POST
+- **Tests fixed**: Updated 3 test assertions to match Zod validation error format (`{ error: 'Validation failed', details: [...] }`) in:
+  - `plugins/submissions/__tests__/route.test.ts` (1 test: invalid action)
+  - `shops/__tests__/shops.test.ts` (2 tests: missing field, non-array shopIds)
+  - `tests/api-smoke.test.ts` (1 test: toggle route missing pluginName; 1 test: branding route reverted to original error message — incorrectly changed by prior session)
+- **Test Results**: **131 files, 1177 tests passed** — zero regressions.

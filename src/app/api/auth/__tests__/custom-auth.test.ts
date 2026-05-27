@@ -45,7 +45,7 @@ describe('Custom Auth Endpoints', () => {
       );
       expect(res.status).toBe(400);
       const body = await res.json();
-      expect(body.error).toContain('Email and password are required');
+      expect(body.error).toBe('Validation failed');
     });
 
     it('returns 401 on Better-Auth login failure', async () => {

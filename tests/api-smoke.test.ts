@@ -127,7 +127,8 @@ describe('Manage API — auth enforcement', () => {
     );
     expect(res.status).toBe(400);
     const body = await json(res);
-    expect(body.error).toMatch(/required/i);
+    expect(body.error).toBe('Validation failed');
+    expect(body.details).toBeDefined();
   });
 
   it('POST /api/manage/[listingId]/plugins/toggle → 200 when authenticated', async () => {

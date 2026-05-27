@@ -50,19 +50,27 @@ describe('POST /api/plugins/submit', () => {
     const res = await POST(req({ version: '1.0.0', manifest: validManifest }));
     expect(res.status).toBe(400);
     const data = await res.json();
-    expect(data.error).toMatch(/pluginId/);
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('pluginId');
   });
 
   it('returns 400 when version missing', async () => {
     const res = await POST(req({ pluginId: 'acme/foo', manifest: validManifest }));
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/version/);
+    const data = await res.json();
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('version');
   });
 
   it('returns 400 when manifest is not an object', async () => {
     const res = await POST(req({ pluginId: 'acme/foo', version: '1.0.0', manifest: 'bad' }));
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/manifest/);
+    const data = await res.json();
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('manifest');
   });
 
   it('returns 400 when manifest missing name', async () => {
@@ -70,7 +78,10 @@ describe('POST /api/plugins/submit', () => {
       req({ pluginId: 'acme/foo', version: '1.0.0', manifest: { description: 'x' } })
     );
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/name/);
+    const data = await res.json();
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('manifest.name');
   });
 
   it('returns 400 when manifest missing description', async () => {
@@ -78,7 +89,10 @@ describe('POST /api/plugins/submit', () => {
       req({ pluginId: 'acme/foo', version: '1.0.0', manifest: { name: 'x' } })
     );
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/description/);
+    const data = await res.json();
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('manifest.description');
   });
 
   it('creates submission with status=pending and returns 201', async () => {

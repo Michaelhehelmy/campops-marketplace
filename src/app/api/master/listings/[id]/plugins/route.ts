@@ -3,13 +3,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const pluginAssocSchema = z.object({
+  pluginName: z.string().min(1),
+  enabled: z.boolean().optional(),
+});
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     const { id } = params;
-    const body = await req.json();
+    const parsed = pluginAssocSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { pluginName, enabled } = body;
 
     if (!pluginName) {

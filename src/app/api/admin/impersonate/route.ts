@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const impersonateSchema = z.object({
+  propertyId: z.string(),
+  locale: z.string().optional(),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +20,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await req.json();
+    const parsed = impersonateSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { propertyId } = body;
     const locale = body.locale || 'en';
 

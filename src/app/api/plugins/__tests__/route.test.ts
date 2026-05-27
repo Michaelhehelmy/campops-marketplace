@@ -96,7 +96,11 @@ describe('Plugins Property API Router (/api/plugins)', () => {
       const body = await res.json();
 
       expect(res.status).toBe(400);
-      expect(body.error).toContain('propertyId, userId, and pluginName are required');
+      expect(body.error).toBe('Validation failed');
+      expect(body.details.length).toBeGreaterThanOrEqual(2);
+      const paths = body.details.map((d: any) => d.path[0]);
+      expect(paths).toContain('userId');
+      expect(paths).toContain('pluginName');
     });
 
     it('returns 404 if plugin is not active or missing in marketplace', async () => {
@@ -247,7 +251,11 @@ describe('Plugins Property API Router (/api/plugins)', () => {
       const body = await res.json();
 
       expect(res.status).toBe(400);
-      expect(body.error).toContain('propertyId, pluginName, and config are required');
+      expect(body.error).toBe('Validation failed');
+      expect(body.details.length).toBeGreaterThanOrEqual(2);
+      const paths = body.details.map((d: any) => d.path[0]);
+      expect(paths).toContain('pluginName');
+      expect(paths).toContain('config');
     });
 
     it('returns 404 if plugin is not enabled/exists for property', async () => {

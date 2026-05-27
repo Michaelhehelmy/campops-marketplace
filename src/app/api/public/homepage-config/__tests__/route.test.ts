@@ -156,7 +156,9 @@ describe('PUT /api/public/homepage-config', () => {
     expect(res.status).toBe(400);
 
     const data = await res.json();
-    expect(data.error).toBe('sections must be an array');
+    expect(data.error).toBe('Validation failed');
+    expect(data.details[0].path).toContain('sections');
+    expect(data.details[0].code).toBe('invalid_type');
   });
 
   it('should handle missing sections', async () => {
@@ -168,7 +170,9 @@ describe('PUT /api/public/homepage-config', () => {
     expect(res.status).toBe(400);
 
     const data = await res.json();
-    expect(data.error).toBe('sections must be an array');
+    expect(data.error).toBe('Validation failed');
+    const paths = data.details.map((d: any) => d.path.join('.'));
+    expect(paths).toContain('sections');
   });
 
   it('should handle database errors on update', async () => {

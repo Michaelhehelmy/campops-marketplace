@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 
@@ -18,13 +19,26 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+const updatePageSchema = z.object({
+  slug: z.string().optional(),
+  title: z.string().optional(),
+  content: z.string().nullable().optional(),
+  meta: z.string().nullable().optional(),
+  sortOrder: z.number().optional(),
+  isPublished: z.union([z.literal(0), z.literal(1)]).optional(),
+});
+
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await auth.api.getSession({ headers: req.headers });
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const body = await req.json();
+    const parsed = updatePageSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const now = Date.now();
     const existing = db.prepare('SELECT id FROM tenant_pages WHERE id = ?').get(params.id) as any;
     if (!existing) {

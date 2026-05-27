@@ -4,6 +4,13 @@ import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { auth } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const profileBodySchema = z.object({
+  fullName: z.string().min(1, 'fullName is required'),
+  bio: z.string().optional(),
+  phone: z.string().optional(),
+});
 
 export async function GET(req: NextRequest) {
   try {
@@ -43,8 +50,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { fullName, bio, phone } = body;
+    const parsed = profileBodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const { fullName, bio, phone } = parsed.data;
 
     // Check if profile exists
     const existing = await db

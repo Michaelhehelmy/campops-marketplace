@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const homepagePutSchema = z.object({
+  sections: z.array(z.string()).min(1, 'sections must be a non-empty array'),
+  roleBased: z.record(z.string(), z.any()).optional(),
+});
 
 /**
  * GET /api/public/homepage-config
@@ -52,12 +58,11 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
-    const body = await req.json();
-    const { sections, roleBased } = body;
-
-    if (!Array.isArray(sections)) {
-      return NextResponse.json({ error: 'sections must be an array' }, { status: 400 });
+    const parsed = homepagePutSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { sections, roleBased } = parsed.data;
 
     // Check if configuration exists
     const prep = db.prepare("SELECT id FROM homepage_config WHERE id = 'main'");

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
@@ -8,14 +9,18 @@ import { logger } from '@/lib/logger';
  * Custom backward-compatibility endpoint for multi-tenant Vite/PWA custom shopfronts.
  * Authenticates email/password using Better-Auth internally and returns token & RBAC context.
  */
+const loginSchema = z.object({
+  email: z.string().min(1, 'Email is required'),
+  password: z.string().min(1, 'Password is required'),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, password } = body;
-
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    const parsed = loginSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { email, password } = parsed.data;
 
     // Authenticate using Better-Auth programmatically
     const authResult = await auth.api.signInEmail({

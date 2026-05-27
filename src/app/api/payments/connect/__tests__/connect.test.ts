@@ -180,7 +180,7 @@ describe('Payments Connect API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('userId, propertyId, and stripeAccountId are required');
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 404 if property not found', async () => {

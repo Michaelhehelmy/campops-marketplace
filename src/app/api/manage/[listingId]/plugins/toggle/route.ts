@@ -4,6 +4,12 @@ import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const toggleBodySchema = z.object({
+  pluginName: z.string().min(1, 'pluginName is required'),
+  isEnabled: z.boolean().optional(),
+});
 
 /**
  * POST /api/manage/[listingId]/plugins/toggle
@@ -17,12 +23,11 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
     const session = await requireListingAccess(req, listingId, ['manager', 'marketplace_master']);
     if (isErrorResponse(session)) return session;
 
-    const body = await req.json();
-    const { pluginName, isEnabled } = body;
-
-    if (!pluginName) {
-      return NextResponse.json({ error: 'pluginName is required' }, { status: 400 });
+    const parsed = toggleBodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { pluginName, isEnabled } = parsed.data;
 
     // Resolve propertyId
     let propertyId = listingId;

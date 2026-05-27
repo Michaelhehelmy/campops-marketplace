@@ -44,7 +44,9 @@ describe('POST /api/manage/[listingId]/plugins/toggle', () => {
     );
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toMatch(/required/i);
+    expect(body.error).toBe('Validation failed');
+    expect(body.details.length).toBeGreaterThanOrEqual(1);
+    expect(body.details[0].path).toContain('pluginName');
   });
 
   it('enables a plugin successfully', async () => {

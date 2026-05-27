@@ -4,6 +4,20 @@ import { db } from '@/lib/db';
 import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const commissionPostSchema = z.object({
+  bookingId: z.string().min(1),
+  stripeAccountId: z.string().min(1),
+  platformFeeCents: z.number().int().nonnegative().optional(),
+});
+
+const commissionPutSchema = z.object({
+  transactionId: z.string().min(1),
+  status: z.string().min(1),
+  stripeTransferId: z.string().optional(),
+  failureReason: z.string().optional(),
+});
 
 // Helper to calculate commission
 async function calculateCommission(
@@ -177,7 +191,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const body = await req.json();
+    const parsed = commissionPostSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { bookingId, stripeAccountId, platformFeeCents = 0 } = body;
 
     if (!bookingId || !stripeAccountId) {
@@ -313,7 +331,11 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await requireSession(req);
     if (isErrorResponse(session)) return session;
-    const body = await req.json();
+    const parsed = commissionPutSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { transactionId, status, stripeTransferId, failureReason } = body;
 
     if (!transactionId || !status) {

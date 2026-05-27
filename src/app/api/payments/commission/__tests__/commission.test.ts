@@ -148,7 +148,7 @@ describe('Payments Commission API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('bookingId and stripeAccountId are required');
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 404 if booking is not found', async () => {
@@ -479,7 +479,7 @@ describe('Payments Commission API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('transactionId and status are required');
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 404 if transaction is not found', async () => {

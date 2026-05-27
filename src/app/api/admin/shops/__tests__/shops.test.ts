@@ -163,7 +163,8 @@ describe('Admin Shops API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId, shopIds array, and action are required');
+      expect(data.error).toBe('Validation failed');
+      expect(data.details).toBeDefined();
     });
 
     it('should return 400 if shopIds is not an array', async () => {
@@ -175,7 +176,8 @@ describe('Admin Shops API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId, shopIds array, and action are required');
+      expect(data.error).toBe('Validation failed');
+      expect(data.details).toBeDefined();
     });
 
     it('should return 403 if user is not marketplace_master', async () => {

@@ -3,6 +3,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const postBodySchema = z.object({
+  propertyId: z.string().min(1, 'propertyId is required'),
+  userId: z.string().min(1, 'userId is required'),
+  pluginName: z.string().min(1, 'pluginName is required'),
+  config: z.record(z.any()).optional().default({}),
+  autoUpdate: z.boolean().optional().default(true),
+});
+
+const putBodySchema = z.object({
+  propertyId: z.string().min(1, 'propertyId is required'),
+  pluginName: z.string().min(1, 'pluginName is required'),
+  config: z.record(z.any(), { required_error: 'config is required' }),
+  featureFlags: z.record(z.any()).optional(),
+});
 
 // GET /api/plugins - Get active plugins with full manifests for a property
 export async function GET(req: NextRequest) {
@@ -88,17 +104,11 @@ export async function GET(req: NextRequest) {
 // POST /api/plugins - Enable a plugin for a property
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { propertyId, userId, pluginName, config = {}, autoUpdate = true } = body;
-
-    if (!propertyId || !userId || !pluginName) {
-      return NextResponse.json(
-        {
-          error: 'propertyId, userId, and pluginName are required',
-        },
-        { status: 400 }
-      );
+    const parsed = postBodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { propertyId, userId, pluginName, config, autoUpdate } = parsed.data;
 
     // Verify plugin exists in marketplace
     const plugin = await db
@@ -196,17 +206,11 @@ export async function POST(req: NextRequest) {
 // PUT /api/plugins - Update plugin configuration
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { propertyId, pluginName, config, featureFlags } = body;
-
-    if (!propertyId || !pluginName || !config) {
-      return NextResponse.json(
-        {
-          error: 'propertyId, pluginName, and config are required',
-        },
-        { status: 400 }
-      );
+    const parsed = putBodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { propertyId, pluginName, config, featureFlags } = parsed.data;
 
     // Verify plugin is enabled for this property
     const existing = await db
@@ -250,7 +254,7 @@ export async function PUT(req: NextRequest) {
       .run(pluginName, propertyId, 'config_update', JSON.stringify({ config }));
 
     AuditService.log({
-      userId: body.userId || 'system',
+      userId: 'system',
       action: 'plugin.config_update',
       resource: 'plugin',
       resourceId: pluginName,

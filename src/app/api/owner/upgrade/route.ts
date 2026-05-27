@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 
-const VALID_PLANS = ['premium', 'ultimate'] as const;
+const upgradeSchema = z.object({
+  siteId: z.string().min(1, 'siteId is required'),
+  newPlan: z.enum(['basic', 'premium', 'ultimate']),
+  subdomain: z.string().optional(),
+  customDomain: z.string().optional(),
+  stripe_payment_method_id: z.string().optional(),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,21 +18,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { siteId, newPlan, subdomain, customDomain } = body;
-
-    if (!siteId || !newPlan) {
-      return NextResponse.json({ error: 'siteId and newPlan are required' }, { status: 400 });
+    const parsed = upgradeSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { siteId, newPlan, subdomain, customDomain, stripe_payment_method_id } = parsed.data;
 
     if (newPlan !== 'basic' && process.env.SKIP_PAYMENT_GATE !== 'true') {
-      if (!body.stripe_payment_method_id || body.stripe_payment_method_id === 'pm_placeholder') {
+      if (!stripe_payment_method_id || stripe_payment_method_id === 'pm_placeholder') {
         return NextResponse.json({ error: 'Payment method required to upgrade plan' }, { status: 402 });
       }
-    }
-
-    if (!VALID_PLANS.includes(newPlan)) {
-      return NextResponse.json({ error: `Invalid plan: ${newPlan}` }, { status: 400 });
     }
 
     const property = (await db

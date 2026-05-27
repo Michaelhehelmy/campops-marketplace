@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 
@@ -25,17 +26,27 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const createPageSchema = z.object({
+  propertyId: z.string().min(1, 'propertyId is required'),
+  slug: z.string().min(1, 'slug is required'),
+  title: z.string().min(1, 'title is required'),
+  content: z.string().optional(),
+  meta: z.string().optional(),
+  sortOrder: z.number().optional(),
+  isPublished: z.union([z.literal(0), z.literal(1)]).optional(),
+});
+
 export async function POST(req: NextRequest) {
   try {
     const session = await auth.api.getSession({ headers: req.headers });
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const body = await req.json();
-    const { propertyId, slug, title, content, meta, sortOrder, isPublished } = body;
-    if (!propertyId || !slug || !title) {
-      return NextResponse.json({ error: 'propertyId, slug, and title are required' }, { status: 400 });
+    const parsed = createPageSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
+    const { propertyId, slug, title, content, meta, sortOrder, isPublished } = parsed.data;
     const id = crypto.randomUUID();
     const now = Date.now();
     db.prepare(

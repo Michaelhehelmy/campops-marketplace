@@ -7,6 +7,13 @@ import fs from 'fs';
 import path from 'path';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const pluginToggleSchema = z.object({
+  pluginId: z.string().min(1),
+  propertyId: z.string().min(1),
+  enabled: z.boolean(),
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -100,7 +107,11 @@ export async function POST(req: NextRequest) {
   try {
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
-    const body = await req.json();
+    const parsed = pluginToggleSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { pluginId, propertyId, enabled } = body;
 
     logger.info(

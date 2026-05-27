@@ -6,6 +6,13 @@ import fs from 'fs';
 import path from 'path';
 import { logger } from '@/lib/logger';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { z } from 'zod';
+
+const listingCreateSchema = z.object({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  template: z.string().optional(),
+});
 
 /**
  * GET /api/master/listings
@@ -106,7 +113,11 @@ export async function POST(req: NextRequest) {
   try {
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
-    const body = await req.json();
+    const parsed = listingCreateSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { name, slug, template } = body;
 
     if (!name || !slug) {

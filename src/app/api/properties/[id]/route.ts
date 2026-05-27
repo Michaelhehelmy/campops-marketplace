@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
@@ -15,6 +16,12 @@ const ALLOWED_BRANDING_FIELDS = [
   'socialLinks',
   'heroImage',
 ];
+
+const updatePropertySchema = z.object({
+  name: z.string().optional(),
+  plan: z.enum(['basic', 'premium', 'ultimate']).optional(),
+  subdomain: z.string().nullable().optional(),
+}).passthrough();
 
 function sanitizeBranding(body: Record<string, unknown>) {
   const branding: Record<string, unknown> = {};
@@ -77,7 +84,11 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await req.json();
+    const parsed = updatePropertySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const updates: string[] = [];
     const values: any[] = [];
 
@@ -89,10 +100,6 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     }
 
     if (body.plan !== undefined) {
-      const validPlans = ['basic', 'premium', 'ultimate'];
-      if (!validPlans.includes(body.plan)) {
-        return NextResponse.json({ error: `Invalid plan: ${body.plan}` }, { status: 400 });
-      }
       updates.push('plan = ?');
       values.push(body.plan);
     }

@@ -133,7 +133,7 @@ describe('Admin Plugins API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId, name, and displayName are required');
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 403 if user is not marketplace_master', async () => {
@@ -245,7 +245,7 @@ describe('Admin Plugins API Route', () => {
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId, pluginName, and updates are required');
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 403 if user is not marketplace_master', async () => {
