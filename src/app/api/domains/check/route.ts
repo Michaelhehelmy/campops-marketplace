@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 const RESERVED_SLUGS = new Set([
   'admin', 'api', 'manage', 'owner', 'guest', 'book', 'stay',
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
       message: `Domain ${normalized} is available.`,
     });
   } catch (err: any) {
-    console.error('[Domain Check] Error:', err);
+    logger.error('[Domain Check] Error:', err);
     return errorResponse(err);
   }
 }

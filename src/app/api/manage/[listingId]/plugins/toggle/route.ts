@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/manage/[listingId]/plugins/toggle
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
 
     return NextResponse.json({ ok: true, pluginName, isEnabled });
   } catch (err: any) {
-    console.error('[Plugin Toggle API] Error:', err);
+    logger.error('[Plugin Toggle API] Error:', err);
     return errorResponse(err);
   }
 }

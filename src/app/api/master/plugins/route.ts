@@ -6,6 +6,7 @@ import { AuditService } from '@/lib/audit';
 import fs from 'fs';
 import path from 'path';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,15 +21,15 @@ export async function GET(req: NextRequest) {
     const session = await requireRole(req, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     if (process.env.NODE_ENV !== 'test') {
-      console.log('[Master Plugins API] Syncing plugins...');
-      await PluginDiscoveryService.syncPlugins().catch((e) => console.error('Sync failed', e));
+      logger.info('[Master Plugins API] Syncing plugins...');
+      await PluginDiscoveryService.syncPlugins().catch((e) => logger.error('Sync failed', e));
     }
 
     const url = new URL(req.url);
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const skip = parseInt(url.searchParams.get('skip') || '0');
 
-    console.log('[Master Plugins API] Fetching plugins...');
+    logger.info('[Master Plugins API] Fetching plugins...');
     let rawPlugins = db
       .prepare(
         'SELECT id, name, display_name, category, is_official, is_active, manifest FROM available_plugins ORDER BY category, name LIMIT ? OFFSET ?'
@@ -43,13 +44,13 @@ export async function GET(req: NextRequest) {
       displayName: p.display_name,
     }));
 
-    console.log('[Master Plugins API] Fetching total count...');
+    logger.info('[Master Plugins API] Fetching total count...');
     let countResult = db.prepare('SELECT COUNT(*) as count FROM available_plugins').get();
     if (countResult instanceof Promise) countResult = await countResult;
 
     const total = countResult?.count || 0;
 
-    console.log('[Master Plugins API] Fetching associations...');
+    logger.info('[Master Plugins API] Fetching associations...');
     let propertyAssociations: any[] = [];
     try {
       let propertyAssociationsRaw = db
@@ -61,7 +62,7 @@ export async function GET(req: NextRequest) {
         propertyAssociationsRaw = await propertyAssociationsRaw;
       propertyAssociations = (propertyAssociationsRaw || []) as any[];
     } catch (e) {
-      console.warn(
+      logger.warn(
         '[Master Plugins API] Failed to fetch property associations, defaulting to empty.'
       );
     }
@@ -69,7 +70,7 @@ export async function GET(req: NextRequest) {
     const bookingAssoc = propertyAssociations.filter(
       (a: any) => (a.pluginName || a.plugin_name) === 'booking'
     );
-    console.log(
+    logger.info(
       `[Master Plugins API] Success: ${plugins.length} plugins, ${total} total, ${propertyAssociations.length} associations. Booking: ${JSON.stringify(bookingAssoc)}`
     );
     return NextResponse.json({
@@ -84,7 +85,7 @@ export async function GET(req: NextRequest) {
         `[GET] Error: ${err.message}\nStack: ${err.stack}\n`
       );
     } catch (e) {}
-    console.error('[Master Plugins API] Error:', err);
+    logger.error('[Master Plugins API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { pluginId, propertyId, enabled } = body;
 
-    console.log(
+    logger.info(
       `[Master Plugins API] Toggle: plugin=${pluginId}, property=${propertyId}, enabled=${enabled}`
     );
 
@@ -114,7 +115,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (propertyId === 'all') {
-      console.log(`[Master Plugins API] Updating global status: ${pluginId} -> ${enabled}`);
+      logger.info(`[Master Plugins API] Updating global status: ${pluginId} -> ${enabled}`);
       await db
         .prepare('UPDATE available_plugins SET is_active = ? WHERE name = ?')
         .run(enabled ? 1 : 0, pluginId);
@@ -135,7 +136,7 @@ export async function POST(req: NextRequest) {
         .get(pluginId, propertyId);
 
       if (existing) {
-        console.log(`[Master Plugins API] Updating existing association: ${existing.id}`);
+        logger.info(`[Master Plugins API] Updating existing association: ${existing.id}`);
         // Update existing
         await db
           .prepare(
@@ -151,9 +152,9 @@ export async function POST(req: NextRequest) {
             `SELECT is_enabled FROM property_plugins WHERE plugin_name = ? AND property_id = ?`
           )
           .get(pluginId, propertyId);
-        console.log(`[Master Plugins API] After update: ${JSON.stringify(verify)}`);
+        logger.info(`[Master Plugins API] After update: ${JSON.stringify(verify)}`);
       } else if (enabled) {
-        console.log(`[Master Plugins API] Creating new association`);
+        logger.info(`[Master Plugins API] Creating new association`);
         // Create new
         await db
           .prepare(
@@ -188,7 +189,7 @@ export async function POST(req: NextRequest) {
         `[POST] Error: ${err.message}\nStack: ${err.stack}\n`
       );
     } catch (e) {}
-    console.error('[Master Plugins API] Error:', err);
+    logger.error('[Master Plugins API] Error:', err);
     return errorResponse(err);
   }
 }

@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/public/featured-listings
@@ -81,7 +82,7 @@ export async function GET(req: NextRequest) {
       total,
     });
   } catch (err: any) {
-    console.error('[Featured Listings API] Error:', err);
+    logger.error('[Featured Listings API] Error:', err);
     return errorResponse(err);
   }
 }

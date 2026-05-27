@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
+import { logger } from '@/lib/logger';
 
 // GET /api/plugins - Get active plugins with full manifests for a property
 export async function GET(req: NextRequest) {
@@ -79,7 +80,7 @@ export async function GET(req: NextRequest) {
       count: pluginsWithAssets.length,
     });
   } catch (err: any) {
-    console.error('[Plugins API] Error:', err);
+    logger.error('[Plugins API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -187,7 +188,7 @@ export async function POST(req: NextRequest) {
       message: 'Plugin enabled successfully',
     });
   } catch (err: any) {
-    console.error('[Plugins Enable API] Error:', err);
+    logger.error('[Plugins Enable API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -262,7 +263,7 @@ export async function PUT(req: NextRequest) {
       message: 'Plugin configuration updated',
     });
   } catch (err: any) {
-    console.error('[Plugins Update API] Error:', err);
+    logger.error('[Plugins Update API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -320,7 +321,7 @@ export async function DELETE(req: NextRequest) {
       message: 'Plugin disabled successfully',
     });
   } catch (err: any) {
-    console.error('[Plugins Disable API] Error:', err);
+    logger.error('[Plugins Disable API] Error:', err);
     return errorResponse(err);
   }
 }

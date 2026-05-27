@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/auth/login
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
       listing_ids,
     });
   } catch (err: any) {
-    console.error('[API Auth Login] Programmatic authenticate failed:', err);
+    logger.error('[API Auth Login] Programmatic authenticate failed:', err);
     return NextResponse.json(
       { error: 'Invalid credentials', message: err.message },
       { status: 401 }

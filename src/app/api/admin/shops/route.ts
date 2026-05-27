@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -121,7 +122,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: any) {
-    console.error('[Admin Shops API] Error:', err);
+    logger.error('[Admin Shops API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -177,7 +178,7 @@ export async function PUT(req: NextRequest) {
       affectedIds: shopIds,
     });
   } catch (err: any) {
-    console.error('[Admin Shops Bulk Update] Error:', err);
+    logger.error('[Admin Shops Bulk Update] Error:', err);
     return errorResponse(err);
   }
 }

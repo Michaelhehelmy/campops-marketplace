@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,7 +103,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ redirect: false });
   } catch (err: any) {
-    console.error('[Redirect Check API] Error:', err);
+    logger.error('[Redirect Check API] Error:', err);
     return NextResponse.json({ redirect: false, error: err.message });
   }
 }

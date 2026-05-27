@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    console.error('[Master Plugin API] Error:', err);
+    logger.error('[Master Plugin API] Error:', err);
     return errorResponse(err);
   }
 }

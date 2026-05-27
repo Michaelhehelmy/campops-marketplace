@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -57,7 +58,7 @@ export async function GET(req: NextRequest) {
       total: commissions.length,
     });
   } catch (err: any) {
-    console.error('[Commissions API] Error:', err);
+    logger.error('[Commissions API] Error:', err);
     return errorResponse(err);
   }
 }

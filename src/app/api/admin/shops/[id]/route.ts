@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -63,7 +64,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     return NextResponse.json({ shop });
   } catch (err: any) {
-    console.error('[Admin Shop Detail API] Error:', err);
+    logger.error('[Admin Shop Detail API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -128,7 +129,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       reason,
     });
   } catch (err: any) {
-    console.error('[Admin Shop Deactivate API] Error:', err);
+    logger.error('[Admin Shop Deactivate API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -231,7 +232,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       overrides,
     });
   } catch (err: any) {
-    console.error('[Admin Shop Override API] Error:', err);
+    logger.error('[Admin Shop Override API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -295,7 +296,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       shopId,
     });
   } catch (err: any) {
-    console.error('[Admin Shop Activate API] Error:', err);
+    logger.error('[Admin Shop Activate API] Error:', err);
     return errorResponse(err);
   }
 }

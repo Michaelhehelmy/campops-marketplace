@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest) {
       count: assets.length,
     });
   } catch (err: any) {
-    console.error('[Admin Plugin Assets API] Error:', err);
+    logger.error('[Admin Plugin Assets API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -154,7 +155,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (err: any) {
-    console.error('[Admin Plugin Assets Create API] Error:', err);
+    logger.error('[Admin Plugin Assets Create API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -247,7 +248,7 @@ export async function PUT(req: NextRequest) {
       message: 'Asset updated successfully',
     });
   } catch (err: any) {
-    console.error('[Admin Plugin Assets Update API] Error:', err);
+    logger.error('[Admin Plugin Assets Update API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -301,7 +302,7 @@ export async function DELETE(req: NextRequest) {
       message: 'Asset deleted successfully',
     });
   } catch (err: any) {
-    console.error('[Admin Plugin Assets Delete API] Error:', err);
+    logger.error('[Admin Plugin Assets Delete API] Error:', err);
     return errorResponse(err);
   }
 }

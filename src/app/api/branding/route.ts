@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
+import { logger } from '@/lib/logger';
 
 // Full branding configuration structure
 export interface BrandingConfig {
@@ -311,7 +312,7 @@ export async function GET(req: NextRequest) {
       plan: property.plan,
     });
   } catch (err: any) {
-    console.error('[Branding API] Error:', err);
+    logger.error('[Branding API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -475,7 +476,7 @@ export async function PUT(req: NextRequest) {
       propertyId: property.id,
     });
   } catch (err: any) {
-    console.error('[Branding API] PUT Error:', err);
+    logger.error('[Branding API] PUT Error:', err);
     return errorResponse(err);
   }
 }

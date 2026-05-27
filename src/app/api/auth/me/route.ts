@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -105,7 +106,7 @@ export async function GET(req: NextRequest) {
       listing_ids,
     });
   } catch (err: any) {
-    console.error('[API Auth Me] Resolve session user failed:', err);
+    logger.error('[API Auth Me] Resolve session user failed:', err);
     return NextResponse.json({ error: 'Unauthorized', message: err.message }, { status: 401 });
   }
 }

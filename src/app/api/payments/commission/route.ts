@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
+import { logger } from '@/lib/logger';
 
 // Helper to calculate commission
 async function calculateCommission(
@@ -154,7 +155,7 @@ export async function GET(req: NextRequest) {
       });
     }
   } catch (err: any) {
-    console.error('[Commission API] Error:', err);
+    logger.error('[Commission API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -302,7 +303,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (err: any) {
-    console.error('[Commission Create API] Error:', err);
+    logger.error('[Commission Create API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -392,7 +393,7 @@ export async function PUT(req: NextRequest) {
       message: 'Commission transaction updated',
     });
   } catch (err: any) {
-    console.error('[Commission Update API] Error:', err);
+    logger.error('[Commission Update API] Error:', err);
     return errorResponse(err);
   }
 }

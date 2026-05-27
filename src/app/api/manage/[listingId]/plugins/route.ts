@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,7 +63,7 @@ export async function GET(req: NextRequest, { params }: { params: { listingId: s
       total: statuses.length,
     });
   } catch (err: any) {
-    console.error('[Manage Plugins API] Error:', err);
+    logger.error('[Manage Plugins API] Error:', err);
     return errorResponse(err);
   }
 }

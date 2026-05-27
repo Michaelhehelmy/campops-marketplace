@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/public/categories
@@ -48,7 +49,7 @@ export async function GET(req: NextRequest) {
       categories,
     });
   } catch (err: any) {
-    console.error('[Categories API] Error:', err);
+    logger.error('[Categories API] Error:', err);
     return errorResponse(err);
   }
 }

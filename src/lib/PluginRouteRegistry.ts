@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Plugin Route Registry
  * ─────────────────────
@@ -67,7 +69,7 @@ class PluginRouteRegistry {
       this.routes.push(entry);
     }
 
-    console.log(
+    logger.info(
       `[PluginRouteRegistry] Registered ${method.toUpperCase()} ${normalizedPattern} for plugin ${pluginId}`
     );
   }

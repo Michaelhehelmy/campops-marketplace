@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import { logger } from '@/lib/logger';
 import { db } from '@/lib/db';
 
 export interface TenantInfo {
@@ -104,7 +105,7 @@ export async function getTenantForHost(host: string): Promise<TenantInfo | null>
       };
     }
   } catch (err) {
-    console.error('[Tenant Resolution] Error:', err);
+    logger.error('[Tenant Resolution] Error:', err);
   }
   return null;
 }

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/master/listings/[id]
@@ -75,7 +76,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       },
     });
   } catch (err: any) {
-    console.error('[Master Listings Detail API] Error:', err);
+    logger.error('[Master Listings Detail API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -154,7 +155,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    console.error('[Master Listings Update API] Error:', err);
+    logger.error('[Master Listings Update API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -204,7 +205,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
     return NextResponse.json({ ok: true, deleted: property.name });
   } catch (err: any) {
-    console.error('[Master Listings Delete API] Error:', err);
+    logger.error('[Master Listings Delete API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -286,7 +287,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (err: any) {
-    console.error('[Master Listings Patch API] Error:', err);
+    logger.error('[Master Listings Patch API] Error:', err);
     return errorResponse(err);
   }
 }

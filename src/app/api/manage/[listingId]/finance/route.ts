@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest, { params }: { params: { listingId: string } }) {
   const session = await requireListingAccess(req, params.listingId, [
@@ -57,7 +58,7 @@ export async function GET(req: NextRequest, { params }: { params: { listingId: s
       commissionRate: commissionRate ? `${(commissionRate.rate * 100).toFixed(1)}%` : '10.0%',
     });
   } catch (err: any) {
-    console.error('[Finance API] Error:', err);
+    logger.error('[Finance API] Error:', err);
     return NextResponse.json({
       stats: {
         totalRevenue: '$0',

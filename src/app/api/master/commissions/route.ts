@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: Request) {
   try {
@@ -62,7 +63,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error: any) {
-    console.error('Failed to fetch commissions:', error);
+    logger.error('Failed to fetch commissions:', error);
     return errorResponse(error);
   }
 }

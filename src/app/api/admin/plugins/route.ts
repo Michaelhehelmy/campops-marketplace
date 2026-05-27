@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 // Helper to verify marketplace_master role
 async function verifyAdminAccess(userId: string): Promise<boolean> {
@@ -100,7 +101,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: any) {
-    console.error('[Admin Plugins API] Error:', err);
+    logger.error('[Admin Plugins API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -210,7 +211,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (err: any) {
-    console.error('[Admin Plugins Create API] Error:', err);
+    logger.error('[Admin Plugins Create API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -322,7 +323,7 @@ export async function PUT(req: NextRequest) {
       message: 'Plugin updated successfully',
     });
   } catch (err: any) {
-    console.error('[Admin Plugins Update API] Error:', err);
+    logger.error('[Admin Plugins Update API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -365,7 +366,7 @@ export async function DELETE(req: NextRequest) {
       message: `Plugin "${pluginName}" has been deactivated from the marketplace`,
     });
   } catch (err: any) {
-    console.error('[Admin Plugins Deactivate API] Error:', err);
+    logger.error('[Admin Plugins Deactivate API] Error:', err);
     return errorResponse(err);
   }
 }

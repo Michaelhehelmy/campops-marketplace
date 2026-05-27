@@ -5,6 +5,7 @@ import { AuditService } from '@/lib/audit';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
 import { validateBody } from '@/lib/validate';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 import {
   provisionSubdomain,
   provisionCustomDomain,
@@ -159,7 +160,7 @@ export async function POST(req: NextRequest, { params }: { params: { listingId: 
       warning: provisioningResult.error || undefined,
     });
   } catch (err: any) {
-    console.error('[Manage Domain API] Error:', err);
+    logger.error('[Manage Domain API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -231,7 +232,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { listingId
 
     return NextResponse.json({ ok: true, listingId });
   } catch (err: any) {
-    console.error('[Manage Domain API] Error:', err);
+    logger.error('[Manage Domain API] Error:', err);
     return errorResponse(err);
   }
 }

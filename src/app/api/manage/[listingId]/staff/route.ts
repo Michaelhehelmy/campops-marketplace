@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireListingAccess, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest, { params }: { params: { listingId: string } }) {
   const session = await requireListingAccess(req, params.listingId, [
@@ -42,7 +43,7 @@ export async function GET(req: NextRequest, { params }: { params: { listingId: s
       }))
     );
   } catch (err: any) {
-    console.error('[Staff API] Error:', err);
+    logger.error('[Staff API] Error:', err);
     return NextResponse.json([]);
   }
 }

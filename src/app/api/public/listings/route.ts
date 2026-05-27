@@ -3,6 +3,7 @@ import { getSqlite } from '@/lib/db';
 import { PostQuery, type GlobalPostQueryArgs, type MetaFilter } from '@/lib/PostQuery';
 import { applyFilters, Hooks } from '@/lib/hooks';
 import { errorResponse } from '@/lib/errors';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,7 +129,7 @@ export async function GET(req: NextRequest) {
       skip: rawSkip,
     });
   } catch (err: any) {
-    console.error('[Public Listings API] Error:', err);
+    logger.error('[Public Listings API] Error:', err);
     return errorResponse(err);
   }
 }

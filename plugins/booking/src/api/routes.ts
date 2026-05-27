@@ -22,26 +22,26 @@ import {
  */
 export function registerRoutes(api: PluginAPI) {
   const bookingService = new BookingService(api.db);
-  const roomService = new RoomService(api.db);
+  const roomService = new RoomService(api.db, api.logger);
 
   // POST /api/p/booking/check-availability
   api.registerRoute('/api/p/booking/check-availability', async (req: any) => {
     try {
       const body = await req.json();
-      console.log('[BookingPlugin] Received check-availability request:', JSON.stringify(body));
+      api.logger.info('[BookingPlugin] Received check-availability request:', JSON.stringify(body));
       const validated = checkAvailabilitySchema.parse(body) as CheckAvailabilityInput;
       const availableRooms = await roomService.checkAvailability(validated);
-      console.log(`[BookingPlugin] Found ${availableRooms.length} available rooms`);
+      api.logger.info(`[BookingPlugin] Found ${availableRooms.length} available rooms`);
       return new Response(JSON.stringify({ availableRooms }), { status: 200 });
     } catch (error: any) {
       if (error.name === 'ZodError') {
-        console.error(
+        api.logger.error(
           '[BookingPlugin] Zod Validation Error:',
           JSON.stringify(error.errors, null, 2)
         );
         return new Response(JSON.stringify({ error: error.errors }), { status: 400 });
       }
-      console.error('[BookingPlugin] Unexpected Error:', error.message);
+      api.logger.error('[BookingPlugin] Unexpected Error:', error.message);
       return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
   });

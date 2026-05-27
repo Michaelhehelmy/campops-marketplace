@@ -5,6 +5,7 @@ import { users, userRoles, accounts } from '@/db/schema';
 import { eq, or } from 'drizzle-orm';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import bcrypt from 'bcryptjs';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: Request) {
   try {
@@ -43,7 +44,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(formattedAdmins);
   } catch (error) {
-    console.error('Failed to fetch admins:', error);
+    logger.error('Failed to fetch admins:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, role, password } = body;
 
-    console.log('[Admin API] Creating admin:', { name, email, role });
+    logger.info('[Admin API] Creating admin:', { name, email, role });
 
     if (!email || !role) {
       return NextResponse.json({ error: 'Email and role are required' }, { status: 400 });
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
       password: hashedPassword,
     });
 
-    console.log('[Admin API] Admin created successfully:', id);
+    logger.info('[Admin API] Admin created successfully:', id);
 
     await drizzle.insert(userRoles).values({
       id: `${id}-role`,
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ id, name, email, role, ok: true }, { status: 201 });
   } catch (error: any) {
-    console.error('[Admin API] Failed to create admin:', error);
+    logger.error('[Admin API] Failed to create admin:', error);
     return errorResponse(error);
   }
 }

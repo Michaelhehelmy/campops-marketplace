@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/public/homepage-config
@@ -42,7 +43,7 @@ export async function GET(req: NextRequest) {
     const data = typeof config.config === 'string' ? JSON.parse(config.config) : config.config;
     return NextResponse.json(data);
   } catch (err: any) {
-    console.error('[Homepage Config API] Error:', err);
+    logger.error('[Homepage Config API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -78,7 +79,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json(response);
   } catch (err: any) {
-    console.error('[Homepage Config API] Error:', err);
+    logger.error('[Homepage Config API] Error:', err);
     return errorResponse(err);
   }
 }

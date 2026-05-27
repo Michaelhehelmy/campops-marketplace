@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   try {
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (err: any) {
-    console.error('[Impersonate API] Error:', err);
+    logger.error('[Impersonate API] Error:', err);
     return NextResponse.json(
       { error: err.message || 'Failed to create impersonation session' },
       { status: 500 }

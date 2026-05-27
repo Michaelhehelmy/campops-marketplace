@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,7 +69,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ plugins, propertyId });
   } catch (err: any) {
-    console.error('[Public Plugins API] Error:', err);
+    logger.error('[Public Plugins API] Error:', err);
     return NextResponse.json({ plugins: [] }, { status: 500 });
   }
 }

@@ -5,13 +5,14 @@ import { users, accounts } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import bcrypt from 'bcryptjs';
+import { logger } from '@/lib/logger';
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(request, ['marketplace_master']);
     if (isErrorResponse(session)) return session;
     const body = await request.json();
-    console.log('[PATCH Admin] Received body:', body, 'for ID:', params.id);
+    logger.info('[PATCH Admin] Received body:', body, 'for ID:', params.id);
     const { name, email, role, status, password } = body;
 
     const updateData: Record<string, any> = {
@@ -56,7 +57,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {
-    console.error('[PATCH Admin] Failed to update admin:', error);
+    logger.error('[PATCH Admin] Failed to update admin:', error);
     return errorResponse(error);
   }
 }
@@ -68,7 +69,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     await drizzle.delete(users).where(eq(users.id, params.id));
     return NextResponse.json({ ok: true });
   } catch (error: any) {
-    console.error('Failed to delete admin:', error);
+    logger.error('Failed to delete admin:', error);
     return errorResponse(error);
   }
 }

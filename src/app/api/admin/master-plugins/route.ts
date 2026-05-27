@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 // POST /api/admin/master-plugins - Toggle a plugin for the master dashboard
 export async function POST(req: NextRequest) {
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
       message: `Plugin ${pluginName} ${enabled ? 'enabled' : 'disabled'} for master dashboard`,
     });
   } catch (err: any) {
-    console.error('[Master Plugins API] Error:', err);
+    logger.error('[Master Plugins API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -74,7 +75,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ plugins });
   } catch (err: any) {
-    console.error('[Master Plugins GET API] Error:', err);
+    logger.error('[Master Plugins GET API] Error:', err);
     return errorResponse(err);
   }
 }

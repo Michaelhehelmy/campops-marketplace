@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { AuditService } from '@/lib/audit';
 import { auth } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: any) {
-    console.error('[Guest Profile API] GET Error:', err);
+    logger.error('[Guest Profile API] GET Error:', err);
     return errorResponse(err);
   }
 }
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, message: 'Profile updated' });
   } catch (err: any) {
-    console.error('[Guest Profile API] POST Error:', err);
+    logger.error('[Guest Profile API] POST Error:', err);
     return errorResponse(err);
   }
 }

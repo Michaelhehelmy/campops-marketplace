@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
@@ -30,8 +31,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       )
       .all(property.id);
 
-    console.log('[Public Property API] Property:', property.id, property.slug);
-    console.log('[Public Property API] Room types:', room_types);
+    logger.info('[Public Property API] Property:', property.id, property.slug);
+    logger.info('[Public Property API] Room types:', room_types);
 
     // Mock availability
     const availability = room_types.map((rt: any) => ({
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       availability,
     });
   } catch (err: any) {
-    console.error('[Public Property API] Error:', err);
+    logger.error('[Public Property API] Error:', err);
     return errorResponse(err);
   }
 }

@@ -2,6 +2,7 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,7 +88,7 @@ export async function GET(req: NextRequest) {
       followedListings: followedListings || [],
     });
   } catch (err: any) {
-    console.error('[Guest Dashboard API] Error:', err);
+    logger.error('[Guest Dashboard API] Error:', err);
     return errorResponse(err);
   }
 }

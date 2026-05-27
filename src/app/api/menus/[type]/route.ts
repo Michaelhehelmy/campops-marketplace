@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 // Menu types supported
 const VALID_MENU_TYPES = ['main', 'footer', 'sidebar', 'mobile', 'admin'] as const;
@@ -204,7 +205,7 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
       },
     });
   } catch (err: any) {
-    console.error(`[Menus API] Error fetching ${params.type} menu:`, err);
+    logger.error(`[Menus API] Error fetching ${params.type} menu:`, err);
     return errorResponse(err);
   }
 }

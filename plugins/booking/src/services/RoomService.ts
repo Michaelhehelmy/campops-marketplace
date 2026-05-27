@@ -6,7 +6,10 @@ import type { CheckAvailabilityInput } from '../schemas.js';
  * Core business logic for room operations
  */
 export class RoomService {
-  constructor(private db: any) {}
+  constructor(
+    private db: any,
+    private logger?: { info: (msg: string, ...args: any[]) => void; error: (msg: string, ...args: any[]) => void }
+  ) {}
 
   async getRoomsByListing(listingId: string) {
     const roomsList = await this.db.query(
@@ -55,13 +58,13 @@ export class RoomService {
         );
 
         if (!availability) {
-          console.log(`[RoomService] No availability found for room ${room.id} on date ${date}`);
+          this.logger?.info(`[RoomService] No availability found for room ${room.id} on date ${date}`);
           isAvailable = false;
           break;
         }
 
         if (availability.available < 1) {
-          console.log(`[RoomService] Room ${room.id} is sold out on date ${date}`);
+          this.logger?.info(`[RoomService] Room ${room.id} is sold out on date ${date}`);
           isAvailable = false;
           break;
         }
@@ -70,7 +73,7 @@ export class RoomService {
       }
 
       if (isAvailable) {
-        console.log(`[RoomService] Room ${room.id} is available for the requested range`);
+        this.logger?.info(`[RoomService] Room ${room.id} is available for the requested range`);
       }
 
       // Check for existing bookings that overlap

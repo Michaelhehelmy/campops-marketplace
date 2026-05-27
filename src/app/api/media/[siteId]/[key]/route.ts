@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ export async function GET(
 
     return NextResponse.redirect(url, { status: 302 });
   } catch (err: any) {
-    console.error('[Media API] Error:', err);
+    logger.error('[Media API] Error:', err);
     return errorResponse(err);
   }
 }

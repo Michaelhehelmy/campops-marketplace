@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import Stripe from 'stripe';
 import { requireSession, isErrorResponse } from '@/lib/auth-middleware';
 import { AuditService } from '@/lib/audit';
+import { logger } from '@/lib/logger';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
   apiVersion: '2023-10-16' as any,
@@ -84,7 +85,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ account });
   } catch (err: any) {
-    console.error('[Stripe Connect Get API] Error:', err);
+    logger.error('[Stripe Connect Get API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -202,7 +203,7 @@ export async function POST(req: NextRequest) {
       message: 'Stripe Connect account linked successfully',
     });
   } catch (err: any) {
-    console.error('[Stripe Connect Create API] Error:', err);
+    logger.error('[Stripe Connect Create API] Error:', err);
     return errorResponse(err);
   }
 }
@@ -249,14 +250,14 @@ export async function PUT(req: NextRequest) {
           return NextResponse.json({ message: `Event ${event.type} ignored` }, { status: 200 });
         }
       } catch (err: any) {
-        console.error('[Stripe Webhook Signature Verification Failed]', err.message);
+        logger.error('[Stripe Webhook Signature Verification Failed]', err.message);
         return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
       }
     } else {
       if (process.env.NODE_ENV === 'production') {
-        console.warn('⚠️ Stripe webhook secret or signature missing in production environment');
+        logger.warn('⚠️ Stripe webhook secret or signature missing in production environment');
       } else {
-        console.warn(
+        logger.warn(
           '⚠️ Stripe webhook secret not configured. Skipping signature verification in local dev.'
         );
       }
@@ -348,7 +349,7 @@ export async function PUT(req: NextRequest) {
       message: 'Stripe Connect account updated',
     });
   } catch (err: any) {
-    console.error('[Stripe Connect Update API] Error:', err);
+    logger.error('[Stripe Connect Update API] Error:', err);
     return errorResponse(err);
   }
 }

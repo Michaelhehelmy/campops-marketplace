@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/listing-access
@@ -88,7 +89,7 @@ export async function GET(req: NextRequest) {
     console.warn(`[Listing Access API] Access denied for user=${userId} on listing=${listingSlug}`);
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   } catch (err) {
-    console.error('[Listing Access API] Error:', err);
+    logger.error('[Listing Access API] Error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,7 +72,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(activity);
   } catch (error) {
-    console.error('Failed to fetch activity:', error);
+    logger.error('Failed to fetch activity:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

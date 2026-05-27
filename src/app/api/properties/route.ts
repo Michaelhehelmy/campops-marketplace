@@ -1,6 +1,7 @@
 import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   const ownerId = req.nextUrl.searchParams.get('ownerId');
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ properties });
   } catch (err: any) {
-    console.error('[Properties API] Error:', err);
+    logger.error('[Properties API] Error:', err);
     return errorResponse(err);
   }
 }
