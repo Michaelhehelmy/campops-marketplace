@@ -90,7 +90,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     };
 
     return (
-      <html lang={locale} className={`${inter.variable} ${outfit.variable}`}>
+      <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${inter.variable} ${outfit.variable}`}>
         <body className="font-sans antialiased">
           <NextIntlClientProvider messages={messages}>
             <a
@@ -103,9 +103,9 @@ export default async function LocaleLayout({ children, params }: Props) {
               dangerouslySetInnerHTML={{
                 __html: `
              :root {
-               --tenant-primary: ${colors.primary || '#0f172a'};
-               --tenant-secondary: ${colors.secondary || '#3b82f6'};
-               --tenant-accent: ${colors.accent || '#10b981'};
+                --tenant-primary: ${colors.primary || '#0f172a'};
+                --tenant-secondary: ${colors.secondary || '#3b82f6'};
+                --tenant-accent: ${colors.accent || '#10b981'};
              }
            `,
               }}
@@ -124,7 +124,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <html lang={locale} className={`${inter.variable} ${outfit.variable}`}>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${inter.variable} ${outfit.variable}`}>
       <body className="font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <a
