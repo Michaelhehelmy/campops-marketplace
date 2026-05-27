@@ -933,3 +933,42 @@ _This section lists persistent lessons, structural details, and API quirks disco
   - `expect(page).toHaveURL(regex)` — URL-based confirmation when page rendering differs
   - `expect([200, 401, 403, 404, 500]).toContain(res.status())` — broad status tolerance for fixture-dependent endpoints
 - **Gotcha**: `/en/guest` does NOT redirect to login without auth (page is publicly accessible). `/en/book/summary` does NOT require auth (renders without redirect). Plugin API `/api/master/plugins` returns 403 when cookie-based auth doesn't sync (same fixture `addCookies` issue).
+
+---
+
+### [2026-05-27] Production Readiness Audit — Log Conversion, RTL Fix, Error Boundaries, Security Check
+
+- **Task**: Military-grade production readiness audit across 7 layers: code bugs, infrastructure, error boundaries, RTL, code quality, security, final verification.
+- **Changes**:
+
+  **Layer 1 — Code Bugs Audit**:
+  - ✅ Plugin auth gaps: Clean — zero `requireSession`/`requireRole` in any plugin. All use `api.auth.getSession()`.
+  - ✅ Hook name consistency: All constants match their emitted strings (`BOOKING_CREATED`="BOOKING_CREATED", `GUEST_CHECKED_OUT`="CHECKOUT_COMPLETED", `CORE_SITE_PLAN_UPGRADED`="core:site:plan_upgraded").
+  - ✅ `plugins/owner/plugin.json` exists.
+  - ✅ `docs/deployment.md` exists.
+
+  **Layer 2 — Infrastructure Hardening**:
+  - ✅ All 7 phases from PROMPT_MILITARY_GRADE.md verified: PM2 cluster mode, Prometheus/Grafana, backup scripts, .env.example, health check, rollback, load testing, log rotation — all existed or already hardened by prior sessions.
+
+  **Layer 3 — Error Boundaries**:
+  - Created `src/app/error.tsx` (root) and `src/app/[locale]/manage/error.tsx` — consistent dark theme, amber button, dev-only error detail.
+
+  **Layer 4 — RTL Support**:
+  - Fixed `src/app/[locale]/layout.tsx`: added `dir={locale === 'ar' ? 'rtl' : 'ltr'}` to both `<html>` elements. Previously had hardcoded no dir attribute.
+
+  **Layer 5 — Code Quality: console.log → structured logger**:
+  - Audited 262 console.log/error/warn instances across the codebase.
+  - Converted 70+ critical instances across 47 files from `console.error`/`console.log` to `logger.error`/`logger.info` from `@/lib/logger`.
+  - Converted plugin files to use `api.logger.info`/`api.logger.error` (booking routes, RoomService).
+  - Files converted: 40 API route files + 2 core lib files (tenant-context.ts, PluginRouteRegistry.ts) + 2 plugin files (booking routes, RoomService) + 2 payment routes.
+
+  **Layer 6 — Security**:
+  - npm audit: 27 vulnerabilities (15 moderate, 12 high) — all in transitive dependencies (qs, esbuild, etc.). No direct dependency fixes needed without breaking changes.
+  - Lint: 3 pre-existing `require()` errors in `metrics.ts` (prom-client). Not introduced by this session.
+
+- **Test Results**: **131 files, 1177 tests passed** — zero regressions.
+- **Files Changed**: 48 files modified, 155 insertions, 107 deletions.
+- **Persistent Learnings**:
+  - `delegation` with `explore` agent timed out after 60 min for large searches — use direct grep/ripgrep for focused searches instead.
+  - RTL dir attribute was the most impactful 2-line fix (affects all Arabic-language pages across the entire app).
+  - The Logger class at `src/lib/logger.ts` was already well-architected but most code bypassed it — the bulk of this session was plumbing it in.
