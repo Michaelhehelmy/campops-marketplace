@@ -37,6 +37,17 @@ export default defineConfig({
         },
       },
     },
+    {
+      name: 'mobile-chrome',
+      testDir: './e2e/tests/responsive',
+      use: {
+        ...devices['Pixel 5'],
+        channel: 'chrome',
+        launchOptions: {
+          executablePath: process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH || '/usr/bin/google-chrome',
+        },
+      },
+    },
   ],
   webServer: {
     command:

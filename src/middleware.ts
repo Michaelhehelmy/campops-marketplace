@@ -20,9 +20,10 @@ function withSecurityHeaders(res: Response | NextResponse, nonce?: string): Next
     ? 'https://*.sinaicamps.com'
     : 'https://*.sinaicamps.com http://localhost:3001 http://127.0.0.1:3001';
 
+  const unsafeEval = isProd ? '' : " 'unsafe-eval'";
   const scriptSrc = nonce
-    ? `'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://static.cloudflareinsights.com`
-    : `'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com`;
+    ? `'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://static.cloudflareinsights.com${unsafeEval}`
+    : `'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com${unsafeEval}`;
 
   response.headers.set(
     'Content-Security-Policy',

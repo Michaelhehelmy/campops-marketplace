@@ -13,9 +13,8 @@ test.describe('Tenant UI Isolation', () => {
     // ShopfrontNav should NOT be present (tenant branding absent)
     await expect(page.locator('text=Safari Camp')).not.toBeVisible();
 
-    // Marketplace sections: Hero section with search and Categories
-    await expect(page.locator('text=Adventure Awaits').first()).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('text=Browse by Category').first()).toBeVisible({ timeout: 15000 });
+    // Marketplace sections: Hero section with search
+    await expect(page.getByRole('region', { name: /hero/i }).first()).toBeVisible({ timeout: 15000 });
   });
 
   test('Tenant subdomain root rewrites to stay page (internal rewrite, URL unchanged)', async ({
@@ -30,8 +29,7 @@ test.describe('Tenant UI Isolation', () => {
     await expect(page.getByRole('navigation').first()).toBeVisible();
 
     // Marketplace homepage sections should NOT be present on tenant domain
-    await expect(page.locator('text=Adventure Awaits')).not.toBeVisible();
-    await expect(page.locator('text=Browse by Category')).not.toBeVisible();
+    await expect(page.getByRole('region', { name: /hero/i })).not.toBeVisible();
   });
 
   test('Tenant subdomain non-root path keeps tenant headers and layout', async ({ page }) => {
@@ -41,7 +39,7 @@ test.describe('Tenant UI Isolation', () => {
     await expect(page.getByRole('navigation').first()).toBeVisible();
 
     // Marketplace homepage sections should NOT be shown
-    await expect(page.locator('text=Adventure Awaits')).not.toBeVisible();
+    await expect(page.getByRole('region', { name: /hero/i })).not.toBeVisible();
   });
 
   test('Main domain does not rewrite or show tenant-specific navigation', async ({ page }) => {

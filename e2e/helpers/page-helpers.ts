@@ -1,7 +1,4 @@
-/**
- * Page helper functions for common actions
- * These encapsulate repetitive test actions using resilient locators
- */
+import type { Page } from '@playwright/test';
 
 export class HomePage {
   constructor(private page: any) {}
@@ -72,4 +69,52 @@ export class AuthPage {
   async submit() {
     await this.page.getByRole('button', { name: /sign in/i }).click();
   }
+}
+
+/**
+ * Sign in via Better Auth API and set cookies in the page context.
+ * Returns the CSRF token for authenticated API calls.
+ */
+export async function loginAs(page: Page, email: string, password = 'password123') {
+  const res = await page.request.post('http://localhost:3000/api/auth/sign-in/email', {
+    headers: { Origin: 'http://localhost:3000' },
+    data: { email, password },
+  });
+  const raw = res.headers()['set-cookie'] || '';
+  const match = raw.match(/x-csrf-token=([^;]+)/);
+  const csrfToken = match ? match[1] : '';
+  return csrfToken;
+}
+
+/**
+ * Sign in via API and return CSRF + session cookies for use with APIRequestContext.
+ */
+export async function signInForRequest(
+  request: import('@playwright/test').APIRequestContext,
+  email: string,
+  password = 'password123'
+): Promise<{ csrfToken: string }> {
+  const res = await request.post('http://localhost:3000/api/auth/sign-in/email', {
+    headers: { Origin: 'http://localhost:3000' },
+    data: { email, password },
+  });
+  const raw = res.headers()['set-cookie'] || '';
+  const match = raw.match(/x-csrf-token=([^;]+)/);
+  const csrfToken = match ? match[1] : '';
+  return { csrfToken };
+}
+
+export function extractCsrf(response: import('@playwright/test').APIResponse): string {
+  const raw = response.headers()['set-cookie'] || '';
+  const match = raw.match(/x-csrf-token=([^;]+)/);
+  return match ? match[1] : '';
+}
+
+export function futureDates(daysFromNow: number, nights: number) {
+  const checkIn = new Date(Date.now() + daysFromNow * 86400000);
+  const checkOut = new Date(checkIn.getTime() + nights * 86400000);
+  return {
+    checkIn: checkIn.toISOString().slice(0, 10),
+    checkOut: checkOut.toISOString().slice(0, 10),
+  };
 }

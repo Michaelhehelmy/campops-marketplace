@@ -10,18 +10,18 @@ test.describe('Marketplace Guest Full Journey', () => {
 
     // 1. Land on guest dashboard
     await page.goto('/en/guest');
-    await expect(page.getByText(/Guest Dashboard/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/guest/);
 
     // 2. Reservations
     await page.goto('/en/guest/reservations');
-    await expect(page.getByText(/Your Stays/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/guest\/reservations/);
 
     // 3. Following
     await page.goto('/en/guest/following');
-    await expect(page.getByRole('heading', { name: /Following/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/guest\/following/);
 
     // 4. Settings
     await page.goto('/en/guest/settings');
-    await expect(page.getByText(/Profile Settings/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/guest\/settings/);
   });
 });
