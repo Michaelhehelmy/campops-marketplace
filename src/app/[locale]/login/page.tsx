@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Loader2, Mail, Lock, ArrowRight, Shield } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export default function LoginPage({ params }: { params: { locale: string } }) {
   const t = useTranslations('login');
@@ -86,6 +87,10 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
       {/* Luxury Ambient Glows */}
       <div className="absolute top-[-20%] left-[-20%] w-[50%] h-[50%] rounded-full bg-amber-500/5 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[50%] h-[50%] rounded-full bg-emerald-500/5 blur-[130px] pointer-events-none" />
+
+      <div className="absolute top-4 end-4 z-20">
+        <LanguageSwitcher locale={params.locale} />
+      </div>
 
       <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 relative z-10">
         <div className="text-center">

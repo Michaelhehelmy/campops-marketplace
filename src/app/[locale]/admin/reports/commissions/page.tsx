@@ -18,7 +18,7 @@ export default function MasterCommissionsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/master/commissions?adminId=master-admin')
+    fetch('/api/master/commissions')
       .then((res) => res.json())
       .then((data) => {
         setReports(data.reports || []);

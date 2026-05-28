@@ -31,7 +31,7 @@ export default function ListingDetailsPage() {
   useEffect(() => {
     const fetchShop = async () => {
       try {
-        const response = await fetch(`/api/admin/shops/${id}?adminId=master-admin`);
+        const response = await fetch(`/api/admin/shops/${id}`);
         if (response.ok) {
           const data = await response.json();
           setShop(data.shop);

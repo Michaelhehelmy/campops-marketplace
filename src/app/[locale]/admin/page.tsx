@@ -39,7 +39,7 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    fetch('/api/master/stats?adminId=master-admin')
+    fetch('/api/master/stats')
       .then((res) => res.json())
       .then((data) => {
         setStats(data);

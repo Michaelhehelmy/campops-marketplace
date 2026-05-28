@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle2, ArrowRight, Globe } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Globe, Eye } from 'lucide-react';
 
 const BASE_DOMAIN = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? 'sinaicamps.com';
 
@@ -92,6 +92,18 @@ export default function SuccessPage() {
         Go to my dashboard
         <ArrowRight className="w-5 h-5" />
       </Link>
+
+      {slug && (
+        <div className="mt-4">
+          <Link
+            href={`/${locale}/stay/${slug}`}
+            className="inline-flex items-center gap-2 text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+            View Your Public Page
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

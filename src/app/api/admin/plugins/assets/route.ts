@@ -2,37 +2,20 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { z } from 'zod';
-
-// Helper to verify marketplace_master role
-async function verifyAdminAccess(userId: string): Promise<boolean> {
-  const role = await db
-    .prepare(
-      `
-    SELECT role FROM user_roles 
-    WHERE user_id = $1 AND role = 'marketplace_master'
-  `
-    )
-    .get(userId);
-
-  return !!role;
-}
 
 // GET /api/admin/plugins/assets - Get plugin assets for a plugin
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
     const pluginName = searchParams.get('pluginName');
 
-    if (!adminId || !pluginName) {
-      return NextResponse.json({ error: 'adminId and pluginName are required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    if (!pluginName) {
+      return NextResponse.json({ error: 'pluginName is required' }, { status: 400 });
     }
 
     const assets = await db
@@ -67,7 +50,6 @@ export async function GET(req: NextRequest) {
 }
 
 const createAssetSchema = z.object({
-  adminId: z.string(),
   pluginName: z.string(),
   assetType: z.string(),
   assetUrl: z.string(),
@@ -79,34 +61,29 @@ const createAssetSchema = z.object({
 // POST /api/admin/plugins/assets - Add a new asset to a plugin
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = createAssetSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
     const {
-      adminId,
       pluginName,
       assetType,
       assetUrl,
       targetLocation,
       loadOrder,
       cacheDurationSeconds,
-    } = body;
+    } = parsed.data;
 
-    if (!adminId || !pluginName || !assetType || !assetUrl) {
+    if (!pluginName || !assetType || !assetUrl) {
       return NextResponse.json(
         {
-          error: 'adminId, pluginName, assetType, and assetUrl are required',
+          error: 'pluginName, assetType, and assetUrl are required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Validate asset type
@@ -176,7 +153,6 @@ export async function POST(req: NextRequest) {
 }
 
 const updateAssetSchema = z.object({
-  adminId: z.string(),
   assetId: z.union([z.string(), z.number()]),
   updates: z.record(z.string(), z.any()),
 });
@@ -184,26 +160,22 @@ const updateAssetSchema = z.object({
 // PUT /api/admin/plugins/assets - Update an asset
 export async function PUT(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = updateAssetSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
-    const { adminId, assetId, updates } = body;
+    const { assetId, updates } = parsed.data;
 
-    if (!adminId || !assetId || !updates) {
+    if (!assetId || !updates) {
       return NextResponse.json(
         {
-          error: 'adminId, assetId, and updates are required',
+          error: 'assetId and updates are required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if asset exists
@@ -281,23 +253,19 @@ export async function PUT(req: NextRequest) {
 // DELETE /api/admin/plugins/assets - Delete an asset
 export async function DELETE(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
     const assetId = searchParams.get('assetId');
 
-    if (!adminId || !assetId) {
+    if (!assetId) {
       return NextResponse.json(
         {
-          error: 'adminId and assetId are required',
+          error: 'assetId is required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if asset exists

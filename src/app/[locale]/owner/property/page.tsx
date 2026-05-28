@@ -526,6 +526,7 @@ export default function OwnerPropertyPage() {
         </div>
 
         {/* Branding section */}
+        {data && data.plan !== 'basic' && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6">
           <h2 className="font-semibold text-gray-900 flex items-center gap-2">
             <Palette className="w-5 h-5 text-indigo-500" />
@@ -690,6 +691,7 @@ export default function OwnerPropertyPage() {
             />
           </div>
         </div>
+        )}
 
         {/* Submit */}
         <div className="flex justify-end pt-2">

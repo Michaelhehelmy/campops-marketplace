@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 interface TenantData {
   id: string;
   slug: string;
@@ -24,10 +28,11 @@ interface Props {
 }
 
 export function TenantHomePage({ tenant, locale }: Props) {
+  const t = useTranslations('tenant');
   const branding = tenant.branding || {};
   const colors = branding.colors || {};
   const heroBg = branding.hero?.backgroundImage || '';
-  const tagline = branding.tagline || 'Welcome';
+  const tagline = branding.tagline || t('welcomeTo');
 
   return (
     <main>
@@ -48,18 +53,24 @@ export function TenantHomePage({ tenant, locale }: Props) {
             <p className="text-zinc-400 max-w-xl mx-auto">{tenant.description}</p>
           )}
           <div className="mt-8 flex gap-4 justify-center">
-            <a
-              href={bookingHref(locale, tenant)}
-              className="px-8 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
-              style={{ backgroundColor: 'var(--tenant-primary)' }}
-            >
-              Book Now
-            </a>
+            {tenant.settings?.bookingEnabled !== false ? (
+              <a
+                href={bookingHref(locale, tenant)}
+                className="px-8 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
+                style={{ backgroundColor: 'var(--tenant-primary)' }}
+              >
+                {t('bookNow')}
+              </a>
+            ) : (
+              <span className="px-8 py-3 rounded-xl italic text-zinc-400 border border-zinc-700">
+                {t('contactToInquire')}
+              </span>
+            )}
             <a
               href={tenantHref(locale, tenant, '/contact')}
               className="px-8 py-3 rounded-xl font-bold text-zinc-300 border border-zinc-700 hover:border-zinc-500 transition-all"
             >
-              Contact Us
+              {t('contactUs')}
             </a>
           </div>
         </div>
@@ -69,20 +80,20 @@ export function TenantHomePage({ tenant, locale }: Props) {
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-black text-white mb-6">About {tenant.name}</h2>
+            <h2 className="text-4xl font-black text-white mb-6">{t('aboutUs', { name: tenant.name })}</h2>
             <p className="text-zinc-400 leading-relaxed mb-6">
-              {tenant.description || 'Discover the beauty of Sinai with us.'}
+              {tenant.description || t('aboutPreview')}
             </p>
             <a
               href={tenantHref(locale, tenant, '/about')}
               className="inline-flex items-center gap-2 font-bold text-white hover:opacity-80 transition-opacity"
               style={{ color: 'var(--tenant-secondary)' }}
             >
-              Learn more →
+              {t('learnMore')} →
             </a>
           </div>
           <div className="h-80 rounded-2xl bg-zinc-800/50 flex items-center justify-center text-zinc-600">
-            Image Gallery
+            {t('placeholderImage')}
           </div>
         </div>
       </section>
@@ -90,23 +101,23 @@ export function TenantHomePage({ tenant, locale }: Props) {
       {/* Rooms Preview */}
       <section className="bg-zinc-900/50 py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-black text-white mb-4 text-center">Our Rooms</h2>
+          <h2 className="text-4xl font-black text-white mb-4 text-center">{t('ourRooms')}</h2>
           <p className="text-zinc-400 text-center mb-12 max-w-xl mx-auto">
-            Comfortable accommodations for every type of traveler
+            {t('roomsSubtitle')}
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="rounded-2xl bg-zinc-800/30 p-6 border border-zinc-800">
                 <div className="h-40 rounded-xl bg-zinc-700/50 mb-4 flex items-center justify-center text-zinc-600">
-                  Room Image
+                  {t('roomImage')}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Room Type {i}</h3>
-                <p className="text-sm text-zinc-500 mb-4">Description coming soon.</p>
+                <h3 className="text-lg font-bold text-white mb-2">{t('roomType', { i })}</h3>
+                <p className="text-sm text-zinc-500 mb-4">{t('roomDesc')}</p>
                 <span
                   className="text-sm font-bold"
                   style={{ color: 'var(--tenant-primary)' }}
                 >
-                  From $XX/night
+                  {t('fromPrice', { price: '$XX' })}
                 </span>
               </div>
             ))}
@@ -117,17 +128,42 @@ export function TenantHomePage({ tenant, locale }: Props) {
               className="inline-flex items-center gap-2 font-bold hover:opacity-80 transition-opacity"
               style={{ color: 'var(--tenant-secondary)' }}
             >
-              View all rooms →
+              {t('viewAllRooms')} →
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-10">{t('whatGuestsSay')}</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Review cards */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <div className="flex text-amber-400 mb-3">{t('starRating')}</div>
+              <p className="text-gray-600 mb-4">{t('review1')}</p>
+              <p className="font-semibold">{t('reviewer1')}</p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <div className="flex text-amber-400 mb-3">{t('starRating')}</div>
+              <p className="text-gray-600 mb-4">{t('review2')}</p>
+              <p className="font-semibold">{t('reviewer2')}</p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <div className="flex text-amber-400 mb-3">{t('starRating4')}</div>
+              <p className="text-gray-600 mb-4">{t('review3')}</p>
+              <p className="font-semibold">{t('reviewer3')}</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
       <section className="max-w-7xl mx-auto px-4 py-20">
-        <h2 className="text-4xl font-black text-white mb-8 text-center">Get in Touch</h2>
+        <h2 className="text-4xl font-black text-white mb-8 text-center">{t('getInTouch')}</h2>
         <p className="text-zinc-400 text-center mb-12 max-w-xl mx-auto">
-          Have questions? Reach out to us.
+          {t('getInTouchDesc')}
         </p>
         <div className="max-w-lg mx-auto space-y-4">
           <p className="text-zinc-300 text-center">
@@ -139,7 +175,7 @@ export function TenantHomePage({ tenant, locale }: Props) {
               className="inline-block px-8 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--tenant-primary)' }}
             >
-              Contact Form
+              {t('contactForm')}
             </a>
           </div>
         </div>
@@ -147,3 +183,5 @@ export function TenantHomePage({ tenant, locale }: Props) {
     </main>
   );
 }
+
+

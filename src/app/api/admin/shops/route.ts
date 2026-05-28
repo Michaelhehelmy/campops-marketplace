@@ -2,51 +2,22 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
-// Helper to verify marketplace_master role
-async function verifyAdminAccess(userId: string): Promise<boolean> {
-  // Demo override: Always allow 'master-admin' if database URL is missing
-  if (userId === 'master-admin' && !process.env.DATABASE_URL) {
-    return true;
-  }
-
-  const role = await db
-    .prepare(
-      `
-    SELECT role FROM user_roles 
-    WHERE user_id = $1 AND role = 'marketplace_master'
-  `
-    )
-    .get(userId);
-
-  return !!role;
-}
-
 // GET /api/admin/shops - List all shops with filtering
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
     const status = searchParams.get('status'); // 'active', 'inactive', or null for all
     const search = searchParams.get('search');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json(
-        { error: 'Unauthorized: marketplace_master role required' },
-        { status: 403 }
-      );
-    }
 
     // Build query
     let whereClause = 'WHERE 1=1';
@@ -129,7 +100,6 @@ export async function GET(req: NextRequest) {
 }
 
 const bulkUpdateShopsSchema = z.object({
-  adminId: z.string(),
   shopIds: z.array(z.string()),
   action: z.string(),
 });
@@ -137,26 +107,22 @@ const bulkUpdateShopsSchema = z.object({
 // PUT /api/admin/shops - Bulk update shops (activate/deactivate multiple)
 export async function PUT(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = bulkUpdateShopsSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
-    const { adminId, shopIds, action } = body;
+    const { shopIds, action } = parsed.data;
 
-    if (!adminId || !shopIds || !Array.isArray(shopIds) || !action) {
+    if (!shopIds || !Array.isArray(shopIds) || !action) {
       return NextResponse.json(
         {
-          error: 'adminId, shopIds array, and action are required',
+          error: 'shopIds array, and action are required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     if (!['activate', 'deactivate'].includes(action)) {

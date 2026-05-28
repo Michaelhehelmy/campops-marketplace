@@ -2,10 +2,10 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { z } from 'zod';
 
 const toggleMasterPluginSchema = z.object({
-  adminId: z.string(),
   pluginName: z.string(),
   enabled: z.boolean().optional(),
 });
@@ -13,28 +13,17 @@ const toggleMasterPluginSchema = z.object({
 // POST /api/admin/master-plugins - Toggle a plugin for the master dashboard
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = toggleMasterPluginSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const { adminId, pluginName, enabled } = parsed.data;
+    const { pluginName, enabled } = parsed.data;
 
-    if (!adminId || !pluginName) {
-      return NextResponse.json({ error: 'adminId and pluginName are required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const role = await db
-      .prepare(
-        `
-      SELECT role FROM user_roles 
-      WHERE user_id = $1 AND role = 'marketplace_master'
-    `
-      )
-      .get(adminId);
-
-    if (!role) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    if (!pluginName) {
+      return NextResponse.json({ error: 'pluginName is required' }, { status: 400 });
     }
 
     // Upsert master plugin setting
@@ -47,7 +36,7 @@ export async function POST(req: NextRequest) {
       DO UPDATE SET is_enabled = $3, updated_at = CURRENT_TIMESTAMP
     `
       )
-      .run(adminId, pluginName, enabled);
+      .run(session.user.id, pluginName, enabled);
 
     return NextResponse.json({
       success: true,
@@ -62,12 +51,8 @@ export async function POST(req: NextRequest) {
 // GET /api/admin/master-plugins - List all plugins with master-specific activation status
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
 
     const plugins = await db
       .prepare(
@@ -82,7 +67,7 @@ export async function GET(req: NextRequest) {
       WHERE ap.is_active = true
     `
       )
-      .all(adminId);
+      .all(session.user.id);
 
     return NextResponse.json({ plugins });
   } catch (err: any) {

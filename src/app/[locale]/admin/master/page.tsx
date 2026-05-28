@@ -51,7 +51,7 @@ export default function MasterOverviewPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/master/stats?adminId=master-admin');
+        const response = await fetch('/api/master/stats');
         if (response.ok) {
           const data = await response.json();
           setStats(data);

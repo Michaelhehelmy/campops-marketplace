@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { Loader2, CheckCircle2, LogOut, X, Plus } from 'lucide-react';
+import { Loader2, CheckCircle2, LogOut, X, Plus, Calendar } from 'lucide-react';
 
 function csrfToken(): string {
   if (typeof document === 'undefined') return '';
@@ -32,6 +32,18 @@ export default function BookingsPage() {
   const [manageModal, setManageModal] = useState<Booking | null>(null);
   const [modalNotes, setModalNotes] = useState('');
   const [saving, setSaving] = useState(false);
+  const [bookingEnabled, setBookingEnabled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/plugins/ui-registry?propertyId=${listingId}`, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        const hasBookingSlot =
+          data.slots && data.slots['public.booking'] && data.slots['public.booking'].length > 0;
+        setBookingEnabled(!!hasBookingSlot);
+      })
+      .catch(() => setBookingEnabled(false));
+  }, [listingId]);
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
@@ -97,6 +109,16 @@ export default function BookingsPage() {
     };
     return map[status] ?? 'bg-gray-100 text-gray-700';
   };
+
+  if (bookingEnabled === false) {
+    return (
+      <div className="text-center py-16">
+        <Calendar className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+        <h2 className="text-xl font-semibold text-gray-500 mb-2">Booking plugin not enabled</h2>
+        <p className="text-gray-400">Contact the property manager to enable bookings.</p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

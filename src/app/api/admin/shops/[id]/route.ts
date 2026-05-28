@@ -2,37 +2,16 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { z } from 'zod';
-
-// Helper to verify marketplace_master role
-async function verifyAdminAccess(userId: string): Promise<boolean> {
-  const role = await db
-    .prepare(
-      `
-    SELECT role FROM user_roles 
-    WHERE user_id = $1 AND role = 'marketplace_master'
-  `
-    )
-    .get(userId);
-
-  return !!role;
-}
 
 // GET /api/admin/shops/:id - Get single shop details
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const shopId = params.id;
-    const adminId = req.nextUrl.searchParams.get('adminId');
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
 
     const shop = await db
       .prepare(
@@ -71,30 +50,21 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 const deactivateShopSchema = z.object({
-  adminId: z.string(),
   reason: z.string().optional(),
 });
 
 // POST /api/admin/shops/:id/deactivate - Deactivate a shop
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const shopId = params.id;
     const parsed = deactivateShopSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
-    const { adminId, reason } = body;
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    const { reason } = parsed.data;
 
     // Check if shop exists
     const shop = await db
@@ -124,7 +94,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       `
         )
         .run(
-          adminId,
+          session.user.id,
           'shop_deactivate',
           'properties',
           shopId,
@@ -145,34 +115,29 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 }
 
 const overrideShopSchema = z.object({
-  adminId: z.string(),
   overrides: z.record(z.string(), z.any()),
 });
 
 // PUT /api/admin/shops/:id/override - Override shop listing data
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const shopId = params.id;
     const parsed = overrideShopSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
-    const { adminId, overrides } = body;
+    const { overrides } = parsed.data;
 
-    if (!adminId || !overrides || typeof overrides !== 'object') {
+    if (!overrides || typeof overrides !== 'object') {
       return NextResponse.json(
         {
-          error: 'adminId and overrides object are required',
+          error: 'overrides object is required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if shop exists
@@ -236,7 +201,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       `
         )
         .run(
-          adminId,
+          session.user.id,
           'shop_override',
           'properties',
           shopId,
@@ -256,29 +221,18 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-const activateShopSchema = z.object({
-  adminId: z.string(),
-});
+const activateShopSchema = z.object({});
 
 // PATCH /api/admin/shops/:id/activate - Activate a shop
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const shopId = params.id;
     const parsed = activateShopSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
-    }
-    const body = parsed.data;
-    const { adminId } = body;
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if shop exists
@@ -309,7 +263,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       `
         )
         .run(
-          adminId,
+          session.user.id,
           'shop_activate',
           'properties',
           shopId,

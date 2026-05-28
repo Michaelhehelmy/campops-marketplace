@@ -3,7 +3,8 @@ import { GET, POST, PUT, DELETE } from '../route';
 import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 
-vi.mock('@/lib/db', () => {
+vi.mock(import('@/lib/db'), async (importOriginal) => {
+  const actual = await importOriginal();
   const getMock = vi.fn();
   const allMock = vi.fn();
   const runMock = vi.fn();
@@ -15,12 +16,14 @@ vi.mock('@/lib/db', () => {
   }));
 
   return {
+    ...actual,
     db: {
       prepare: prepareMock,
       get: getMock,
       all: allMock,
       run: runMock,
     },
+    drizzle: {} as any,
   };
 });
 
@@ -30,31 +33,6 @@ describe('Admin Plugins API Route', () => {
   });
 
   describe('GET /api/admin/plugins', () => {
-    it('should return 400 if adminId is missing', async () => {
-      const req = new NextRequest('http://localhost/api/admin/plugins');
-      const res = await GET(req);
-      const data = await res.json();
-
-      expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId is required');
-    });
-
-    it('should return 403 if user is not marketplace_master', async () => {
-      const prepareMock = vi.mocked(db.prepare);
-      prepareMock.mockReturnValue({
-        get: vi.fn().mockResolvedValue(null), // verifyAdminAccess fails
-        all: vi.fn(),
-        run: vi.fn(),
-      });
-
-      const req = new NextRequest('http://localhost/api/admin/plugins?adminId=user-1');
-      const res = await GET(req);
-      const data = await res.json();
-
-      expect(res.status).toBe(403);
-      expect(data.error).toBe('Unauthorized: marketplace_master role required');
-    });
-
     it('should filter, search, and return plugins with installs count', async () => {
       const mockPlugins = [
         { name: 'booking', display_name: 'Booking', category: 'core', is_official: 1 },
@@ -62,9 +40,8 @@ describe('Admin Plugins API Route', () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce({ total: 1 }); // count query
-      const allMock = vi.fn().mockResolvedValue(mockPlugins); // plugins list
+        .mockResolvedValueOnce({ total: 1 });
+      const allMock = vi.fn().mockResolvedValue(mockPlugins);
 
       prepareMock.mockReturnValue({
         get: getMock,
@@ -73,7 +50,7 @@ describe('Admin Plugins API Route', () => {
       });
 
       const req = new NextRequest(
-        'http://localhost/api/admin/plugins?adminId=admin-1&category=core&status=active&search=booking&limit=10&offset=0'
+        'http://localhost/api/admin/plugins?category=core&status=active&search=booking&limit=10&offset=0'
       );
       const res = await GET(req);
       const data = await res.json();
@@ -88,7 +65,6 @@ describe('Admin Plugins API Route', () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' })
         .mockResolvedValueOnce({ total: 0 });
       const allMock = vi.fn().mockResolvedValue([]);
 
@@ -99,7 +75,7 @@ describe('Admin Plugins API Route', () => {
       });
 
       const req = new NextRequest(
-        'http://localhost/api/admin/plugins?adminId=admin-1&status=inactive'
+        'http://localhost/api/admin/plugins?status=inactive'
       );
       const res = await GET(req);
       const data = await res.json();
@@ -108,13 +84,63 @@ describe('Admin Plugins API Route', () => {
       expect(data.plugins).toEqual([]);
     });
 
+    it('should return pagination.hasMore true when there are more results', async () => {
+      const mockPlugins = [
+        { name: 'booking', display_name: 'Booking', category: 'core', is_official: 1 },
+      ];
+      const prepareMock = vi.mocked(db.prepare);
+      const getMock = vi
+        .fn()
+        .mockResolvedValueOnce({ total: 2 });
+      const allMock = vi.fn().mockResolvedValue(mockPlugins);
+
+      prepareMock.mockReturnValue({
+        get: getMock,
+        all: allMock,
+        run: vi.fn(),
+      });
+
+      const req = new NextRequest(
+        'http://localhost/api/admin/plugins?limit=1&offset=0'
+      );
+      const res = await GET(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data.pagination.hasMore).toBe(true);
+    });
+
+    it('should return empty plugins list for search with no matches', async () => {
+      const prepareMock = vi.mocked(db.prepare);
+      const getMock = vi
+        .fn()
+        .mockResolvedValueOnce({ total: 0 });
+      const allMock = vi.fn().mockResolvedValue([]);
+
+      prepareMock.mockReturnValue({
+        get: getMock,
+        all: allMock,
+        run: vi.fn(),
+      });
+
+      const req = new NextRequest(
+        'http://localhost/api/admin/plugins?search=nonexistent'
+      );
+      const res = await GET(req);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data.plugins).toEqual([]);
+      expect(data.pagination.total).toBe(0);
+    });
+
     it('should return 500 on database error during GET', async () => {
       const prepareMock = vi.mocked(db.prepare);
       prepareMock.mockImplementation(() => {
         throw new Error('Select failed');
       });
 
-      const req = new NextRequest('http://localhost/api/admin/plugins?adminId=admin-1');
+      const req = new NextRequest('http://localhost/api/admin/plugins');
       const res = await GET(req);
       const data = await res.json();
 
@@ -124,7 +150,7 @@ describe('Admin Plugins API Route', () => {
   });
 
   describe('POST /api/admin/plugins', () => {
-    it('should return 400 if adminId, name, or displayName is missing', async () => {
+    it('should return 400 if name or displayName is missing', async () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
         body: JSON.stringify({ name: 'ical' }),
@@ -136,31 +162,23 @@ describe('Admin Plugins API Route', () => {
       expect(data.error).toBe('Validation failed');
     });
 
-    it('should return 403 if user is not marketplace_master', async () => {
-      const prepareMock = vi.mocked(db.prepare);
-      prepareMock.mockReturnValue({
-        get: vi.fn().mockResolvedValue(null), // verifyAdminAccess fails
-        all: vi.fn(),
-        run: vi.fn(),
-      });
-
+    it('should return 400 for POST with empty request body', async () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
-        body: JSON.stringify({ adminId: 'user-1', name: 'ical', displayName: 'iCal Sync' }),
+        body: JSON.stringify({}),
       });
       const res = await POST(req);
       const data = await res.json();
 
-      expect(res.status).toBe(403);
-      expect(data.error).toBe('Unauthorized');
+      expect(res.status).toBe(400);
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 409 if plugin name already exists', async () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce({ id: 'existing-plugin-id' }); // plugin exists check
+        .mockResolvedValueOnce({ id: 'existing-plugin-id' });
 
       prepareMock.mockReturnValue({
         get: getMock,
@@ -170,7 +188,7 @@ describe('Admin Plugins API Route', () => {
 
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
-        body: JSON.stringify({ adminId: 'admin-1', name: 'ical', displayName: 'iCal Sync' }),
+        body: JSON.stringify({ name: 'ical', displayName: 'iCal Sync' }),
       });
       const res = await POST(req);
       const data = await res.json();
@@ -184,9 +202,8 @@ describe('Admin Plugins API Route', () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce(null) // no existing plugin
-        .mockResolvedValueOnce(mockPlugin); // fetch created record
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockPlugin);
       const runMock = vi.fn().mockResolvedValue({ lastInsertRowid: 'p-new' });
 
       prepareMock.mockReturnValue({
@@ -198,7 +215,6 @@ describe('Admin Plugins API Route', () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
         body: JSON.stringify({
-          adminId: 'admin-1',
           name: 'ical',
           displayName: 'iCal Sync',
           description: 'Sync bookings via iCal format',
@@ -225,7 +241,7 @@ describe('Admin Plugins API Route', () => {
 
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
-        body: JSON.stringify({ adminId: 'admin-1', name: 'ical', displayName: 'iCal Sync' }),
+        body: JSON.stringify({ name: 'ical', displayName: 'iCal Sync' }),
       });
       const res = await POST(req);
       const data = await res.json();
@@ -236,7 +252,7 @@ describe('Admin Plugins API Route', () => {
   });
 
   describe('PUT /api/admin/plugins', () => {
-    it('should return 400 if adminId, pluginName, or updates is missing', async () => {
+    it('should return 400 if pluginName or updates is missing', async () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
         body: JSON.stringify({ pluginName: 'ical' }),
@@ -248,31 +264,23 @@ describe('Admin Plugins API Route', () => {
       expect(data.error).toBe('Validation failed');
     });
 
-    it('should return 403 if user is not marketplace_master', async () => {
-      const prepareMock = vi.mocked(db.prepare);
-      prepareMock.mockReturnValue({
-        get: vi.fn().mockResolvedValue(null), // verifyAdminAccess fails
-        all: vi.fn(),
-        run: vi.fn(),
-      });
-
+    it('should return 400 for PUT with empty request body', async () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
-        body: JSON.stringify({ adminId: 'user-1', pluginName: 'ical', updates: {} }),
+        body: JSON.stringify({}),
       });
       const res = await PUT(req);
       const data = await res.json();
 
-      expect(res.status).toBe(403);
-      expect(data.error).toBe('Unauthorized');
+      expect(res.status).toBe(400);
+      expect(data.error).toBe('Validation failed');
     });
 
     it('should return 404 if plugin is not found', async () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce(null); // plugin not found
+        .mockResolvedValueOnce(null);
 
       prepareMock.mockReturnValue({
         get: getMock,
@@ -282,7 +290,7 @@ describe('Admin Plugins API Route', () => {
 
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
-        body: JSON.stringify({ adminId: 'admin-1', pluginName: 'ical', updates: {} }),
+        body: JSON.stringify({ pluginName: 'ical', updates: {} }),
       });
       const res = await PUT(req);
       const data = await res.json();
@@ -295,8 +303,7 @@ describe('Admin Plugins API Route', () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce({ name: 'ical' }); // plugin found
+        .mockResolvedValueOnce({ name: 'ical' });
 
       prepareMock.mockReturnValue({
         get: getMock,
@@ -307,7 +314,6 @@ describe('Admin Plugins API Route', () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
         body: JSON.stringify({
-          adminId: 'admin-1',
           pluginName: 'ical',
           updates: { invalidField: 'ignored' },
         }),
@@ -324,9 +330,8 @@ describe('Admin Plugins API Route', () => {
       const prepareMock = vi.mocked(db.prepare);
       const getMock = vi
         .fn()
-        .mockResolvedValueOnce({ role: 'marketplace_master' }) // verifyAdminAccess
-        .mockResolvedValueOnce({ name: 'ical' }) // plugin exists
-        .mockResolvedValueOnce(mockPlugin); // updated record fetch
+        .mockResolvedValueOnce({ name: 'ical' })
+        .mockResolvedValueOnce(mockPlugin);
       const runMock = vi.fn().mockResolvedValue({ changes: 1 });
 
       prepareMock.mockReturnValue({
@@ -338,7 +343,6 @@ describe('Admin Plugins API Route', () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
         body: JSON.stringify({
-          adminId: 'admin-1',
           pluginName: 'ical',
           updates: {
             displayName: 'Updated iCal Sync',
@@ -364,7 +368,6 @@ describe('Admin Plugins API Route', () => {
       const req = new NextRequest('http://localhost/api/admin/plugins', {
         method: 'PUT',
         body: JSON.stringify({
-          adminId: 'admin-1',
           pluginName: 'ical',
           updates: { displayName: 'iCal' },
         }),
@@ -378,31 +381,13 @@ describe('Admin Plugins API Route', () => {
   });
 
   describe('DELETE /api/admin/plugins', () => {
-    it('should return 400 if adminId or pluginName is missing', async () => {
-      const req = new NextRequest('http://localhost/api/admin/plugins?pluginName=ical');
+    it('should return 400 if pluginName is missing from query', async () => {
+      const req = new NextRequest('http://localhost/api/admin/plugins');
       const res = await DELETE(req);
       const data = await res.json();
 
       expect(res.status).toBe(400);
-      expect(data.error).toBe('adminId and pluginName are required');
-    });
-
-    it('should return 403 if user is not marketplace_master', async () => {
-      const prepareMock = vi.mocked(db.prepare);
-      prepareMock.mockReturnValue({
-        get: vi.fn().mockResolvedValue(null), // verifyAdminAccess fails
-        all: vi.fn(),
-        run: vi.fn(),
-      });
-
-      const req = new NextRequest(
-        'http://localhost/api/admin/plugins?adminId=user-1&pluginName=ical'
-      );
-      const res = await DELETE(req);
-      const data = await res.json();
-
-      expect(res.status).toBe(403);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error).toBe('pluginName is required');
     });
 
     it('should deactivate plugin and return 200', async () => {
@@ -410,13 +395,13 @@ describe('Admin Plugins API Route', () => {
       const runMock = vi.fn().mockResolvedValue({ changes: 1 });
 
       prepareMock.mockReturnValue({
-        get: vi.fn().mockResolvedValue({ role: 'marketplace_master' }), // verifyAdminAccess
+        get: vi.fn(),
         all: vi.fn(),
         run: runMock,
       });
 
       const req = new NextRequest(
-        'http://localhost/api/admin/plugins?adminId=admin-1&pluginName=ical'
+        'http://localhost/api/admin/plugins?pluginName=ical'
       );
       const res = await DELETE(req);
       const data = await res.json();
@@ -434,7 +419,7 @@ describe('Admin Plugins API Route', () => {
       });
 
       const req = new NextRequest(
-        'http://localhost/api/admin/plugins?adminId=admin-1&pluginName=ical'
+        'http://localhost/api/admin/plugins?pluginName=ical'
       );
       const res = await DELETE(req);
       const data = await res.json();

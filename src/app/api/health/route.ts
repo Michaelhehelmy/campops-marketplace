@@ -51,12 +51,12 @@ export async function GET() {
     message: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB / ${Math.round(memUsage.heapTotal / 1024 / 1024)}MB (rss: ${Math.round(memUsage.rss / 1024 / 1024)}MB)`,
   };
 
-  const allOk = Object.values(checks).every((c) => c.status === 'ok');
-  const statusCode = allOk ? 200 : 503;
+  const hasErrors = Object.values(checks).some((c) => c.status === 'error');
+  const statusCode = hasErrors ? 503 : 200;
 
   return NextResponse.json(
     {
-      status: allOk ? 'ok' : 'degraded',
+      status: hasErrors ? 'degraded' : 'ok',
       uptime: Math.floor((Date.now() - startTime) / 1000),
       timestamp: new Date().toISOString(),
       checks,

@@ -73,17 +73,17 @@ test.describe('Public endpoints — no auth required', () => {
 test.describe('Admin API — must be authenticated', () => {
   test('GET /api/admin/plugins rejects unauthenticated', async ({ request }) => {
     const res = await request.get('/api/admin/plugins');
-    expect([400, 401, 403]).toContain(res.status());
+    expect([401, 403]).toContain(res.status());
   });
 
   test('GET /api/admin/master-plugins rejects unauthenticated', async ({ request }) => {
     const res = await request.get('/api/admin/master-plugins');
-    expect([400, 401, 403]).toContain(res.status());
+    expect([401, 403]).toContain(res.status());
   });
 
   test('GET /api/admin/plugins/assets rejects unauthenticated', async ({ request }) => {
     const res = await request.get('/api/admin/plugins/assets');
-    expect([400, 401, 403]).toContain(res.status());
+    expect([401, 403]).toContain(res.status());
   });
 
   test('GET /api/admin/plugins/submissions returns 401', async ({ request }) => {
@@ -98,12 +98,28 @@ test.describe('Admin API — must be authenticated', () => {
 
   test('GET /api/admin/shops rejects unauthenticated', async ({ request }) => {
     const res = await request.get('/api/admin/shops');
-    expect([400, 401, 403]).toContain(res.status());
+    expect([401, 403]).toContain(res.status());
   });
 
   test('GET /api/admin/build-queue returns 401', async ({ request }) => {
     const res = await request.get('/api/admin/build-queue');
     assertStatus(res.status(), UNAUTHENTICATED);
+  });
+
+  // Regression: adminId=master-admin bypass must not work
+  test('GET /api/admin/shops?adminId=master-admin returns 401 (bypass closed)', async ({ request }) => {
+    const res = await request.get('/api/admin/shops?adminId=master-admin');
+    expect([401, 403]).toContain(res.status());
+  });
+
+  test('GET /api/admin/plugins?adminId=master-admin returns 401 (bypass closed)', async ({ request }) => {
+    const res = await request.get('/api/admin/plugins?adminId=master-admin');
+    expect([401, 403]).toContain(res.status());
+  });
+
+  test('GET /api/admin/master-plugins?adminId=master-admin returns 401 (bypass closed)', async ({ request }) => {
+    const res = await request.get('/api/admin/master-plugins?adminId=master-admin');
+    expect([401, 403]).toContain(res.status());
   });
 });
 

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, User, Mail, Phone, Loader2, CheckCircle2 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { createBooking } from '@/lib/api';
 
 function formatPrice(amount: number, currency: string) {
@@ -64,6 +65,8 @@ function BookPropertyContent() {
     guestEmail: '',
     guestPhone: '',
     adults: guests || 2,
+    paymentProvider: 'stripe',
+    termsAccepted: false,
   });
 
   useEffect(() => {
@@ -113,7 +116,7 @@ function BookPropertyContent() {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
         adults: form.adults,
-        paymentProvider: 'stripe',
+        paymentProvider: form.paymentProvider,
         currency,
       });
       setReservationId(result.reservationId);
@@ -168,7 +171,10 @@ function BookPropertyContent() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+      <div className="absolute top-4 end-4 z-10">
+        <LanguageSwitcher locale={locale} />
+      </div>
       <button
         onClick={() => router.back()}
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-600 mb-6 transition-colors"
@@ -252,6 +258,60 @@ function BookPropertyContent() {
               </div>
             </div>
 
+            {/* Payment method */}
+            <div className="border-t border-gray-100 pt-4 mt-4">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('paymentMethod')}</h3>
+              <div className="space-y-2">
+                {[
+                  { id: 'stripe', label: t('card'), icon: '💳' },
+                  { id: 'paypal', label: t('paypal'), icon: '🅿️' },
+                  { id: 'pay_later', label: t('payLater'), icon: '🏕️' },
+                ].map((method) => (
+                  <label
+                    key={method.id}
+                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                      form.paymentProvider === method.id
+                        ? 'border-brand-500 bg-brand-50'
+                        : 'border-gray-200 hover:border-brand-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value={method.id}
+                      checked={form.paymentProvider === method.id}
+                      onChange={() => setForm({ ...form, paymentProvider: method.id })}
+                      className="text-brand-600"
+                    />
+                    <span className="text-lg">{method.icon}</span>
+                    <span className="font-medium text-sm text-gray-800">{method.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Terms & conditions checkbox */}
+            <div className="border-t border-gray-100 pt-4 mt-2">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.termsAccepted}
+                  onChange={(e) => setForm({ ...form, termsAccepted: e.target.checked })}
+                  className="mt-1 h-4 w-4 text-brand-600 rounded border-gray-300 focus:ring-brand-500"
+                />
+                <span className="text-sm text-gray-600">
+                  I agree to the{' '}
+                  <a href={`/${locale}/terms`} className="text-brand-600 underline hover:text-brand-700">
+                    Terms &amp; Conditions
+                  </a>{' '}
+                  and{' '}
+                  <a href={`/${locale}/privacy`} className="text-brand-600 underline hover:text-brand-700">
+                    Privacy Policy
+                  </a>
+                </span>
+              </label>
+            </div>
+
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-700 text-sm">
                 {error}
@@ -261,11 +321,11 @@ function BookPropertyContent() {
             <button
               type="button"
               onClick={handleConfirm}
-              disabled={isLoading || !form.guestName || !form.guestEmail}
+              disabled={isLoading || !form.guestName || !form.guestEmail || !form.termsAccepted}
               className="w-full flex items-center justify-center gap-2 bg-brand-600 text-white py-3 rounded-xl font-medium hover:bg-brand-700 disabled:opacity-60 transition-colors"
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {t('confirmBooking')}
+              {form.paymentProvider === 'pay_later' ? t('confirmBooking') : t('proceedToPayment')}
             </button>
           </div>
         </div>

@@ -51,6 +51,10 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
+    document.title = 'Search Camps - SinaiCamps Marketplace';
+  }, []);
+
+  useEffect(() => {
     handleSearch({
       checkIn: new Date().toISOString().split('T')[0],
       checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],

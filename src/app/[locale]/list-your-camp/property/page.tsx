@@ -1,16 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Building2, MapPin, Globe } from 'lucide-react';
+import { Building2, MapPin, Globe, Image, Text, CheckSquare } from 'lucide-react';
 import { toSlug } from '@/lib/slug';
 
 const PROPERTY_TYPES = ['camp', 'hotel', 'glamping', 'lodge', 'resort', 'villa'];
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'SAR', 'ZAR'];
+const AMENITIES = ['WiFi', 'Parking', 'Pool', 'Breakfast', 'AC', 'Pets', 'Restaurant', 'Bar', 'Spa', 'Gym', 'Laundry', 'Room Service'];
 
 export default function Step2PropertyPage() {
   const router = useRouter();
   const { locale } = useParams();
+
+  useEffect(() => {
+    const step1 = sessionStorage.getItem('reg_step1');
+    if (!step1) {
+      router.push(`/${locale}/list-your-camp`);
+    }
+  }, [locale, router]);
 
   const [form, setForm] = useState({
     property_name: '',
@@ -19,6 +27,9 @@ export default function Step2PropertyPage() {
     city: '',
     country: '',
     currency_code: 'USD',
+    description: '',
+    photo_urls: ['', '', '', '', ''],
+    amenities: [] as string[],
   });
   const [slugEdited, setSlugEdited] = useState(false);
 
@@ -28,6 +39,21 @@ export default function Step2PropertyPage() {
       property_name: v,
       slug: slugEdited ? f.slug : toSlug(v),
     }));
+  };
+
+  const toggleAmenity = (amenity: string) => {
+    setForm((f) => ({
+      ...f,
+      amenities: f.amenities.includes(amenity)
+        ? f.amenities.filter((a) => a !== amenity)
+        : [...f.amenities, amenity],
+    }));
+  };
+
+  const updatePhotoUrl = (index: number, value: string) => {
+    const urls = [...form.photo_urls];
+    urls[index] = value;
+    setForm({ ...form, photo_urls: urls });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -159,6 +185,63 @@ export default function Step2PropertyPage() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+          <div className="relative">
+            <Text className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              placeholder="Describe your property, its unique features, and what guests can expect..."
+              className="input pl-10 min-h-[120px] pt-3"
+              maxLength={2000}
+            />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">{form.description.length}/2000 characters</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Photo URLs</label>
+          <p className="text-xs text-gray-400 mb-3">Add up to 5 image URLs (not file uploads)</p>
+          {form.photo_urls.map((url, i) => (
+            <div key={i} className="relative mb-2">
+              <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => updatePhotoUrl(i, e.target.value)}
+                placeholder={`Photo URL ${i + 1}${i === 0 ? ' (cover image)' : ''}`}
+                className="input pl-10"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Amenities</label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+            {AMENITIES.map((amenity) => (
+              <label
+                key={amenity}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${
+                  form.amenities.includes(amenity)
+                    ? 'border-brand-200 bg-brand-50 text-brand-700'
+                    : 'border-gray-100 bg-gray-50/50 text-gray-600 hover:border-gray-200'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={form.amenities.includes(amenity)}
+                  onChange={() => toggleAmenity(amenity)}
+                  className="sr-only"
+                />
+                <CheckSquare className={`h-4 w-4 ${form.amenities.includes(amenity) ? 'text-brand-600' : 'text-gray-300'}`} />
+                <span className="text-sm font-medium">{amenity}</span>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="flex gap-3 pt-2">

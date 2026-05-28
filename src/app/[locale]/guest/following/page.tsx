@@ -1,8 +1,20 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { Heart, Search } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function GuestFollowingPage() {
+  const { locale } = useParams();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+
+  useEffect(() => {
+    if (!session) {
+      router.push(`/${locale}/login`);
+    }
+  }, [session, locale, router]);
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-end">

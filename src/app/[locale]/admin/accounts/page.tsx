@@ -38,7 +38,7 @@ export default function MasterAdminsPage() {
 
   const fetchAdmins = async () => {
     try {
-      const res = await fetch('/api/master/admins?adminId=master-admin');
+      const res = await fetch('/api/master/admins');
       const data = await res.json();
       setAdmins(Array.isArray(data) ? data : []);
     } catch (err) {

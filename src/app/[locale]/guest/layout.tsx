@@ -5,6 +5,7 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Home, Calendar, ShoppingBag, User, Heart, Bell, LogOut, ChevronLeft } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
@@ -22,6 +23,12 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!session) {
+      router.push(`/${locale}/login`);
+    }
+  }, [session, locale, router]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -64,6 +71,7 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
         </div>
 
         <div className="flex items-center gap-6">
+          <LanguageSwitcher locale={locale} />
           <button className="relative p-2 text-gray-400 hover:text-brand-600 transition-all">
             <Bell className="h-6 w-6" />
             <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>

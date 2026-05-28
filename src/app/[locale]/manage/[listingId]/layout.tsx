@@ -21,6 +21,7 @@ import {
 
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
+import { MobileSidebar } from '@/components/dashboard/MobileSidebar';
 
 /** Core nav items always present in the sidebar regardless of plugins. */
 const CORE_NAV = [
@@ -29,9 +30,9 @@ const CORE_NAV = [
   { icon: Store, label: 'Rooms & Units', path: '/rooms', minRole: 'manager' },
   { icon: Users, label: 'Guests (CRM)', path: '/guests', minRole: 'staff' },
   { icon: CreditCard, label: 'Orders & POS', path: '/orders', minRole: 'staff' },
-  { icon: Brush, label: 'Housekeeping', path: '/housekeeping', minRole: 'staff' },
-  { icon: Wrench, label: 'Maintenance', path: '/maintenance', minRole: 'staff' },
-  { icon: Activity, label: 'Operations', path: '/operations', minRole: 'staff' },
+  { icon: Brush, label: 'Housekeeping', path: '/housekeeping', minRole: 'staff', pluginRequired: 'housekeeping' },
+  { icon: Wrench, label: 'Maintenance', path: '/maintenance', minRole: 'staff', pluginRequired: 'maintenance' },
+  { icon: Activity, label: 'Operations', path: '/operations', minRole: 'staff', pluginRequired: 'operations' },
   { icon: BarChart3, label: 'Finance', path: '/finance', minRole: 'manager' },
   { icon: Users, label: 'Staff Roster', path: '/staff', minRole: 'manager' },
   { icon: Settings, label: 'Listing Settings', path: '/settings', minRole: 'manager' },
@@ -69,6 +70,13 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
         hostname === BASE_DOMAIN || hostname === `www.${BASE_DOMAIN}` || hostname === 'localhost';
       setIsTenantDomain(!isMain || hostname === '127.0.0.1');
     }
+  }, []);
+
+  const [isImpersonating, setIsImpersonating] = useState(false);
+
+  useEffect(() => {
+    const match = document.cookie.match(/sinaicamps_impersonating=([^;]*)/);
+    if (match) setIsImpersonating(true);
   }, []);
 
   useEffect(() => {
@@ -130,78 +138,34 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
   return (
     <PluginRegistryProvider>
       <div className="flex min-h-screen bg-gray-50">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 flex flex-col sticky top-0 h-screen">
-          <div className="p-6 border-b border-gray-100">
-            {!isTenantDomain ? (
-              <button
-                onClick={() => router.push(`/${locale}/search`)}
-                className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
-              >
-                <ChevronLeft className="h-3 w-3" /> Back to Market
-              </button>
-            ) : (
-              <button
-                onClick={() => router.push(`/${locale}`)}
-                className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
-              >
-                <ChevronLeft className="h-3 w-3" /> Back to Site
-              </button>
-            )}
-            <h2 className="font-black text-gray-900 truncate">{property.name}</h2>
-            <span className="text-[10px] text-brand-600 font-bold uppercase tracking-widest">
-              Listing Admin
-            </span>
-          </div>
+        {/* Mobile Sidebar Overlay */}
+        <MobileSidebar>
+          <ManageSidebarContent
+            isTenantDomain={isTenantDomain}
+            isImpersonating={isImpersonating}
+            locale={locale}
+            base={base}
+            property={property}
+            role={role}
+            pathname={pathname}
+            pluginMenuItems={pluginMenuItems}
+            router={router}
+          />
+        </MobileSidebar>
 
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            <PluginShell name="manager.sidebar.top" props={{ property }} />
-
-            {CORE_NAV.map((item) => {
-              if (!roleAtLeast(role, item.minRole)) return null;
-              const href = item.path === '' ? base : `${base}${item.path}`;
-              const active = item.exact
-                ? pathname === href
-                : (pathname?.includes(item.path) ?? false);
-              return (
-                <SidebarLink
-                  key={item.path}
-                  icon={item.icon}
-                  label={item.label}
-                  href={href}
-                  active={active}
-                />
-              );
-            })}
-
-            <PluginShell name="manager.sidebar.middle" props={{ property }} />
-
-            {pluginMenuItems.map((item, i) => {
-              const href = item.href ?? (item.path ? `${base}${item.path}` : '#');
-              const active = item.path ? (pathname?.includes(item.path) ?? false) : false;
-              return (
-                <SidebarLink
-                  key={`plugin-${i}`}
-                  icon={null}
-                  label={item.label}
-                  href={href}
-                  active={active}
-                  isPlugin
-                />
-              );
-            })}
-
-            <PluginShell name="manager.sidebar.bottom" props={{ property }} />
-          </nav>
-
-          <div className="p-4 border-t border-gray-100">
-            <div className="bg-brand-50 p-4 rounded-2xl">
-              <div className="text-[10px] text-brand-600 font-black uppercase tracking-widest mb-1">
-                Status
-              </div>
-              <div className="text-sm font-bold text-gray-900">Live on Marketplace</div>
-            </div>
-          </div>
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-col sticky top-0 h-screen">
+          <ManageSidebarContent
+            isTenantDomain={isTenantDomain}
+            isImpersonating={isImpersonating}
+            locale={locale}
+            base={base}
+            property={property}
+            role={role}
+            pathname={pathname}
+            pluginMenuItems={pluginMenuItems}
+            router={router}
+          />
         </aside>
 
         {/* Main Content */}
@@ -226,6 +190,128 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
         </main>
       </div>
     </PluginRegistryProvider>
+  );
+}
+
+/** Reusable sidebar content used in both mobile and desktop sidebars. */
+function ManageSidebarContent({
+  isTenantDomain,
+  isImpersonating,
+  locale,
+  base,
+  property,
+  role,
+  pathname,
+  pluginMenuItems,
+  router,
+}: {
+  isTenantDomain: boolean;
+  isImpersonating: boolean;
+  locale: string;
+  base: string;
+  property: any;
+  role: string;
+  pathname: string;
+  pluginMenuItems: PluginMenuItem[];
+  router: ReturnType<typeof useRouter>;
+}) {
+  // Build set of enabled plugin IDs from the UI registry
+  const enabledPluginIds = new Set(
+    pluginMenuItems.map((item) => item.pluginId).filter((id): id is string => !!id)
+  );
+  // Only show core nav items whose required plugin (if any) is enabled
+  const filteredCoreNav = CORE_NAV.filter((item: any) => {
+    if (item.pluginRequired && !enabledPluginIds.has(item.pluginRequired)) return false;
+    return true;
+  });
+
+  return (
+    <>
+      {isImpersonating && (
+        <div className="bg-amber-500 text-white text-xs font-bold text-center py-2 px-4 flex items-center justify-between">
+          <span>⚡ Impersonating</span>
+          <button
+            onClick={async () => {
+              await fetch('/api/admin/impersonate/stop', { method: 'POST' });
+              window.location.href = `/${locale}/admin/listings`;
+            }}
+            className="underline ml-2"
+          >
+            Exit
+          </button>
+        </div>
+      )}
+      <div className="p-6 border-b border-gray-100">
+        {!isTenantDomain ? (
+          <button
+            onClick={() => router.push(`/${locale}/search`)}
+            className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
+          >
+            <ChevronLeft className="h-3 w-3" /> Back to Market
+          </button>
+        ) : (
+          <button
+            onClick={() => router.push(`/${locale}`)}
+            className="flex items-center gap-2 text-gray-400 hover:text-brand-600 transition-all text-xs font-bold uppercase tracking-widest mb-4"
+          >
+            <ChevronLeft className="h-3 w-3" /> Back to Site
+          </button>
+        )}
+        <h2 className="font-black text-gray-900 truncate">{property.name}</h2>
+        <span className="text-[10px] text-brand-600 font-bold uppercase tracking-widest">
+          Listing Admin
+        </span>
+      </div>
+
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <PluginShell name="manager.sidebar.top" props={{ property }} />
+
+        {filteredCoreNav.map((item) => {
+          if (!roleAtLeast(role, item.minRole)) return null;
+          const href = item.path === '' ? base : `${base}${item.path}`;
+          const active = item.exact
+            ? pathname === href
+            : (pathname?.includes(item.path) ?? false);
+          return (
+            <SidebarLink
+              key={item.path}
+              icon={item.icon}
+              label={item.label}
+              href={href}
+              active={active}
+            />
+          );
+        })}
+
+        <PluginShell name="manager.sidebar.middle" props={{ property }} />
+
+        {pluginMenuItems.map((item, i) => {
+          const href = item.href ?? (item.path ? `${base}${item.path}` : '#');
+          const active = item.path ? (pathname?.includes(item.path) ?? false) : false;
+          return (
+            <SidebarLink
+              key={`plugin-${i}`}
+              icon={null}
+              label={item.label}
+              href={href}
+              active={active}
+              isPlugin
+            />
+          );
+        })}
+
+        <PluginShell name="manager.sidebar.bottom" props={{ property }} />
+      </nav>
+
+      <div className="p-4 border-t border-gray-100">
+        <div className="bg-brand-50 p-4 rounded-2xl">
+          <div className="text-[10px] text-brand-600 font-black uppercase tracking-widest mb-1">
+            Status
+          </div>
+          <div className="text-sm font-bold text-gray-900">Live on Marketplace</div>
+        </div>
+      </div>
+    </>
   );
 }
 

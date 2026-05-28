@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, MapPin, Loader2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Calendar, MapPin, Loader2, ChevronRight } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 interface Reservation {
   id: string;
@@ -28,8 +31,18 @@ const statusBadge = (status: string) => {
 };
 
 export default function GuestReservationsPage() {
+  const { locale } = useParams();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session) {
+      router.push(`/${locale}/login`);
+      return;
+    }
+  }, [session, locale, router]);
 
   useEffect(() => {
     fetch('/api/guest/reservations')
@@ -65,15 +78,16 @@ export default function GuestReservationsPage() {
       ) : (
         <div className="space-y-4" data-testid="guest-reservations-list">
           {reservations.map((r) => (
-            <div
+            <Link
               key={r.id}
+              href={`/${locale}/guest/reservations/${r.id}`}
               data-testid={`reservation-${r.id}`}
-              className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:border-brand-200 transition-colors"
+              className="block bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:border-brand-200 hover:shadow-md transition-all group"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3
-                    className="font-bold text-lg text-gray-900"
+                    className="font-bold text-lg text-gray-900 group-hover:text-brand-600 transition-colors"
                     data-testid={`reservation-property-${r.id}`}
                   >
                     {r.propertyName}
@@ -91,7 +105,7 @@ export default function GuestReservationsPage() {
                   {r.status}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                 <span>
                   {r.checkIn} → {r.checkOut}
                 </span>
@@ -102,7 +116,10 @@ export default function GuestReservationsPage() {
                 <span>•</span>
                 <span className="font-bold">${r.totalPrice?.toLocaleString()}</span>
               </div>
-            </div>
+              <div className="flex items-center gap-1 text-xs font-bold text-brand-600 uppercase tracking-widest">
+                View Details <ChevronRight className="h-3 w-3" />
+              </div>
+            </Link>
           ))}
         </div>
       )}

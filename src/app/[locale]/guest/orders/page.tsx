@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import {
   ShoppingBag,
   Search,
@@ -11,35 +12,28 @@ import {
   Coffee,
   Pizza,
   Zap,
+  Loader2,
 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function GuestOrdersPage() {
-  const [orders, setOrders] = useState([
-    {
-      id: 'ORD-5521',
-      property: 'Safari Luxury Camp',
-      date: 'May 07, 2026',
-      items: ['Gourmet Pizza', 'Iced Latte'],
-      total: 42.5,
-      status: 'delivered',
-    },
-    {
-      id: 'ORD-5522',
-      property: 'Safari Luxury Camp',
-      date: 'May 07, 2026',
-      items: ['Spa Massage (60min)'],
-      total: 120.0,
-      status: 'confirmed',
-    },
-    {
-      id: 'ORD-4402',
-      property: 'Mountain Retreat',
-      date: 'Apr 12, 2026',
-      items: ['Mountain Bike Rental'],
-      total: 35.0,
-      status: 'completed',
-    },
-  ]);
+  const { locale } = useParams();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session) {
+      router.push(`/${locale}/login`);
+      return;
+    }
+    fetch('/api/guest/orders')
+      .then((r) => (r.ok ? r.json() : { orders: [] }))
+      .then((data) => setOrders(data.orders ?? []))
+      .catch(() => setOrders([]))
+      .finally(() => setLoading(false));
+  }, [session, locale, router]);
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -63,6 +57,17 @@ export default function GuestOrdersPage() {
         </div>
       </div>
 
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="h-10 w-10 animate-spin text-brand-600" />
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="text-center py-16 bg-white rounded-[2.5rem] border border-gray-100">
+          <ShoppingBag className="h-16 w-16 text-gray-200 mx-auto mb-4" />
+          <h3 className="text-xl font-black text-gray-900 mb-2">No orders yet</h3>
+          <p className="text-gray-500">Your on-site orders, rentals, and services will appear here.</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 gap-6">
         {orders.map((order) => (
           <div
@@ -121,16 +126,7 @@ export default function GuestOrdersPage() {
           </div>
         ))}
       </div>
-
-      <div className="p-12 text-center">
-        <div className="h-20 w-20 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto mb-6">
-          <ShoppingBag className="h-10 w-10" />
-        </div>
-        <h3 className="text-xl font-black text-gray-900 mb-2">Order History</h3>
-        <p className="text-gray-500 max-w-sm mx-auto">
-          Showing your most recent orders. Older orders are archived after 90 days.
-        </p>
-      </div>
+      )}
     </div>
   );
 }

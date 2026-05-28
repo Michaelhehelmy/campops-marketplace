@@ -10,14 +10,22 @@ export default function Step1AccountPage() {
   const router = useRouter();
   const { locale } = useParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [form, setForm] = useState({ full_name: '', email: '', password: '' });
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [passwordMatchError, setPasswordMatchError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setPasswordMatchError('');
     if (form.password.length < 8) {
       setError(t('passwordLengthError'));
+      return;
+    }
+    if (form.password !== confirmPassword) {
+      setPasswordMatchError('Passwords do not match');
       return;
     }
     // Persist to sessionStorage so subsequent steps can read it
@@ -105,6 +113,34 @@ export default function Step1AccountPage() {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              required
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setPasswordMatchError('');
+              }}
+              placeholder="Repeat your password"
+              className="input pl-10 pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+          {passwordMatchError && (
+            <p className="text-red-500 text-xs mt-1">{passwordMatchError}</p>
+          )}
         </div>
 
         <button type="submit" className="btn-primary w-full">

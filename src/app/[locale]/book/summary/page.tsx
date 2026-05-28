@@ -93,26 +93,12 @@ function BookingSummaryContent() {
     return null;
   }
 
-  console.log('[BookingSummary] params:', {
-    propertyId,
-    roomTypeId,
-    checkIn,
-    checkOut,
-    currency,
-    roomName,
-    propertyName,
-    pricePerNight,
-    nights,
-    total,
-  });
-
   const handleDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStep('payment');
   };
 
   const handleConfirm = async () => {
-    console.log('[BookingSummary] handleConfirm called');
     setIsLoading(true);
     setError(null);
     try {
@@ -128,11 +114,9 @@ function BookingSummaryContent() {
         currency,
       });
 
-      console.log('[BookingSummary] Success:', JSON.stringify(result));
       setReservationId(result.reservationId);
       setStep('confirmation');
     } catch (err: any) {
-      console.error('[BookingSummary] Error:', err);
       setError(err.message);
     } finally {
       setIsLoading(false);

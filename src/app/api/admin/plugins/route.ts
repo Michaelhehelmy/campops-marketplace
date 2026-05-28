@@ -2,45 +2,21 @@ import { errorResponse } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireRole, isErrorResponse } from '@/lib/auth-middleware';
 import { z } from 'zod';
-
-// Helper to verify marketplace_master role
-async function verifyAdminAccess(userId: string): Promise<boolean> {
-  const role = await db
-    .prepare(
-      `
-    SELECT role FROM user_roles 
-    WHERE user_id = $1 AND role = 'marketplace_master'
-  `
-    )
-    .get(userId);
-
-  return !!role;
-}
 
 // GET /api/admin/plugins - List all available plugins in the marketplace catalog
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
     const category = searchParams.get('category');
     const status = searchParams.get('status'); // 'active', 'inactive', or null for all
     const search = searchParams.get('search');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
-
-    if (!adminId) {
-      return NextResponse.json({ error: 'adminId is required' }, { status: 400 });
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json(
-        { error: 'Unauthorized: marketplace_master role required' },
-        { status: 403 }
-      );
-    }
 
     // Build query
     let whereClause = 'WHERE 1=1';
@@ -108,7 +84,6 @@ export async function GET(req: NextRequest) {
 }
 
 const createPluginSchema = z.object({
-  adminId: z.string(),
   name: z.string(),
   displayName: z.string(),
   description: z.string().optional(),
@@ -132,13 +107,14 @@ const createPluginSchema = z.object({
 // POST /api/admin/plugins - Add a new plugin to the marketplace catalog
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = createPluginSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
     const {
-      adminId,
       name,
       displayName,
       description,
@@ -157,21 +133,15 @@ export async function POST(req: NextRequest) {
       requiredRoles,
       minPropertyPlan,
       dependencies,
-    } = body;
+    } = parsed.data;
 
-    if (!adminId || !name || !displayName) {
+    if (!name || !displayName) {
       return NextResponse.json(
         {
-          error: 'adminId, name, and displayName are required',
+          error: 'name and displayName are required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if plugin name already exists
@@ -244,7 +214,6 @@ export async function POST(req: NextRequest) {
 }
 
 const updatePluginSchema = z.object({
-  adminId: z.string(),
   pluginName: z.string(),
   updates: z.record(z.string(), z.any()),
 });
@@ -252,26 +221,22 @@ const updatePluginSchema = z.object({
 // PUT /api/admin/plugins - Update a plugin in the catalog
 export async function PUT(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const parsed = updatePluginSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const body = parsed.data;
-    const { adminId, pluginName, updates } = body;
+    const { pluginName, updates } = parsed.data;
 
-    if (!adminId || !pluginName || !updates) {
+    if (!pluginName || !updates) {
       return NextResponse.json(
         {
-          error: 'adminId, pluginName, and updates are required',
+          error: 'pluginName and updates are required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Check if plugin exists
@@ -368,23 +333,19 @@ export async function PUT(req: NextRequest) {
 // DELETE /api/admin/plugins - Deactivate/remove a plugin from catalog
 export async function DELETE(req: NextRequest) {
   try {
+    const session = await requireRole(req, ['marketplace_master']);
+    if (isErrorResponse(session)) return session;
+
     const { searchParams } = req.nextUrl;
-    const adminId = searchParams.get('adminId');
     const pluginName = searchParams.get('pluginName');
 
-    if (!adminId || !pluginName) {
+    if (!pluginName) {
       return NextResponse.json(
         {
-          error: 'adminId and pluginName are required',
+          error: 'pluginName is required',
         },
         { status: 400 }
       );
-    }
-
-    // Verify admin access
-    const isAdmin = await verifyAdminAccess(adminId);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     // Soft delete - just mark as inactive

@@ -15,15 +15,13 @@ vi.mock('@/lib/auth', () => ({
 // ─── admin/plugins ────────────────────────────────────────────────────────────
 
 describe('GET /api/admin/plugins', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns plugins list', async () => {
     const { GET } = await import('../plugins/route');
     const res = await GET(new NextRequest('http://localhost/api/admin/plugins'));
-    expect(res.status).toBe(400);
-    const body = await res.json();
-    expect(body.error).toMatch(/adminId/i);
+    expect([200, 403]).toContain(res.status);
   });
 
-  it('returns plugins list with valid adminId', async () => {
+  it('returns plugins list with adminId param (ignored)', async () => {
     const { GET } = await import('../plugins/route');
     const res = await GET(
       new NextRequest('http://localhost/api/admin/plugins?adminId=master-admin')
@@ -51,18 +49,18 @@ describe('GET /api/admin/plugins', () => {
 });
 
 describe('POST /api/admin/plugins', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns 400 when plugin name missing', async () => {
     const { POST } = await import('../plugins/route');
     const res = await POST(
       new NextRequest('http://localhost/api/admin/plugins', {
         method: 'POST',
-        body: JSON.stringify({ name: 'test-plugin' }),
+        body: JSON.stringify({}),
       })
     );
     expect(res.status).toBe(400);
   });
 
-  it('returns 400 when plugin name missing', async () => {
+  it('returns 400 with missing name and unused adminId', async () => {
     const { POST } = await import('../plugins/route');
     const res = await POST(
       new NextRequest('http://localhost/api/admin/plugins', {
@@ -70,20 +68,20 @@ describe('POST /api/admin/plugins', () => {
         body: JSON.stringify({ adminId: 'master-admin' }),
       })
     );
-    expect([400, 403]).toContain(res.status);
+    expect(res.status).toBe(400);
   });
 });
 
 // ─── admin/shops ──────────────────────────────────────────────────────────────
 
 describe('GET /api/admin/shops', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns shops list', async () => {
     const { GET } = await import('../shops/route');
     const res = await GET(new NextRequest('http://localhost/api/admin/shops'));
-    expect(res.status).toBe(400);
+    expect([200, 403]).toContain(res.status);
   });
 
-  it('returns shops list with valid adminId', async () => {
+  it('returns shops list with adminId param (ignored)', async () => {
     const { GET } = await import('../shops/route');
     const res = await GET(new NextRequest('http://localhost/api/admin/shops?adminId=master-admin'));
     expect([200, 403]).toContain(res.status);
@@ -113,12 +111,12 @@ describe('GET /api/admin/shops', () => {
 // ─── admin/shops/[id] ────────────────────────────────────────────────────────
 
 describe('GET /api/admin/shops/[id]', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns 404 for nonexistent shop (session-based auth)', async () => {
     const { GET } = await import('../shops/[id]/route');
     const res = await GET(new NextRequest('http://localhost/api/admin/shops/shop-1'), {
       params: { id: 'shop-1' },
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 
   it('returns 404 for nonexistent shop', async () => {
@@ -132,7 +130,7 @@ describe('GET /api/admin/shops/[id]', () => {
 });
 
 describe('PATCH /api/admin/shops/[id]', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns 404 for nonexistent shop (session-based auth)', async () => {
     const { PATCH } = await import('../shops/[id]/route');
     const res = await PATCH(
       new NextRequest('http://localhost/api/admin/shops/shop-1', {
@@ -141,20 +139,20 @@ describe('PATCH /api/admin/shops/[id]', () => {
       }),
       { params: { id: 'shop-1' } }
     );
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 });
 
 // ─── admin/master-plugins ────────────────────────────────────────────────────
 
 describe('GET /api/admin/master-plugins', () => {
-  it('returns 400 when adminId missing', async () => {
+  it('returns master plugins list (session-based auth)', async () => {
     const { GET } = await import('../../admin/master-plugins/route');
     const res = await GET(new NextRequest('http://localhost/api/admin/master-plugins'));
-    expect(res.status).toBe(400);
+    expect([200, 403]).toContain(res.status);
   });
 
-  it('returns plugins with valid adminId', async () => {
+  it('returns plugins with adminId param (ignored)', async () => {
     const { GET } = await import('../../admin/master-plugins/route');
     const res = await GET(
       new NextRequest('http://localhost/api/admin/master-plugins?adminId=master-admin')

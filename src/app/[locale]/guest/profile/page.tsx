@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, MapPin, CreditCard, Bell, Shield, Save, Camera } from 'lucide-react';
+import { User, Mail, Phone, MapPin, CreditCard, Bell, Shield, Save, Camera, Eye, EyeOff, Lock, KeyRound } from 'lucide-react';
 
 export default function GuestProfilePage() {
   const [activeTab, setActiveTab] = useState('personal');
@@ -14,6 +14,20 @@ export default function GuestProfilePage() {
     phone: '',
     bio: '',
     location: 'San Francisco, CA', // Mock for now
+  });
+  // Security tab state
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  // Notifications tab state
+  const [notifications, setNotifications] = useState({
+    emailBookings: true,
+    emailPromotions: false,
+    smsBookings: true,
+    smsMarketing: false,
+    marketing: false,
   });
 
   useEffect(() => {
@@ -59,6 +73,38 @@ export default function GuestProfilePage() {
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err: any) {
       setError(err.message);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    setPasswordError(null);
+    setPasswordSuccess(false);
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+    if (passwordForm.newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      return;
+    }
+    try {
+      const res = await fetch('/api/guest/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to change password');
+      }
+      setPasswordSuccess(true);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err: any) {
+      setPasswordError(err.message);
     }
   };
 
@@ -198,6 +244,149 @@ export default function GuestProfilePage() {
             </div>
           )}
 
+          {activeTab === 'security' && (
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xl font-black text-gray-900 mb-2">Change Password</h3>
+                <p className="text-sm text-gray-500 mb-6">Update your account password.</p>
+              </div>
+
+              {passwordSuccess && (
+                <div className="p-4 bg-green-50 text-green-700 rounded-xl border border-green-100 font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                  <KeyRound className="h-4 w-4" /> Password updated successfully
+                </div>
+              )}
+
+              {passwordError && (
+                <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 font-bold animate-in fade-in slide-in-from-top-2">
+                  {passwordError}
+                </div>
+              )}
+
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-600">Current Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+                    <input
+                      type={showCurrentPassword ? 'text' : 'password'}
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                      placeholder="Enter current password"
+                      className="w-full pl-12 pr-12 py-3 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-50 transition-all outline-none text-sm font-bold text-gray-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-600">New Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+                    <input
+                      type={showNewPassword ? 'text' : 'password'}
+                      value={passwordForm.newPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                      placeholder="At least 8 characters"
+                      className="w-full pl-12 pr-12 py-3 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-50 transition-all outline-none text-sm font-bold text-gray-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-600">Confirm New Password</label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+                    <input
+                      type="password"
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                      placeholder="Re-enter new password"
+                      className="w-full pl-12 pr-4 py-3 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-50 transition-all outline-none text-sm font-bold text-gray-900"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handlePasswordChange}
+                  className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 flex items-center gap-2"
+                >
+                  <Shield className="h-4 w-4" /> Update Password
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'notifications' && (
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xl font-black text-gray-900 mb-2">Notification Preferences</h3>
+                <p className="text-sm text-gray-500 mb-6">Choose how and when we contact you.</p>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">Email Notifications</h4>
+                  <div className="space-y-4">
+                    <ToggleRow
+                      label="Booking confirmations & updates"
+                      description="Receive email confirmations for new bookings and changes"
+                      checked={notifications.emailBookings}
+                      onChange={(v) => setNotifications({ ...notifications, emailBookings: v })}
+                    />
+                    <ToggleRow
+                      label="Promotions & special offers"
+                      description="Get notified about deals and exclusive offers"
+                      checked={notifications.emailPromotions}
+                      onChange={(v) => setNotifications({ ...notifications, emailPromotions: v })}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">SMS Notifications</h4>
+                  <div className="space-y-4">
+                    <ToggleRow
+                      label="Booking updates via SMS"
+                      description="Receive text messages about upcoming check-ins and changes"
+                      checked={notifications.smsBookings}
+                      onChange={(v) => setNotifications({ ...notifications, smsBookings: v })}
+                    />
+                    <ToggleRow
+                      label="Marketing SMS"
+                      description="Receive promotional text messages"
+                      checked={notifications.smsMarketing}
+                      onChange={(v) => setNotifications({ ...notifications, smsMarketing: v })}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">Other</h4>
+                  <ToggleRow
+                    label="Marketing & product updates"
+                    description="Tips, product announcements, and survey invitations"
+                    checked={notifications.marketing}
+                    onChange={(v) => setNotifications({ ...notifications, marketing: v })}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'payments' && (
             <div className="space-y-8">
               <div className="p-8 rounded-[2rem] bg-slate-900 text-white relative overflow-hidden group cursor-pointer">
@@ -238,6 +427,30 @@ function ProfileNavItem({ icon: Icon, label, active, onClick }: any) {
       <Icon className="h-5 w-5" />
       <span className="text-sm font-bold">{label}</span>
     </button>
+  );
+}
+
+function ToggleRow({ label, description, checked, onChange }: { label: string; description: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div>
+        <div className="text-sm font-bold text-gray-900">{label}</div>
+        <div className="text-xs text-gray-400 mt-0.5">{description}</div>
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange(!checked)}
+        className={`relative h-7 w-12 rounded-full transition-all ${
+          checked ? 'bg-brand-600' : 'bg-gray-200'
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-all ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </div>
   );
 }
 

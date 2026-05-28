@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CalendarDays, DollarSign, Star, ArrowUpRight } from 'lucide-react';
+import { CalendarDays, DollarSign, Star, ArrowUpRight, ArrowUpCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -75,6 +75,18 @@ export default function OwnerDashboardPage() {
                   {t('upgrade')}
                 </Link>
               </>
+            )}
+            {plan === 'premium' && (
+              <Link href={`/${locale}/owner/property`} className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-purple-700 transition-colors">
+                <ArrowUpCircle className="h-4 w-4" />
+                {t('upgradeUltimate') || 'Upgrade to Ultimate'}
+              </Link>
+            )}
+            {plan === 'ultimate' && (
+              <span className="text-green-600 font-bold flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                {t('currentPlan') || 'Current plan: Ultimate'}
+              </span>
             )}
           </p>
         </div>

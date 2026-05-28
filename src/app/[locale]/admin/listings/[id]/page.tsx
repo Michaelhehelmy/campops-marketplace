@@ -24,6 +24,7 @@ import {
   Trash2,
   Globe,
 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function ListingDetailsPage() {
   const params = useParams();
@@ -62,6 +63,9 @@ export default function ListingDetailsPage() {
   const [activeQuickAction, setActiveQuickAction] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [permissions, setPermissions] = useState<{ role: string; email: string }[]>([]);
+
+  const { data: session } = authClient.useSession();
+  const userRole = (session?.user as any)?.role;
 
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'info') => {
     setToast({ message, type });
@@ -445,12 +449,14 @@ export default function ListingDetailsPage() {
                   onClick={handleViewAuditLogs}
                   loading={activeQuickAction === 'audit_logs'}
                 />
-                <ActionButton
-                  icon={ArrowUpRight}
-                  label="Login as Owner"
-                  onClick={handleLoginAsOwner}
-                  loading={activeQuickAction === 'login_owner'}
-                />
+                {userRole === 'master' && (
+                  <ActionButton
+                    icon={ArrowUpRight}
+                    label="Login as Owner"
+                    onClick={handleLoginAsOwner}
+                    loading={activeQuickAction === 'login_owner'}
+                  />
+                )}
                 <ActionButton
                   icon={Trash2}
                   label="Delete Property"
