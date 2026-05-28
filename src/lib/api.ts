@@ -72,6 +72,8 @@ export interface PropertyResult {
 export interface SearchResponse {
   properties: PropertyResult[];
   totalCount: number;
+  totalPages: number;
+  page: number;
   checkIn: string;
   checkOut: string;
   nights: number;
@@ -109,8 +111,11 @@ export async function searchProperties(params: {
   adults: number;
   children?: number;
   destination?: string;
-  priceMin?: number;
-  priceMax?: number;
+  q?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  guests?: number;
   currency?: string;
   page?: number;
 }): Promise<SearchResponse> {
