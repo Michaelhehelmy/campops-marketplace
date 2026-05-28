@@ -118,7 +118,7 @@ describe('housekeeping plugin init', () => {
     const [, hookFn] = (api.hooks.register as any).mock.calls[0];
     const data = { room_id: 'room-1' };
     const result = await hookFn(data);
-    expect(api.db.query).toHaveBeenCalled();
+    expect(api.db.execute).toHaveBeenCalled();
     expect(result).toBe(data);
   });
 });
