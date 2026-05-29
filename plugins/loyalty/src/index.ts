@@ -245,6 +245,40 @@ export default async function init(api: PluginAPI): Promise<void> {
     10
   );
 
+  // ── API route: loyalty balance ───────────────────────────────────────────
+  api.registerRoute('/api/p/loyalty/balance', {
+    GET: async (req: Request) => {
+      try {
+        const url = new URL(req.url);
+        const email = url.searchParams.get('email');
+        if (!email) {
+          return new Response(JSON.stringify({ error: 'email query param required' }), { status: 400 });
+        }
+
+        const guest = await api.db.queryOne(
+          'SELECT id, loyalty_points, vip_level FROM guests WHERE email = ?',
+          [email]
+        );
+
+        if (!guest) {
+          return new Response(JSON.stringify({ error: 'Guest not found' }), { status: 404 });
+        }
+
+        return new Response(
+          JSON.stringify({
+            guestId: (guest as any).id,
+            points: parseInt((guest as any).loyalty_points ?? '0'),
+            tier: (guest as any).vip_level ?? 'regular',
+          }),
+          { status: 200 }
+        );
+      } catch (err: any) {
+        api.logger.error(`[loyalty] balance error: ${err.message}`);
+        return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+      }
+    },
+  });
+
   // ── UI: register components into slots ───────────────────────────────────
   api.ui.addSlotComponent('guest.dashboard.cards', 'loyalty:PointsWidget');
 

@@ -29,7 +29,7 @@ const CORE_NAV = [
   { icon: Calendar, label: 'Bookings', path: '/bookings', minRole: 'staff' },
   { icon: Store, label: 'Rooms & Units', path: '/rooms', minRole: 'manager' },
   { icon: Users, label: 'Guests (CRM)', path: '/guests', minRole: 'staff' },
-  { icon: CreditCard, label: 'Orders & POS', path: '/orders', minRole: 'staff' },
+  { icon: CreditCard, label: 'Orders & POS', path: '/orders', minRole: 'staff', pluginRequired: 'pos-kds' },
   { icon: Brush, label: 'Housekeeping', path: '/housekeeping', minRole: 'staff', pluginRequired: 'housekeeping' },
   { icon: Wrench, label: 'Maintenance', path: '/maintenance', minRole: 'staff', pluginRequired: 'maintenance' },
   { icon: Activity, label: 'Operations', path: '/operations', minRole: 'staff', pluginRequired: 'operations' },
@@ -60,6 +60,7 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
   const [property, setProperty] = useState<any>(null);
   const [pluginMenuItems, setPluginMenuItems] = useState<PluginMenuItem[]>([]);
+  const [enabledPlugins, setEnabledPlugins] = useState<string[]>([]);
   const [isTenantDomain, setIsTenantDomain] = useState(false);
 
   useEffect(() => {
@@ -104,13 +105,20 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
         setProperty({ id: listingId, name: propName, role });
 
         try {
-          const regRes = await fetch(`/api/plugins/ui-registry?propertyId=${listingId}`);
+          const [regRes, enabledRes] = await Promise.all([
+            fetch(`/api/plugins/ui-registry?propertyId=${listingId}`),
+            fetch(`/api/manage/${listingId}/plugins/enabled`),
+          ]);
           if (regRes.ok) {
             const regData = await regRes.json();
             setPluginMenuItems(regData.menuItems ?? []);
           }
+          if (enabledRes.ok) {
+            const enabledData = await enabledRes.json();
+            setEnabledPlugins(enabledData.enabled ?? []);
+          }
         } catch (err) {
-          console.warn('[ManageLayout] Failed to load plugin menu items:', err);
+          console.warn('[ManageLayout] Failed to load plugin data:', err);
         }
       } catch (error) {
         console.error('Failed to resolve listing context:', error);
@@ -149,6 +157,7 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
             role={role}
             pathname={pathname}
             pluginMenuItems={pluginMenuItems}
+            enabledPlugins={enabledPlugins}
             router={router}
           />
         </MobileSidebar>
@@ -164,6 +173,7 @@ export default function ManageLayout({ children }: { children: React.ReactNode }
             role={role}
             pathname={pathname}
             pluginMenuItems={pluginMenuItems}
+            enabledPlugins={enabledPlugins}
             router={router}
           />
         </aside>
@@ -203,6 +213,7 @@ function ManageSidebarContent({
   role,
   pathname,
   pluginMenuItems,
+  enabledPlugins,
   router,
 }: {
   isTenantDomain: boolean;
@@ -213,12 +224,14 @@ function ManageSidebarContent({
   role: string;
   pathname: string;
   pluginMenuItems: PluginMenuItem[];
+  enabledPlugins: string[];
   router: ReturnType<typeof useRouter>;
 }) {
-  // Build set of enabled plugin IDs from the UI registry
-  const enabledPluginIds = new Set(
-    pluginMenuItems.map((item) => item.pluginId).filter((id): id is string => !!id)
-  );
+  // Build set of enabled plugin IDs from the UI registry + enabled plugins endpoint
+  const enabledPluginIds = new Set([
+    ...pluginMenuItems.map((item) => item.pluginId).filter((id): id is string => !!id),
+    ...enabledPlugins,
+  ]);
   // Only show core nav items whose required plugin (if any) is enabled
   const filteredCoreNav = CORE_NAV.filter((item: any) => {
     if (item.pluginRequired && !enabledPluginIds.has(item.pluginRequired)) return false;

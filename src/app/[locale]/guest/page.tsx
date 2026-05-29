@@ -1,14 +1,30 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { useTranslations } from 'next-intl';
 import { PluginRegistryProvider } from '@/components/plugins/PluginRegistryProvider';
 import { PluginShell } from '@/app/PluginShell';
-import { Star, TrendingUp, MapPin, ShoppingBag } from 'lucide-react';
+import { Star, TrendingUp, MapPin, ShoppingBag, Gift } from 'lucide-react';
+
+interface LoyaltyData {
+  guestId: string;
+  points: number;
+  tier: string;
+}
 
 export default function GuestPortalPage({ params }: { params: { locale: string } }) {
   const t = useTranslations('guest');
   const { data: session } = authClient.useSession();
+  const [loyalty, setLoyalty] = useState<LoyaltyData | null>(null);
+
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    fetch(`/api/p/loyalty/balance?email=${encodeURIComponent(session.user.email)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setLoyalty(data))
+      .catch(() => setLoyalty(null));
+  }, [session?.user?.email]);
 
   return (
     <PluginRegistryProvider>
@@ -83,6 +99,26 @@ export default function GuestPortalPage({ params }: { params: { locale: string }
                 <p className="text-xs text-brand-700/70">{t('proDesc')}</p>
               </div>
             </div>
+
+            {loyalty && (
+              <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
+                <h3 className="text-lg font-black text-gray-900 mb-6">SinaiCamps Rewards</h3>
+                <div className="bg-gradient-to-br from-purple-600 to-brand-700 p-6 rounded-[2rem] text-white">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Gift className="h-4 w-4" />
+                    <span className="text-sm font-black uppercase tracking-wider">
+                      {loyalty.tier.charAt(0).toUpperCase() + loyalty.tier.slice(1)} Tier
+                    </span>
+                  </div>
+                  <div className="text-3xl font-black mb-1">
+                    {loyalty.points.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-white/70 font-medium uppercase tracking-widest">
+                    Available Points
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group">
               <TrendingUp className="absolute top-[-20px] right-[-20px] h-32 w-32 text-brand-600/20 rotate-12" />
