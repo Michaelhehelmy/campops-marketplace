@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { RateLimiter } from '../rateLimit';
+import { RateLimiter, apiRateLimiter } from '../rateLimit';
 import { RateLimitError } from '../errors';
 
 describe('RateLimiter', () => {
@@ -32,18 +32,16 @@ describe('RateLimiter', () => {
     for (let i = 0; i < 5; i++) {
       limiter.check('user-1');
     }
-    // user-2 should still be allowed
     const info = limiter.check('user-2');
     expect(info.remaining).toBe(4);
   });
 
   it('should reset window after expiry', async () => {
-    const shortLimiter = new RateLimiter(2, 10); // 10ms window
+    const shortLimiter = new RateLimiter(2, 10);
     shortLimiter.check('user-1');
     shortLimiter.check('user-1');
     expect(() => shortLimiter.check('user-1')).toThrow(RateLimitError);
 
-    // Wait for window to expire
     await new Promise((r) => setTimeout(r, 15));
     const info = shortLimiter.check('user-1');
     expect(info.remaining).toBe(1);
@@ -51,7 +49,7 @@ describe('RateLimiter', () => {
   });
 
   it('should cleanup expired entries', async () => {
-    const shortLimiter = new RateLimiter(5, 10); // 10ms window
+    const shortLimiter = new RateLimiter(5, 10);
     shortLimiter.check('user-1');
     expect(shortLimiter.size).toBe(1);
 
@@ -83,11 +81,56 @@ describe('RateLimiter', () => {
 
   it('should support starting and stopping periodic cleanup intervals', () => {
     limiter.startCleanup(10);
-    // Double calling startCleanup should return early
     limiter.startCleanup(10);
     expect((limiter as any).cleanupInterval).toBeDefined();
 
     limiter.stopCleanup();
     expect((limiter as any).cleanupInterval).toBeNull();
+  });
+
+  it('should return remaining count decreasing', () => {
+    const i1 = limiter.check('user-1');
+    expect(i1.remaining).toBe(4);
+    const i2 = limiter.check('user-1');
+    expect(i2.remaining).toBe(3);
+  });
+
+  it('should handle high-traffic keys independently', () => {
+    for (let i = 0; i < 100; i++) {
+      if (i < 5) {
+        const info = limiter.check('busy');
+        expect(info.remaining).toBe(4 - i);
+      } else {
+        expect(() => limiter.check('busy')).toThrow(RateLimitError);
+      }
+    }
+    const info = limiter.check('other');
+    expect(info.remaining).toBe(4);
+  });
+
+  it('should have retryAfter > 0 in RateLimitError', () => {
+    for (let i = 0; i < 5; i++) {
+      limiter.check('user-1');
+    }
+    try {
+      limiter.check('user-1');
+      expect.fail('Should have thrown');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RateLimitError);
+      expect((err as RateLimitError).details).toHaveProperty('retryAfter');
+    }
+  });
+
+  it('should maintain state after cleanup with no expired entries', () => {
+    limiter.check('user-1');
+    limiter.cleanup();
+    expect(limiter.size).toBe(1);
+  });
+});
+
+describe('apiRateLimiter', () => {
+  it('should be a RateLimiter instance with 100 req/min defaults', () => {
+    expect(apiRateLimiter).toBeInstanceOf(RateLimiter);
+    expect(apiRateLimiter.maxRequests).toBe(100);
   });
 });

@@ -4,6 +4,8 @@ import {
   bookingConfirmationTemplate,
   paymentReceiptTemplate,
   reviewRequestTemplate,
+  cancellationTemplate,
+  newBookingNotificationTemplate,
 } from '../email';
 
 describe('EmailService', () => {
@@ -55,6 +57,21 @@ describe('EmailService', () => {
     expect(logSpy).toHaveBeenCalled();
     logSpy.mockRestore();
   });
+
+  it('should use EMAIL_FROM env var when no from provided', async () => {
+    vi.stubEnv('EMAIL_FROM', 'custom@example.com');
+    const sendFn = vi.fn().mockResolvedValue(undefined);
+    EmailService.setTransport(sendFn);
+
+    await EmailService.send({
+      to: 'guest@example.com',
+      subject: 'Test',
+      html: '<p>Hello</p>',
+    });
+
+    expect(sendFn).toHaveBeenCalledWith(expect.objectContaining({ from: 'custom@example.com' }));
+    vi.unstubAllEnvs();
+  });
 });
 
 describe('Email Templates', () => {
@@ -98,5 +115,55 @@ describe('Email Templates', () => {
     expect(html).toContain('Bob');
     expect(html).toContain('Safari Camp');
     expect(html).toContain('https://example.com/review/789');
+  });
+
+  it('cancellationTemplate should include cancellation details', () => {
+    const html = cancellationTemplate({
+      guestName: 'Alice',
+      propertyName: 'Beach Resort',
+      checkIn: '2026-02-01',
+      checkOut: '2026-02-05',
+      reason: 'Weather concerns',
+    });
+
+    expect(html).toContain('Alice');
+    expect(html).toContain('Beach Resort');
+    expect(html).toContain('2026-02-01');
+    expect(html).toContain('2026-02-05');
+    expect(html).toContain('Weather concerns');
+  });
+
+  it('cancellationTemplate should omit reason when not provided', () => {
+    const html = cancellationTemplate({
+      guestName: 'Alice',
+      propertyName: 'Beach Resort',
+      checkIn: '2026-02-01',
+      checkOut: '2026-02-05',
+    });
+
+    expect(html).toContain('Alice');
+    expect(html).not.toContain('Reason');
+  });
+
+  it('newBookingNotificationTemplate should include booking details', () => {
+    const html = newBookingNotificationTemplate({
+      ownerName: 'Owner',
+      guestName: 'Guest',
+      propertyName: 'Camp',
+      roomName: 'Luxury Tent',
+      checkIn: '2026-03-01',
+      checkOut: '2026-03-03',
+      amount: '$300',
+      manageUrl: 'https://example.com/manage',
+    });
+
+    expect(html).toContain('Owner');
+    expect(html).toContain('Guest');
+    expect(html).toContain('Camp');
+    expect(html).toContain('Luxury Tent');
+    expect(html).toContain('2026-03-01');
+    expect(html).toContain('2026-03-03');
+    expect(html).toContain('$300');
+    expect(html).toContain('https://example.com/manage');
   });
 });
