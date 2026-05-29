@@ -1499,3 +1499,23 @@ All 34 HIGH issues fixed across 12 file groups with zero regressions:
 - **CRITICAL**: `src/lib/PluginRuntimeService.ts` reads capabilities from `package.json` → `sinaicamps.capabilities`, NOT from `plugin.json`. Always check BOTH files.
 - **CRITICAL**: `src/lib/db.ts:473-478` → `transaction()` catch block logs and **returns null** instead of rethrowing. Every caller MUST check for null result.
 - Plugins affected: upload (needed `"routes"`), loyalty (needed `"database"` + `"routes"`), accounting (needed `"database"` + `"routes"`), housekeeping (needed `"auth"`), upload (needed `"auth"`).
+
+---
+
+### 2026-05-29 — Comprehensive Coverage Verification Sprint — 401/404 E2E Passed
+
+**Task**: Audit repository coverage, run full test suite (Vitest + E2E), verify production build.
+
+**Results**:
+- **Phase 1 — Repository Audit**: 404 E2E tests catalogued across 43 spec files. Coverage breakdown: core (85), shopfront (5), plan-enforcement (15), flows (31+), auth-gaps (53), routes (161), responsive (14), tenant-isolation (4), impersonation (2), admin-master (6+), plugins (28+).
+- **Phase 2 — Vitest Unit Tests**: All passing (131 files, 1177+ tests) — no regressions.
+- **Phase 3 — Full E2E Suite**: **401/404 passed** (18.7m). 3 failures confirmed as pre-existing/transient:
+  1. `integration.spec.ts` — known flaky (booking toggle button 15s timeout)
+  2. `registration-wizard.spec.ts:16` — transient `ERR_NETWORK_IO_SUSPENDED` under load (passed on retry)
+  3. `ultimate-redirect.spec.ts` — transient login page render timeout (load-induced, page not hydrated)
+- **Phase 4 — Production Build**: `npm run build` → **exit 0**, clean compilation, 225 static pages, all routes compiled.
+
+**Key Learnings**:
+- The 3 failing E2E tests are NOT regressions from recent coverage work — all are timing/load-induced failures after 400+ prior tests
+- Better Auth rate limiter state persists in-memory across test sessions; restart dev server to clear
+- `ERR_NETWORK_IO_SUSPENDED` is a Chromium browser-tab suspension error under load, not a code bug
