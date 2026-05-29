@@ -16,9 +16,18 @@ const connectPostSchema = z.object({
   currency: z.string().optional(),
 });
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
-  apiVersion: '2023-10-16' as any,
-});
+let _stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is required');
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2023-10-16' as any,
+    });
+  }
+  return _stripe;
+}
 
 // Helper to verify user has access to property
 async function verifyPropertyAccess(userId: string, propertyId: string): Promise<boolean> {
@@ -252,7 +261,7 @@ export async function PUT(req: NextRequest) {
 
     if (secret && signature) {
       try {
-        const event = stripe.webhooks.constructEvent(rawBody, signature, secret);
+        const event = getStripe().webhooks.constructEvent(rawBody, signature, secret);
         if (event.type === 'account.updated') {
           const account = event.data.object as Stripe.Account;
           stripeAccountId = account.id;

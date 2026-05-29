@@ -44,6 +44,6 @@ export async function GET(req: NextRequest, { params }: { params: { listingId: s
     );
   } catch (err: any) {
     logger.error('[Staff API] Error:', err);
-    return NextResponse.json([]);
+    return NextResponse.json({ error: 'Failed to fetch staff' }, { status: 500 });
   }
 }

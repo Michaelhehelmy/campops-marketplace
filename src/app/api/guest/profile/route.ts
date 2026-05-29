@@ -10,6 +10,7 @@ const profileBodySchema = z.object({
   fullName: z.string().min(1, 'fullName is required'),
   bio: z.string().optional(),
   phone: z.string().optional(),
+  avatarUrl: z.string().optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
         fullName: session.user.name,
         bio: '',
         phone: '',
+        avatarUrl: null,
       },
     });
   } catch (err: any) {
@@ -54,7 +56,7 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: 'Validation failed', details: parsed.error.issues }, { status: 400 });
     }
-    const { fullName, bio, phone } = parsed.data;
+    const { fullName, bio, phone, avatarUrl } = parsed.data;
 
     // Check if profile exists
     const existing = await db
@@ -63,13 +65,13 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
       await db
-        .prepare('UPDATE profiles SET full_name = ?, bio = ?, phone = ? WHERE user_id = ?')
-        .run(fullName, bio, phone, session.user.id);
+        .prepare('UPDATE profiles SET full_name = ?, bio = ?, phone = ?, avatar_url = ? WHERE user_id = ?')
+        .run(fullName, bio, phone, avatarUrl ?? null, session.user.id);
     } else {
       const profileId = 'prof_' + Math.random().toString(36).substring(7);
       await db
-        .prepare('INSERT INTO profiles (id, user_id, full_name, bio, phone) VALUES (?, ?, ?, ?, ?)')
-        .run(profileId, session.user.id, fullName, bio, phone);
+        .prepare('INSERT INTO profiles (id, user_id, full_name, bio, phone, avatar_url) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(profileId, session.user.id, fullName, bio, phone, avatarUrl ?? null);
     }
 
     // Also update user name in users table if changed

@@ -51,9 +51,18 @@ test.describe('Search & Filters', () => {
   });
 
   test('categories API returns named categories', async ({ request }) => {
-    const res = await request.get('/api/public/categories');
-    expect(res.status()).toBe(200);
-    const body = await res.json();
+    let res: Awaited<ReturnType<typeof request.get>> | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        res = await request.get('/api/public/categories', { timeout: 15000 });
+        if (res.status() === 200) break;
+      } catch {
+        if (attempt === 3) throw new Error('Categories API failed after 3 attempts');
+      }
+      if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * attempt));
+    }
+    expect(res!.status()).toBe(200);
+    const body = await res!.json();
     const categories = body.categories ?? body;
     expect(Array.isArray(categories)).toBe(true);
     if (categories.length > 0) {

@@ -394,6 +394,7 @@ describe('Payments Connect API Route', () => {
     });
 
     it('should verify stripe signature if webhook secret is configured', async () => {
+      process.env.STRIPE_SECRET_KEY = 'sk_test_for_test';
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
       const stripeModule = await import('stripe');
       const constructSpy = vi
@@ -431,6 +432,7 @@ describe('Payments Connect API Route', () => {
 
       constructSpy.mockRestore();
       delete process.env.STRIPE_WEBHOOK_SECRET;
+      delete process.env.STRIPE_SECRET_KEY;
     });
 
     it('should return cached response on idempotent PUT request', async () => {

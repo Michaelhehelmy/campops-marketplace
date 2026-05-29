@@ -1,0 +1,9 @@
+{
+  "id": "reviews",
+  "name": "Reviews & Ratings",
+  "version": "1.0.0",
+  "description": "Guest reviews and ratings for bookings. Allows guests to leave reviews after checkout and displays aggregate ratings.",
+  "author": "SinaiCamps Core",
+  "entry": "src/index.ts",
+  "capabilities": ["database"]
+}

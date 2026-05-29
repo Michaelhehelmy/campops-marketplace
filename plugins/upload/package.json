@@ -1,20 +1,21 @@
 {
-  "name": "@sinaicamps/plugin-housekeeping",
+  "name": "@sinaicamps/plugin-upload",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
   "sinaicamps": {
-    "pluginId": "housekeeping",
+    "pluginId": "upload",
     "sinaicampsVersion": ">=2.0.0",
     "capabilities": [
       "auth",
       "database",
-      "hooks",
-      "routes"
+      "routes",
+      "storage"
     ]
   },
   "devDependencies": {
-    "@sinaicamps/plugin-sdk": "*"
+    "@sinaicamps/plugin-sdk": "*",
+    "typescript": "^5.4.0"
   }
 }
