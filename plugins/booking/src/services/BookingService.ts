@@ -77,7 +77,7 @@ export class BookingService {
           ]
         );
       } catch (e) {
-        // Legacy sync is best-effort
+        console.error('[BookingService] Legacy reservations sync failed:', e);
       }
 
       return booking;
@@ -181,21 +181,47 @@ export class BookingService {
     return booking;
   }
 
-  async cancelBooking(id: string) {
+  async cancelBooking(id: string, guestEmail?: string) {
     const now = Math.floor(Date.now() / 1000);
 
-    const booking = await this.db.queryOne(
-      `UPDATE plugin_booking_bookings 
-       SET status = 'cancelled', updated_at = ?
-       WHERE id = ?
-       RETURNING *`,
-      [now, id]
-    );
+    const result = await this.db.transaction(async (tx: any) => {
+      // If guestEmail provided, verify ownership before cancelling
+      if (guestEmail) {
+        const existing = await tx.queryOne(
+          `SELECT * FROM plugin_booking_bookings WHERE id = ?`,
+          [id]
+        );
+        if (!existing) throw new Error('Booking not found');
+        if (existing.guest_email !== guestEmail) {
+          throw new Error('Forbidden: booking does not belong to this guest');
+        }
+      }
 
-    if (!booking) {
-      throw new Error('Booking not found');
-    }
+      const booking = await tx.queryOne(
+        `UPDATE plugin_booking_bookings 
+         SET status = 'cancelled', updated_at = ?
+         WHERE id = ?
+         RETURNING *`,
+        [now, id]
+      );
 
-    return booking;
+      if (!booking) {
+        throw new Error('Booking not found');
+      }
+
+      // Sync with legacy reservations table
+      try {
+        await tx.execute(
+          `UPDATE reservations SET status = 'cancelled' WHERE id = ?`,
+          [id]
+        );
+      } catch (e) {
+        console.error('[BookingService] Legacy reservations sync failed on cancel:', e);
+      }
+
+      return booking;
+    });
+
+    return result;
   }
 }

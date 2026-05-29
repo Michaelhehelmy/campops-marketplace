@@ -1,4 +1,5 @@
 import type { PluginAPI } from '@sinaicamps/plugin-sdk';
+import { EmailService, bookingConfirmationTemplate, cancellationTemplate, reviewRequestTemplate, newBookingNotificationTemplate } from '@/lib/email';
 import { incrementCounter } from '@/lib/metrics';
 import { BookingService } from '../services/BookingService.js';
 import { RoomService } from '../services/RoomService.js';
@@ -8,6 +9,7 @@ import {
   createBookingSchema,
   checkInSchema,
   checkOutSchema,
+  cancelBookingSchema,
   getBookingsSchema,
   type CheckAvailabilityInput,
   type CreateBookingInput,
@@ -75,6 +77,63 @@ export function registerRoutes(api: PluginAPI) {
         totalPrice: booking.total_price,
         timestamp: new Date().toISOString(),
       });
+
+      // Fire-and-forget booking confirmation email
+      (async () => {
+        try {
+          const [room, property] = await Promise.all([
+            api.db.queryOne('SELECT name FROM plugin_booking_rooms WHERE id = ?', [booking.room_id]),
+            api.db.queryOne('SELECT name FROM properties WHERE id = ?', [booking.listing_id]),
+          ]);
+          const propertyName = property?.name || 'Property';
+          await EmailService.send({
+            to: booking.guest_email,
+            subject: `Booking Confirmed — ${propertyName}`,
+            html: bookingConfirmationTemplate({
+              guestName: booking.guest_name,
+              propertyName,
+              checkIn: booking.check_in,
+              checkOut: booking.check_out,
+              bookingId: booking.id,
+            }),
+          });
+        } catch (err) {
+          api.logger.error('[BookingPlugin] Failed to send confirmation email:', err);
+        }
+      })();
+
+      // Fire-and-forget owner notification
+      (async () => {
+        try {
+          const owner = await api.db.queryOne(
+            `SELECT u.name, u.email FROM users u JOIN properties p ON p.owner_id = u.id WHERE p.id = ?`,
+            [booking.listing_id]
+          );
+          if (!owner?.email) return;
+          const [room, property] = await Promise.all([
+            api.db.queryOne('SELECT name FROM plugin_booking_rooms WHERE id = ?', [booking.room_id]),
+            api.db.queryOne('SELECT name FROM properties WHERE id = ?', [booking.listing_id]),
+          ]);
+          const propertyName = property?.name || 'Property';
+          const roomName = room?.name || 'Room';
+          await EmailService.send({
+            to: owner.email,
+            subject: `New Booking — ${propertyName}`,
+            html: newBookingNotificationTemplate({
+              ownerName: owner.name || 'Owner',
+              guestName: booking.guest_name,
+              propertyName,
+              roomName,
+              checkIn: booking.check_in,
+              checkOut: booking.check_out,
+              amount: `${booking.total_price} ${booking.currency || 'USD'}`,
+              manageUrl: `/manage/${booking.listing_id}/bookings`,
+            }),
+          });
+        } catch (err) {
+          api.logger.error('[BookingPlugin] Failed to send owner notification:', err);
+        }
+      })();
 
       const responseBody = { booking };
       if (idempotencyKey) {
@@ -145,10 +204,101 @@ export function registerRoutes(api: PluginAPI) {
           timestamp: new Date().toISOString(),
         });
 
+        // Fire-and-forget review request email
+        (async () => {
+          try {
+            const property = await api.db.queryOne('SELECT name FROM properties WHERE id = ?', [booking.listing_id]);
+            const propertyName = property?.name || 'Property';
+            await EmailService.send({
+              to: booking.guest_email,
+              subject: `How was your stay at ${propertyName}?`,
+              html: reviewRequestTemplate({
+                guestName: booking.guest_name,
+                propertyName,
+                reviewLink: `/guest/reviews/new?booking=${booking.id}`,
+              }),
+            });
+          } catch (err) {
+            api.logger.error('[BookingPlugin] Failed to send review request email:', err);
+          }
+        })();
+
         return new Response(JSON.stringify({ booking }), { status: 200 });
       } catch (error: any) {
         if (error.name === 'ZodError') {
           return new Response(JSON.stringify({ error: error.errors }), { status: 400 });
+        }
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      }
+    },
+  });
+
+  // POST /api/p/booking/:id/cancel
+  api.registerRoute('/api/p/booking/:id/cancel', {
+    POST: async (req: Request) => {
+      try {
+        const session = await api.auth.getSession(req);
+        if (!session) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        }
+
+        const url = new URL(req.url);
+        const bookingId = url.searchParams.get(':id') || url.pathname.split('/').slice(-2)[0];
+        const body = await req.json().catch(() => ({}));
+        const validated = cancelBookingSchema.parse(body);
+
+        const role = session.user.role as string;
+        let booking;
+
+        if (['master', 'admin', 'staff'].includes(role)) {
+          booking = await bookingService.cancelBooking(bookingId);
+        } else if (role === 'guest') {
+          booking = await bookingService.cancelBooking(bookingId, session.user.email);
+        } else {
+          return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+        }
+
+        // Emit BOOKING_CANCELLED hook
+        await api.executeHook('BOOKING_CANCELLED', {
+          bookingId: booking.id,
+          reason: validated.reason,
+          timestamp: new Date().toISOString(),
+        });
+
+        // Fire-and-forget cancellation email
+        (async () => {
+          try {
+            const [room, property] = await Promise.all([
+              api.db.queryOne('SELECT name FROM plugin_booking_rooms WHERE id = ?', [booking.room_id]),
+              api.db.queryOne('SELECT name FROM properties WHERE id = ?', [booking.listing_id]),
+            ]);
+            const propertyName = property?.name || 'Property';
+            await EmailService.send({
+              to: booking.guest_email,
+              subject: `Booking Cancelled — ${propertyName}`,
+              html: cancellationTemplate({
+                guestName: booking.guest_name,
+                propertyName,
+                checkIn: booking.check_in,
+                checkOut: booking.check_out,
+                reason: validated.reason,
+              }),
+            });
+          } catch (err) {
+            api.logger.error('[BookingPlugin] Failed to send cancellation email:', err);
+          }
+        })();
+
+        return new Response(JSON.stringify({ booking }), { status: 200 });
+      } catch (error: any) {
+        if (error.name === 'ZodError') {
+          return new Response(JSON.stringify({ error: error.errors }), { status: 400 });
+        }
+        if (error.message?.includes('not found')) {
+          return new Response(JSON.stringify({ error: 'Booking not found' }), { status: 404 });
+        }
+        if (error.message?.includes('Forbidden')) {
+          return new Response(JSON.stringify({ error: error.message }), { status: 403 });
         }
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
       }

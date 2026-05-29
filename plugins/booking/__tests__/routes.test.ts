@@ -141,6 +141,127 @@ describe('Booking Plugin Routes', () => {
     );
   });
 
+  describe('POST /api/p/booking/:id/cancel', () => {
+    it('returns 401 without session', async () => {
+      const api = buildMockApi();
+      api.auth.getSession = vi.fn().mockResolvedValue(null);
+      registerRoutes(api as any);
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/b-1/cancel?:id=b-1', 'POST', { reason: 'test' })
+      );
+
+      expect(res.status).toBe(401);
+    });
+
+    it('allows guest to cancel own booking', async () => {
+      const api = buildMockApi('guest', 'guest@example.com');
+      registerRoutes(api as any);
+
+      const ownBooking = {
+        id: 'b-1',
+        guest_email: 'guest@example.com',
+        guest_name: 'Guest',
+        room_id: 'r-1',
+        listing_id: 'l-1',
+        check_in: '2025-06-15',
+        check_out: '2025-06-17',
+        total_price: 100,
+      };
+      api.db.queryOne
+        .mockReset()
+        .mockResolvedValueOnce(ownBooking) // SELECT ownership check
+        .mockResolvedValueOnce({ ...ownBooking, status: 'cancelled' }); // UPDATE
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/b-1/cancel?:id=b-1', 'POST', { reason: 'changed mind' })
+      );
+
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.booking.status).toBe('cancelled');
+      expect(api.executeHook).toHaveBeenCalledWith(
+        'BOOKING_CANCELLED',
+        expect.objectContaining({ bookingId: 'b-1' })
+      );
+    });
+
+    it('forbids guest cancelling another booking', async () => {
+      const api = buildMockApi('guest', 'guest@example.com');
+      registerRoutes(api as any);
+
+      api.db.queryOne
+        .mockReset()
+        .mockResolvedValueOnce({ id: 'b-1', guest_email: 'other@example.com' }); // SELECT reveals different email
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/b-1/cancel?:id=b-1', 'POST', { reason: 'test' })
+      );
+
+      expect(res.status).toBe(403);
+      const body = await res.json();
+      expect(body.error).toContain('Forbidden');
+    });
+
+    it('allows staff to cancel any booking', async () => {
+      const api = buildMockApi('staff', 'staff@example.com');
+      registerRoutes(api as any);
+
+      api.db.queryOne.mockReset().mockResolvedValueOnce({
+        id: 'b-1',
+        status: 'cancelled',
+        guest_email: 'guest@example.com',
+        guest_name: 'Guest',
+        room_id: 'r-1',
+        listing_id: 'l-1',
+        check_in: '2025-06-15',
+        check_out: '2025-06-17',
+      });
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/b-1/cancel?:id=b-1', 'POST', { reason: 'admin decision' })
+      );
+
+      expect(res.status).toBe(200);
+    });
+
+    it('allows master to cancel any booking', async () => {
+      const api = buildMockApi('master', 'master@example.com');
+      registerRoutes(api as any);
+
+      api.db.queryOne.mockReset().mockResolvedValueOnce({
+        id: 'b-1', status: 'cancelled', guest_email: 'g@e.com',
+      });
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/b-1/cancel?:id=b-1', 'POST', {})
+      );
+
+      expect(res.status).toBe(200);
+    });
+
+    it('returns 404 when booking not found', async () => {
+      const api = buildMockApi('admin', 'admin@example.com');
+      registerRoutes(api as any);
+
+      api.db.queryOne.mockReset().mockResolvedValueOnce(null);
+
+      const handler = api._internal.routes.get('/api/p/booking/:id/cancel')!.POST;
+      const res = await handler(
+        makeRequest('/api/p/booking/nonexistent/cancel?:id=nonexistent', 'POST', {})
+      );
+
+      expect(res.status).toBe(404);
+      const body = await res.json();
+      expect(body.error).toBe('Booking not found');
+    });
+  });
+
   it('POST /api/p/booking/book handles idempotency key correctly', async () => {
     const api = buildMockApi();
     registerRoutes(api as any);
