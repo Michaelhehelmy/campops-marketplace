@@ -52,7 +52,7 @@ ssh -i "$SSH_KEY" "$REMOTE_USER@$VM_IP" << 'EOF'
   # Health check with rollback
   echo "⏳ Waiting for health check..."
   sleep 8
-  HEALTH_URL="https://${BASE_DOMAIN:-sinaicamps.com}/api/v1/health"
+  HEALTH_URL="https://${BASE_DOMAIN:-sinaicamps.com}/api/health"
   if curl -sf -o /dev/null "$HEALTH_URL"; then
     echo "✅ Health check passed"
   else
