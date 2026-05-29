@@ -76,10 +76,25 @@ export class AuthPage {
  * Returns the CSRF token for authenticated API calls.
  */
 export async function loginAs(page: Page, email: string, password = 'password123') {
-  const res = await page.request.post('http://localhost:3000/api/auth/sign-in/email', {
-    headers: { Origin: 'http://localhost:3000' },
-    data: { email, password },
-  });
+  let res: import('@playwright/test').APIResponse | undefined;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      res = await page.request.post('http://localhost:3000/api/auth/sign-in/email', {
+        headers: { Origin: 'http://localhost:3000' },
+        data: { email, password },
+        timeout: 30000,
+      });
+      if (res.ok()) break;
+      lastError = new Error(`HTTP ${res.status()}`);
+    } catch (e) {
+      lastError = e;
+    }
+    if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * attempt));
+  }
+  if (!res || !res.ok()) {
+    throw new Error(`loginAs(${email}) failed: ${res ? res.status() : (lastError as Error)?.message}`);
+  }
   const raw = res.headers()['set-cookie'] || '';
   const match = raw.match(/x-csrf-token=([^;]+)/);
   const csrfToken = match ? match[1] : '';

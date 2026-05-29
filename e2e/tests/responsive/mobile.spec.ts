@@ -49,8 +49,8 @@ test.describe('Mobile: Authenticated flows', () => {
 
   test('registration step 1 is completable on mobile', async ({ page }) => {
     await page.goto('/en/list-your-camp');
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    const emailBox = await page.getByLabel(/email/i).boundingBox();
+    await expect(page.getByPlaceholder('jane@mycamp.com')).toBeVisible();
+    const emailBox = await page.getByPlaceholder('jane@mycamp.com').boundingBox();
     expect(emailBox?.x).toBeGreaterThanOrEqual(0);
     expect((emailBox?.x ?? 0) + (emailBox?.width ?? 0)).toBeLessThanOrEqual(
       (page.viewportSize()?.width ?? 375) + 1

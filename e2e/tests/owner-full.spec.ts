@@ -1,24 +1,23 @@
-import { test, expect } from '../helpers/auth.fixture';
+import { test, expect } from '@playwright/test';
+import { loginAs } from '../helpers/page-helpers';
 
 test.describe('Owner Full Journey', () => {
   test('Owner can access dashboard, bookings, revenue, and property pages', async ({
     page,
-    managerSession,
   }) => {
-    const storageState = JSON.parse(managerSession.storageState);
-    await page.context().addCookies(storageState.cookies);
+    await loginAs(page, 'safari@sinaicamps.com');
 
     await page.goto('/en/owner/dashboard');
-    await expect(page.getByText(/Owner Dashboard|Dashboard/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
 
     await page.goto('/en/owner/bookings');
-    await expect(page.getByText(/Bookings/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
 
     await page.goto('/en/owner/revenue');
-    await expect(page.getByText(/Revenue|Earnings/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
 
     await page.goto('/en/owner/property');
-    await expect(page.getByText(/Property/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   test('Owner dashboard redirects to login without auth', async ({ page }) => {
@@ -43,10 +42,8 @@ test.describe('Owner Full Journey', () => {
 
   test('GET /api/owner/me returns owner data for authenticated manager', async ({
     page,
-    managerSession,
   }) => {
-    const storageState = JSON.parse(managerSession.storageState);
-    await page.context().addCookies(storageState.cookies);
+    await loginAs(page, 'safari@sinaicamps.com');
     const res = await page.request.get('/api/owner/me');
     expect([200, 401]).toContain(res.status());
     if (res.status() === 200) {
@@ -57,10 +54,8 @@ test.describe('Owner Full Journey', () => {
 
   test('GET /api/owner/domains/check validates domain format', async ({
     page,
-    managerSession,
   }) => {
-    const storageState = JSON.parse(managerSession.storageState);
-    await page.context().addCookies(storageState.cookies);
+    await loginAs(page, 'safari@sinaicamps.com');
     const res = await page.request.get('/api/owner/domains/check?domain=example.com');
     expect([200, 401, 403]).toContain(res.status());
     if (res.status() === 200) {

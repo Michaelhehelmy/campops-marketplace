@@ -160,6 +160,7 @@ export const profiles = sqliteTable('profiles', {
   fullName: text('full_name'),
   bio: text('bio'),
   phone: text('phone'),
+  avatarUrl: text('avatar_url'),
 });
 
 // ---------------------------------------------------------------------------

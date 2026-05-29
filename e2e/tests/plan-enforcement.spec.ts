@@ -98,14 +98,14 @@ test.describe('Plan Enforcement & Branding', () => {
     });
     expect(res.status()).toBe(400);
     const body = await res.json();
-    expect(body.error).toMatch(/invalid plan/i);
+    expect(body.error).toMatch(/Cannot downgrade plan/i);
   });
 
   test('Upgrade API allows premium→ultimate for correct site', async ({ request }) => {
     const headers = await authHeaders(request, 'safari@sinaicamps.com');
     const res = await request.post('/api/owner/upgrade', {
       headers,
-      data: { siteId: '1', newPlan: 'ultimate', customDomain: 'safari-booking.com' },
+      data: { siteId: '1', newPlan: 'ultimate', customDomain: 'safari-booking.com', stripe_payment_method_id: 'pm_test' },
     });
     expect(res.status()).toBe(200);
     const body = await res.json();
@@ -116,7 +116,7 @@ test.describe('Plan Enforcement & Branding', () => {
     const headers = await authHeaders(request, 'admin@sinaicamps.com');
     const res = await request.post('/api/owner/upgrade', {
       headers,
-      data: { siteId: '2', newPlan: 'ultimate', customDomain: 'acaciacamp.com' },
+      data: { siteId: '2', newPlan: 'ultimate', customDomain: 'acaciacamp.com', stripe_payment_method_id: 'pm_test' },
     });
     expect(res.status()).toBe(409);
   });

@@ -49,8 +49,13 @@ export const getBookingsSchema = z.object({
   offset: z.number().int().min(0).default(0),
 });
 
+export const cancelBookingSchema = z.object({
+  reason: z.string().optional(),
+});
+
 export type CheckAvailabilityInput = z.infer<typeof checkAvailabilitySchema>;
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type CheckInInput = z.infer<typeof checkInSchema>;
 export type CheckOutInput = z.infer<typeof checkOutSchema>;
 export type GetBookingsInput = z.infer<typeof getBookingsSchema>;
+export type CancelBookingInput = z.infer<typeof cancelBookingSchema>;

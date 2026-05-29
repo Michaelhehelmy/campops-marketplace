@@ -1,0 +1,9 @@
+{
+  "id": "upload",
+  "name": "File Upload",
+  "version": "1.0.0",
+  "description": "Guest file upload for avatars and booking attachments. Provides storage API for other plugins.",
+  "author": "SinaiCamps Core",
+  "entry": "src/index.ts",
+  "capabilities": ["database", "routes", "storage"]
+}

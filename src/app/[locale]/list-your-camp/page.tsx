@@ -79,10 +79,11 @@ export default function Step1AccountPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
+              id="email"
               type="email"
               required
               value={form.email}

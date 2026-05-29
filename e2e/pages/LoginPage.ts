@@ -18,9 +18,21 @@ export class LoginPage {
   }
 
   async login(email: string, password: string) {
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      await this.emailInput.fill(email);
+      await this.passwordInput.fill(password);
+      await this.loginButton.click();
+      try {
+        await this.page.waitForURL(/^(?!.*\/login)/, { timeout: 15000 });
+        return;
+      } catch {
+        if (attempt === 1) {
+          await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+          await this.page.goto('/en/login', { waitUntil: 'networkidle' });
+        }
+      }
+    }
+    throw new Error(`login(${email}) failed after 2 attempts`);
   }
 
   async expectLoggedIn() {

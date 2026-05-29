@@ -21,8 +21,8 @@ No database server needed — the app uses SQLite out of the box for local devel
 ## Step 1 — Clone and install
 
 ```bash
-git clone https://github.com/your-org/campops-marketplace.git
-cd sinaicamps-marketplace
+git clone https://github.com/michaelhehelmy/campops-marketplace.git
+cd campops-marketplace
 npm install
 ```
 
@@ -93,20 +93,15 @@ Or directly via the master admin UI at `/en/admin`.
 
 ---
 
-## Step 6 — Build a tenant shop frontend (optional)
+## Step 6 — View a tenant shop frontend (optional)
 
-Each tenant gets a branded Vite SPA hosted separately:
+Tenant shop frontends are served by the same Next.js app under each tenant's slug:
 
-```bash
-bash scripts/build-shop.sh <slug> development http://localhost:3000
-# Output: builds/<slug>/dist/
+```
+http://localhost:3000/en/<tenant-slug>
 ```
 
-Serve it locally:
-
-```bash
-cd builds/<slug>/dist && npx serve .
-```
+For example, the demo tenant is available at `http://localhost:3000/en/demo-camp`. No separate build step is needed — branding is loaded from the database at runtime.
 
 ---
 

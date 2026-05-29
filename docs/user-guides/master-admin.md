@@ -120,32 +120,84 @@ Click the **Disable** action on any active admin to revoke their access. Disable
 
 ## Plugin Management
 
-Navigate to **Plugins** in the sidebar. The plugins page has three views:
+Navigate to **Plugins** in the sidebar. Plugin management operates at two levels:
 
-### Catalog View
+### Global Level — `/en/admin/plugins`
 
-Shows all available plugins in a grid with:
+The plugins page has three views:
 
+**Catalog View** — All available plugins in a grid with:
 - Plugin name and description
 - Version number
-- Active/Inactive toggle
+- Active/Inactive toggle (enable/disable globally)
 - Category badge
+- Review status
 
-Click **Toggle** to enable or disable a plugin globally.
+Click **Toggle** to enable or disable a plugin across the entire platform.
 
-### Properties View
+**Properties View** — Shows which plugins are associated with which properties. Filter by property to see its plugin configuration.
 
-Shows which plugins are associated with which properties. You can filter by property to see its plugin configuration.
-
-### Submissions View
-
-Shows community plugin submissions with status:
-
+**Submissions View** — Community plugin submissions with status:
 - **Pending** — awaiting review
 - **Approved** — accepted into the catalog
 - **Rejected** — not accepted
 
-Use the **Filter** to view submissions by status. Click **Approve** or **Reject** on pending submissions.
+### Per-Property Level — `/en/admin/listings/[id]/config`
+
+Configure which plugins are enabled for a specific property:
+
+1. Navigate to **Listings** → click a property → **Configuration**.
+2. Scroll to the **Plugins** section.
+3. Toggle plugins on or off for this property only.
+
+A plugin must be active globally (Catalog view) before it can be enabled for individual properties.
+
+---
+
+## Impersonation
+
+Master Admins can temporarily log in as a property owner to view their dashboard and troubleshoot issues:
+
+1. Navigate to **Listings** → click a property.
+2. Click **Login as Owner**.
+3. You are redirected to the property's owner dashboard.
+4. An **impersonation banner** appears at the top of the page, showing "Logged in as [owner name]".
+5. Perform actions as the owner (view bookings, check settings, etc.).
+6. Click **Exit Impersonation** on the banner to return to your admin session.
+
+All impersonation sessions are logged in `audit_logs`.
+
+---
+
+## Metrics & Monitoring
+
+### Prometheus Metrics
+
+The platform exposes application metrics in Prometheus text format:
+
+```
+GET /api/metrics
+Authorization: Bearer <METRICS_TOKEN>
+```
+
+Available metrics (all prefixed with `sinaicamps_`):
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `sinaicamps_http_requests_total` | Counter | Total HTTP requests by method and route |
+| `sinaicamps_http_request_duration_ms` | Histogram | Request duration in milliseconds |
+| `sinaicamps_db_query_duration_ms` | Histogram | Database query duration |
+| `sinaicamps_db_errors_total` | Counter | Database error count |
+| `sinaicamps_plugin_crashes_total` | Counter | Plugin crash count |
+| `sinaicamps_plugin_hook_duration_ms` | Histogram | Hook execution duration |
+
+### System Health
+
+The admin dashboard's **System Health** page displays:
+- Database connectivity status
+- Plugin watchdog status per plugin
+- Background job queue depth
+- Memory and uptime
 
 ---
 
@@ -214,9 +266,7 @@ Events logged include:
 
 ## Build Queue
 
-When a property's shop frontend needs to be rebuilt (e.g., after theme changes, plugin additions, or branding updates), the build is queued in the `build_queue` table.
-
-Master Admins can monitor and manage the build queue through the admin interface or by checking the queue status via API.
+The `build_queue` table tracks frontend rebuild requests for legacy Cloudflare Pages deployments. With the current architecture (tenant frontends served by the same Next.js app), builds are no longer required — changes take effect immediately on next page load.
 
 ---
 

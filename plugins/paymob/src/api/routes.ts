@@ -1,6 +1,7 @@
 import type { PluginAPI } from '@sinaicamps/plugin-sdk';
 import type { PaymobTransaction, PaymobWebhookPayload } from '../types.js';
 import { PaymobService } from '../services/PaymobService.js';
+import { EmailService, paymentReceiptTemplate } from '@/lib/email';
 
 function getConfig(api: PluginAPI): {
   apiKey: string;
@@ -130,6 +131,33 @@ export function registerRoutes(api: PluginAPI): void {
 
           if (status === 'completed') {
             api.logger.info(`[paymob] Payment completed for order ${transaction.order?.id}`);
+
+            // Fire-and-forget payment receipt email
+            const bookingId = rows?.[0]?.booking_id;
+            if (bookingId) {
+              (async () => {
+                try {
+                  const booking = await api.db.queryOne(
+                    'SELECT guest_name, guest_email, total_price, currency FROM plugin_booking_bookings WHERE id = ?',
+                    [bookingId]
+                  );
+                  if (booking) {
+                    await EmailService.send({
+                      to: booking.guest_email,
+                      subject: 'Payment Receipt — SinaiCamps',
+                      html: paymentReceiptTemplate({
+                        guestName: booking.guest_name,
+                        amount: `${booking.total_price} ${booking.currency || 'USD'}`,
+                        paymentId: paymentRef,
+                        date: new Date().toLocaleDateString(),
+                      }),
+                    });
+                  }
+                } catch (err) {
+                  api.logger.error('[paymob] Failed to send payment receipt email:', err);
+                }
+              })();
+            }
           }
         }
 

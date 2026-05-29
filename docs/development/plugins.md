@@ -186,6 +186,71 @@ api.registerHook('CHECKOUT_COMPLETED', async (data) => {
 });
 ```
 
+### Transaction Safety
+
+All SQLite transactions are serialized via a promise-chain queue (`_txQueue` in `DrizzleDatabaseWrapper`). This prevents `SQLITE_BUSY` errors from concurrent requests:
+
+```typescript
+await api.db.transaction(async (trx) => {
+  await trx.execute('INSERT INTO ...', [val1]);
+  await trx.execute('UPDATE ...', [val2]);
+});
+```
+
+Never bypass the wrapper with raw `better-sqlite3` transactions — you will skip the serialization queue and risk race conditions.
+
+---
+
+## PluginLoader, PluginBroker, Watchdog & Sandbox
+
+### PluginLoader
+
+Located in `src/lib/plugins/PluginLoader.ts`. Scans `plugins/` for directories containing `plugin.json`, validates the manifest, and activates plugins via `init()`:
+
+```typescript
+// Core internals (not called directly by plugins)
+loader.scan();        // discover all plugin directories
+loader.activate(id);  // call init() and register routes
+loader.deactivate(id);// call cleanup and remove routes
+```
+
+### PluginBroker
+
+Located in `src/lib/plugins/PluginBroker.ts`. Cross-plugin event bus — allows plugins to emit events that other plugins subscribe to without direct coupling:
+
+```typescript
+// Plugin A emits (via api.publish):
+api.publish('plugin_a:event', { data: 'hello' });
+
+// Plugin B subscribes (via api.registerHook):
+api.registerHook('plugin_a:event', async (data) => {
+  api.logger.info('Plugin A says:', data);
+});
+```
+
+### Plugin Watchdog
+
+Located in `src/lib/plugins/plugin-watchdog.ts`. Monitors plugin health — records crashes and provides health status:
+
+```typescript
+watchdog.recordCrash(pluginId, error);
+watchdog.getPluginHealth(pluginId);
+// Returns: { status: 'healthy' | 'unstable' | 'crashed', crashes: number, lastError: string }
+```
+
+### Plugin Sandbox
+
+Located in `src/lib/plugins/plugin-sandbox.ts`. Enforces capability restrictions at runtime. Each plugin's declared capabilities (from `plugin.json`) are checked before allowing sensitive operations:
+
+```typescript
+sandbox.assertCapability(pluginId, 'database');
+sandbox.assertCapability(pluginId, 'network');
+```
+
+If a plugin attempts an operation outside its declared capabilities, the sandbox throws and logs the violation.
+
+---
+
 ### Table Naming Convention
 
 `api.db.createTable('items', ...)` creates a table named `plugin_{plugin_id}_{items}`.

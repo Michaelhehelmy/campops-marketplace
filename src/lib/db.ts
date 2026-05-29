@@ -148,6 +148,8 @@ const idDefault = 'TEXT PRIMARY KEY';
  * synchronous execution and row normalization for compatibility.
  */
 class DrizzleDatabaseWrapper {
+  private _txQueue: Promise<void> = Promise.resolve();
+
   private get isPostgres() {
     return !!pgPool;
   }
@@ -454,6 +456,15 @@ class DrizzleDatabaseWrapper {
         client.release();
       }
     }
+    // Serialize transactions on the single SQLite connection to prevent
+    // concurrent BEGIN/COMMIT/ROLLBACK races.
+    let release: () => void;
+    const prev = this._txQueue;
+    this._txQueue = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await prev;
+
     try {
       getSqlite().exec('BEGIN');
       const result = await callback(this);
@@ -461,8 +472,14 @@ class DrizzleDatabaseWrapper {
       return result;
     } catch (err) {
       logger.warn('Transaction failed:', err);
-      getSqlite().exec('ROLLBACK');
+      try {
+        getSqlite().exec('ROLLBACK');
+      } catch {
+        // rollback may fail (e.g. BEGIN never succeeded or tx already ended)
+      }
       return null;
+    } finally {
+      release!();
     }
   }
 

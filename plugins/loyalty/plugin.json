@@ -9,6 +9,7 @@
   "slots": {
     "dashboard.widgets": ["loyalty:LoyaltyStatusWidget"]
   },
+  "capabilities": ["database", "routes"],
   "menuItems": [
     {
       "id": "loyalty-status",

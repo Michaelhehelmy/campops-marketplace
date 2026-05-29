@@ -6,7 +6,7 @@
 
 > A white-label, multi-tenant hospitality marketplace. One platform powers your public listing site, property owner dashboards, and fully branded tenant shop frontends — all driven by a plugin ecosystem you control.
 >
-> 🟢 **Production Status**: [May 2026] All critical audits passed. 1102 tests green. Ready for production deployment.
+> 🟢 **Production Status**: [May 2026] All critical audits passed. 1177 tests green. Ready for production deployment.
 
 ---
 
@@ -15,14 +15,10 @@
 ```
 Browser
   │
-  ├── marketplace.yourdomain.com  ──► Next.js Core (App Router)
-  │                                      ├── /api/*          ← REST API
-  │                                      ├── /[locale]/      ← Public pages
-  │                                      ├── /admin          ← Master admin
-  │                                      └── /manage/[id]    ← Owner dashboard
-  │
-  └── tenant.theirdomain.com  ──────► Cloudflare Pages (Vite SPA)
-                                          └── API calls ──► api.yourdomain.com
+  └── domain.com ───► PM2 :3000 (Next.js)
+                         ├── /api/*                   ← REST API
+                         ├── /[locale]/                ← Marketplace pages
+                         └── /[locale]/[tenantSlug]/   ← Tenant shop frontend
 ```
 
 **Clean Core principle:** the platform core handles only identity, tenant isolation, and plugin lifecycle. All business logic (bookings, POS, loyalty, HR) lives in self-contained plugins.
@@ -66,7 +62,7 @@ campops-marketplace/
 ```bash
 # 1. Clone and install
 git clone https://github.com/michaelhehelmy/campops-marketplace.git
-cd sinaicamps-marketplace
+cd campops-marketplace
 npm install
 
 # 2. Configure environment
@@ -91,7 +87,7 @@ npm run test:e2e         # Playwright E2E (requires dev server)
 npm run build            # Production build verification
 ```
 
-**Current status:** 1102/1102 unit tests passing, 208/208 E2E tests passing, clean production build, comprehensive security audit completed.
+**Current status:** 1177/1177 unit tests passing, 376/376 E2E tests passing, clean production build, comprehensive security audit completed.
 
 ---
 
@@ -138,10 +134,10 @@ npm run build            # Production build verification
 | Language         | TypeScript                                               |
 | Database         | SQLite via `better-sqlite3` (swappable to PostgreSQL)    |
 | Auth             | Better Auth                                              |
-| Tenant Frontends | React + Vite + shadcn/ui                                 |
+| Tenant Frontends | Next.js catch-all routes (same app)                      |
 | Styling          | Tailwind CSS                                             |
 | Testing          | Vitest + Playwright                                      |
-| Deployment       | Oracle Cloud VM (backend) + Cloudflare Pages (frontends) |
+| Deployment       | Oracle Cloud VM (single Next.js server)                  |
 | Process Manager  | PM2                                                      |
 | Web Server       | Nginx (reverse proxy + SSL)                              |
 
@@ -179,6 +175,6 @@ npm run check:full     # full CI suite including E2E
 ```
 
 See [TESTING.md](TESTING.md) for the full testing guide.  
-**1102/1102 Vitest tests** (122 files) + **208/208 Playwright E2E tests**.  
+**1177/1177 Vitest tests** (131 files) + **376/376 Playwright E2E tests**.  
 **ESLint:** 0 errors, **Production build:** clean, **Lighthouse:** 100/100 A11y/BP/SEO.
 See [docs/TEST_COVERAGE_REPORT.md](docs/TEST_COVERAGE_REPORT.md) for coverage breakdown, security findings, and resilience results.

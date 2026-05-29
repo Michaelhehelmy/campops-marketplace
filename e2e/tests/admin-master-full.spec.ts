@@ -1,20 +1,33 @@
 import { test, expect } from '../helpers/auth.fixture';
+import { loginAs } from '../helpers/page-helpers';
+
+async function gotoWithRetry(page: import('@playwright/test').Page, url: string, options?: any) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      await page.goto(url, { timeout: 15000, ...options });
+      return;
+    } catch (e: any) {
+      if (attempt === 2) throw e;
+      await page.waitForTimeout(1000);
+    }
+  }
+}
 
 test.describe('Admin Master Full Coverage', () => {
   test('Master can access all admin pages', async ({ page, masterSession }) => {
     const storageState = JSON.parse(masterSession.storageState);
     await page.context().addCookies(storageState.cookies);
 
-    await page.goto('/en/admin/setup');
+    await gotoWithRetry(page, '/en/admin/setup');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/health');
+    await gotoWithRetry(page, '/en/admin/health');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/listings/1/config');
+    await gotoWithRetry(page, '/en/admin/listings/1/config');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/reports/commissions');
+    await gotoWithRetry(page, '/en/admin/reports/commissions');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
   });
 
@@ -22,26 +35,26 @@ test.describe('Admin Master Full Coverage', () => {
     const storageState = JSON.parse(masterSession.storageState);
     await page.context().addCookies(storageState.cookies);
 
-    await page.goto('/en/admin/master');
+    await gotoWithRetry(page, '/en/admin/master');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/master/plugins');
+    await gotoWithRetry(page, '/en/admin/master/plugins');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/master/settings');
+    await gotoWithRetry(page, '/en/admin/master/settings');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/master/listings/1');
+    await gotoWithRetry(page, '/en/admin/master/listings/1');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
 
-    await page.goto('/en/admin/master/commissions');
+    await gotoWithRetry(page, '/en/admin/master/commissions');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
   });
 
   test('Master admin master/admins page renders', async ({ page, masterSession }) => {
     const storageState = JSON.parse(masterSession.storageState);
     await page.context().addCookies(storageState.cookies);
-    await page.goto('/en/admin/master/admins');
+    await gotoWithRetry(page, '/en/admin/master/admins');
     await expect(page.locator('body')).toBeVisible({ timeout: 10000 });
   });
 

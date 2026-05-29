@@ -55,7 +55,7 @@ New to the platform?
 | Document                           | Description                                           |
 | ---------------------------------- | ----------------------------------------------------- |
 | [../FRAMEWORK.md](../FRAMEWORK.md) | Core framework: schema, Plugin API, middleware, hooks |
-| [../TESTING.md](../TESTING.md)     | Test suite guide (Vitest + Playwright, 1102+ tests)   |
+| [../TESTING.md](../TESTING.md)     | Test suite guide (Vitest + Playwright, 1177+ tests)   |
 
 ### Release & History
 
@@ -75,7 +75,7 @@ A property (camp, hotel, lodge, resort) registered on the platform. Each tenant 
 - A unique `slug` (used in URLs and API calls)
 - An optional custom domain
 - Its own plugin set
-- A branded shop frontend hosted on Cloudflare Pages
+- A branded shop frontend served by the Next.js app under its own slug
 
 ### Plugin
 
@@ -88,7 +88,7 @@ A self-contained module in the `plugins/` directory. Each plugin:
 
 ### Shop Frontend
 
-A branded React/Vite SPA built from `templates/shop-frontend` for a specific tenant. Built once per tenant with their branding baked in at build time via `VITE_*` env vars. Deployed to Cloudflare Pages, served from the tenant's custom domain.
+Each tenant's shop frontend is served by the same Next.js server via the catch-all route `/[locale]/[tenantSlug]/[[...slug]]`. Branding and theme settings are loaded at runtime from the database — no separate build step required. The `templates/shop-frontend/` directory contains the starter template used during initial scaffolding.
 
 ### Master Admin
 
@@ -154,7 +154,7 @@ The platform-level admin panel at `/en/admin`. Only accessible to users with the
 
 | Script                                         | Description                                                |
 | ---------------------------------------------- | ---------------------------------------------------------- |
-| `scripts/build-shop.sh <slug> <env> <api-url>` | Build a tenant's branded shop frontend                     |
+| `scripts/build-shop.sh <slug> <env> <api-url>` | Build a tenant's branded shop frontend (legacy — frontends now served by Next.js) |
 | `scripts/fix-standalone.sh`                    | Fix Next.js standalone build (install missing native deps) |
 | `scripts/deploy-prod.sh`                       | Run on server: restart PM2, reload Nginx                   |
 | `scripts/seed-property.js`                     | Add a new tenant property to the database                  |

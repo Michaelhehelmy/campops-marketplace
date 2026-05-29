@@ -8,7 +8,8 @@
 
 Before going live, verify each item:
 
-- [ ] `DATABASE_URL` points to PostgreSQL (not SQLite in production)
+- [ ] SQLite database file exists and is writable: `ls -lh sinaicamps-prod.db`
+- [ ] SQLite WAL mode is active: `sqlite3 sinaicamps-prod.db "PRAGMA journal_mode"` → must return `wal`
 - [ ] `BETTER_AUTH_SECRET` is a 32+ character random string (`openssl rand -base64 32`)
 - [ ] `STRIPE_SECRET_KEY` is the **live** key (not `sk_test_...`)
 - [ ] `MAILGUN_API_KEY` and `MAILGUN_DOMAIN` are configured for transactional email
@@ -23,8 +24,8 @@ Before going live, verify each item:
 - [ ] PWA service worker reachable at `https://sinaicamps.com/sw-marketplace.js`
 - [ ] PWA manifest reachable at `https://sinaicamps.com/manifest.webmanifest`
 - [ ] Static files (`/public/*`) served directly by Nginx (not routed through Next.js)
-- [ ] Health endpoint returns `{"status":"ok"}`: `curl https://sinaicamps.com/api/health`
-- [ ] Metrics endpoint returns counters: `curl https://sinaicamps.com/api/metrics`
+- [ ] Health endpoint returns `{"status":"ok"}`: `curl https://sinaicamps.com/api/health` (also accepts degraded status — only critical failures return 503)
+- [ ] Metrics endpoint returns counters: `curl -H "Authorization: Bearer <METRICS_TOKEN>" https://sinaicamps.com/api/metrics`
 
 ---
 
@@ -37,7 +38,7 @@ See `.env.example` for the complete template. Key variables for production:
 | `NODE_ENV`                | **Required**                     | Set manually                        | `production`                                        |
 | `BETTER_AUTH_SECRET`      | **Required**                     | Generate: `openssl rand -base64 32` | `uL3tT...8Zw==`                                     |
 | `BETTER_AUTH_URL`         | **Required**                     | Your domain                         | `https://sinaicamps.com`                            |
-| `DATABASE_URL`            | **Required**                     | PostgreSQL connection string        | `postgresql://user:pass@host:5432/campops`          |
+| `DATABASE_URL`            | **Required**                     | SQLite file path (or PostgreSQL)     | `file:./sinaicamps-prod.db`                         |
 | `NEXT_PUBLIC_BASE_DOMAIN` | **Required**                     | Your domain                         | `sinaicamps.com`                                    |
 | `NEXT_PUBLIC_API_URL`     | **Required**                     | Your API domain                     | `https://api.sinaicamps.com`                        |
 | `NEXT_PUBLIC_APP_URL`     | **Required**                     | Your domain                         | `https://sinaicamps.com`                            |
@@ -50,6 +51,18 @@ See `.env.example` for the complete template. Key variables for production:
 | `SENTRY_DSN`              | Optional                         | Sentry Dashboard                    | `https://...@o....ingest.sentry.io`                 |
 | `REDIS_URL`               | Optional                         | Redis provider                      | `redis://...:6379`                                  |
 | `PORT`                    | Optional                         | Set manually                        | `3000`                                              |
+| `METRICS_TOKEN`           | **Required** (metrics auth)      | Generate: `openssl rand -base64 32` | `kL9p...4Zw==`                                      |
+| `COOKIE_SIGNING_SECRET`   | **Required**                     | Generate: `openssl rand -base64 32` | `mN5q...8Xy==`                                      |
+| `AUTH_GOOGLE_ID`          | Optional                         | Google Cloud Console                | `1234567890-xxxx.apps.googleusercontent.com`        |
+| `AUTH_GOOGLE_SECRET`      | Optional                         | Google Cloud Console                | `GOCSPX-...`                                        |
+| `PAYMOB_API_KEY`          | Optional (required for Paymob)   | Paymob Dashboard                    | `...`                                               |
+| `PAYMOB_HMAC_SECRET`      | Optional (required for Paymob)   | Paymob Dashboard                    | `...`                                               |
+| `PAYMOB_IFRAME_ID`        | Optional (required for Paymob)   | Paymob Dashboard                    | `1234567`                                           |
+| `PAYMOB_INTEGRATION_ID`   | Optional (required for Paymob)   | Paymob Dashboard                    | `1234567`                                           |
+| `SENTRY_DSN`              | Optional                         | Sentry Dashboard                    | `https://...@o....ingest.sentry.io`                 |
+| `ANALYZE`                 | Optional                         | Set to `true` for bundle analysis   | `true`                                              |
+
+> **Note on PostgreSQL:** SQLite is the default production database (`file:./sinaicamps-prod.db`). PostgreSQL is supported as an alternative — set `DATABASE_URL` to a PostgreSQL connection string to use it. The application detects the driver from the URL prefix and adapts SQL dialect accordingly.
 
 ---
 
@@ -125,9 +138,8 @@ Cloudflare (DNS + Proxy)
   │
   ├─ yourdomain.com ───────────────► Linux Server :443 ─► PM2 :3000 (Next.js)
   ├─ api.yourdomain.com ───────────► Linux Server :443 ─► PM2 :3000 (Next.js API)
-  │
-  └─ tenant.com ───────────────────► Cloudflare Pages (Vite SPA)
-                                          └─ API calls ──► api.yourdomain.com
+  └─ tenant.com ───────────────────► Linux Server :443 ─► PM2 :3000
+                                              (Next.js — /[locale]/[tenantSlug]/[[...slug]])
 ```
 
 ---
@@ -215,7 +227,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 DATABASE_URL=file:./sinaicamps-prod.db
 
 # Auth
-NEXTAUTH_URL=https://yourdomain.com
+BETTER_AUTH_URL=https://yourdomain.com
 AUTH_TRUST_HOST=true
 
 # Comma-separated list of allowed origins
@@ -340,23 +352,13 @@ Push to `main` → `.github/workflows/deploy.yml` auto-deploys.
 
 ---
 
-## Phase 8: Tenant Shop Frontends (Cloudflare Pages)
+## Phase 8: Tenant Shop Frontends
 
-```bash
-# 1. Build the tenant's branded frontend
-bash scripts/build-shop.sh <tenant-slug> production https://api.yourdomain.com
-# Output: builds/<tenant-slug>/dist/
+Tenant shop frontends are served by the same Next.js server via the catch-all route `/[locale]/[tenantSlug]/[[...slug]]`. No separate build or deployment is needed — the tenant becomes accessible once added to the database.
 
-# 2. Deploy to Cloudflare Pages
-npx wrangler pages deploy builds/<tenant-slug>/dist \
-  --project-name <cf-project-name> \
-  --branch main
+**To add a new tenant property**, see [Phase 9](#phase-9-add-a-new-tenant-property) below.
 
-# 3. Add custom domain in Cloudflare Pages dashboard
-# → Pages → <project> → Custom Domains → Add domain
-```
-
-See [cloudflare_config.md](cloudflare_config.md) for full Cloudflare setup.
+Custom domains for tenants are handled by adding the domain to Nginx and `TRUSTED_ORIGINS`. See `nginx-unified.conf` for the server block template.
 
 ---
 

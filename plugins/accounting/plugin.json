@@ -10,6 +10,7 @@
   "slots": {
     "dashboard.widgets": ["accounting:FinancialHealthWidget"]
   },
+  "capabilities": ["database", "routes"],
   "menuItems": [
     {
       "id": "accounting-ledger",

@@ -116,10 +116,6 @@ export default function Step3PlanPage() {
           };
           if (selected === 'ultimate') {
             body.custom_domain = customDomain.trim().toLowerCase();
-            body.stripe_payment_method_id = 'pm_placeholder';
-          }
-          if (selected === 'premium') {
-            body.stripe_payment_method_id = 'pm_placeholder';
           }
 
           const res = await fetch('/api/owner/register', {
@@ -244,8 +240,8 @@ export default function Step3PlanPage() {
 
         {(selected === 'premium' || selected === 'ultimate') && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-5 text-sm text-yellow-800">
-            <strong>Payment:</strong> Premium plans require a card. We'll collect payment details on
-            the next step via Stripe. Your 14-day trial starts today.
+            <strong>Free Trial:</strong> Premium plans include a 14-day free trial. No payment
+            required today. You'll be prompted to add a payment method before the trial ends.
           </div>
         )}
 

@@ -6,8 +6,8 @@ test.describe('Ultimate-Tier Custom Domain Redirect E2E', () => {
     page,
   }) => {
     // 1. Setup request interception to mock the custom domain destination
-    // In local dev, FORCE_LOCAL_REDIRECT redirects to 127.0.0.1:3000
-    await page.route('http://127.0.0.1:3000/en/manage/3**', (route) => {
+    // In local dev, FORCE_LOCAL_REDIRECT redirects to localhost:3000
+    await page.route('http://localhost:3000/en/manage/3**', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -22,11 +22,10 @@ test.describe('Ultimate-Tier Custom Domain Redirect E2E', () => {
     // 3. Log in as acacia@acaciacamp.com
     await loginPage.login('acacia@acaciacamp.com', 'password123');
 
-    // 4. Verify redirection to custom domain (local dev uses 127.0.0.1:3000)
-    await expect(page).toHaveURL(/http:\/\/127\.0\.0\.1:3000\/en\/manage\/3/);
+    // 4. Verify redirection to custom domain (local dev uses localhost:3000)
+    await expect(page).toHaveURL(/http:\/\/localhost:3000\/en\/manage\/3/);
 
-    // 5. Check the rendered content on intercepted custom domain
-    const heading = page.locator('h1');
-    await expect(heading).toHaveText('Welcome to Acacia Camp External Custom Domain');
+    // 5. Check the rendered content
+    await expect(page.locator('h1')).toHaveText('Welcome to Acacia Camp External Custom Domain');
   });
 });

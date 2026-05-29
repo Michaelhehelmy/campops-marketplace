@@ -114,6 +114,9 @@ export default async function init(api: PluginAPI) {
           const isPremiumPlan = normalisedPlan === 'premium' || normalisedPlan === 'ultimate';
           const resolvedSubdomain = isPremiumPlan ? slug : null;
           const resolvedCustomDomain = normalisedPlan === 'ultimate' ? custom_domain || null : null;
+          const trialEndsAt = isPremiumPlan
+            ? new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+            : null;
           const settings = JSON.stringify({
             branding: branding || {},
             features: {
@@ -126,6 +129,8 @@ export default async function init(api: PluginAPI) {
               blog: false,
             },
             theme: { mode: 'light' },
+            plan_payment_status: isPremiumPlan ? 'trial' : 'active',
+            trial_ends_at: trialEndsAt,
           });
 
           await tx.execute(

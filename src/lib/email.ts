@@ -136,3 +136,48 @@ export function reviewRequestTemplate(data: {
     <p>Thank you for choosing ${data.propertyName}.</p>
   `;
 }
+
+export function cancellationTemplate(data: {
+  guestName: string;
+  propertyName: string;
+  checkIn: string;
+  checkOut: string;
+  reason?: string;
+}): string {
+  return `
+    <h1>Booking Cancelled — ${data.propertyName}</h1>
+    <p>Hi ${data.guestName},</p>
+    <p>Your booking at <strong>${data.propertyName}</strong> has been cancelled.</p>
+    <ul>
+      <li><strong>Check-in:</strong> ${data.checkIn}</li>
+      <li><strong>Check-out:</strong> ${data.checkOut}</li>
+      ${data.reason ? `<li><strong>Reason:</strong> ${data.reason}</li>` : ''}
+    </ul>
+    <p>If you have any questions, please contact us.</p>
+  `;
+}
+
+export function newBookingNotificationTemplate(data: {
+  ownerName: string;
+  guestName: string;
+  propertyName: string;
+  roomName: string;
+  checkIn: string;
+  checkOut: string;
+  amount: string;
+  manageUrl: string;
+}): string {
+  return `
+    <h1>New Booking — ${data.propertyName}</h1>
+    <p>Hi ${data.ownerName},</p>
+    <p>You have a new booking at <strong>${data.propertyName}</strong>!</p>
+    <ul>
+      <li><strong>Guest:</strong> ${data.guestName}</li>
+      <li><strong>Room:</strong> ${data.roomName}</li>
+      <li><strong>Check-in:</strong> ${data.checkIn}</li>
+      <li><strong>Check-out:</strong> ${data.checkOut}</li>
+      <li><strong>Amount:</strong> ${data.amount}</li>
+    </ul>
+    <p><a href="${data.manageUrl}">View in dashboard</a></p>
+  `;
+}

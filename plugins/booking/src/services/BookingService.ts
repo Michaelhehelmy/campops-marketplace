@@ -222,6 +222,10 @@ export class BookingService {
       return booking;
     });
 
+    if (!result) {
+      throw new Error('Booking not found');
+    }
+
     return result;
   }
 }

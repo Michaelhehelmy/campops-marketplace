@@ -12,7 +12,7 @@ Property Owner access is gained through the self-service onboarding flow. Naviga
 
 ## Onboarding Flow
 
-When you first register as a property owner, you'll complete a 4-step setup process:
+When you first register as a property owner, you'll complete a 5-step setup process:
 
 ### Step 1: Account (`/en/list-your-camp`)
 
@@ -25,17 +25,27 @@ Create your account:
 
 Your information is saved locally as you move through the steps.
 
-### Step 2: Branding (`/en/list-your-camp/branding`)
+### Step 2: Property (`/en/list-your-camp/property`)
 
-Set up your property's identity:
+Set up your property's basic information:
 
 - **Property Name** — your camp, hotel, or lodge name
 - **Description** — a brief description of your property
+- **Slug** — URL-friendly identifier (e.g., `my-safari-camp`)
 - **Location** — city and country
 - **Currency** — your preferred currency
-- **Logo and images** — upload your branding
+- **Type** — camp, hotel, glamping, lodge, resort, or villa
 
-### Step 3: Plan (`/en/list-your-camp/plan`)
+### Step 3: Branding (`/en/list-your-camp/branding`)
+
+Customize your property's visual identity:
+
+- **Logo** — upload your brand logo
+- **Images** — add property photos
+- **Primary Color** — choose your brand color
+- **Accent Color** — choose a secondary brand color
+
+### Step 4: Plan (`/en/list-your-camp/plan`)
 
 Choose your plan tier:
 
@@ -45,7 +55,7 @@ Choose your plan tier:
 
 See the [Plan Comparison](./plan-comparison.md) guide for detailed feature breakdowns.
 
-### Step 4: Done (`/en/list-your-camp/success`)
+### Step 5: Success (`/en/list-your-camp/success`)
 
 Your property is registered! You'll be redirected to your property dashboard where you can start configuring your listing.
 

@@ -161,6 +161,26 @@
         ".opencode/node_modules/.bin/mcp-server-linear"
       ],
       "enabled": true
+    },
+    "agent_registry": {
+      "type": "local",
+      "description": "Agent Registry — dynamic agent pool management (list, find, register, clone, dormant, touch)",
+      "command": [
+        "node",
+        ".opencode/node_modules/.bin/tsx",
+        ".opencode/packages/mcp-server-agent-registry/src/index.ts"
+      ],
+      "enabled": true
+    },
+    "skill_library": {
+      "type": "local",
+      "description": "Skill Library — reusable skill management (find, register, evaluate, version, touch)",
+      "command": [
+        "node",
+        ".opencode/node_modules/.bin/tsx",
+        ".opencode/packages/mcp-server-skill-library/src/index.ts"
+      ],
+      "enabled": true
     }
   },
   "agent": {
@@ -231,6 +251,14 @@
     "scrum_master": {
       "description": "Project Manager & Scrum Master Agent — sprints, blockers, timelines",
       "system": "You are the Project Manager & Scrum Master Agent. You facilitate sprints, remove blockers, coordinate cross‑team dependencies, and keep the timeline on track.\n\nYou do not write code; you manage the sprint board in `SPRINT_BOARD.md`.\n\n**Ongoing tasks:**\n- Run a daily “standup” by collecting status updates from all active agents and summarising blockers.\n- Maintain the sprint board: move tasks from backlog → in‑progress → done.\n- Identify cross‑agent dependencies and flag potential delays.\n- Ensure the QA agent’s test reports are addressed before a sprint is closed.\n- Generate a sprint burndown chart and a velocity report.\n\n**Output:** A daily Sprint Status email with key metrics, blockers, and action items."
+    },
+    "meta_agent_factory": {
+      "description": "Meta-Agent (Agent Factory) — dynamic agent creation, registry management, skill attachment",
+      "system": "You are the Meta-Agent Factory for SinaiCamps. Your single job is to locate or create the right specialist agent for a given task, optionally attaching pre-built skills from the Skill Library.\n\nFollow this exact decision loop:\n1. Call list_active_agents (agent_registry MCP) to survey the pool.\n2a. Call find_agent_by_capabilities — score ≥70 reuse, 40-69 clone, <40 create.\n2b. Call find_skill (skill_library MCP) for each required sub-capability — score ≥60 attach, <30 delegate to @skill_forge_agent.\n3. Register/clone/reuse the agent and return JSON: { action, agentId, attachedSkills[], reason }.\n\nNever execute the task yourself. Never create monster agents. One agent = one task."
+    },
+    "skill_forge_agent": {
+      "description": "Skill Forge Agent — creates, tests, and registers reusable skills into the Skill Library",
+      "system": "You are the Skill Forge Agent for SinaiCamps. Your single job is to create reusable, tested, evaluated skills.\n\nWorkflow:\n1. Call find_skill — if score ≥60, return the existing skill (do not recreate).\n2. Forge the implementation (TypeScript function, prompt fragment, or MCP tool). Generic, stateless, no project-specific logic.\n3. Write and run at least 2 test cases.\n4. Call register_skill (status: pending_eval).\n5. Notify @qa agent to validate.\n6. On pass, return { action: 'created', skillId, status: 'active' } to @meta_agent_factory.\n\nNever execute business tasks. Never store a skill before evaluation passes. Max 3 fix iterations before escalating to user."
     }
   },
   "lsp": {
